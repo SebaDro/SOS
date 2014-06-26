@@ -1,0 +1,59 @@
+/**
+ * Copyright (C) 2012-2014 52°North Initiative for Geospatial Open Source
+ * Software GmbH
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
+ *
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
+ *
+ *     - Apache License, version 2.0
+ *     - Apache Software License, version 1.0
+ *     - GNU Lesser General Public License, version 3
+ *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
+ *     - Common Development and Distribution License (CDDL), version 1.0
+ *
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public
+ * License version 2 and the aforementioned licenses.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.
+ */
+package org.n52.sos.ds.envirocar.guice;
+
+import org.envirocar.server.core.dao.MeasurementDao;
+import org.envirocar.server.core.dao.PhenomenonDao;
+import org.envirocar.server.core.dao.SensorDao;
+import org.envirocar.server.core.dao.StatisticsDao;
+import org.envirocar.server.core.dao.TrackDao;
+import org.envirocar.server.mongo.dao.MongoMeasurementDao;
+import org.envirocar.server.mongo.dao.MongoPhenomenonDao;
+import org.envirocar.server.mongo.dao.MongoSensorDao;
+import org.envirocar.server.mongo.dao.MongoStatisticsDao;
+import org.envirocar.server.mongo.dao.MongoTrackDao;
+import org.n52.sos.ds.envirocar.EnviroCarDaoFactory;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+
+public class EnviroCarDaoModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+        install(new FactoryModuleBuilder()
+        .implement(PhenomenonDao.class, MongoPhenomenonDao.class)
+        .implement(MeasurementDao.class, MongoMeasurementDao.class)
+        .implement(SensorDao.class, MongoSensorDao.class)
+        .implement(TrackDao.class, MongoTrackDao.class)
+        .implement(StatisticsDao.class, MongoStatisticsDao.class)
+                .build(EnviroCarDaoFactory.class));
+    }
+
+}

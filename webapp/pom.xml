@@ -736,6 +736,27 @@
             </dependencies>
         </profile>
         <profile>
+            <id>envirocar</id>
+            <dependencies>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>envirocar-common</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>envirocar-dao</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>envirocar-feature</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>envirocar-datasource</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>diagram</id>
             <dependencies>
                 <dependency>
