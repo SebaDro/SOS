@@ -29,13 +29,10 @@
 package org.n52.sos.ds.envirocar.cache.base;
 
 import org.envirocar.server.mongo.dao.MongoTrackDao;
-import org.joda.time.DateTime;
+import org.envirocar.server.mongo.dao.MongoTrackDao.TimeExtrema;
 import org.n52.sos.ds.envirocar.cache.AbstractEnviroCarThreadableDatasourceCacheUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mongodb.AggregationOutput;
-import com.mongodb.DBObject;
 
 public class EnviroCarObservationTimeCacheUpdate extends AbstractEnviroCarThreadableDatasourceCacheUpdate {
 
@@ -45,12 +42,12 @@ public class EnviroCarObservationTimeCacheUpdate extends AbstractEnviroCarThread
     public void execute() {
         LOGGER.debug("Executing EnviroCarObservationTimeCacheUpdate");
         startStopwatch();
-        AggregationOutput ao = ((MongoTrackDao) getEnviroCarDaoFactory().getTrackDAO()).getTimeExtrema();
-        for (DBObject r : ao.results()) {
-            getCache().setMinPhenomenonTime(new DateTime(r.get("phenStart")));
-            getCache().setMaxPhenomenonTime(new DateTime(r.get("phenEnd")));
-            getCache().setMinResultTime(new DateTime(r.get("resultStart")));
-            getCache().setMaxResultTime(new DateTime(r.get("resultEnd")));
+        TimeExtrema te = ((MongoTrackDao) getEnviroCarDaoFactory().getTrackDAO()).getGlobalTimeExtrema();
+       if (te != null) {
+            getCache().setMinPhenomenonTime(te.getMinPhenomenonTime());
+            getCache().setMaxPhenomenonTime(te.getMaxPhenomenonTime());
+            getCache().setMinResultTime(te.getMinResultTime());
+            getCache().setMaxResultTime(te.getMaxResultTime());
         }
         LOGGER.debug("Finished executing EnviroCarObservationTimeCacheUpdate ({})", getStopwatchResult());
     }

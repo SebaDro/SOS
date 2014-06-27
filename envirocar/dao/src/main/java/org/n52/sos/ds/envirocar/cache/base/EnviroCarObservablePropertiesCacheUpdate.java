@@ -29,7 +29,12 @@
 package org.n52.sos.ds.envirocar.cache.base;
 
 import java.util.Collection;
+import java.util.Map;
 
+import javax.management.monitor.MonitorSettingException;
+
+import org.envirocar.server.core.dao.SensorDao;
+import org.envirocar.server.mongo.dao.MongoSensorDao;
 import org.n52.sos.ds.envirocar.cache.AbstractEnviroCarThreadableDatasourceCacheUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,16 +48,12 @@ public class EnviroCarObservablePropertiesCacheUpdate extends AbstractEnviroCarT
         LOGGER.debug("Executing EnviroCarObservablePropertiesCacheUpdate");
         startStopwatch();
           Collection<String> ops = getEnviroCarDaoFactory().getPhenomenonDAO().getIdentifier();
-
+          Map<String, Collection<String>> phenomenonSensorsMap = ((MongoSensorDao)getEnviroCarDaoFactory().getSensorDAO()).getPhenomenonSensorsMap();
             for (String obsPropIdentifier : ops) {
-//                try {
-//                    getCache().setOfferingsForObservableProperty(obsPropIdentifier,
-//                            new OfferingDAO().getOfferingIdentifiersForObservableProperty(obsPropIdentifier, getSession()));
-//                } catch (CodedException e) {
-//                    getErrors().add(e);
-//                }
-//                getCache().setProceduresForObservableProperty(obsPropIdentifier,
-//                        new ProcedureDAO().getProcedureIdentifiersForObservableProperty(obsPropIdentifier, getSession()));                
+                 if (phenomenonSensorsMap.containsKey(obsPropIdentifier)) {
+                     getCache().setOfferingsForObservableProperty(obsPropIdentifier, phenomenonSensorsMap.get(obsPropIdentifier));
+                     getCache().setProceduresForObservableProperty(obsPropIdentifier, phenomenonSensorsMap.get(obsPropIdentifier));
+                 }
             }
         LOGGER.debug("Executing EnviroCarObservablePropertiesCacheUpdate ({})", getStopwatchResult());
     }

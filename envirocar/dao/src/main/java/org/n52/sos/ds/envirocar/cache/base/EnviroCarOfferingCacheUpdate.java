@@ -29,77 +29,133 @@
 package org.n52.sos.ds.envirocar.cache.base;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import org.envirocar.server.core.entities.Sensor;
 import org.envirocar.server.core.entities.Sensors;
-import org.envirocar.server.core.filter.TrackFilter;
 import org.envirocar.server.core.util.Pagination;
+import org.envirocar.server.mongo.dao.MongoPhenomenonDao;
+import org.envirocar.server.mongo.dao.MongoTrackDao;
+import org.envirocar.server.mongo.dao.MongoTrackDao.TimeExtrema;
+import org.envirocar.server.mongo.entity.MongoSensor;
 import org.n52.sos.ds.envirocar.cache.AbstractEnvirCarQueueingDatasourceCacheUpdate;
+import org.n52.sos.util.CacheHelper;
+import org.n52.sos.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class EnviroCarOfferingCacheUpdate extends AbstractEnvirCarQueueingDatasourceCacheUpdate<EnviroCarOfferingCacheUpdateTask> {
+public class EnviroCarOfferingCacheUpdate extends
+        AbstractEnvirCarQueueingDatasourceCacheUpdate<EnviroCarOfferingCacheUpdateTask> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EnviroCarOfferingCacheUpdate.class);
-    
+
     private static final String THREAD_GROUP_NAME = "offering-cache-update";
-    
-    private Collection<String> offeringsIdToUpdate = Sets.newHashSet();
-    
-    private Sensors offeringsToUpdate;
-    
+
+    Collection<String> offeringsIdToUpdate = Sets.newHashSet();
+
+    private Set<Sensor> offeringsToUpdate = Sets.newHashSet();
+
+    Map<String, Collection<String>> offObsPropMap;
+
     public EnviroCarOfferingCacheUpdate(int threads) {
         super(threads, THREAD_GROUP_NAME);
     }
-    
+
     public EnviroCarOfferingCacheUpdate(int threads, Collection<String> offeringIdsToUpdate) {
         super(threads, THREAD_GROUP_NAME);
         this.offeringsIdToUpdate = offeringIdsToUpdate;
     }
 
     private Sensors getOfferingsToUpdate() {
-        if (offeringsToUpdate == null) {            
-            offeringsToUpdate = getEnviroCarDaoFactory().getSensorDAO().get(new Pagination());
-        }
-        return offeringsToUpdate;
+        return getEnviroCarDaoFactory().getSensorDAO().get(new Pagination());
     }
-
-//    private Map<String,Collection<ObservationConstellationInfo>> getOfferingObservationConstellationInfo() {
-//        if (offObsConstInfoMap == null) {
-//            offObsConstInfoMap = ObservationConstellationInfo.mapByOffering(
-//                new ObservationConstellationDAO().getObservationConstellationInfo(getSession()));
-//        }
-//        return offObsConstInfoMap;
-//    }
 
     @Override
     public void execute() {
-//        LOGGER.debug("Executing EnviroCarOfferingCacheUpdate (Single Threaded Tasks)");
-//        startStopwatch();
-//
-//        LOGGER.debug("Finished executing EnviroCarOfferingCacheUpdate (Single Threaded Tasks) ({})", getStopwatchResult());
-        
-        //execute multi-threaded updates
+        LOGGER.debug("Executing EnviroCarOfferingCacheUpdate (Single Threaded Tasks)");
+        startStopwatch();
+        // time ranges
+        MongoTrackDao dao = (MongoTrackDao) getEnviroCarDaoFactory().getTrackDAO();
+        Map<String, TimeExtrema> ote = dao.getOfferingTimeExtrema();
+        if (ote != null) {
+            for (Sensor sensor : getOfferingsToUpdate()) {
+                if (shouldOfferingBeProcessed(sensor, ote)) {
+                    String offeringId = sensor.getIdentifier();
+                    String prefixedOfferingId = CacheHelper.addPrefixOrGetOfferingIdentifier(offeringId);
+                    getCache().addOffering(prefixedOfferingId);
+                    getCache().setNameForOffering(prefixedOfferingId, getOfferingName(prefixedOfferingId, sensor));
+                    if (ote.containsKey(offeringId)) {
+                        TimeExtrema te = ote.get(offeringId);
+                        getCache().setMinPhenomenonTimeForOffering(offeringId, te.getMinPhenomenonTime());
+                        getCache().setMaxPhenomenonTimeForOffering(offeringId, te.getMaxPhenomenonTime());
+                        getCache().setMinResultTimeForOffering(offeringId, te.getMinResultTime());
+                        getCache().setMaxResultTimeForOffering(offeringId, te.getMaxResultTime());
+                    }
+                    // procedures
+                    getCache().setProceduresForOffering(offeringId, Sets.newHashSet(offeringId));
+                }
+            }
+        }
+        LOGGER.debug("Finished executing EnviroCarOfferingCacheUpdate (Single Threaded Tasks) ({})",
+                getStopwatchResult());
+
+        // execute multi-threaded updates
         LOGGER.debug("Executing EnviroCarOfferingCacheUpdate (Multi-Threaded Tasks)");
         startStopwatch();
         super.execute();
-        LOGGER.debug("Finished executing EnviroCarOfferingCacheUpdate (Multi-Threaded Tasks) ({})", getStopwatchResult());
+        LOGGER.debug("Finished executing EnviroCarOfferingCacheUpdate (Multi-Threaded Tasks) ({})",
+                getStopwatchResult());
+    }
+
+    private String getOfferingName(String prefixedOfferingId, Sensor sensor) {
+        StringBuilder builder = new StringBuilder("Timeseries for ");
+        if (sensor.hasProperties()) {
+            Map<String, Object> properties = sensor.getProperties();
+            if (properties.containsKey(MongoSensor.PROPERTY_MODEL)
+                    && properties.containsKey(MongoSensor.PROPERTY_MANUFACTURER)) {
+                if (properties.containsKey(MongoSensor.PROPERTY_CONSTRUCTION_YEAR)) {
+                    builder.append(properties.get(MongoSensor.PROPERTY_CONSTRUCTION_YEAR))
+                            .append(Constants.BLANK_CHAR);
+                }
+                builder.append(properties.get(MongoSensor.PROPERTY_MANUFACTURER)).append(Constants.BLANK_CHAR);
+                builder.append(properties.get(MongoSensor.PROPERTY_MODEL));
+            } else {
+                builder.append(sensor.getIdentifier());
+            }
+        } else {
+            builder.append(sensor.getIdentifier());
+        }
+        return builder.toString();
     }
 
     @Override
     protected EnviroCarOfferingCacheUpdateTask[] getUpdatesToExecute() {
         Collection<EnviroCarOfferingCacheUpdateTask> offeringUpdateTasks = Lists.newArrayList();
-        for (Sensor sensor : getOfferingsToUpdate()){
-                offeringUpdateTasks.add(new EnviroCarOfferingCacheUpdateTask(sensor));
+        for (Sensor sensor : offeringsToUpdate) {
+            offeringUpdateTasks.add(new EnviroCarOfferingCacheUpdateTask(sensor, getOfferingObservablePropertyMap()
+                    .get(sensor.getIdentifier())));
         }
         return offeringUpdateTasks.toArray(new EnviroCarOfferingCacheUpdateTask[offeringUpdateTasks.size()]);
     }
-    
-    protected boolean shouldOfferingBeProcessed(Sensor sensor) {
-            return getEnviroCarDaoFactory().getTrackDAO().get(new TrackFilter().addSensor(sensor)).hasNext();
+
+    protected boolean shouldOfferingBeProcessed(Sensor sensor, Map<String, TimeExtrema> ote) {
+        if (ote.containsKey(sensor.getIdentifier())) {
+            offeringsToUpdate.add(sensor);
+            return true;
+        }
+        return false;
+    }
+
+    private Map<String, Collection<String>> getOfferingObservablePropertyMap() {
+        if (offObsPropMap == null) {
+            offObsPropMap =
+                    ((MongoPhenomenonDao) getEnviroCarDaoFactory().getPhenomenonDAO()).getSensorPhenomenonsMap();
+        }
+        return offObsPropMap;
     }
 
 }

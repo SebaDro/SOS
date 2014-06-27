@@ -28,26 +28,71 @@
  */
 package org.n52.sos.ds.envirocar.cache.base;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
+import org.envirocar.server.core.entities.Sensor;
+import org.envirocar.server.core.entities.Sensors;
+import org.envirocar.server.core.util.Pagination;
+import org.envirocar.server.mongo.dao.MongoPhenomenonDao;
+import org.envirocar.server.mongo.dao.MongoTrackDao;
+import org.envirocar.server.mongo.dao.MongoTrackDao.TimeExtrema;
 import org.n52.sos.ds.envirocar.cache.AbstractEnvirCarQueueingDatasourceCacheUpdate;
+import org.n52.sos.ds.envirocar.cache.AbstractEnviroCarThreadableDatasourceCacheUpdate;
+import org.n52.sos.util.CacheHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class EnviroCarProcedureCacheUpdate extends AbstractEnvirCarQueueingDatasourceCacheUpdate<EnviroCarProcedureCacheUpdateTask> {
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
-    private static final String THREAD_GROUP_NAME = "procedure-cache-update";
+public class EnviroCarProcedureCacheUpdate extends AbstractEnviroCarThreadableDatasourceCacheUpdate {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnviroCarProcedureCacheUpdate.class);
     
-    public EnviroCarProcedureCacheUpdate(int threads) {
-        super(threads, THREAD_GROUP_NAME);
-    }
-
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
-
+            LOGGER.debug("Executing EnviroCarProcedureCacheUpdate (Single Threaded Tasks)");
+            startStopwatch();
+            
+            // Observable properties
+            Map<String, Collection<String>> obsPropsMap =
+                    ((MongoPhenomenonDao) getEnviroCarDaoFactory().getPhenomenonDAO())
+                            .getSensorPhenomenonsMap();
+            // time ranges
+            MongoTrackDao dao = (MongoTrackDao) getEnviroCarDaoFactory().getTrackDAO();
+            Map<String, TimeExtrema> ote = dao.getOfferingTimeExtrema();
+            if (ote != null) {
+                for (Sensor sensor :  getProcedureToUpdate()){ 
+                    if (shouldProcedureBeProcessed(sensor, ote, obsPropsMap)) {
+                        String procedureId =sensor.getIdentifier();
+                        String prefixedProcedureId = CacheHelper.addPrefixOrGetProcedureIdentifier(procedureId);
+                        getCache().addProcedure(prefixedProcedureId);
+                        if (ote.containsKey(procedureId)) {
+                            TimeExtrema te = ote.get(procedureId);
+                            getCache().setMinPhenomenonTimeForProcedure(procedureId, te.getMinPhenomenonTime());
+                            getCache().setMaxPhenomenonTimeForProcedure(procedureId, te.getMaxPhenomenonTime());
+                        }
+                        // procedures
+                        getCache().setOfferingsForProcedure(procedureId, Sets.newHashSet(procedureId));
+                        getCache().setObservablePropertiesForProcedure(procedureId, obsPropsMap.get(procedureId));
+                    }
+                }
+            }
+            LOGGER.debug("Finished executing EnviroCarProcedureCacheUpdate (Single Threaded Tasks) ({})", getStopwatchResult());
     }
 
-    @Override
-    protected EnviroCarProcedureCacheUpdateTask[] getUpdatesToExecute() {
-        // TODO Auto-generated method stub
-        return null;
+    
+    private Sensors getProcedureToUpdate() {
+        return getEnviroCarDaoFactory().getSensorDAO().get(new Pagination());
+    }
+    
+    protected boolean shouldProcedureBeProcessed(Sensor sensor, Map<String, TimeExtrema> ote, Map<String, Collection<String>> obsPropsMap ) {
+        if (ote.containsKey(sensor.getIdentifier()) && obsPropsMap.containsKey(sensor.getIdentifier())) {
+            return true;
+        }
+        return false;
     }
 
 }

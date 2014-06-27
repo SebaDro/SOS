@@ -41,8 +41,8 @@ public class EnviroCarInitialCacheUpdate extends EnviroCarCompositeCacheUpdate {
         //execute all updates except offerings and procedures in parallel, then execute offering and procedure updates
         //(which spawn their own threads)
         super(new EnviroCarParallelCacheUpdate(threadCount, new EnviroCarObservablePropertiesCacheUpdate(),
-                new EnviroCarFeatureOfInterestCacheUpdate(), new EnviroCarObservationTimeCacheUpdate()),
-                new EnviroCarOfferingCacheUpdate(threadCount), new EnviroCarProcedureCacheUpdate(threadCount));
+                new EnviroCarFeatureOfInterestCacheUpdate(), new EnviroCarObservationTimeCacheUpdate(), new EnviroCarProcedureCacheUpdate()),
+                new EnviroCarOfferingCacheUpdate(threadCount));
     }
     
 }
