@@ -163,50 +163,50 @@ public class GetFeatureOfInterestDAO extends AbstractGetFeatureOfInterestDAO imp
         }
     }
 
-    /**
-     * Check if the request contains spatial filters
-     * 
-     * @param request
-     *            GetFeatureOfInterest request to check
-     * @return <code>true</code>, if the request contains spatial filters
-     */
-    private boolean isSpatialFilterRequest(final GetFeatureOfInterestRequest request) {
-        return request.getSpatialFilters() != null && !request.getSpatialFilters().isEmpty();
-    }
-
-    /**
-     * Check if the request contains feature identifiers
-     * 
-     * @param request
-     *            GetFeatureOfInterest request to check
-     * @return <code>true</code>, if the request contains feature identifiers
-     */
-    private boolean isFeatureIdentifierRequest(final GetFeatureOfInterestRequest request) {
-        return request.getFeatureIdentifiers() != null && !request.getFeatureIdentifiers().isEmpty();
-    }
-
-    /**
-     * Check if the request contains spatial filters and feature identifiers
-     * 
-     * @param request
-     *            GetFeatureOfInterest request to check
-     * @return <code>true</code>, if the request contains spatial filters and
-     *         feature identifiers
-     */
-    private boolean isMixedFeatureIdentifierAndSpatialFilters(final GetFeatureOfInterestRequest request) {
-        return isFeatureIdentifierRequest(request) && isSpatialFilterRequest(request);
-    }
-
-    /**
-     * Check if the requested version is SOS 1.0.0
-     * 
-     * @param request
-     *            GetFeatureOfInterest request to check
-     * @return <code>true</code>, if the requested version is SOS 1.0.0
-     */
-    private boolean isSos100(final GetFeatureOfInterestRequest request) {
-        return request.getVersion().equals(Sos1Constants.SERVICEVERSION);
-    }
+//    /**
+//     * Check if the request contains spatial filters
+//     * 
+//     * @param request
+//     *            GetFeatureOfInterest request to check
+//     * @return <code>true</code>, if the request contains spatial filters
+//     */
+//    private boolean isSpatialFilterRequest(final GetFeatureOfInterestRequest request) {
+//        return request.getSpatialFilters() != null && !request.getSpatialFilters().isEmpty();
+//    }
+//
+//    /**
+//     * Check if the request contains feature identifiers
+//     * 
+//     * @param request
+//     *            GetFeatureOfInterest request to check
+//     * @return <code>true</code>, if the request contains feature identifiers
+//     */
+//    private boolean isFeatureIdentifierRequest(final GetFeatureOfInterestRequest request) {
+//        return request.getFeatureIdentifiers() != null && !request.getFeatureIdentifiers().isEmpty();
+//    }
+//
+//    /**
+//     * Check if the request contains spatial filters and feature identifiers
+//     * 
+//     * @param request
+//     *            GetFeatureOfInterest request to check
+//     * @return <code>true</code>, if the request contains spatial filters and
+//     *         feature identifiers
+//     */
+//    private boolean isMixedFeatureIdentifierAndSpatialFilters(final GetFeatureOfInterestRequest request) {
+//        return isFeatureIdentifierRequest(request) && isSpatialFilterRequest(request);
+//    }
+//
+//    /**
+//     * Check if the requested version is SOS 1.0.0
+//     * 
+//     * @param request
+//     *            GetFeatureOfInterest request to check
+//     * @return <code>true</code>, if the requested version is SOS 1.0.0
+//     */
+//    private boolean isSos100(final GetFeatureOfInterestRequest request) {
+//        return request.getVersion().equals(Sos1Constants.SERVICEVERSION);
+//    }
 
     /**
      * Get featureOfInterest as a feature collection
