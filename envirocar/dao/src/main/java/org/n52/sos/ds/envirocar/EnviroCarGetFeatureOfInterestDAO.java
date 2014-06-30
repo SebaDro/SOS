@@ -29,14 +29,20 @@
 package org.n52.sos.ds.envirocar;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.envirocar.server.core.filter.MeasurementFeatureFilter;
+import org.envirocar.server.core.filter.MeasurementFilter;
+import org.envirocar.server.mongo.dao.MongoMeasurementDao;
 import org.n52.sos.ds.AbstractGetFeatureOfInterestDAO;
 import org.n52.sos.ds.EnviroCarConstants;
 import org.n52.sos.exception.ows.MissingParameterValueException;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
+import org.n52.sos.ogc.filter.FilterConstants;
+import org.n52.sos.ogc.filter.SpatialFilter;
 import org.n52.sos.ogc.om.features.FeatureCollection;
 import org.n52.sos.ogc.ows.CompositeOwsException;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
@@ -101,7 +107,7 @@ public class EnviroCarGetFeatureOfInterestDAO extends AbstractGetFeatureOfIntere
         return response;
     }
 
-    private FeatureCollection getFeatures(GetFeatureOfInterestRequest request, EnviroCarDaoFactory enviroCarDaoFactory) {
+    private FeatureCollection getFeatures(GetFeatureOfInterestRequest request, EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
         final Set<String> foiIDs = new HashSet<String>(queryFeatureIdentifiersForParameter(request, enviroCarDaoFactory));
         return new FeatureCollection(getConfigurator().getFeatureQueryHandler().getFeatures(
                 new ArrayList<String>(foiIDs), request.getSpatialFilters(), enviroCarDaoFactory, request.getVersion(), -1));
@@ -117,32 +123,34 @@ public class EnviroCarGetFeatureOfInterestDAO extends AbstractGetFeatureOfIntere
      * @throws OwsExceptionReport
      *             If an error occurs during processing
      */
-    @SuppressWarnings("unchecked")
-    private List<String> queryFeatureIdentifiersForParameter(final GetFeatureOfInterestRequest req, EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
-//        if (req.hasParameter()) {
-//            return new FeatureOfInterestDAO().getFeatureOfInterestIdentifiers(session);
-//        }
-//        if (req.containsOnlyFeatureParameter() && req.isSetFeatureOfInterestIdentifiers()) {
-//            final Criteria c =
-//                    session.createCriteria(FeatureOfInterest.class).setProjection(
-//                            Projections.distinct(Projections.property(FeatureOfInterest.IDENTIFIER)));
-//            final Collection<String> features = getFeatureIdentifiers(req.getFeatureIdentifiers());
-//            if (features != null && !features.isEmpty()) {
-//                c.add(Restrictions.in(FeatureOfInterest.IDENTIFIER, features));
-//            }
-//            LOGGER.debug("QUERY queryFeatureIdentifiersForParameter(request): {}", HibernateHelper.getSqlString(c));
-//            return c.list();
-//        }
-//        if (checkForNamedQueries(req, session)) {
-//            return executeNamedQuery(req, session);
-//        }
-//        if (isSos100(req)) {
-//            return queryFeatureIdentifiersForParameterForSos100(req, session);
-//        }
-//        if (HibernateHelper.isEntitySupported(Series.class, session)) {
-//            return queryFeatureIdentifiersForParameterForSeries(req, session);
-//        }
-//        return queryFeatureIdentifiersOfParameterFromOldObservations(req, session);
+    private Collection<String> queryFeatureIdentifiersForParameter(final GetFeatureOfInterestRequest req, EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
+        if (req.hasNoParameter()) {
+            return enviroCarDaoFactory.getTrackDAO().getIdentifier();
+        }
+        if (req.containsOnlyFeatureParameter() && req.isSetFeatureOfInterestIdentifiers()) {
+            return req.getFeatureIdentifiers();
+        }
+        return queryFeatureIdentifierOfParameter(req, enviroCarDaoFactory);
+    }
+
+    private Collection<String> queryFeatureIdentifierOfParameter(GetFeatureOfInterestRequest req,
+            EnviroCarDaoFactory enviroCarDaoFactory) {
+        MeasurementFeatureFilter measurementFilter = new MeasurementFeatureFilter();
+        if (req.isSetObservableProperties()) {
+           measurementFilter.setPhenomenonIds(req.getObservedProperties()); 
+        }
+        if (req.isSetProcedures()) {
+            measurementFilter.setProcedureIds(req.getProcedures());
+        }
+        if (req.isSetSpatialFilters()) {
+            
+            for (SpatialFilter spatialFilter : req.getSpatialFilters()) {
+                if (spatialFilter.isSetOperator() && FilterConstants.SpatialOperator.BBOX.equals(spatialFilter.getOperator())) {
+                    measurementFilter.addGeometry(spatialFilter.getGeometry());
+                }
+            }
+        } 
+        return ((MongoMeasurementDao)enviroCarDaoFactory.getMeasurementDAO()).getTrackIds(measurementFilter);
     }
     
 }
