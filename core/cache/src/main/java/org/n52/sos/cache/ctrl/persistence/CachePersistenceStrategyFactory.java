@@ -26,51 +26,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
  */
-package org.n52.sos.cache;
+package org.n52.sos.cache.ctrl.persistence;
 
-import java.io.File;
-import java.io.IOException;
+import org.n52.sos.config.SettingsManager;
 
-import org.n52.sos.cache.ctrl.ContentCacheControllerImpl;
-import org.n52.sos.cache.ctrl.persistence.CachePersistenceStrategy;
-import org.n52.sos.cache.ctrl.persistence.ImmediatePersistenceStrategy;
-import org.n52.sos.ds.CacheFeederDAORepository;
-import org.n52.sos.ds.MockCacheFeederDAO;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
-
-
-public class TestableInMemoryCacheController extends ContentCacheControllerImpl {
-    private static File tempFile;
-
-    public TestableInMemoryCacheController() {
-        super(new ImmediatePersistenceStrategy(tempFile));
-        setUpdateInterval(Integer.MAX_VALUE);
+public class CachePersistenceStrategyFactory {
+    private CachePersistenceStrategyFactory() {
     }
 
-    public static void setUp() {
-        try {
-            CacheFeederDAORepository.createInstance(MockCacheFeederDAO.DATASOURCE_DAO_IDENTIFIER);
-            tempFile = File.createTempFile("TestableInMemoryCacheController", "");
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+    public CachePersistenceStrategy create() {
+        CachePersistenceStrategy strategy = new AsyncCachePersistenceStrategy();
+        SettingsManager.getInstance().configure(strategy);
+        return strategy;
+    }
+
+    public static CachePersistenceStrategyFactory getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    private static class LazyHolder {
+        private static final CachePersistenceStrategyFactory INSTANCE
+                = new CachePersistenceStrategyFactory();
+
+        private LazyHolder() {
         }
-    }
-
-    public static void deleteTempFile() {
-        tempFile.delete();
-    }
-
-    public static File getTempFile() {
-        return tempFile;
-    }
-
-    @Override
-    public void setCache(WritableContentCache wcc) {
-        super.setCache(wcc);
-    }
-
-    @Override
-    public void update() throws OwsExceptionReport {
-        // noop
     }
 }
