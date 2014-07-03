@@ -331,7 +331,7 @@ public class EnviroCarMongoDBDatasoure implements Datasource {
         settings.put(USERNAME_KEY, current.getProperty(MongoDB.USER_PROPERTY));
         settings.put(PASSWORD_KEY, current.getProperty(MongoDB.PASS_PROPERTY));
         settings.put(HOST_KEY, current.getProperty(MongoDB.HOST_PROPERTY));
-        settings.put(PORT_KEY, current.getProperty(MongoDB.PORT_PROPERTY));
+        settings.put(PORT_KEY, JavaHelper.asInteger(current.getProperty(MongoDB.PORT_PROPERTY)));
         settings.put(DATABASE_KEY, current.getProperty(MongoDB.DATABASE_PROPERTY));
         return settings;
     }
@@ -479,7 +479,7 @@ public class EnviroCarMongoDBDatasoure implements Datasource {
             p.put(MongoDB.PASS_PROPERTY, settings.get(PASSWORD_KEY));
         }
         p.put(MongoDB.HOST_PROPERTY, settings.get(HOST_KEY));
-        p.put(MongoDB.PORT_PROPERTY, settings.get(PORT_KEY));
+        p.put(MongoDB.PORT_PROPERTY, JavaHelper.asString(settings.get(PORT_KEY)));
         p.put(MongoDB.DATABASE_PROPERTY, settings.get(DATABASE_KEY));
         return p;
     }

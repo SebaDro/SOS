@@ -31,10 +31,12 @@ package org.n52.sos.ds.envirocar.cache.base;
 import java.util.Collection;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.envirocar.server.core.entities.Sensor;
 import org.envirocar.server.core.entities.Track;
 import org.envirocar.server.core.entities.Tracks;
 import org.envirocar.server.core.filter.TrackFilter;
+import org.envirocar.server.mongo.entity.MongoSensor;
 import org.n52.sos.ds.envirocar.EnviroCarDaoFactory;
 import org.n52.sos.ds.envirocar.cache.AbstractEnviroCarThreadableDatasourceCacheUpdate;
 import org.n52.sos.exception.ows.concrete.GenericThrowableWrapperException;
@@ -73,7 +75,7 @@ public class EnviroCarOfferingCacheUpdateTask extends AbstractEnviroCarThreadabl
 
             // Features of Interest
             List<String> featureOfInterestIdentifiers = Lists.newArrayList();
-            Tracks tracks = getEnviroCarDaoFactory().getTrackDAO().get(new TrackFilter().setSensorType(offeringId));
+            Tracks tracks = getEnviroCarDaoFactory().getTrackDAO().get(new TrackFilter().addSensor(sensor));
             for (Track track : tracks) {
                 featureOfInterestIdentifiers.add(track.getIdentifier());
             }

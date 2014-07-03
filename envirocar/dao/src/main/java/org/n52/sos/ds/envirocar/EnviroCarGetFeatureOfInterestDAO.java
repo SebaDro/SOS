@@ -50,6 +50,7 @@ import org.n52.sos.ogc.sos.Sos1Constants;
 import org.n52.sos.ogc.sos.SosConstants;
 import org.n52.sos.request.GetFeatureOfInterestRequest;
 import org.n52.sos.response.GetFeatureOfInterestResponse;
+import org.n52.sos.util.GeometryHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +111,7 @@ public class EnviroCarGetFeatureOfInterestDAO extends AbstractGetFeatureOfIntere
     private FeatureCollection getFeatures(GetFeatureOfInterestRequest request, EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
         final Set<String> foiIDs = new HashSet<String>(queryFeatureIdentifiersForParameter(request, enviroCarDaoFactory));
         return new FeatureCollection(getConfigurator().getFeatureQueryHandler().getFeatures(
-                new ArrayList<String>(foiIDs), request.getSpatialFilters(), enviroCarDaoFactory, request.getVersion(), -1));
+                new ArrayList<String>(foiIDs), null, enviroCarDaoFactory, request.getVersion(), -1));
     }
     
     /**
@@ -124,7 +125,7 @@ public class EnviroCarGetFeatureOfInterestDAO extends AbstractGetFeatureOfIntere
      *             If an error occurs during processing
      */
     private Collection<String> queryFeatureIdentifiersForParameter(final GetFeatureOfInterestRequest req, EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
-        if (req.hasNoParameter()) {
+        if (req.hasNoParameter() && !req.isSetSpatialFilters()) {
             return enviroCarDaoFactory.getTrackDAO().getIdentifier();
         }
         if (req.containsOnlyFeatureParameter() && req.isSetFeatureOfInterestIdentifiers()) {
@@ -134,19 +135,18 @@ public class EnviroCarGetFeatureOfInterestDAO extends AbstractGetFeatureOfIntere
     }
 
     private Collection<String> queryFeatureIdentifierOfParameter(GetFeatureOfInterestRequest req,
-            EnviroCarDaoFactory enviroCarDaoFactory) {
+            EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
         MeasurementFeatureFilter measurementFilter = new MeasurementFeatureFilter();
         if (req.isSetObservableProperties()) {
            measurementFilter.setPhenomenonIds(req.getObservedProperties()); 
         }
         if (req.isSetProcedures()) {
-            measurementFilter.setProcedureIds(req.getProcedures());
+            measurementFilter.setSensorIds(req.getProcedures());
         }
         if (req.isSetSpatialFilters()) {
-            
             for (SpatialFilter spatialFilter : req.getSpatialFilters()) {
                 if (spatialFilter.isSetOperator() && FilterConstants.SpatialOperator.BBOX.equals(spatialFilter.getOperator())) {
-                    measurementFilter.addGeometry(spatialFilter.getGeometry());
+                    measurementFilter.addGeometry(GeometryHandler.getInstance().switchCoordinateAxisOrderIfNeeded(spatialFilter.getGeometry()));
                 }
             }
         } 

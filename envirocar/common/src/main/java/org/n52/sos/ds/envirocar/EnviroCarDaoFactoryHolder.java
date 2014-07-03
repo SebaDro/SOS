@@ -61,7 +61,7 @@ public class EnviroCarDaoFactoryHolder {
         }
     }
 
-    public void returnInjector(EnviroCarDaoFactory enviroCarDaoFactory) {
+    public void returnEnviroCarDaoFactory(EnviroCarDaoFactory enviroCarDaoFactory) {
         this.connectionProvider.returnConnection(enviroCarDaoFactory);
     }
 

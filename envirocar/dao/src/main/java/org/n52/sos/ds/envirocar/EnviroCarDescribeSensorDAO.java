@@ -28,14 +28,24 @@
  */
 package org.n52.sos.ds.envirocar;
 
+import org.envirocar.server.core.entities.Sensor;
 import org.n52.sos.ds.AbstractDescribeSensorDAO;
 import org.n52.sos.ds.EnviroCarConstants;
+import org.n52.sos.ds.envirocar.util.EnviroCarProcedureDescriptionGenerator;
+import org.n52.sos.exception.ows.InvalidParameterValueException;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.n52.sos.ogc.sensorML.SensorMLConstants;
+import org.n52.sos.ogc.sos.Sos1Constants;
+import org.n52.sos.ogc.sos.Sos2Constants;
 import org.n52.sos.ogc.sos.SosConstants;
+import org.n52.sos.ogc.sos.SosProcedureDescription;
 import org.n52.sos.request.DescribeSensorRequest;
 import org.n52.sos.response.DescribeSensorResponse;
+import org.n52.sos.util.http.MediaType;
 
 public class EnviroCarDescribeSensorDAO extends AbstractDescribeSensorDAO {
+
+    private final EnviroCarDaoFactoryHolder daoFacHolder = new EnviroCarDaoFactoryHolder();
 
     public EnviroCarDescribeSensorDAO() {
         super(SosConstants.SOS);
@@ -48,8 +58,36 @@ public class EnviroCarDescribeSensorDAO extends AbstractDescribeSensorDAO {
 
     @Override
     public DescribeSensorResponse getSensorDescription(DescribeSensorRequest request) throws OwsExceptionReport {
-        // TODO Auto-generated method stub
-        return null;
+        checkProcedureDescriptionFormat(request.getProcedureDescriptionFormat(), request.getVersion());
+        EnviroCarDaoFactory enviroCarDaoFactory = null;
+        try {
+            final DescribeSensorResponse response = new DescribeSensorResponse();
+            response.setService(request.getService());
+            response.setVersion(request.getVersion());
+            response.setOutputFormat(request.getProcedureDescriptionFormat());
+            enviroCarDaoFactory = daoFacHolder.getEnviroCarDaoFactory();
+            response.addSensorDescription(getProcedureDescription(request, enviroCarDaoFactory));
+            return response;
+        } finally {
+            daoFacHolder.returnEnviroCarDaoFactory(enviroCarDaoFactory);
+        }
+    }
+
+    private void checkProcedureDescriptionFormat(String procedureDescriptionFormat, String version) throws InvalidParameterValueException {
+        if (!SensorMLConstants.NS_SML.equals(procedureDescriptionFormat)
+                && SensorMLConstants.SENSORML_CONTENT_TYPE.equals(MediaType.parse(procedureDescriptionFormat))) {
+            Enum<?> parameter = Sos2Constants.DescribeSensorParams.procedureDescriptionFormat;
+            if (Sos1Constants.SERVICEVERSION.equals(version)) {
+                parameter = Sos1Constants.DescribeSensorParams.outputFormat;
+            }
+            throw new InvalidParameterValueException(parameter, procedureDescriptionFormat);
+        }
+    }
+
+    private SosProcedureDescription getProcedureDescription(DescribeSensorRequest request,
+            EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
+        Sensor sensor = enviroCarDaoFactory.getSensorDAO().getByIdentifier(request.getProcedure());
+        return new EnviroCarProcedureDescriptionGenerator(sensor, enviroCarDaoFactory).create();
     }
 
 }

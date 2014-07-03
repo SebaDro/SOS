@@ -63,8 +63,8 @@ public class EnviroCarConnector implements DataConnectionProvider {
     @Override
     public void initialize(Properties properties) throws ConfigurationException {
         if (injector == null) {
-        injector = Guice.createInjector(new MongoModule(), new MongoMappedClassesModule(), new MongoDaoModule(),
-                        new MongoConverterModule(), new MongoConnectionModule(properties), new EnviroCarDaoModule());
+        injector = Guice.createInjector(new MongoConnectionModule(properties), new MongoModule(), new MongoMappedClassesModule(), new MongoDaoModule(),
+                        new MongoConverterModule(), new EnviroCarDaoModule());
         }
     }
 

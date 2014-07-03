@@ -84,7 +84,7 @@ public class EnviroCarCacheFeederDAO extends EnviroCarDaoFactoryHolder implement
 
             logCacheLoadTime(cacheUpdateStartTime);
         } finally {
-            returnInjector(enviroCarDaoFactory);
+            returnEnviroCarDaoFactory(enviroCarDaoFactory);
         }
         if (!errors.isEmpty()) {
             throw new CompositeOwsException(errors);

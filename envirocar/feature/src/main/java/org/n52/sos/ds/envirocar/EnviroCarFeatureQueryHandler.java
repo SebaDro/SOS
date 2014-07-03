@@ -45,6 +45,7 @@ import org.n52.sos.ogc.gml.CodeWithAuthority;
 import org.n52.sos.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sos.SosEnvelope;
+import org.n52.sos.util.CollectionHelper;
 import org.n52.sos.util.GeometryHandler;
 import org.n52.sos.util.SosHelper;
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -81,8 +83,15 @@ public class EnviroCarFeatureQueryHandler implements FeatureQueryHandler {
     public Map<String, AbstractFeature> getFeatures(Collection<String> foiIDs, List<SpatialFilter> list,
             Object connection, String version, int responseSrid) throws OwsExceptionReport {
         EnviroCarDaoFactory daoFac = EnviroCarDaoFactoryHolder.getEnviroCarDaoFactory(connection);
-        
-        return null;
+        Map<String, AbstractFeature> features = Maps.newHashMap();
+        Map<String, List<Geometry>> geometries = daoFac.getMeasurementDAO().getGeometries(foiIDs);
+        for (String featureID : geometries.keySet()) {
+            features.put(featureID, createAbstractFeature(daoFac.getTrackDAO().getById(featureID), geometries.get(featureID), version, daoFac));
+        }
+//        for (String featureID : foiIDs) {
+//           features.put(featureID, createAbstractFeature(daoFac.getTrackDAO().getById(featureID), version, daoFac));
+//        }
+        return features;
     }
 
     @Override
@@ -118,7 +127,12 @@ public class EnviroCarFeatureQueryHandler implements FeatureQueryHandler {
     }
 
     private AbstractFeature createAbstractFeature(Track track, String version, EnviroCarDaoFactory daoFac) throws OwsExceptionReport {
-        if (track == null) {
+        return createAbstractFeature(track, daoFac.getMeasurementDAO().getGeometries(track), version, daoFac);
+    }
+    
+    private AbstractFeature createAbstractFeature(Track track, List<Geometry> geometries, String version,
+            EnviroCarDaoFactory daoFac) throws OwsExceptionReport {
+        if (track == null || CollectionHelper.isEmpty(geometries)) {
             return null;
         }
         String checkedFoiID = null;
@@ -131,12 +145,10 @@ public class EnviroCarFeatureQueryHandler implements FeatureQueryHandler {
             sampFeat.setName(SosHelper.createCodeTypeListFromCSV(track.getName()));
         }
         sampFeat.setDescription(null);
-        // get single locations from Measurement
-        sampFeat.setGeometry(getGeomtery(track, daoFac));
-//        sampFeat.setFeatureType(feature.getFeatureOfInterestType().getFeatureOfInterestType());
+        sampFeat.setGeometry(getGeometry(geometries));
         return sampFeat;
     }
-    
+
     /**
      * Get the geometry from featureOfInterest object.
      * @param daoFac 
@@ -145,16 +157,20 @@ public class EnviroCarFeatureQueryHandler implements FeatureQueryHandler {
      * @return geometry
      * @throws OwsExceptionReport
      */
-    protected Geometry getGeomtery(final Track track, EnviroCarDaoFactory daoFac) throws OwsExceptionReport {
-        if (track != null) {
-            // get geometries from track;
-            List<Coordinate> coordinates = Lists.newArrayList();
-            for (Geometry geometry : daoFac.getMeasurementDAO().getGeometries(track)) {
-//              GeometryHandler.getInstance().switchCoordinateAxisOrderIfNeeded(feature.getGeom());
-                coordinates.add(geometry.getCoordinate());
+    protected Geometry getGeometry(List<Geometry> geometries) throws OwsExceptionReport {
+        if (CollectionHelper.isNotEmpty(geometries)) {
+            List<Coordinate> coordinates = Lists.newLinkedList();
+            for (Geometry geometry : geometries) {
+                coordinates.add(GeometryHandler.getInstance().switchCoordinateAxisOrderIfNeeded(geometry).getCoordinate());
             }
-            return new GeometryFactory().createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
-
+            Geometry geom = null;
+            if (coordinates.size() == 1) {
+                geom = new GeometryFactory().createPoint(coordinates.iterator().next());
+            } else {
+                geom = new GeometryFactory().createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
+            }
+            geom.setSRID(4326);
+            return geom;
         }
         return null;
     }
