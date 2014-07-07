@@ -31,10 +31,6 @@ package org.n52.sos.ds.envirocar.cache.base;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.management.monitor.MonitorSettingException;
-
-import org.envirocar.server.core.dao.SensorDao;
-import org.envirocar.server.mongo.dao.MongoSensorDao;
 import org.n52.sos.ds.envirocar.cache.AbstractEnviroCarThreadableDatasourceCacheUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +44,7 @@ public class EnviroCarObservablePropertiesCacheUpdate extends AbstractEnviroCarT
         LOGGER.debug("Executing EnviroCarObservablePropertiesCacheUpdate");
         startStopwatch();
           Collection<String> ops = getEnviroCarDaoFactory().getPhenomenonDAO().getIdentifier();
-          Map<String, Collection<String>> phenomenonSensorsMap = ((MongoSensorDao)getEnviroCarDaoFactory().getSensorDAO()).getPhenomenonSensorsMap();
+          Map<String, Collection<String>> phenomenonSensorsMap = getEnviroCarDaoFactory().getPhenomenonDAO().getPhenomenonSensorsMap();
             for (String obsPropIdentifier : ops) {
                  if (phenomenonSensorsMap.containsKey(obsPropIdentifier)) {
                      getCache().setOfferingsForObservableProperty(obsPropIdentifier, phenomenonSensorsMap.get(obsPropIdentifier));

@@ -73,7 +73,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -93,11 +92,20 @@ public class EnviroCarProcedureDescriptionGenerator {
         this.enviroCarDaoFactory = enviroCarDaoFactory;
     }
 
+    public EnviroCarProcedureDescriptionGenerator() {
+    }
+
     public SosProcedureDescription create() throws OwsExceptionReport {
         final SensorML sml = new SensorML();
         // 2.2 if no position is available -> processModel -> own class
         sml.addMember(createSmlProcessModel(sensor, enviroCarDaoFactory));
         return sml;
+    }
+    
+    public SosProcedureDescription create(Sensor sensor, EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
+        this.sensor = sensor;
+        this.enviroCarDaoFactory = enviroCarDaoFactory;
+        return create();
     }
 
     /**

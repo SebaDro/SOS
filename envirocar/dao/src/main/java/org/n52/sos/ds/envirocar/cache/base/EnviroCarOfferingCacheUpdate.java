@@ -35,7 +35,6 @@ import java.util.Set;
 import org.envirocar.server.core.entities.Sensor;
 import org.envirocar.server.core.entities.Sensors;
 import org.envirocar.server.core.util.Pagination;
-import org.envirocar.server.mongo.dao.MongoPhenomenonDao;
 import org.envirocar.server.mongo.dao.MongoTrackDao;
 import org.envirocar.server.mongo.dao.MongoTrackDao.TimeExtrema;
 import org.envirocar.server.mongo.entity.MongoSensor;
@@ -153,7 +152,7 @@ public class EnviroCarOfferingCacheUpdate extends
     private Map<String, Collection<String>> getOfferingObservablePropertyMap() {
         if (offObsPropMap == null) {
             offObsPropMap =
-                    ((MongoPhenomenonDao) getEnviroCarDaoFactory().getPhenomenonDAO()).getSensorPhenomenonsMap();
+                     getEnviroCarDaoFactory().getSensorDAO().getSensorPhenomenonsMap();
         }
         return offObsPropMap;
     }

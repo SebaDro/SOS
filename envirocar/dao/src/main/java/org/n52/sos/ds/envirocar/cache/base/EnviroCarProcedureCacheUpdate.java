@@ -30,21 +30,17 @@ package org.n52.sos.ds.envirocar.cache.base;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.envirocar.server.core.entities.Sensor;
 import org.envirocar.server.core.entities.Sensors;
 import org.envirocar.server.core.util.Pagination;
-import org.envirocar.server.mongo.dao.MongoPhenomenonDao;
 import org.envirocar.server.mongo.dao.MongoTrackDao;
 import org.envirocar.server.mongo.dao.MongoTrackDao.TimeExtrema;
-import org.n52.sos.ds.envirocar.cache.AbstractEnvirCarQueueingDatasourceCacheUpdate;
 import org.n52.sos.ds.envirocar.cache.AbstractEnviroCarThreadableDatasourceCacheUpdate;
 import org.n52.sos.util.CacheHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class EnviroCarProcedureCacheUpdate extends AbstractEnviroCarThreadableDatasourceCacheUpdate {
@@ -58,8 +54,7 @@ public class EnviroCarProcedureCacheUpdate extends AbstractEnviroCarThreadableDa
             
             // Observable properties
             Map<String, Collection<String>> obsPropsMap =
-                    ((MongoPhenomenonDao) getEnviroCarDaoFactory().getPhenomenonDAO())
-                            .getSensorPhenomenonsMap();
+                    getEnviroCarDaoFactory().getSensorDAO().getSensorPhenomenonsMap();
             // time ranges
             MongoTrackDao dao = (MongoTrackDao) getEnviroCarDaoFactory().getTrackDAO();
             Map<String, TimeExtrema> ote = dao.getOfferingTimeExtrema();

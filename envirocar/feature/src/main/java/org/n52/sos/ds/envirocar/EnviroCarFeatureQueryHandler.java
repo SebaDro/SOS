@@ -84,13 +84,13 @@ public class EnviroCarFeatureQueryHandler implements FeatureQueryHandler {
             Object connection, String version, int responseSrid) throws OwsExceptionReport {
         EnviroCarDaoFactory daoFac = EnviroCarDaoFactoryHolder.getEnviroCarDaoFactory(connection);
         Map<String, AbstractFeature> features = Maps.newHashMap();
-        Map<String, List<Geometry>> geometries = daoFac.getMeasurementDAO().getGeometries(foiIDs);
+        Map<String, List<Geometry>> geometries = daoFac.getTrackDAO().getGeometries(foiIDs);
         for (String featureID : geometries.keySet()) {
-            features.put(featureID, createAbstractFeature(daoFac.getTrackDAO().getById(featureID), geometries.get(featureID), version, daoFac));
+            AbstractFeature absFeat = createAbstractFeature(daoFac.getTrackDAO().getById(featureID), geometries.get(featureID), version, daoFac);
+            if (absFeat != null) {
+                features.put(featureID, absFeat);
+            }
         }
-//        for (String featureID : foiIDs) {
-//           features.put(featureID, createAbstractFeature(daoFac.getTrackDAO().getById(featureID), version, daoFac));
-//        }
         return features;
     }
 
@@ -127,7 +127,7 @@ public class EnviroCarFeatureQueryHandler implements FeatureQueryHandler {
     }
 
     private AbstractFeature createAbstractFeature(Track track, String version, EnviroCarDaoFactory daoFac) throws OwsExceptionReport {
-        return createAbstractFeature(track, daoFac.getMeasurementDAO().getGeometries(track), version, daoFac);
+        return createAbstractFeature(track, daoFac.getTrackDAO().getGeometries(track), version, daoFac);
     }
     
     private AbstractFeature createAbstractFeature(Track track, List<Geometry> geometries, String version,
@@ -157,7 +157,7 @@ public class EnviroCarFeatureQueryHandler implements FeatureQueryHandler {
      * @return geometry
      * @throws OwsExceptionReport
      */
-    protected Geometry getGeometry(List<Geometry> geometries) throws OwsExceptionReport {
+    private Geometry getGeometry(List<Geometry> geometries) throws OwsExceptionReport {
         if (CollectionHelper.isNotEmpty(geometries)) {
             List<Coordinate> coordinates = Lists.newLinkedList();
             for (Geometry geometry : geometries) {

@@ -31,12 +31,9 @@ package org.n52.sos.ds.envirocar;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.envirocar.server.core.filter.MeasurementFeatureFilter;
-import org.envirocar.server.core.filter.MeasurementFilter;
-import org.envirocar.server.mongo.dao.MongoMeasurementDao;
+import org.envirocar.server.core.filter.TrackMeasurementFilter;
 import org.n52.sos.ds.AbstractGetFeatureOfInterestDAO;
 import org.n52.sos.ds.EnviroCarConstants;
 import org.n52.sos.exception.ows.MissingParameterValueException;
@@ -136,7 +133,7 @@ public class EnviroCarGetFeatureOfInterestDAO extends AbstractGetFeatureOfIntere
 
     private Collection<String> queryFeatureIdentifierOfParameter(GetFeatureOfInterestRequest req,
             EnviroCarDaoFactory enviroCarDaoFactory) throws OwsExceptionReport {
-        MeasurementFeatureFilter measurementFilter = new MeasurementFeatureFilter();
+        TrackMeasurementFilter measurementFilter = new TrackMeasurementFilter();
         if (req.isSetObservableProperties()) {
            measurementFilter.setPhenomenonIds(req.getObservedProperties()); 
         }
@@ -150,7 +147,7 @@ public class EnviroCarGetFeatureOfInterestDAO extends AbstractGetFeatureOfIntere
                 }
             }
         } 
-        return ((MongoMeasurementDao)enviroCarDaoFactory.getMeasurementDAO()).getTrackIds(measurementFilter);
+        return enviroCarDaoFactory.getTrackDAO().getTrackIds(measurementFilter);
     }
     
 }
