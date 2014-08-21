@@ -48,7 +48,11 @@ public class Series implements Serializable, HasProcedure, HasObservableProperty
     private static final long serialVersionUID = 7838379468605356753L;
 
     public static String ID = "seriesId";
-
+    
+    public static String FIRST_TIME_STAMP = "firstTimeStamp";
+    		
+    public static String LAST_TIME_STAMP = "lastTimeStamp";
+    
     private long seriesId;
 
     private FeatureOfInterest featureOfInterest;
@@ -67,6 +71,10 @@ public class Series implements Serializable, HasProcedure, HasObservableProperty
     private BigDecimal firstNumericValue;
     
     private BigDecimal lastNumericValue;
+    
+    private Long firstObservationId;
+    
+    private Long lastObservationId;
     
     private Unit unit;
     
@@ -166,7 +174,11 @@ public class Series implements Serializable, HasProcedure, HasObservableProperty
         return getLastTimeStamp() != null;
     }
 
-    /**
+    public boolean isSetFirstLastTime() {
+		return isSetFirstTimeStamp() && isSetLastTimeStamp();
+	}
+
+	/**
      * @return the firstNumericValue
      */
     public BigDecimal getFirstNumericValue() {
@@ -198,11 +210,15 @@ public class Series implements Serializable, HasProcedure, HasObservableProperty
         this.lastNumericValue = lastNumericValue;
     }
     
-    public boolean isSeLastNumericValue() {
+    public boolean isSetLastNumericValue() {
         return getLastNumericValue() != null;
     }
 
-    @Override
+    public boolean isSetFirstLastNumericValue() {
+		return isSetFirstLastNumericValue() && isSetLastNumericValue();
+	}
+
+	@Override
     public Unit getUnit() {
         return unit;
     }
@@ -215,4 +231,44 @@ public class Series implements Serializable, HasProcedure, HasObservableProperty
     public boolean isSetUnit() {
         return getUnit() != null && getUnit().isSetUnit();
     }
+
+	/**
+	 * @return the firstObservationId
+	 */
+	public Long getFirstObservationId() {
+		return firstObservationId;
+	}
+
+	/**
+	 * @param firstObservationId the firstObservationId to set
+	 */
+	public void setFirstObservationId(Long firstObservationId) {
+		this.firstObservationId = firstObservationId;
+	}
+	
+	public boolean isSetFirstObservationId() {
+		return getFirstObservationId() != null;
+	}
+
+	/**
+	 * @return the lastObservationId
+	 */
+	public Long getLastObservationId() {
+		return lastObservationId;
+	}
+
+	/**
+	 * @param lastObservationId the lastObservationId to set
+	 */
+	public void setLastObservationId(Long lastObservationId) {
+		this.lastObservationId = lastObservationId;
+	}
+	
+	public boolean isSetLastObservationId() {
+		return getLastObservationId() != null;
+	}
+
+	public boolean isSetFirstLastObservationId() {
+		return isSetFirstObservationId() && isSetLastObservationId();
+	}
 }
