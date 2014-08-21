@@ -28,13 +28,16 @@
  */
 package org.n52.sos.ds.hibernate.dao.series;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.n52.sos.ds.hibernate.dao.DaoFactory;
 import org.n52.sos.ds.hibernate.entities.AbstractObservation;
 import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
@@ -43,7 +46,9 @@ import org.n52.sos.ds.hibernate.entities.interfaces.NumericObservation;
 import org.n52.sos.ds.hibernate.entities.series.Series;
 import org.n52.sos.ds.hibernate.entities.series.SeriesObservation;
 import org.n52.sos.ds.hibernate.util.HibernateHelper;
+import org.n52.sos.ogc.sos.SosConstants.SosIndeterminateTime;
 import org.n52.sos.request.GetObservationRequest;
+import org.n52.sos.service.ServiceConfiguration;
 import org.n52.sos.util.CollectionHelper;
 import org.n52.sos.util.StringHelper;
 import org.slf4j.Logger;
@@ -144,6 +149,75 @@ public class SeriesDAO {
         LOGGER.debug("QUERY getSeriesFor(procedure, observableProperty, featureOfInterest): {}",
                 HibernateHelper.getSqlString(c));
         return (Series) c.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Series> getSeries(GetObservationRequest request, Set<String> features,
+            SosIndeterminateTime sosIndeterminateTime, Session session) {
+        if (ServiceConfiguration.getInstance().isOverallExtrema()) {
+            String logArgs = "request, features";
+            Criteria c =
+                    createCriteriaFor(request.getProcedures(), request.getObservedProperties(), features, session);
+            if (sosIndeterminateTime != null) {
+                logArgs += ", sosIndeterminateTime";
+                addIndeterminateTimeRestriction(c, sosIndeterminateTime);
+            }
+            LOGGER.debug("QUERY getSeries({}): {}", logArgs, HibernateHelper.getSqlString(c));
+            return c.list();
+        } else {
+            return getSeries(request, features, session);
+        }
+    }
+
+    protected Criteria addIndeterminateTimeRestriction(Criteria c, SosIndeterminateTime sosIndeterminateTime) {
+        // get extrema indeterminate time
+        c.setProjection(getIndeterminateTimeExtremaProjection(sosIndeterminateTime));
+        Timestamp indeterminateExtremaTime = (Timestamp) c.uniqueResult();
+
+        // reset criteria
+        // see http://stackoverflow.com/a/1472958/193435
+        c.setProjection(null);
+        c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+        // get observations with exactly the extrema time
+        c.add(Restrictions.eq(getIndeterminateTimeFilterProperty(sosIndeterminateTime), indeterminateExtremaTime));
+
+        // not really necessary to return the Criteria object, but useful if we
+        // want to chain
+        return c;
+    }
+
+    /**
+     * Get projection for {@link SosIndeterminateTime} value
+     * 
+     * @param indetTime
+     *            Value to get projection for
+     * @return Projection to use to determine indeterminate time extrema
+     */
+    protected Projection getIndeterminateTimeExtremaProjection(final SosIndeterminateTime indetTime) {
+        if (indetTime.equals(SosIndeterminateTime.first)) {
+            return Projections.min(Series.FIRST_TIME_STAMP);
+        } else if (indetTime.equals(SosIndeterminateTime.latest)) {
+            return Projections.max(Series.LAST_TIME_STAMP);
+        }
+        return null;
+    }
+
+    /**
+     * Get the AbstractObservation property to filter on for an
+     * {@link SosIndeterminateTime}
+     * 
+     * @param indetTime
+     *            Value to get property for
+     * @return String property to filter on
+     */
+    protected String getIndeterminateTimeFilterProperty(final SosIndeterminateTime indetTime) {
+        if (indetTime.equals(SosIndeterminateTime.first)) {
+            return Series.FIRST_TIME_STAMP;
+        } else if (indetTime.equals(SosIndeterminateTime.latest)) {
+            return Series.LAST_TIME_STAMP;
+        }
+        return null;
     }
 
     /**
@@ -372,28 +446,39 @@ public class SeriesDAO {
     }
 
     /**
-     * Update series values which will be used by the Timeseries API.
-     * Can be later used by the SOS.
+     * Update series values which will be used by the Timeseries API. Can be
+     * later used by the SOS.
      * 
-     * @param series Series object
-     * @param hObservation Observation object
-     * @param session Hibernate session
+     * @param series
+     *            Series object
+     * @param hObservation
+     *            Observation object
+     * @param session
+     *            Hibernate session
      */
     public void updateSeriesWithFirstLatestValues(Series series, AbstractObservation hObservation, Session session) {
         boolean minChanged = false;
         boolean maxChanged = false;
-        if (!series.isSetFirstTimeStamp() || (series.isSetFirstTimeStamp() && series.getFirstTimeStamp().after(hObservation.getPhenomenonTimeStart()))) {
+        session.saveOrUpdate(hObservation);
+        if (!series.isSetFirstTimeStamp()
+                || (series.isSetFirstTimeStamp() && series.getFirstTimeStamp().after(
+                        hObservation.getPhenomenonTimeStart()))) {
             minChanged = true;
             series.setFirstTimeStamp(hObservation.getPhenomenonTimeStart());
+            series.setFirstObservationId(hObservation.getObservationId());
         }
-        if (!series.isSetLastTimeStamp() || (series.isSetLastTimeStamp() && series.getLastTimeStamp().before(hObservation.getPhenomenonTimeEnd()))) {
+        if (!series.isSetLastTimeStamp()
+                || (series.isSetLastTimeStamp() && series.getLastTimeStamp().before(
+                        hObservation.getPhenomenonTimeEnd()))) {
             maxChanged = true;
             series.setLastTimeStamp(hObservation.getPhenomenonTimeEnd());
+            series.setLastObservationId(hObservation.getObservationId());
         }
 
         if (hObservation instanceof NumericObservation) {
             if (minChanged) {
                 series.setFirstNumericValue(((NumericObservation) hObservation).getValue());
+
             }
             if (maxChanged) {
                 series.setLastNumericValue(((NumericObservation) hObservation).getValue());
@@ -407,33 +492,33 @@ public class SeriesDAO {
         session.flush();
     }
 
-	/**
-	 * Check {@link Series} if the deleted observation time stamp corresponds to
-	 * the first/last series time stamp
-	 * 
-	 * @param series
-	 *            Series to update
-	 * @param observation
-	 *            Deleted observation
-	 * @param session
-	 *            Hibernate session
-	 */
-	public void updateSeriesAfterObservationDeletion(Series series, SeriesObservation observation, Session session) {
-		SeriesObservationDAO seriesObservationDAO = new SeriesObservationDAO();
-		if (series.getFirstTimeStamp().equals(observation.getPhenomenonTimeStart())) {
-			SeriesObservation firstObservation = seriesObservationDAO.getFirstObservationFor(series, session);
-			series.setFirstTimeStamp(firstObservation.getPhenomenonTimeStart());
-			if (firstObservation instanceof NumericObservation) {
-				series.setFirstNumericValue(((NumericObservation) firstObservation).getValue());
-			}
-		} else if (series.getLastTimeStamp().equals(observation.getPhenomenonTimeEnd())) {
-			SeriesObservation latestObservation = seriesObservationDAO.getLastObservationFor(series, session);
-			series.setLastTimeStamp(latestObservation.getPhenomenonTimeEnd());
-			if (latestObservation instanceof NumericObservation) {
-				series.setLastNumericValue(((NumericObservation) latestObservation).getValue());
-			}
-		}
-		session.saveOrUpdate(series);
-	}
+    /**
+     * Check {@link Series} if the deleted observation time stamp corresponds to
+     * the first/last series time stamp
+     * 
+     * @param series
+     *            Series to update
+     * @param observation
+     *            Deleted observation
+     * @param session
+     *            Hibernate session
+     */
+    public void updateSeriesAfterObservationDeletion(Series series, SeriesObservation observation, Session session) {
+        SeriesObservationDAO seriesObservationDAO = new SeriesObservationDAO();
+        if (series.getFirstTimeStamp().equals(observation.getPhenomenonTimeStart())) {
+            SeriesObservation firstObservation = seriesObservationDAO.getFirstObservationFor(series, session);
+            series.setFirstTimeStamp(firstObservation.getPhenomenonTimeStart());
+            if (firstObservation instanceof NumericObservation) {
+                series.setFirstNumericValue(((NumericObservation) firstObservation).getValue());
+            }
+        } else if (series.getLastTimeStamp().equals(observation.getPhenomenonTimeEnd())) {
+            SeriesObservation latestObservation = seriesObservationDAO.getLastObservationFor(series, session);
+            series.setLastTimeStamp(latestObservation.getPhenomenonTimeEnd());
+            if (latestObservation instanceof NumericObservation) {
+                series.setLastNumericValue(((NumericObservation) latestObservation).getValue());
+            }
+        }
+        session.saveOrUpdate(series);
+    }
 
 }

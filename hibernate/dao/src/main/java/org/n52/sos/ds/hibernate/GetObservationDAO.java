@@ -354,16 +354,21 @@ public class GetObservationDAO extends AbstractGetObservationDAO {
         // query with first/latest value filter
         else if (CollectionHelper.isNotEmpty(sosIndeterminateTimeFilters)) {
             for (SosIndeterminateTime sosIndeterminateTime : sosIndeterminateTimeFilters) {
-                if (ServiceConfiguration.getInstance().isOverallExtrema()) {
-                    seriesObservations =
-                            new SeriesObservationDAO().getSeriesObservationsFor(request, features,
-                                    sosIndeterminateTime, session);
-                } else {
-                    for (Series series : new SeriesDAO().getSeries(request, features, session)) {
-                        seriesObservations.addAll(new SeriesObservationDAO().getSeriesObservationsFor(series, request,
-                                sosIndeterminateTime, session));
-                    }
-                }
+            	for (Series series : new SeriesDAO().getSeries(request, features, sosIndeterminateTime, session)) {
+            		seriesObservations.addAll(getSeriesFirstLatestObservations(series, request,
+                            sosIndeterminateTime, session));
+            	}
+//                if (ServiceConfiguration.getInstance().isOverallExtrema()) {
+//                	
+//                    seriesObservations =
+//                            new SeriesObservationDAO().getSeriesObservationsFor(request, features,
+//                                    sosIndeterminateTime, session);
+//                } else {
+//                    for (Series series : new SeriesDAO().getSeries(request, features, session)) {
+//                    	seriesObservations.addAll(getSeriesFirstLatestObservations(series, request,
+//                                sosIndeterminateTime, session));
+//                    }
+//                }
             }
         }
         // query without temporal or indeterminate filters
@@ -413,7 +418,39 @@ public class GetObservationDAO extends AbstractGetObservationDAO {
         return result;
     }
 
-    /**
+	/**
+	 * Get first/latest observation from series observationIds or from
+	 * observation
+	 * 
+	 * @param series
+	 *            Series to get first/last observation for
+	 * @param request
+	 *            GetObservation request
+	 * @param sosIndeterminateTime
+	 *            first or latest flag
+	 * @param session
+	 *            Hibernate session
+	 * @return Resulting observations
+	 * @throws OwsExceptionReport
+	 *             If an error occurs when querying the observations
+	 */
+    private Collection<? extends SeriesObservation> getSeriesFirstLatestObservations(
+			Series series, GetObservationRequest request,
+			SosIndeterminateTime sosIndeterminateTime, Session session) throws OwsExceptionReport, ConverterException {
+    	if (series.isSetFirstLastObservationId()) {
+    		if (SosIndeterminateTime.first.equals(sosIndeterminateTime)) {
+    			return Lists.newArrayList(new SeriesObservationDAO().getObservationFor(series.getFirstObservationId(), session));
+    		} else if (SosIndeterminateTime.latest.equals(sosIndeterminateTime)) {
+    			return Lists.newArrayList(new SeriesObservationDAO().getObservationFor(series.getLastObservationId(), session));
+    		}
+    		return Collections.emptyList();
+    	} else {
+    		return new SeriesObservationDAO().getSeriesObservationsFor(series, request,
+    				sosIndeterminateTime, session);
+    	}
+	}
+
+	/**
      * Query the observations for streaming datasource
      * 
      * @param request
