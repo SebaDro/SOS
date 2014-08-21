@@ -66,6 +66,12 @@ import com.google.common.collect.Sets;
 public class ObservationConstellationDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObservationConstellationDAO.class);
+    
+    protected Criteria getDefaultCriteria(Session session) {
+        return session.createCriteria(ObservationConstellation.class)
+                .add(Restrictions.eq(ObservationConstellation.DELETED, false))
+                        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    }
 
     /**
      * Get observation constellation objects for procedure and observable
@@ -114,8 +120,7 @@ public class ObservationConstellationDAO {
     @SuppressWarnings("unchecked")
     public List<ObservationConstellation> getObservationConstellationsForOfferings(Procedure procedure,
             ObservableProperty observableProperty, Collection<Offering> offerings, Session session) {
-        return session.createCriteria(ObservationConstellation.class)
-                .add(Restrictions.eq(ObservationConstellation.DELETED, false))
+        return getDefaultCriteria(session)
                 .add(Restrictions.eq(ObservationConstellation.PROCEDURE, procedure))
                 .add(Restrictions.in(ObservationConstellation.OFFERING, offerings))
                 .add(Restrictions.eq(ObservationConstellation.OBSERVABLE_PROPERTY, observableProperty)).list();
@@ -155,10 +160,7 @@ public class ObservationConstellationDAO {
     @SuppressWarnings("unchecked")
     public List<ObservationConstellation> getObservationConstellations(String procedure, String observableProperty,
             Session session) {
-        Criteria criteria =
-                session.createCriteria(ObservationConstellation.class)
-                        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-                        .add(Restrictions.eq(ObservationConstellation.DELETED, false));
+        Criteria criteria = getDefaultCriteria(session);
         criteria.createCriteria(ObservationConstellation.PROCEDURE).add(
                 Restrictions.eq(Procedure.IDENTIFIER, procedure));
         criteria.createCriteria(ObservationConstellation.OBSERVABLE_PROPERTY).add(
@@ -177,10 +179,7 @@ public class ObservationConstellationDAO {
      */
     @SuppressWarnings("unchecked")
     public List<ObservationConstellation> getObservationConstellations(Session session) {
-        Criteria criteria =
-                session.createCriteria(ObservationConstellation.class)
-                        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-                        .add(Restrictions.eq(ObservationConstellation.DELETED, false));
+        Criteria criteria = getDefaultCriteria(session);
         LOGGER.debug("QUERY getObservationConstellations(): {}", HibernateHelper.getSqlString(criteria));
         return criteria.list();
     }
@@ -401,9 +400,7 @@ public class ObservationConstellationDAO {
     @SuppressWarnings("unchecked")
     public List<ObservationConstellation> getObservationConstellationsForOffering(Offering offering, Session session) {
         if (HibernateHelper.isEntitySupported(ObservationConstellation.class, session)) {
-            Criteria criteria =
-                    session.createCriteria(ObservationConstellation.class)
-                            .add(Restrictions.eq(ObservationConstellation.DELETED, false))
+            Criteria criteria = getDefaultCriteria(session)
                             .add(Restrictions.eq(ObservationConstellation.OFFERING, offering));
             LOGGER.debug("QUERY getObservationConstellationsForOffering(offering): {}",
                     HibernateHelper.getSqlString(criteria));
@@ -454,10 +451,7 @@ public class ObservationConstellationDAO {
     @SuppressWarnings("unchecked")
     public List<ObservationConstellation> getObservationConstellations(List<String> procedures,
             List<String> observedProperties, List<String> offerings, Session session) {
-        final Criteria c =
-                session.createCriteria(ObservationConstellation.class)
-                        .add(Restrictions.eq(ObservationConstellation.DELETED, false))
-                        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        final Criteria c = getDefaultCriteria(session);
         if (CollectionHelper.isNotEmpty(offerings)) {
             c.createCriteria(ObservationConstellation.OFFERING).add(Restrictions.in(Offering.IDENTIFIER, offerings));
         }
@@ -477,9 +471,25 @@ public class ObservationConstellationDAO {
     
     @SuppressWarnings("unchecked")
     protected Set<ObservationConstellation> getObservationConstellations(Session session, Procedure procedure) {
-        return Sets.newHashSet(session.createCriteria(ObservationConstellation.class)
-                .add(Restrictions.eq(ObservationConstellation.DELETED, false))
+        return Sets.newHashSet(getDefaultCriteria(session)
                 .add(Restrictions.eq(ObservationConstellation.PROCEDURE, procedure))
                 .list());
+    }
+
+    public ObservationType getObservationTypeFromObservationConstellation(String procedure, String observableProperty,
+            Set<String> offerings, Session session) {
+        final Criteria c = getDefaultCriteria(session);
+        if (CollectionHelper.isNotEmpty(offerings)) {
+            c.createCriteria(ObservationConstellation.OFFERING).add(Restrictions.in(Offering.IDENTIFIER, offerings));
+        }
+        c.createCriteria(ObservationConstellation.OBSERVABLE_PROPERTY).add(
+                Restrictions.eq(ObservableProperty.IDENTIFIER, observableProperty));
+
+        c.createCriteria(ObservationConstellation.PROCEDURE)
+                .add(Restrictions.eq(Procedure.IDENTIFIER, procedure));
+        c.add(Restrictions.isNotNull(ObservationConstellation.OBSERVATION_TYPE));
+        c.setProjection(Projections.distinct(Projections.property(ObservationConstellation.OBSERVATION_TYPE)));
+        LOGGER.debug("QUERY getObservationTypeFromObservationConstellation(procedure, observableProperty, offerings): {}", HibernateHelper.getSqlString(c));
+        return (ObservationType)c.uniqueResult();
     }    
 }
