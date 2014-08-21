@@ -283,8 +283,12 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
         for (final Series series : new SeriesDAO().getSeries(request.getProcedures(), request.getObservedProperties(),
                 request.getFeaturesOfInterest(), session)) {
             TimePeriod timePeriod = null;
+            // get time information from series object
+            if (series.isSetFirstLastTime()) {
+            	timePeriod = new TimePeriod(series.getFirstTimeStamp(), series.getLastTimeStamp());
+            }
             // get time information from a named query
-            if (supportsNamedQuery) {
+            else if (supportsNamedQuery) {
                 timePeriod = getTimePeriodFromNamedQuery(series.getSeriesId(), seriesMinMaxTransformer, session);
             }
             // get time information from SeriesGetDataAvailability mapping if
