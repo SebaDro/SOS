@@ -43,7 +43,7 @@ import org.n52.sos.ds.FeatureQueryHandler;
 import org.n52.sos.ds.hibernate.dao.ObservationConstellationDAO;
 import org.n52.sos.ds.hibernate.entities.AbstractObservation;
 import org.n52.sos.ds.hibernate.entities.AbstractSpatialFilteringProfile;
-import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
+import org.n52.sos.ds.hibernate.entities.ObservationType;
 import org.n52.sos.ds.hibernate.entities.Procedure;
 import org.n52.sos.ds.hibernate.entities.interfaces.BlobObservation;
 import org.n52.sos.ds.hibernate.entities.interfaces.BooleanObservation;
@@ -389,8 +389,9 @@ public class ObservationOmObservationCreator extends AbstractOmObservationCreato
                         getFeature(featureId));
 
         /* sfp the offerings to find the templates */
-        if (obsConst.getOfferings() == null) {
-            final Set<String> offerings =
+        Set<String> offerings = obsConst.getOfferings();
+        if (!obsConst.isSetOfferings()) {
+            offerings =
                     Sets.newHashSet(getCache().getOfferingsForObservableProperty(
                             obsConst.getObservableProperty().getIdentifier()));
             offerings.retainAll(getCache().getOfferingsForProcedure(obsConst.getProcedure().getIdentifier()));
@@ -400,12 +401,11 @@ public class ObservationOmObservationCreator extends AbstractOmObservationCreato
             if (StringHelper.isNotEmpty(getResultModel())) {
                 obsConst.setObservationType(getResultModel());
             }
-            final ObservationConstellationDAO dao = new ObservationConstellationDAO();
-            final ObservationConstellation hoc =
-                    dao.getFirstObservationConstellationForOfferings(hObservation.getProcedure(),
-                            hObservation.getObservableProperty(), hObservation.getOfferings(), getSession());
-            if (hoc != null && hoc.getObservationType() != null) {
-                obsConst.setObservationType(hoc.getObservationType().getObservationType());
+            ObservationType obsType =
+                    new ObservationConstellationDAO().getObservationTypeFromObservationConstellation(procedureId,
+                            phenomenonId, offerings, getSession());
+            if (obsType != null && obsType.isSetObservationType()) {
+                obsConst.setObservationType(obsType.getObservationType());
             }
             observationConstellations.add(obsConst);
         }
