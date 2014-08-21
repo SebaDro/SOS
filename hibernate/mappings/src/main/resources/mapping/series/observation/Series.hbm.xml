@@ -34,6 +34,12 @@
         <property name="lastNumericValue" type="big_decimal">
             <column name="lastNumericValue" length="29" />
         </property>
+        <property name="firstObservationId" type="long">
+            <column name="firstObservationId" />
+        </property>
+        <property name="lastObservationId" type="long">
+            <column name="lastObservationId" />
+        </property>
          <many-to-one name="unit" class="org.n52.sos.ds.hibernate.entities.Unit" fetch="select" lazy="no-proxy" foreign-key="seriesUnitFk">
             <column name="unitId" not-null="false" />
         </many-to-one>
