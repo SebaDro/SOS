@@ -800,6 +800,7 @@ public class SeriesObservationDAO extends AbstractObservationDAO {
         return getSpatialFilteringProfileEnvelopeForOfferingId(SeriesObservationTime.class, offeringID, session);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Geometry> getSamplingGeometries(String feature, Session session) {
         Criteria criteria = session.createCriteria(SeriesObservationTime.class).createAlias(SeriesObservation.SERIES, "s");
@@ -845,6 +846,23 @@ public class SeriesObservationDAO extends AbstractObservationDAO {
 		c.setMaxResults(1);
 		 LOGGER.debug("QUERY getLastObservationFor(series): {}",
 	                HibernateHelper.getSqlString(c));
+		return (SeriesObservation)c.uniqueResult();
+	}
+
+	/**
+	 * Get observation for observation id
+	 * 
+	 * @param observationId
+	 *            Observation id to get
+	 * @param session
+	 *            Hibernate session
+	 * @return Observation
+	 */
+	public SeriesObservation getObservationFor(Long observationId, Session session) {
+		Criteria c = getDefaultObservationCriteria(session);
+		c.add(Restrictions.eq(AbstractObservation.ID, observationId));
+		LOGGER.debug("QUERY getObservationFor(observationId): {}",
+                HibernateHelper.getSqlString(c));
 		return (SeriesObservation)c.uniqueResult();
 	}  
 }
