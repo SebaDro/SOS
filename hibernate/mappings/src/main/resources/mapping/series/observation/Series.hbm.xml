@@ -28,11 +28,11 @@
         <property name="lastTimeStamp" type="timestamp">
             <column name="lastTimeStamp" length="29" />
         </property>
-        <property name="firstNumericValue" type="big_decimal">
-            <column name="firstNumericValue" length="29" />
+        <property name="firstNumericValue" type="double">
+            <column name="firstNumericValue" />
         </property>
-        <property name="lastNumericValue" type="big_decimal">
-            <column name="lastNumericValue" length="29" />
+        <property name="lastNumericValue" type="double">
+            <column name="lastNumericValue" />
         </property>
         <property name="firstObservationId" type="long">
             <column name="firstObservationId" />
