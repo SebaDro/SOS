@@ -126,12 +126,13 @@ public final class JavaHelper {
             final BigDecimal bdValue = (BigDecimal) object;
             return Double.toString(bdValue.doubleValue());
         } else if (object instanceof Double) {
-            return ((Double) object).toString();
+            return Double.toString((Double) object);
         } else if (object instanceof Integer) {
-            return ((Integer) object).toString();
+            return Integer.toString((Integer) object);
+        } else if (object instanceof Boolean) {
+            return Boolean.toString((Boolean) object);
         }
-        // TODO why not object.toString()?
-        return Constants.EMPTY_STRING;
+        return object.toString();
     }
 
     /**
@@ -184,6 +185,11 @@ public final class JavaHelper {
         } else if (object instanceof Boolean) {
             return (Boolean) object;
         } else if (object instanceof String) {
+            if ("F".equalsIgnoreCase((String)object)) {
+                return Boolean.FALSE;
+            } else if ("T".equalsIgnoreCase((String)object)) {
+                return Boolean.TRUE;
+            }
             return Boolean.valueOf((String) object);
         }
         return null;
