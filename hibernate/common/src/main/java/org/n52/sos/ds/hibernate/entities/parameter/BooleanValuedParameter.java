@@ -34,26 +34,18 @@ import org.n52.sos.ogc.ows.OwsExceptionReport;
 public class BooleanValuedParameter extends Parameter<Boolean> {
 
     private static final long serialVersionUID = 940615372876462865L;
-    private Boolean value;
     
-    @Override
-    public Boolean getValue() {
-        return value;
+    public Boolean getBooleanValue() {
+        if ("F".equalsIgnoreCase(getValue())) {
+            return Boolean.FALSE;
+        } else if ("T".equalsIgnoreCase(getValue())) {
+            return Boolean.TRUE;
+        }
+        return Boolean.parseBoolean(getValue());
     }
 
-    @Override
-    public void setValue(Boolean value) {
-       this.value = value;
-    }
-
-    @Override
-    public boolean isSetValue() {
-        return value != null;
-    }
-
-    @Override
-    public String getValueAsString() {
-        return getValue().toString();
+    public void setBooleanValue(Boolean value) {
+       setValue(Boolean.toString(value));
     }
 
     @Override

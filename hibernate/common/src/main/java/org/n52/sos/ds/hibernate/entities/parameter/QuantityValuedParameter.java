@@ -31,47 +31,17 @@ package org.n52.sos.ds.hibernate.entities.parameter;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasUnit;
 import org.n52.sos.ogc.om.NamedValue;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
-import org.n52.sos.ds.hibernate.entities.Unit;
 
 public class QuantityValuedParameter extends Parameter<Double> implements HasUnit {
 
     private static final long serialVersionUID = 5179448871942580897L;
-    private Double value;
-    private Unit unit;
     
-    @Override
-    public Double getValue() {
-        return value;
+    public Double getDoubleValue() {
+        return Double.parseDouble(getValue());
     }
 
-    @Override
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-    @Override
-    public boolean isSetValue() {
-        return getValue() != null;
-    }
-
-    @Override
-    public String getValueAsString() {
-        return getValue().toString();
-    }
-
-    @Override
-    public Unit getUnit() {
-        return unit;
-    }
-
-    @Override
-    public void setUnit(final Unit unit) {
-        this.unit = unit;
-    }
-
-    @Override
-    public boolean isSetUnit() {
-        return getUnit() != null && getUnit().isSetUnit();
+    public void setDoubleValue(Double value) {
+        setValue(Double.toString(value));
     }
     
     @Override

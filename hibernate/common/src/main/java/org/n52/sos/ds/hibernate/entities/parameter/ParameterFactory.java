@@ -46,7 +46,7 @@ import org.n52.sos.ogc.om.values.Value;
 import org.n52.sos.ogc.om.values.visitor.ValueVisitor;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 
-public class ParameterFactory implements ValueVisitor<ValuedParameter<?>> {
+public class ParameterFactory implements ValueVisitor<Parameter<?>> {
 
     protected ParameterFactory() {
     }
@@ -91,7 +91,7 @@ public class ParameterFactory implements ValueVisitor<ValuedParameter<?>> {
         return instantiate(textClass());
     }
 
-    private <T extends ValuedParameter<?>> T instantiate(Class<T> c) throws OwsExceptionReport {
+    private <T extends Parameter<?>> T instantiate(Class<T> c) throws OwsExceptionReport {
     
         try {
             return c.newInstance();
@@ -102,67 +102,67 @@ public class ParameterFactory implements ValueVisitor<ValuedParameter<?>> {
     }
 
     @Override
-    public ValuedParameter<?> visit(BooleanValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(BooleanValue value) throws OwsExceptionReport {
         return truth();
     }
 
     @Override
-    public ValuedParameter<?> visit(CategoryValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(CategoryValue value) throws OwsExceptionReport {
         return category();
     }
 
     @Override
-    public ValuedParameter<?> visit(ComplexValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(ComplexValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
 
     @Override
-    public ValuedParameter<?> visit(CountValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(CountValue value) throws OwsExceptionReport {
         return count();
     }
 
     @Override
-    public ValuedParameter<?> visit(GeometryValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(GeometryValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
 
     @Override
-    public ValuedParameter<?> visit(HrefAttributeValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(HrefAttributeValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
 
     @Override
-    public ValuedParameter<?> visit(NilTemplateValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(NilTemplateValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
 
     @Override
-    public ValuedParameter<?> visit(QuantityValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(QuantityValue value) throws OwsExceptionReport {
         return quantity();
     }
 
     @Override
-    public ValuedParameter<?> visit(ReferenceValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(ReferenceValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
 
     @Override
-    public ValuedParameter<?> visit(SweDataArrayValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(SweDataArrayValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
 
     @Override
-    public ValuedParameter<?> visit(TVPValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(TVPValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
 
     @Override
-    public ValuedParameter<?> visit(TextValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(TextValue value) throws OwsExceptionReport {
         return text();
     }
 
     @Override
-    public ValuedParameter<?> visit(UnknownValue value) throws OwsExceptionReport {
+    public Parameter<?> visit(UnknownValue value) throws OwsExceptionReport {
         throw notSupported(value);
     }
     

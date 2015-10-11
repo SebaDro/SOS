@@ -191,7 +191,7 @@ public class ObservationOmObservationCreator extends AbstractOmObservationCreato
 
     private void addParameter(OmObservation observation, Observation<?> hObservation) throws OwsExceptionReport {
         if (hObservation.hasParameters()) {
-            for (Parameter<?> parameter : hObservation.getParameters()) {
+            for (Parameter parameter : hObservation.getParameters()) {
                 observation.addParameter(parameter.accept(new ValuedParameterVisitor()));
             }
         }

@@ -237,7 +237,7 @@ public abstract class AbstractValuedLegacyObservation<T>
     
     private void addParameter(OmObservation observation) throws OwsExceptionReport {
         if (hasParameters()) {
-            for (Parameter<?> parameter : getParameters()) {
+            for (Parameter parameter : getParameters()) {
                 observation.addParameter(parameter.accept(new ValuedParameterVisitor()));
             }
         }

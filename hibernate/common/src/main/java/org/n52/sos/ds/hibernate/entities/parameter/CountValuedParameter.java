@@ -34,28 +34,15 @@ import org.n52.sos.ogc.ows.OwsExceptionReport;
 public class CountValuedParameter extends Parameter<Integer> {
 
     private static final long serialVersionUID = 6578219247280678959L;
-    private Integer value;
 
-    @Override
-    public Integer getValue() {
-        return value;
+    public Integer getIntegerValue() {
+        return Integer.parseInt(getValue());
     }
 
-    @Override
-    public void setValue(Integer value) {
-       this.value = value;
+    public void setIntegerValue(Integer value) {
+       setValue(Integer.toString(value));
     }
 
-    @Override
-    public boolean isSetValue() {
-        return getValue() != null;
-    }
-
-    @Override
-    public String getValueAsString() {
-        return getValue().toString();
-    }
-    
     @Override
     public void accept(VoidParameterVisitor visitor) throws OwsExceptionReport {
         visitor.visit(this);

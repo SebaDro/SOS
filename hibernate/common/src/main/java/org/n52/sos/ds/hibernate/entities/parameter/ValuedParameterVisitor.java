@@ -46,7 +46,7 @@ public class ValuedParameterVisitor implements ParameterVisitor<NamedValue<?>> {
     public NamedValue visit(QuantityValuedParameter p) throws OwsExceptionReport {
         NamedValue<Double> namedValue = new NamedValue<Double>();
         addName(namedValue, p);
-        namedValue.setValue(new QuantityValue(p.getValue()));
+        namedValue.setValue(new QuantityValue(p.getDoubleValue()));
         addUnit(p, namedValue.getValue());
         return namedValue;
     }
@@ -56,7 +56,7 @@ public class ValuedParameterVisitor implements ParameterVisitor<NamedValue<?>> {
     public NamedValue visit(BooleanValuedParameter p) throws OwsExceptionReport {
         NamedValue<Boolean> namedValue = new NamedValue<Boolean>();
         addName(namedValue, p);
-        namedValue.setValue(new BooleanValue(p.getValue()));
+        namedValue.setValue(new BooleanValue(p.getBooleanValue()));
         return namedValue;
     }
 
@@ -75,7 +75,7 @@ public class ValuedParameterVisitor implements ParameterVisitor<NamedValue<?>> {
     public NamedValue visit(CountValuedParameter p) throws OwsExceptionReport {
         NamedValue<Integer> namedValue = new NamedValue<Integer>();
         addName(namedValue, p);
-        namedValue.setValue(new CountValue(p.getValue()));
+        namedValue.setValue(new CountValue(p.getIntegerValue()));
         return namedValue;
     }
 
@@ -88,13 +88,13 @@ public class ValuedParameterVisitor implements ParameterVisitor<NamedValue<?>> {
         return namedValue;
     }
     
-    protected void addUnit(ValuedParameter<?> vp, Value<?> v) {
+    protected void addUnit(Parameter<?> vp, Value<?> v) {
         if (!v.isSetUnit() && vp instanceof HasUnit && ((HasUnit)vp).isSetUnit()) {
             v.setUnit(((HasUnit)vp).getUnit().getUnit());
         }
     }
     
-    protected NamedValue<?> addName(NamedValue<?> namedValue, ValuedParameter<?> p) {
+    protected NamedValue<?> addName(NamedValue<?> namedValue, Parameter<?> p) {
         ReferenceType referenceType = new ReferenceType(p.getName());
         namedValue.setName(referenceType);
         return namedValue;

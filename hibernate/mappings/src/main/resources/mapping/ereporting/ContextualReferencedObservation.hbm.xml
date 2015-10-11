@@ -163,11 +163,27 @@
             	<comment>Sampling geometry describes exactly where the measurement has taken place. Used for OGC SOS 2.0 Spatial Filtering Profile. Optional</comment>
             </column>
         </property>
-        <set name="parameters" table="parameters" inverse="true" lazy="true" fetch="select">
+        <set name="parameters"
+             table="observationParameter"
+             inverse="false"
+             fetch="select"
+             lazy="true" >
             <key>
-                <column name="observationId" not-null="true" />
+                <column name="observationId"
+                        not-null="true"
+                        index="observationParameteridx">
+                    <comment>Foreign Key (FK) to the related observation. Contains "observation".observationid</comment>
+                </column>
             </key>
-            <one-to-many class="org.n52.sos.ds.hibernate.entities.parameter.Parameter" />
+            <many-to-many entity-name="org.n52.sos.ds.hibernate.entities.parameter.Parameter.Parameter"
+                          foreign-key="observationParameterFk"
+                          lazy="proxy">
+                <column name="parameterId"
+                        not-null="true"
+                        index="observationParameteridx">
+                    <comment>Foreign Key (FK) to the related parameter. Contains "parameter".parameterId</comment>
+                </column>
+            </many-to-many>
         </set>
     </class>
 </hibernate-mapping>

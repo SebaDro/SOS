@@ -31,16 +31,20 @@ package org.n52.sos.ds.hibernate.entities.parameter;
 import java.io.Serializable;
 
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasName;
-import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasObservationId;
+import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasUnitValue;
+import org.n52.sos.ogc.om.NamedValue;
+import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.n52.sos.ds.hibernate.entities.Unit;
 
 import com.google.common.base.Strings;
 
-public abstract class Parameter<T> implements Serializable, HasObservationId, HasName, ValuedParameter<T> {
+public abstract class Parameter<T> implements Serializable, HasName, HasUnitValue<String> {
 
     private static final long serialVersionUID = -1927879842082507108L;
     private long parameterId;
-    private long observationId;
     private String name;
+    private String value;
+    private Unit unit;
     
     public Parameter() {
         super();
@@ -58,20 +62,6 @@ public abstract class Parameter<T> implements Serializable, HasObservationId, Ha
      */
     public void setParameterId(long parameterId) {
         this.parameterId = parameterId;
-    }
-
-    /**
-     * @return the observationId
-     */
-    public long getObservationId() {
-        return observationId;
-    }
-
-    /**
-     * @param observationId the observationId to set
-     */
-    public void setObservationId(long observationId) {
-        this.observationId = observationId;
     }
 
     /**
@@ -93,5 +83,42 @@ public abstract class Parameter<T> implements Serializable, HasObservationId, Ha
     public boolean isSetName() {
         return !Strings.isNullOrEmpty(getName());
     }
+    
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+    
+    @Override
+    public boolean isSetValue() {
+        return !Strings.isNullOrEmpty(getValue());
+    }
+
+    @Override
+    public String getValueAsString() {
+        return getValue();
+    }
+    
+    @Override
+    public Unit getUnit() {
+        return unit;
+    }
+
+    @Override
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
+    @Override
+    public boolean isSetUnit() {
+        return getUnit() != null && getUnit().isSetUnit();
+    }
+    
+    public abstract void accept(VoidParameterVisitor visitor) throws OwsExceptionReport;
+
+    public abstract <T> NamedValue<T> accept(ParameterVisitor<T> visitor) throws OwsExceptionReport;
 
 }

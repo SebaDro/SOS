@@ -31,6 +31,7 @@ package org.n52.sos.ds.hibernate.entities.observation;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasPhenomenonTime;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasResultTime;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasValidTime;
+import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasParameters;
 
 /**
  * A {@code TemporalReferencedObservation} is a observation that is referenced

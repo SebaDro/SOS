@@ -71,6 +71,7 @@ import org.n52.sos.ds.hibernate.entities.observation.ContextualReferencedObserva
 import org.n52.sos.ds.hibernate.entities.observation.Observation;
 import org.n52.sos.ds.hibernate.entities.observation.TemporalReferencedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.ComplexObservation;
+import org.n52.sos.ds.hibernate.entities.observation.series.AbstractSeriesObservation;
 import org.n52.sos.ds.hibernate.entities.parameter.Parameter;
 import org.n52.sos.ds.hibernate.entities.parameter.ParameterFactory;
 import org.n52.sos.ds.hibernate.util.HibernateConstants;
@@ -120,6 +121,7 @@ import org.n52.sos.service.ServiceConfiguration;
 import org.n52.sos.util.CollectionHelper;
 import org.n52.sos.util.DateTimeHelper;
 import org.n52.sos.util.GeometryHandler;
+import org.n52.sos.util.JavaHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1195,25 +1197,29 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
     }
 
     private void addParameterRestriction(Criteria c, NamedValue<?> hdp) throws OwsExceptionReport {
-        c.add(Subqueries.propertyIn(AbstractBaseObservation.ID, getParameterRestriction(c, hdp.getName().getHref(), hdp.getValue().getValue(), hdp.getValue().accept(getParameterFactory()).getClass())));
+        Criteria param = c.createCriteria(AbstractBaseObservation.PARAMETERS);
+        addParameterNameRestriction(param, hdp.getName().getHref());
+        addParameterValueRestriction(param, hdp.getValue().getValue());
+        
+//        c.add(Subqueries.propertyIn(AbstractBaseObservation.ID, getParameterRestriction(c, hdp.getName().getHref(), hdp.getValue().getValue(), hdp.getValue().accept(getParameterFactory()).getClass())));
     }
     
-    protected DetachedCriteria getParameterRestriction(Criteria c, String name, Object value, Class<?> clazz) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(clazz);
-        addParameterNameRestriction(detachedCriteria, name);
-        addParameterValueRestriction(detachedCriteria, value);
-        detachedCriteria.setProjection(Projections.distinct(Projections.property(Parameter.ID)));
-        return detachedCriteria;
+//    protected DetachedCriteria getParameterRestriction(Criteria c, String name, Object value, Class<?> clazz) {
+//        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(clazz);
+//        addParameterNameRestriction(detachedCriteria, name);
+//        addParameterValueRestriction(detachedCriteria, value);
+//        detachedCriteria.setProjection(Projections.distinct(Projections.property(Parameter.ID)));
+//        return detachedCriteria;
+//    }
+    
+    protected Criteria addParameterNameRestriction(Criteria c, String name) {
+        c.add(Restrictions.eq(Parameter.NAME, name));
+        return c;
     }
     
-    protected DetachedCriteria addParameterNameRestriction(DetachedCriteria detachedCriteria, String name) {
-        detachedCriteria.add(Restrictions.eq(Parameter.NAME, name));
-        return detachedCriteria;
-    }
-    
-    protected DetachedCriteria addParameterValueRestriction(DetachedCriteria detachedCriteria, Object value) {
-        detachedCriteria.add(Restrictions.eq(Parameter.VALUE, value));
-        return detachedCriteria;
+    protected Criteria addParameterValueRestriction(Criteria c, Object value) {
+        c.add(Restrictions.eq(Parameter.VALUE, JavaHelper.asString(value)));
+        return c;
     }
     
     private TemporalFilter getPhenomeonTimeFilter(Criteria c, Time phenomenonTime) {
@@ -1490,12 +1496,14 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
             daos.observation().addObservationContextToObservation(observationContext, observation, session);
 
             observation.setValue(value);
+            
+            if (sosObservation.isSetParameter()) {
+                observation.setParameters(daos.parameter.getOrInsertParameters(sosObservation.getParameter(),
+                        caches.units, session));
+            }
 
             session.saveOrUpdate(observation);
             
-            if (sosObservation.isSetParameter()) {
-                daos.parameter.insertParameter(sosObservation.getParameter(), observation.getObservationId(), caches.units, session);
-            }
             return observation;
         }
 

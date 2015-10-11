@@ -39,7 +39,9 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.observation.AbstractBaseObservation;
+import org.n52.sos.ds.hibernate.entities.observation.series.AbstractSeriesObservation;
 import org.n52.sos.ds.hibernate.entities.parameter.Parameter;
 import org.n52.sos.ds.hibernate.entities.parameter.TextValuedParameter;
 import org.n52.sos.exception.CodedException;
@@ -96,32 +98,21 @@ public class ExtensionFesFilterCriteriaAdder {
      */
     public Criteria add() throws CodedException {
         if (fesFilterExtensions.size() > 1) {
-            Conjunction conj = new Conjunction();
             for (SwesExtension<?> swesExtension : fesFilterExtensions) {
-                Criterion filter = getFilter((Filter<?>) swesExtension.getValue());
-                if (filter != null) {
-                    conj.add(getFilter((Filter<?>) swesExtension.getValue()));
-                }
-            }
-            if (conj.conditions().iterator().hasNext()) {
-                c.add(conj);
+                getFilter((Filter<?>) swesExtension.getValue(), c.createCriteria(AbstractBaseObservation.PARAMETERS));
             }
         } else {
-            Criterion filter = getFilter((Filter<?>) fesFilterExtensions.iterator().next().getValue());
-            if (filter != null) {
-                c.add(filter);
-            }
+            getFilter((Filter<?>) fesFilterExtensions.iterator().next().getValue(), c.createCriteria(AbstractBaseObservation.PARAMETERS));
         }
         return c;
     }
-
-    private Criterion getFilter(Filter<?> filter) throws CodedException {
+    
+    private Criteria getFilter(Filter<?> filter, Criteria c) throws CodedException {
         if (filter instanceof BinaryLogicFilter) {
             Map<NameValue, Set<String>> map =
                     mergeNamesValues((BinaryLogicFilter) filter, Maps.<NameValue, Set<String>> newHashMap(), 0);
             checkMap(map);
-            return Subqueries.propertyIn(AbstractBaseObservation.ID,
-                    getDetachedCriteria(getClassFor(null, null), map));
+            return addRestrictionsToCriteria(c, map);
             // current implementation, maybe change in the future
             // return getBinaryLogicFilterCriterion((BinaryLogicFilter) filter);
         } else if (filter instanceof ComparisonFilter) {
@@ -133,8 +124,7 @@ public class ExtensionFesFilterCriteriaAdder {
                     addValue(NameValue.VALUE, (ComparisonFilter) filter, map);
                 }
                 checkMap(map);
-                return Subqueries.propertyIn(AbstractBaseObservation.ID,
-                        getDetachedCriteria(getClassFor(null, null), map));
+                return addRestrictionsToCriteria(c, map);
             }
             throw new NoApplicableCodeException().withMessage(
                     "Currently only the valueReference values '{}' and '{}' are supported! The requested valueReference is '{}'",
@@ -162,21 +152,14 @@ public class ExtensionFesFilterCriteriaAdder {
         }
     }
 
-    private DetachedCriteria getDetachedCriteria(Class<?> clazz, Map<NameValue, Set<String>> map) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(clazz);
+    private Criteria addRestrictionsToCriteria(Criteria c, Map<NameValue, Set<String>> map) {
         if (map.containsKey(NameValue.NAME)) {
-            detachedCriteria.add(getRestrictionIn(Parameter.NAME, map.get(NameValue.NAME)));
+            c.add(getRestrictionIn(Parameter.NAME, map.get(NameValue.NAME)));
         }
         if (map.containsKey(NameValue.VALUE)) {
-            detachedCriteria.add(getRestrictionIn(Parameter.VALUE, map.get(NameValue.VALUE)));
+            c.add(getRestrictionIn(Parameter.VALUE, map.get(NameValue.VALUE)));
         }
-        detachedCriteria.setProjection(Projections.distinct(Projections.property(Parameter.ID)));
-        return detachedCriteria;
-    }
-
-    private Class<?> getClassFor(String value, ComparisonOperator operator) {
-        // TODO check for other types
-        return TextValuedParameter.class;
+        return c;
     }
 
     private Criterion getRestrictionIn(String name, Set<String> values) {

@@ -496,9 +496,9 @@ public interface HibernateRelations {
     interface HasParameters {
         String PARAMETERS = "parameters";
 
-        Set<Parameter> getParameters();
+        Set<Parameter<?>> getParameters();
 
-        void setParameters(Object offerings);
+        void setParameters(Object parameters);
         
         boolean hasParameters();
 
