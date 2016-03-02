@@ -7,7 +7,7 @@
             <column name="observationId" />
             <generator class="assigned" />
         </id>
-        <property name="timestamp" column="phenomenontimeend" type="timestamp" />
+        <property name="timestamp" column="phenomenontime" type="timestamp" />
         <property name="geom" column="samplingGeometry" type="org.hibernate.spatial.GeometryType" />
         <property name="seriesPkid" column="seriesid"  type="long" />
     </class>

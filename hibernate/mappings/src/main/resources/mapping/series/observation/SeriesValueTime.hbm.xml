@@ -4,42 +4,52 @@
 <hibernate-mapping>
     <class name="org.n52.sos.ds.hibernate.entities.series.values.SeriesValueTime" table="observation">
         <id name="observationId" type="long">
-            <column name="observationId" />
-            <generator class="native">
-            	<param name="sequence">observationId_seq</param>
+            <column name="observationId">
+            </column>
+            <generator class="assigned">
             </generator>
         </id>
         <many-to-one name="series" class="org.n52.sos.ds.hibernate.entities.series.Series" fetch="select" lazy="no-proxy" foreign-key="observationSeriesFk">
-           	<column index="obsSeriesIdx" name="seriesId" not-null="true" unique-key="observationIdentity"/>
+           	<column index="obsSeriesIdx" name="seriesId" not-null="true" unique-key="observationIdentity">
+           	</column>
         </many-to-one>
-         <property name="phenomenonTimeStart" type="timestamp" >
-            <column index="obsPhenTimeStartIdx" name="phenomenonTimeStart" length="29" not-null="true" unique-key="observationIdentity"/>
+		<property name="phenomenonTimeStart" type="timestamp" insert="false" update="false">
+            <column index="obsPhenTimeStartIdx" name="phenomenonTime" length="29" not-null="true" unique-key="observationIdentity">
+            </column>
         </property>
-        <property name="phenomenonTimeEnd" type="timestamp">
-            <column index="obsPhenTimeEndIdx" name="phenomenonTimeEnd" length="29" not-null="true" unique-key="observationIdentity"/>
+        <property name="phenomenonTimeEnd" type="timestamp" insert="false" update="false">
+            <column index="obsPhenTimeEndIdx" name="phenomenonTime" length="29" not-null="true" unique-key="observationIdentity">
+            </column>
         </property>
-        <property name="resultTime" type="timestamp" >
-            <column index="obsResultTimeIdx" name="resultTime" length="29" not-null="true" unique-key="observationIdentity"/>
+        <property name="resultTime" type="timestamp" insert="false" update="false">
+            <column index="obsResultTimeIdx" name="phenomenonTime" length="29" not-null="true" unique-key="observationIdentity">
+            </column>
         </property>
         <property name="deleted" type="org.hibernate.type.TrueFalseType">
-            <column name="deleted" not-null="true" default="'F'" check="deleted in ('T','F')"/>
+            	<formula>'F'</formula>
         </property>
         <property name="validTimeStart" type="timestamp">
-            <column name="validTimeStart" length="29" />
+            	<formula>null</formula>
         </property>
         <property name="validTimeEnd" type="timestamp">
-            <column name="validTimeEnd" length="29" />
+            	<formula>null</formula>
         </property>
-        <set name="offerings" table="observationHasOffering" inverse="false" fetch="select" lazy="true" >
+        <many-to-one name="offerings" class="org.n52.sos.ds.hibernate.entities.Offering" fetch="select" lazy="no-proxy" foreign-key="observationOfferingFk" insert="false" update="false">
+        	<column name="offeringId" />
+        </many-to-one>
+        <!-- <set name="offerings" table="observation" inverse="false" fetch="select" lazy="false" >
             <key>
-                <column name="observationId" not-null="true" index="obshasoffobservationidx" />
+                <column name="observationId" not-null="true" index="obshasoffobservationidx">
+	            </column>
             </key>
-            <many-to-many entity-name="org.n52.sos.ds.hibernate.entities.Offering" foreign-key="observationOfferingFk" lazy="proxy">
-                <column name="offeringId" not-null="true" index="obshasoffofferingidx" />
+            <many-to-many entity-name="org.n52.sos.ds.hibernate.entities.Offering" foreign-key="observationOfferingFk">
+                <column name="offeringId" not-null="true" index="obshasoffofferingidx">
+	            </column>
             </many-to-many>
-        </set>
-        <property name="samplingGeometry" type="org.hibernate.spatial.GeometryType">
-            <column name="samplingGeometry" />
+        </set> -->
+         <property name="samplingGeometry" type="org.hibernate.spatial.GeometryType">
+            <column name="samplingGeometry" >
+            </column>
         </property>
     </class>
 </hibernate-mapping>

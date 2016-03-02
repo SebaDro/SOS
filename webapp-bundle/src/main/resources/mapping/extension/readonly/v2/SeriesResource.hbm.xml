@@ -10,17 +10,17 @@
         <many-to-one name="procedure" class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" />
         <many-to-one name="phenomenon" class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" insert="false" update="false"  />
         <many-to-one name="feature" class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" />
-        <many-to-one name="unit" class="org.n52.series.db.da.beans.UnitEntity" column="unitid" />
+        <many-to-one name="unit" class="org.n52.series.db.da.beans.UnitEntity" column="seriesId" />
         <property name="numberOfDecimals" formula="3" type="int" />
-        <property name="published" column="published" type="org.hibernate.type.TrueFalseType" />
+        <property name="published" formula="'T'" type="org.hibernate.type.TrueFalseType" />
 
         <component name="firstValue" class="ObservationEntityV2">
             <property name="timestamp" column="firsttimestamp" type="timestamp" />
-            <property name="value" column="firstnumericvalue" type="double" />
+            <property name="value" column="firstvalue" type="double" />
         </component>
         <component name="lastValue" class="ObservationEntityV2">
             <property name="timestamp" column="lasttimestamp" type="timestamp" />
-            <property name="value" column="lastnumericvalue" type="double" />
+            <property name="value" column="lastvalue" type="double" />
         </component>
         <list name="observations" table="observation" fetch="select" inverse="true">
             <key column="observationid" />

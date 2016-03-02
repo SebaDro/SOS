@@ -8,11 +8,18 @@
             <generator class="assigned" />
         </id>
         <property name="seriesPkid" column="seriesid"  type="long" />
-        <property name="timestamp" column="phenomenontimeend" type="timestamp" />
-        <property name="deleted" column="deleted" type="org.hibernate.type.TrueFalseType" />
+        <property name="timestamp" column="phenomenontime" type="timestamp" />
+        <property name="deleted" formula="'F'" type="org.hibernate.type.TrueFalseType" />
         <property name="geom" column="samplingGeometry" type="org.hibernate.spatial.GeometryType" />
-        <set name="tracks"
-             table="observationHasOffering"
+		<!--<set name="tracks" >
+	        <key column="offerinId" not-null="true" update="false"/>
+	        <one-to-many class="org.n52.series.db.da.beans.v2.TrackEntity"/>
+	    </set>-->
+		<many-to-one name="tracks" class="org.n52.series.db.da.beans.v2.TrackEntity" fetch="select" lazy="no-proxy" insert="false" update="false">
+        	<column name="offeringId" />
+        </many-to-one>
+        <!--<set name="tracks"
+             table="observation"
              inverse="false"
              fetch="select"
              lazy="true" >
@@ -24,10 +31,7 @@
                 <column name="offeringId"
                         not-null="true" />
             </many-to-many>
-        </set>
-        <join table="numericvalue" fetch="join">
-            <key column="observationid" foreign-key="observationid" />
-            <property name="value" type="double" />
-        </join>
+        </set>-->
+        <property name="value" column="value" type="double" />
     </class>
 </hibernate-mapping>
