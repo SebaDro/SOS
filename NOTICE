@@ -120,6 +120,7 @@ This project includes:
   Batik utility library under The Apache Software License, Version 2.0
   Batik XML utility library under The Apache Software License, Version 2.0
   c3p0 under GNU Lesser General Public License, Version 2.1 or Eclipse Public License, Version 1.0
+  c3p0:JDBC DataSources/Resource Pools under GNU LESSER GENERAL PUBLIC LICENSE
   ClassLoader leak prevention under Apache 2
   Commons Codec under The Apache Software License, Version 2.0
   Commons IO under The Apache Software License, Version 2.0
@@ -211,6 +212,7 @@ This project includes:
   Open GIS Interfaces under OGC copyright or Lesser General Public License (LGPL)
   Postgis JDBC Driver under GNU Lesser General Public License
   PostgreSQL JDBC Driver under BSD License
+  Quartz Enterprise Job Scheduler under Apache 2.0
   Referencing services under Lesser General Public License (LGPL)
   Reflections under WTFPL
   SaxonB under Mozilla Public License Version 1.0
