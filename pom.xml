@@ -1087,6 +1087,12 @@
                 <artifactId>coding-oceansites</artifactId>
                 <version>${project.version}</version>   
 			</dependency>
+			<!-- MQTT extension -->
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+                <artifactId>mqtt-client</artifactId>
+                <version>${project.version}</version>   
+			</dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
