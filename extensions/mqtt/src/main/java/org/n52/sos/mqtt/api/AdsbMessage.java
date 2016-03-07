@@ -122,8 +122,9 @@ public class AdsbMessage {
     /**
      * @param time the time to set
      */
-    public void setTime(DateTime time) {
+    public AdsbMessage setTime(DateTime time) {
         this.time = time;
+        return this;
     }
 
 }
