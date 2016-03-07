@@ -19,4 +19,16 @@ public class MqttClientTest {
      * Offering: hex
      * SamplingGeometry: lat, lon
      */
+    
+    /*
+     * Insert Sensor and Observations:
+     * 
+     * private final InsertSensorDAO insertSensorDao;
+     * insertSensorDao.insertSensor(insertSensorRequest);
+     * 
+     * private final InsertObservationDAO insertObservationDao; 
+     * nsertObservationDao.insertObservation(insertObservationRequest);
+     * 
+     */
+    
 }
