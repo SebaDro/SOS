@@ -16,9 +16,34 @@
 			<artifactId>api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>coding-sensorML-v20</artifactId>
+		</dependency>
+		<dependency>
 		  <groupId>org.fusesource.mqtt-client</groupId>
 		  <artifactId>mqtt-client</artifactId>
 		  <version>1.12</version>
 		</dependency>
+		<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>sqlite-config</artifactId>
+        	<scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sqlite-config</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>

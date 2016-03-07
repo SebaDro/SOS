@@ -13,6 +13,10 @@ public class AdsbMessage {
     public static final String SPEED = "speed";
     public static final String TIME = "time";
     
+    public static final String ALTITUDE_UNIT = "ft";
+    public static final String TRACK_UNIT = "°";
+    public static final String SPEED_UNIT = "kn";
+    
     private String hex;
     private String flight;
     private double lat;
@@ -122,8 +126,9 @@ public class AdsbMessage {
     /**
      * @param time the time to set
      */
-    public void setTime(DateTime time) {
+    public AdsbMessage setTime(DateTime time) {
         this.time = time;
+        return this;
     }
 
 }
