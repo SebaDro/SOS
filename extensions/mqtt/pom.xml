@@ -24,6 +24,34 @@
 		  <artifactId>mqtt-client</artifactId>
 		  <version>1.12</version>
 		</dependency>
+		 <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-datasource-postgres</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-session-factory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-dao</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>do-hibernate</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-feature</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-datasource-common</artifactId>
+        </dependency>
 		<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>test</artifactId>
