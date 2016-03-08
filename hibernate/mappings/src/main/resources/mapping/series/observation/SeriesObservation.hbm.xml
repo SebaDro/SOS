@@ -67,8 +67,18 @@
 	            </column>
             </many-to-many>
         </set> -->
-         <property name="samplingGeometry" type="org.hibernate.spatial.GeometryType">
+        <!-- <property name="samplingGeometry" type="org.hibernate.spatial.GeometryType">
             <column name="samplingGeometry" >
+            </column>
+        </property> -->
+        <property name="longitude" type="double">
+           <column name="lon" unique-key="obsLonLatUk">
+            	<comment>The longitude of the samplingGeometry. Optional</comment>
+            </column>
+        </property>
+        <property name="latitude" type="double">
+        	<column name="lat" unique-key="obsLonLatUk">
+            	<comment>The latitude of the samplingGeometry. Optional</comment>
             </column>
         </property>
         <subclass name="org.n52.sos.ds.hibernate.entities.series.SeriesNumericObservation" extends="org.n52.sos.ds.hibernate.entities.series.SeriesObservation" discriminator-value="NUMERIC_OBSERVATION">

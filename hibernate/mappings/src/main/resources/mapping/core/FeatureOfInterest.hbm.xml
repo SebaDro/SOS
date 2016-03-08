@@ -28,10 +28,10 @@
         <property name="description" type="string">
             <formula>null</formula>
         </property>
-        <property name="geom" type="org.hibernate.spatial.GeometryType">
+        <!-- <property name="geom" type="org.hibernate.spatial.GeometryType">
             <column name="geom">
             </column>
-        </property>
+        </property> -->
         <property name="descriptionXml" type="org.hibernate.type.StringClobType">
             <formula>null</formula>
         </property>
@@ -39,18 +39,18 @@
            <formula>null</formula>
         </property>
         <!-- supports types double, big_decimal, and string -->
-        <!--  
+         
         <property name="longitude" type="double">
-           <column name="longitude" unique-key="featLonLatUk">
+           <column name="lon" unique-key="featLonLatUk">
             	<comment>The longitude of the feature. Optional</comment>
             </column>
         </property>
         <property name="latitude" type="double">
-        	<column name="latitude" unique-key="featLonLatUk">
+        	<column name="lat" unique-key="featLonLatUk">
             	<comment>The latitude of the feature. Optional</comment>
             </column>
         </property>
-        <property name="altitude" type="double">
+        <!-- <property name="altitude" type="double">
         	<column name="altitude">
             	<comment>The altitude of the feature location. Optional</comment>
             </column>
