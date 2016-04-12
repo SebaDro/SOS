@@ -9,7 +9,7 @@
             <generator class="assigned">
             </generator>
         </id>
-        <discriminator column="hibernateDiscriminator" type="org.hibernate.type.TrueFalseType" />
+        <discriminator formula="(SELECT DISTINCT 'F' FROM dual)" type="org.hibernate.type.TrueFalseType" />
         <property name="identifier" type="string">
             <column name="identifier" not-null="true" unique-key="offIdentifierUK">
             </column>

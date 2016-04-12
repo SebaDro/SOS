@@ -9,7 +9,7 @@
             <generator class="assigned">
             </generator>
         </id>
-        <discriminator formula="(SELECT 'NUMERIC_OBSERVATION')" type="string"/>
+        <discriminator formula="(SELECT 'NUMERIC_OBSERVATION' FROM dual)" type="string"/>
         <many-to-one name="series" class="org.n52.sos.ds.hibernate.entities.series.Series" fetch="select" lazy="no-proxy" foreign-key="observationSeriesFk">
            	<column index="obsSeriesIdx" name="seriesId" not-null="true" unique-key="observationIdentity">
            	</column>

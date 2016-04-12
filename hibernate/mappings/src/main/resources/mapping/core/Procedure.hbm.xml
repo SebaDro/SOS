@@ -2,14 +2,14 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.n52.sos.ds.hibernate.entities.Procedure" table="`procedure`">
+    <class name="org.n52.sos.ds.hibernate.entities.Procedure" table="procedure">
         <id name="procedureId" type="long">
             <column name="procedureId">
             </column>
             <generator class="assigned">
             </generator>
         </id>
-        <discriminator column="hibernateDiscriminator" type="org.hibernate.type.TrueFalseType" />
+        <discriminator formula="(SELECT DISTINCT 'F' FROM dual)" type="org.hibernate.type.TrueFalseType" />
         <many-to-one name="procedureDescriptionFormat" class="org.n52.sos.ds.hibernate.entities.ProcedureDescriptionFormat" fetch="select" lazy="no-proxy" foreign-key="procProcDescFormatFk">
             	<formula>1</formula>
         </many-to-one>
