@@ -10,11 +10,9 @@
         <property name="seriesPkid" column="seriesid"  type="long" />
         <property name="timestamp" column="phenomenontime" type="timestamp" />
         <property name="deleted" formula="'F'" type="org.hibernate.type.TrueFalseType" />
-        <property name="geom" column="samplingGeometry" type="org.hibernate.spatial.GeometryType" />
-		<!--<set name="tracks" >
-	        <key column="offerinId" not-null="true" update="false"/>
-	        <one-to-many class="org.n52.series.db.da.beans.v2.TrackEntity"/>
-	    </set>-->
+        <!-- <property name="geom" column="samplingGeometry" type="org.hibernate.spatial.GeometryType" /> -->
+        <property name="lon" column="lon" type="double"/>
+        <property name="lat" column="lat" type="double"/>
 		<many-to-one name="tracks" class="org.n52.series.db.da.beans.v2.TrackEntity" fetch="select" lazy="no-proxy" insert="false" update="false">
         	<column name="offeringId" />
         </many-to-one>

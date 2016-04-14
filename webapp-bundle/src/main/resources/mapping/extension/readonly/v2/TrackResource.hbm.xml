@@ -10,7 +10,7 @@
         <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
         <property name="name" column="name" type="string" />
         <property name="description" formula="null" type="string"/>
-		<set name="trackLocations">
+		<set name="trackLocations" fetch="select" lazy="true" batch-size="10000">
 			<key column="offeringId"/>
 			<one-to-many class="org.n52.series.db.da.beans.v2.TrackLocationEntity"/>
 		</set>
