@@ -5,6 +5,7 @@
 	<class
 		name="org.n52.sos.ds.hibernate.entities.observation.RelatedObservation"
 		table="relatedobservations">
+		<subselect>(SELECT NULL FROM dual)</subselect>
 		<composite-id name="relatedObservationId" class="org.n52.sos.ds.hibernate.entities.observation.RelatedObservationId">
 			<key-many-to-one name="observation"
 				class="org.n52.sos.ds.hibernate.entities.observation.series.AbstractSeriesObservation"

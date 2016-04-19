@@ -3,14 +3,9 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="org.n52.sos.ds.hibernate.entities.parameter.feature.FeatureParameter" table="featureParameter">
-    	<comment>Table to store additional featureOfInterest information (sf:parameter). Mapping file: mapping/core/FeatureParameter.hbm.xml</comment>
+    	<subselect>(SELECT NULL FROM dual)</subselect>
         <id name="parameterId" type="long">
-            <column name="parameterId">
-            	<comment>Table primary key</comment>
-            </column>
-            <generator class="native">
-            	<param name="sequence">parameterId_seq</param>
-            </generator>
+            <generator class="assigned"></generator>
         </id>
         <property name="featureOfInterestId" type="long">
             <column name="featureOfInterestId" not-null="true">
@@ -22,7 +17,7 @@
             	<comment>Parameter name</comment>
             </column>
         </property>
-        <joined-subclass name="org.n52.sos.ds.hibernate.entities.parameter.feature.FeatureBooleanValuedParameter"
+        <!-- <joined-subclass name="org.n52.sos.ds.hibernate.entities.parameter.feature.FeatureBooleanValuedParameter"
                          extends="org.n52.sos.ds.hibernate.entities.parameter.ValuedParameter"
                          table="booleanFeatParamValue"
                          check="value in ('T','F')">
@@ -122,6 +117,6 @@
          			<comment>Text parameter value</comment>
          		</column>
          	</property>
-        </joined-subclass>
+        </joined-subclass> -->
     </class>
 </hibernate-mapping>
