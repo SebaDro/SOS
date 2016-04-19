@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.da.beans.v2">
+    <class name="TrackEntity" table="offering">
+        <id name="pkid" type="long">
+            <column name="offeringId" />
+            <generator class="assigned" />
+        </id>
+        <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
+        <property name="name" column="name" type="string" />
+        <property name="description" formula="null" type="string"/>
+		<set name="trackLocations" fetch="select" lazy="true" batch-size="10000">
+			<key column="offeringId"/>
+			<one-to-many class="org.n52.series.db.da.beans.v2.TrackLocationEntity"/>
+		</set>
+        <!--<set name="trackLocations"
+             table="observation"
+             inverse="false"
+             fetch="select" >
+            <key>
+                <column name="offeringId" not-null="true" />
+            </key>
+            <one-to-many entity-name="org.n52.series.db.da.beans.v2.TrackLocationEntity" >
+            </one-to-many>
+        </set>-->
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.da.beans.v2">
+    <class name="SiteEntity" table="featureOfInterest">
+        <id name="pkid" type="long">
+            <column name="featureofinterestid" />
+            <generator class="assigned" />
+        </id>
+        <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
+        <property name="name" column="name" type="string" />
+        <property name="description" formula="null" type="string"/>
+        <!-- <property name="geom" column="samplingGeometry" type="org.hibernate.spatial.GeometryType" /> -->
+        <property name="lon" column="lon" type="double"/>
+        <property name="lat" column="lat" type="double"/>
+    </class>
+</hibernate-mapping>

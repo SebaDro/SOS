@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.da.beans.v2">
+    <class name="ObservationEntityV2" table="observation" >
+        <id name="pkid" type="long">
+            <column name="observationid" />
+            <generator class="assigned" />
+        </id>
+        <property name="seriesPkid" column="seriesid"  type="long" />
+        <property name="timestamp" column="phenomenontime" type="timestamp" />
+        <property name="deleted" formula="'F'" type="org.hibernate.type.TrueFalseType" />
+        <!-- <property name="geom" column="samplingGeometry" type="org.hibernate.spatial.GeometryType" /> -->
+        <property name="lon" column="lon" type="double"/>
+        <property name="lat" column="lat" type="double"/>
+		<many-to-one name="tracks" class="org.n52.series.db.da.beans.v2.TrackEntity" fetch="select" lazy="no-proxy" insert="false" update="false">
+        	<column name="offeringId" />
+        </many-to-one>
+        <!--<set name="tracks"
+             table="observation"
+             inverse="false"
+             fetch="select"
+             lazy="true" >
+            <key>
+                <column name="observationId"
+                        not-null="true" />
+            </key>
+            <many-to-many entity-name="org.n52.series.db.da.beans.v2.TrackEntity" >
+                <column name="offeringId"
+                        not-null="true" />
+            </many-to-many>
+        </set>-->
+        <property name="value" column="value" type="double" />
+    </class>
+</hibernate-mapping>
