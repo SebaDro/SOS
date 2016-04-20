@@ -64,7 +64,9 @@
         <!-- values for timeseries api -->
         <property name="firstTimeStamp"
                   type="timestamp">
-            <formula>'F'</formula>
+            <column name="firstTimeStamp"
+                    length="29" >
+            </column>
         </property>
         <property name="lastTimeStamp"
                   type="timestamp">
@@ -74,13 +76,13 @@
         </property>
         <property name="firstNumericValue"
                   type="double">
-            <column name="firstNumericValue"
+            <column name="firstValue"
                     length="29" >
             </column>
         </property>
         <property name="lastNumericValue"
                   type="double">
-            <column name="lastNumericValue"
+            <column name="lastValue"
                     length="29" >
             </column>
         </property>

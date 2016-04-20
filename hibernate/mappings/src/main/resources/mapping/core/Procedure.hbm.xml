@@ -43,5 +43,35 @@
         <property name="reference" type="org.hibernate.type.TrueFalseType">
         	<formula>'F'</formula>
         </property>
+        <many-to-one name="typeOf" class="org.n52.sos.ds.hibernate.entities.Procedure" not-null="false" fetch="select" lazy="no-proxy" foreign-key="typeOfFk">
+            <formula>null</formula>
+        </many-to-one>
+        <property name="isType" type="org.hibernate.type.TrueFalseType">
+            <formula>'F'</formula>
+        </property>
+        <property name="isAggregation" type="org.hibernate.type.TrueFalseType">
+            <formula>'F'</formula>
+        </property>
+        <set name="childs" subselect="(SELECT null::bigint as parentSensorId, null::bigint as childSensorId)" >
+        <!-- <set name="childs" table="sensorSystem" inverse="false" fetch="join">-->
+            <key>
+                <column name="parentSensorId" not-null="true">
+                    </column>
+            </key>
+            <many-to-many entity-name="org.n52.sos.ds.hibernate.entities.Procedure" foreign-key="procedureChildFk">
+                <column name="childSensorId" not-null="true">
+                    </column>
+            </many-to-many>
+        </set>
+         <set name="parents" subselect="(SELECT null::bigint as childSensorId, null::bigint as parentSensorId)" >
+        <!-- <set name="parents" table="sensorSystem" inverse="false" fetch="join">-->
+            <key>
+                <column name="childSensorId" not-null="true" />
+            </key>
+            <many-to-many entity-name="org.n52.sos.ds.hibernate.entities.Procedure" foreign-key="procedureParenfFk">
+                <column name="parentSensorId" not-null="true" />
+            </many-to-many>
+        </set>
+        
     </class>
 </hibernate-mapping>
