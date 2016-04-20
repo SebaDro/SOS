@@ -3,7 +3,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="org.n52.sos.ds.hibernate.entities.parameter.feature.FeatureParameter" table="featureParameter">
-    	<subselect>(SELECT NULL FROM dual)</subselect>
+    	<subselect>(SELECT NULL)</subselect>
         <id name="parameterId" type="long">
             <generator class="assigned"></generator>
         </id>

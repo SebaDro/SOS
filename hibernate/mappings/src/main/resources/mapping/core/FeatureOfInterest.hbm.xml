@@ -7,7 +7,7 @@
 			<column name="featureOfInterestId" />
 			<generator class="assigned"></generator>
 		</id>
-		<discriminator formula="(SELECT DISTINCT 'F' FROM dual)" type="org.hibernate.type.TrueFalseType" />
+		<discriminator formula="(SELECT DISTINCT 'F')" type="org.hibernate.type.TrueFalseType" />
         <many-to-one name="featureOfInterestType" class="org.n52.sos.ds.hibernate.entities.FeatureOfInterestType" fetch="select" lazy="no-proxy" foreign-key="featureFeatureTypeFk">
             <formula>1</formula>
         </many-to-one>

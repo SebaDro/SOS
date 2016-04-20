@@ -9,7 +9,7 @@
             <generator class="assigned">
             </generator>
         </id>
-        <discriminator formula="(SELECT DISTINCT 'F' FROM dual)" type="org.hibernate.type.TrueFalseType" />
+        <discriminator formula="(SELECT DISTINCT 'F')" type="org.hibernate.type.TrueFalseType" />
         <many-to-one name="procedureDescriptionFormat" class="org.n52.sos.ds.hibernate.entities.ProcedureDescriptionFormat" fetch="select" lazy="no-proxy" foreign-key="procProcDescFormatFk">
             	<formula>1</formula>
         </many-to-one>
