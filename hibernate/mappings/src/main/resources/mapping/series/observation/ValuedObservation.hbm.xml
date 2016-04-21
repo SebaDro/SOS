@@ -112,18 +112,19 @@
             	<comment>The latitude of the samplingGeometry. Optional</comment>
             </column>
         </property>
+        <!-- <set name="parameters" subselect="(SELECT null::bigint as observationId null::bigint as parameterId" >
         <set name="parameters" table="parameters" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="observationId" not-null="true" />
             </key>
             <one-to-many class="org.n52.sos.ds.hibernate.entities.parameter.observation.Parameter" />
-        </set>
-        <set name="relatedObservations" table="relatedobservations" lazy="true" access="field" fetch="select" cascade="all">
+        </set> -->
+        <!-- <set name="relatedObservations" table="relatedobservations" lazy="true" access="field" fetch="select" cascade="all">
 	        <key>
 	            <column name="observationId" not-null="true" index="relatedObsObsIdx" />
 	        </key>
 	        <one-to-many class="org.n52.sos.ds.hibernate.entities.observation.RelatedObservation" />
-    	</set>
+    	</set> -->
         <subclass name="org.n52.sos.ds.hibernate.entities.observation.series.valued.NumericValuedSeriesObservation"
                          extends="org.n52.sos.ds.hibernate.entities.observation.series.AbstractValuedSeriesObservation"
                          discriminator-value="NUMERIC_VALUE">
