@@ -28,13 +28,11 @@
  */
 package org.n52.svalbard.inspire.omso;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.n52.sos.exception.ows.concrete.InvalidSridException;
 import org.n52.sos.ogc.gml.AbstractFeature;
-import org.n52.sos.ogc.gml.CodeType;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
 import org.n52.sos.ogc.om.AbstractObservationValue;
 import org.n52.sos.ogc.om.MultiObservationValues;
@@ -47,6 +45,7 @@ import org.n52.sos.ogc.om.features.SfConstants;
 import org.n52.sos.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.sos.ogc.om.values.TLVTValue;
 import org.n52.sos.ogc.om.values.TVPValue;
+import org.n52.sos.util.JavaHelper;
 
 import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -66,28 +65,29 @@ public class TrajectoryObservation extends AbstractInspireObservation {
     public TrajectoryObservation(OmObservation observation) {
         super(observation);
         getObservationConstellation().setObservationType(InspireOMSOConstants.OBS_TYPE_TRAJECTORY_OBSERVATION);
-        if (getObservationConstellation().getFeatureOfInterest() instanceof SamplingFeature){
-            SamplingFeature sf = new SamplingFeature(new CodeWithAuthority(""));
-            sf.setFeatureType(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE);
-        }
+        SamplingFeature sf = new SamplingFeature(new CodeWithAuthority(""));
+        sf.setFeatureType(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE);
+        getObservationConstellation().setFeatureOfInterest(sf);
         if (isSetSpatialFilteringProfileParameter()) {
             removeSpatialFilteringProfileParameter();
+        }
+        if (!isSetObservationID()) {
+            setObservationID(JavaHelper.generateID(toString()));
         }
     }
 
     @Override
     public OmObservation cloneTemplate() {
-        if (getObservationConstellation().getFeatureOfInterest() instanceof SamplingFeature){
-            SamplingFeature sf = (SamplingFeature)getObservationConstellation().getFeatureOfInterest();
-            sf.setEncode(true);
-            sf.setFeatureType(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE);
-        }
+        SamplingFeature sf = new SamplingFeature(new CodeWithAuthority(""));
+        sf.setFeatureType(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE);
+        getObservationConstellation().setFeatureOfInterest(sf);
         if (isSetSpatialFilteringProfileParameter()) {
             removeSpatialFilteringProfileParameter();
         }
         return cloneTemplate(new TrajectoryObservation());
     }
     
+    @SuppressWarnings("rawtypes")
     @Override
     public void setValue(ObservationValue<?> value) {
         if (value instanceof StreamingValue || value.getValue() instanceof TLVTValue) {
@@ -102,9 +102,18 @@ public class TrajectoryObservation extends AbstractInspireObservation {
                 }
             }
             TLVTValue tlvpValue = convertSingleValueToMultiValue((SingleObservationValue<?>)value, geometry);
-            tlvpValue.setUnit(((AbstractObservationValue<?>) value).getUnit());
+            if (!tlvpValue.isSetUnit() && ((AbstractObservationValue<?>) value).isSetUnit()) {
+                tlvpValue.setUnit(((AbstractObservationValue<?>) value).getUnit());
+            }
             final MultiObservationValues<List<TimeLocationValueTriple>> multiValue = new MultiObservationValues<List<TimeLocationValueTriple>>();
             multiValue.setValue(tlvpValue);
+            if (!multiValue.isSetObservationID()) {
+                if (value instanceof AbstractObservationValue && ((AbstractObservationValue) value).isSetObservationID()) {
+                    multiValue.setObservationID(((AbstractObservationValue) value).getObservationID());
+                } else if (isSetObservationID()) {
+                    multiValue.setObservationID(getObservationID());
+                }
+            }
             super.setValue(multiValue);
         }
     }
