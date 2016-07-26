@@ -52,8 +52,7 @@
         <property name="isAggregation" type="org.hibernate.type.TrueFalseType">
             <formula>'F'</formula>
         </property>
-        <set name="childs" subselect="(SELECT null::bigint as parentSensorId, null::bigint as childSensorId)" >
-        <!-- <set name="childs" table="sensorSystem" inverse="false" fetch="join">-->
+        <set name="childs" subselect="(SELECT CAST (null as NUMBER(19)) as parentSensorId, CAST (null as NUMBER(19)) as childSensorId FROM dual)" >
             <key>
                 <column name="parentSensorId" not-null="true">
                     </column>
@@ -63,8 +62,7 @@
                     </column>
             </many-to-many>
         </set>
-         <set name="parents" subselect="(SELECT null::bigint as childSensorId, null::bigint as parentSensorId)" >
-        <!-- <set name="parents" table="sensorSystem" inverse="false" fetch="join">-->
+         <set name="parents" subselect="(SELECT CAST (null as NUMBER(19)) as childSensorId, CAST (null as NUMBER(19)) as parentSensorId FROM dual)" >
             <key>
                 <column name="childSensorId" not-null="true" />
             </key>
