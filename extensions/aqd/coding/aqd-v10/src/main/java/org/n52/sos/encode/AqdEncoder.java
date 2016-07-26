@@ -67,7 +67,7 @@ import org.n52.sos.ogc.sos.SosConstants.HelperValues;
 import org.n52.sos.response.GetObservationResponse;
 import org.n52.sos.util.CodingHelper;
 import org.n52.sos.util.JavaHelper;
-import org.n52.sos.util.Referenceable;
+import org.n52.sos.w3c.xlink.Referenceable;
 import org.n52.sos.w3c.SchemaLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +129,7 @@ public class AqdEncoder extends AbstractXmlEncoder<Object> implements Observatio
     }
 
     @Override
-    public Map<String, Set<String>> getSupportedResponseFormatObsrevationTypes() {
+    public Map<String, Set<String>> getSupportedResponseFormatObservationTypes() {
         return Maps.newHashMap();
     }
 

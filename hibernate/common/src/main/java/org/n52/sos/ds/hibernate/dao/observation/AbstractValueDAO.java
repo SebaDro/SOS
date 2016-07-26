@@ -32,7 +32,7 @@ import java.sql.Timestamp;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -46,6 +46,7 @@ import org.n52.sos.exception.CodedException;
 import org.n52.sos.ogc.filter.TemporalFilter;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sos.SosConstants.SosIndeterminateTime;
+import org.n52.sos.request.AbstractObservationRequest;
 import org.n52.sos.request.GetObservationRequest;
 import org.n52.sos.service.ServiceConfiguration;
 import org.n52.sos.util.GeometryHandler;
@@ -70,7 +71,7 @@ public abstract class AbstractValueDAO extends TimeCreator {
      * @param c
      *            Criteria to add crtierion
      * @param request
-     *            GetObservation request
+     *            GetObservationRequest request
      * @param session
      *            Hiberante Session
      * @throws OwsExceptionReport
@@ -79,17 +80,26 @@ public abstract class AbstractValueDAO extends TimeCreator {
      */
     protected void checkAndAddSpatialFilteringProfileCriterion(Criteria c, GetObservationRequest request,
             Session session) throws OwsExceptionReport {
-        if (request.hasSpatialFilteringProfileSpatialFilter()) {
-            if (GeometryHandler.getInstance().isSpatialDatasource()) {
-                c.add(SpatialRestrictions.filter(
-                        AbstractObservation.SAMPLING_GEOMETRY,
-                        request.getSpatialFilter().getOperator(),
-                        GeometryHandler.getInstance().switchCoordinateAxisFromToDatasourceIfNeeded(
-                                request.getSpatialFilter().getGeometry())));
-            } else {
-                // TODO add filter with lat/lon
-                LOGGER.warn("Spatial filtering for lat/lon is not yet implemented!");
+        if (request instanceof GetObservationRequest) {
+            if (((GetObservationRequest)request).hasSpatialFilteringProfileSpatialFilter()) {
+                if (GeometryHandler.getInstance().isSpatialDatasource()) {
+                    c.add(SpatialRestrictions.filter(
+                            AbstractObservation.SAMPLING_GEOMETRY,
+                            ((GetObservationRequest)request).getSpatialFilter().getOperator(),
+                            GeometryHandler.getInstance().switchCoordinateAxisFromToDatasourceIfNeeded(
+                                    ((GetObservationRequest)request).getSpatialFilter().getGeometry())));
+                } else {
+                    // TODO add filter with lat/lon
+                    LOGGER.warn("Spatial filtering for lat/lon is not yet implemented!");
+                }
             }
+        }
+    }
+    
+    protected void addTemporalFilterCriterion(Criteria c, Criterion temporalFilterCriterion, String logArgs) {
+        if (temporalFilterCriterion != null) {
+            logArgs += ", filterCriterion";
+            c.add(temporalFilterCriterion);
         }
     }
 
@@ -106,19 +116,21 @@ public abstract class AbstractValueDAO extends TimeCreator {
      *            Indeterminate time restriction to add
      * @return Modified criteria
      */
-    protected Criteria addIndeterminateTimeRestriction(Criteria c, SosIndeterminateTime sosIndeterminateTime) {
-        // get extrema indeterminate time
-        c.setProjection(getIndeterminateTimeExtremaProjection(sosIndeterminateTime));
-        Timestamp indeterminateExtremaTime = (Timestamp) c.uniqueResult();
-
-        // reset criteria
-        // see http://stackoverflow.com/a/1472958/193435
-        c.setProjection(null);
-        c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-
-        // get observations with exactly the extrema time
-        c.add(Restrictions.eq(getIndeterminateTimeFilterProperty(sosIndeterminateTime), indeterminateExtremaTime));
-
+    protected Criteria addIndeterminateTimeRestriction(Criteria c, SosIndeterminateTime sosIndeterminateTime, String logArgs) {
+        if (sosIndeterminateTime != null) {
+            // get extrema indeterminate time
+            c.setProjection(getIndeterminateTimeExtremaProjection(sosIndeterminateTime));
+            Timestamp indeterminateExtremaTime = (Timestamp) c.uniqueResult();
+    
+            // reset criteria
+            // see http://stackoverflow.com/a/1472958/193435
+            c.setProjection(null);
+            c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    
+            // get observations with exactly the extrema time
+            c.add(Restrictions.eq(getIndeterminateTimeFilterProperty(sosIndeterminateTime), indeterminateExtremaTime));
+            logArgs += ", sosIndeterminateTime";
+        }
         // not really necessary to return the Criteria object, but useful if we
         // want to chain
         return c;
@@ -168,17 +180,19 @@ public abstract class AbstractValueDAO extends TimeCreator {
      *            Start row
      * @param request 
      */
-    protected void addChunkValuesToCriteria(Criteria c, int chunkSize, int currentRow, GetObservationRequest request) {
+    protected void addChunkValuesToCriteria(Criteria c, int chunkSize, int currentRow, AbstractObservationRequest request) {
         if (chunkSize > 0) {
             c.setMaxResults(chunkSize).setFirstResult(currentRow);
         }
     }
     
-    protected String getOrderColumn(GetObservationRequest request) {
-        if (request.isSetTemporalFilter()) {
-            TemporalFilter filter = request.getTemporalFilters().iterator().next();
-            if (filter.getValueReference().contains(AbstractTemporalReferencedObservation.RESULT_TIME)) {
-               return AbstractTemporalReferencedObservation.RESULT_TIME;
+    protected String getOrderColumn(AbstractObservationRequest request) {
+        if (request instanceof GetObservationRequest) {
+            if (((GetObservationRequest)request).isSetTemporalFilter()) {
+                TemporalFilter filter = ((GetObservationRequest)request).getTemporalFilters().iterator().next();
+                if (filter.getValueReference().contains(AbstractTemporalReferencedObservation.RESULT_TIME)) {
+                   return AbstractTemporalReferencedObservation.RESULT_TIME;
+                }
             }
         }
         return AbstractTemporalReferencedObservation.PHENOMENON_TIME_START;

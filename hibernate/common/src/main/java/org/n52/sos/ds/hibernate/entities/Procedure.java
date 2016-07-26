@@ -35,14 +35,14 @@ import java.util.Set;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasCoordinate;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasDeletedFlag;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasDisabledFlag;
-import org.n52.sos.util.CollectionHelper;
-import org.n52.sos.util.Constants;
-
-import com.google.common.collect.Sets;
-
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasGeometry;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasParentChilds;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasProcedureDescriptionFormat;
+import org.n52.sos.util.CollectionHelper;
+import org.n52.sos.util.Constants;
+import org.n52.sos.util.StringHelper;
+
+import com.google.common.collect.Sets;
 
 /**
  * @since 4.0.0
@@ -84,6 +84,10 @@ public class Procedure extends SpatialEntity implements Serializable, HasDeleted
     
     private boolean isAggregation;
     
+    private boolean mobile = false;
+    
+    private boolean insitu = true;
+    
     private Set<Procedure> childs = Sets.newHashSet();
 
     private Set<Procedure> parents = Sets.newHashSet();
@@ -122,6 +126,10 @@ public class Procedure extends SpatialEntity implements Serializable, HasDeleted
 
     public void setDescriptionFile(String descriptionFile) {
         this.descriptionFile = descriptionFile;
+    }
+    
+    public boolean isSetDescriptionFile() {
+        return StringHelper.isNotEmpty(descriptionFile);
     }
 
     @Override
@@ -219,6 +227,48 @@ public class Procedure extends SpatialEntity implements Serializable, HasDeleted
      */
     public void setIsAggregation(boolean isAggregation) {
         this.isAggregation = isAggregation;
+    }
+    
+    /**
+     * @return the mobile
+     */
+    public boolean isMobile() {
+        return mobile;
+    }
+    
+    /**
+     * @return the mobile
+     */
+    public boolean getMobile() {
+        return mobile;
+    }
+
+    /**
+     * @param mobile the mobile to set
+     */
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
+    }
+    
+    /**
+     * @return the insitu
+     */
+    public boolean isInsitu() {
+        return insitu;
+    }
+    
+    /**
+     * @return the insitu
+     */
+    public boolean getInsitu() {
+        return insitu;
+    }
+
+    /**
+     * @param insitu the insitu to set
+     */
+    public void setInsitu(boolean insitu) {
+        this.insitu = insitu;
     }
     
     @Override

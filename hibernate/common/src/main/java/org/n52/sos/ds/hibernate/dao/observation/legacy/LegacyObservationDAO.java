@@ -51,11 +51,11 @@ import org.hibernate.spatial.criterion.SpatialProjections;
 import org.n52.sos.ds.hibernate.dao.observation.AbstractObservationDAO;
 import org.n52.sos.ds.hibernate.dao.observation.ObservationContext;
 import org.n52.sos.ds.hibernate.dao.observation.ObservationFactory;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
 import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.Procedure;
+import org.n52.sos.ds.hibernate.entities.feature.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.observation.AbstractObservation;
 import org.n52.sos.ds.hibernate.entities.observation.AbstractTemporalReferencedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.Observation;
@@ -236,6 +236,38 @@ public class LegacyObservationDAO extends AbstractObservationDAO {
         LOGGER.debug("QUERY ObservationDAO.getObservationIdentifiers(procedureIdentifier): {}",
                 HibernateHelper.getSqlString(criteria));
         return criteria.list();
+    }
+
+    @Override
+    public ScrollableResults getObservations(Set<String> procedure, Set<String> observableProperty,
+            Set<String> featureOfInterest, Set<String> offering, Criterion filterCriterion, Session session) {
+        final Criteria c = getDefaultObservationCriteria(session);
+        if (CollectionHelper.isNotEmpty(procedure)) {
+            c.createCriteria(Observation.PROCEDURE)
+                    .add(Restrictions.in(Procedure.IDENTIFIER, procedure));
+        }
+
+        if (CollectionHelper.isNotEmpty(observableProperty)) {
+            c.createCriteria(Observation.OBSERVABLE_PROPERTY).add(
+                    Restrictions.in(ObservableProperty.IDENTIFIER, observableProperty));
+        }
+
+        if (CollectionHelper.isNotEmpty(featureOfInterest)) {
+            c.createCriteria(Observation.FEATURE_OF_INTEREST).add(
+                    Restrictions.in(FeatureOfInterest.IDENTIFIER, featureOfInterest));
+        }
+
+        if (CollectionHelper.isNotEmpty(offering)) {
+            c.createCriteria(Observation.OFFERINGS).add(Restrictions.in(Offering.IDENTIFIER, offering));
+        }
+
+        String logArgs = "request, features, offerings";
+        if (filterCriterion != null) {
+            logArgs += ", filterCriterion";
+            c.add(filterCriterion);
+        }
+        LOGGER.debug("QUERY getObservations({}): {}", logArgs, HibernateHelper.getSqlString(c));
+        return c.scroll(ScrollMode.FORWARD_ONLY);
     }
 
     @SuppressWarnings("unchecked")

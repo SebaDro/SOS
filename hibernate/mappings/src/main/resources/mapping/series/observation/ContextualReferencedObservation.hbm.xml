@@ -12,8 +12,6 @@
         <discriminator formula="(SELECT 'NUMERIC_VALUE')" type="string"/>
         <many-to-one name="series"
                      class="org.n52.sos.ds.hibernate.entities.observation.series.Series"
-                     fetch="select"
-                     lazy="no-proxy"
                      foreign-key="observationSeriesFk" insert="false" update="false">
             <column index="obsSeriesIdx"
                     name="seriesId"
@@ -50,8 +48,6 @@
         </property>
         <many-to-one name="codespace"
                      class="org.n52.sos.ds.hibernate.entities.Codespace"
-                     fetch="select"
-                     lazy="no-proxy"
                      foreign-key="obsCodespaceIdentifierFk">
             <formula>null</formula>
         </many-to-one>

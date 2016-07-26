@@ -35,11 +35,11 @@ import org.n52.sos.ogc.om.values.CategoryValue;
 import org.n52.sos.ogc.om.values.ComplexValue;
 import org.n52.sos.ogc.om.values.CountValue;
 import org.n52.sos.ogc.om.values.CvDiscretePointCoverage;
-import org.n52.sos.ogc.om.values.GWGeologyLogCoverage;
 import org.n52.sos.ogc.om.values.GeometryValue;
 import org.n52.sos.ogc.om.values.HrefAttributeValue;
 import org.n52.sos.ogc.om.values.MultiPointCoverage;
 import org.n52.sos.ogc.om.values.NilTemplateValue;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.QuantityValue;
 import org.n52.sos.ogc.om.values.RectifiedGridCoverage;
 import org.n52.sos.ogc.om.values.ReferenceValue;
@@ -49,6 +49,7 @@ import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.om.values.UnknownValue;
 import org.n52.sos.ogc.om.values.Value;
+import org.n52.sos.ogc.om.values.XmlValue;
 import org.n52.sos.ogc.om.values.visitor.ValueVisitor;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 
@@ -95,6 +96,14 @@ public class FeatureParameterFactory implements ValueVisitor<ValuedParameter<?>>
 
     public FeatureTextValuedParameter text() throws OwsExceptionReport {
         return instantiate(textClass());
+    }
+    
+    public Class<? extends FeatureXmlValuedParameter> xmlClass() {
+        return FeatureXmlValuedParameter.class;
+    }
+    
+    public FeatureXmlValuedParameter xml() throws OwsExceptionReport {
+        return instantiate(xmlClass());
     }
 
     private <T extends ValuedParameter<?>> T instantiate(Class<T> c) throws OwsExceptionReport {
@@ -193,8 +202,14 @@ public class FeatureParameterFactory implements ValueVisitor<ValuedParameter<?>>
     }
 
     @Override
-    public ValuedParameter<?> visit(GWGeologyLogCoverage value) throws OwsExceptionReport {
+    public ValuedParameter<?> visit(ProfileValue value) throws OwsExceptionReport {
         throw notSupported(value);
+    }
+
+    @Override
+    public ValuedParameter<?> visit(XmlValue value) throws OwsExceptionReport {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private OwsExceptionReport notSupported(Value<?> value)

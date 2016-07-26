@@ -147,6 +147,10 @@
 		<td style="padding:3px;width:70%;">The <a target="_blank" href="http://www.ioos.noaa.gov">IOOS</a> project with the mission: <br/>Lead the integration of ocean, coastal, and Great Lakes observing capabilities, in collaboration with Federal and non-Federal partners, to maximize access to data and generation of information products, inform decision making, and promote economic, environmental, and social benefits to our Nation and the world. </td>
 	</tr>
 	<tr>
+		<td align="center" style="padding:3px;width:30%;"><a target="_blank" href="http://www.brgm.fr/"><img alt="BRGM - Bureau de Recherches Géologiques et Minières" align="middle" width="172" src="<c:url value="/static/images/funding/173px-Logo_BRGM.svg.png"/>"/></a></td>
+		<td style="padding:3px;width:70%;"><a href="http://www.brgm.fr/" title="BRGM">BRGM</a>, the French geological survey, is France's reference public institution for Earth Science applications in the management of surface and subsurface resources and risks.</td>
+	</tr>
+	<tr>
 		<td align="center" style="padding:3px;width:30%;"><a target="_blank" href="http://www.wupperverband.de"><img alt="Wupperverband" align="middle" width="196" src="<c:url value="/static/images/funding/logo_wv.jpg"/>"/></a></td>
 		<td style="padding:3px;width:70%;">The <a target="_blank" href="http://www.wupperverband.de/">Wupperverband</a> for water, humans and the environment (Germany)</td>
 	</tr>

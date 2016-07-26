@@ -67,6 +67,9 @@ import org.n52.sos.ogc.sos.SosConstants;
 import org.n52.sos.ogc.swe.SweDataRecord;
 import org.n52.sos.ogc.swe.SweField;
 import org.n52.sos.ogc.swe.simpleType.SweAbstractUomType;
+import org.n52.sos.ogc.swe.simpleType.SweBoolean;
+import org.n52.sos.ogc.swes.SwesExtensionImpl;
+import org.n52.sos.request.AbstractObservationRequest;
 import org.n52.sos.request.AbstractServiceRequest;
 import org.n52.sos.request.GetObservationRequest;
 import org.n52.sos.request.InsertObservationRequest;
@@ -75,12 +78,10 @@ import org.n52.sos.response.GetObservationResponse;
 import org.n52.sos.response.InsertObservationResponse;
 import org.n52.sos.service.Configurator;
 import org.n52.sos.service.profile.Profile;
-import org.n52.sos.util.http.MediaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.n52.sos.util.DateTimeHelper;
 import org.n52.sos.util.OMHelper;
 import org.n52.sos.util.http.HTTPStatus;
+import org.n52.sos.util.http.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,6 +130,8 @@ public class SplitMergeObservations
     public AbstractServiceRequest<?> modifyRequest(AbstractServiceRequest<?> request) throws OwsExceptionReport {
         if (request instanceof InsertObservationRequest) {
             splitObservations((InsertObservationRequest) request);
+        } else if (request instanceof AbstractObservationRequest) {
+            checkGetObservationRequest((AbstractObservationRequest) request);
         }
         return request;
     }
@@ -136,6 +139,17 @@ public class SplitMergeObservations
     private void splitObservations(InsertObservationRequest request) throws OwsExceptionReport {
         if (request.isSetExtensionSplitDataArrayIntoObservations()) {
             splitDataArrayIntoObservations(request);
+        }
+    }
+
+    private void checkGetObservationRequest(AbstractObservationRequest request) {
+        if (request.isSetResultModel()) {
+            if (OmConstants.OBS_TYPE_SWE_ARRAY_OBSERVATION.equals(request.getResultModel())) {
+                request.addExtension(new SwesExtensionImpl<SweBoolean>()
+                        .setDefinition(Sos2Constants.Extensions.MergeObservationsIntoDataArray.name())
+                        .setValue((SweBoolean) new SweBoolean().setValue(true)
+                                .setDefinition(Sos2Constants.Extensions.MergeObservationsIntoDataArray.name())));
+            }
         }
     }
 
@@ -306,33 +320,10 @@ public class SplitMergeObservations
         // TODO merge all observations with the same observationContellation
         // FIXME Failed to set the observation type to sweArrayObservation for
         // the merged Observations
-        // (proc, obsProp, foi)
+        // (proc, obsProp, foi, off)
         if (response.getObservationCollection() != null) {
             ObservationMerger observationMerger = new ObservationMerger();
-            response.setObservationCollection(observationMerger.mergeObservations(response.getObservationCollection(), new ObservationMergeIndicator()));
-//            
-//            final List<OmObservation> mergedObservations = new LinkedList<OmObservation>();
-//            int obsIdCounter = 1;
-//            for (final OmObservation sosObservation : response.getObservationCollection()) {
-//                if (mergedObservations.isEmpty()) {
-//                    sosObservation.setObservationID(Integer.toString(obsIdCounter++));
-//                    mergedObservations.add(sosObservation);
-//                } else {
-//                    boolean combined = false;
-//                    for (final OmObservation combinedSosObs : mergedObservations) {
-//                        if (combinedSosObs.checkForMerge(sosObservation)) {
-//                            combinedSosObs.setResultTime(null);
-//                            combinedSosObs.mergeWithObservation(sosObservation);
-//                            combined = true;
-//                            break;
-//                        }
-//                    }
-//                    if (!combined) {
-//                        mergedObservations.add(sosObservation);
-//                    }
-//                }
-//            }
-//            response.setObservationCollection(mergedObservations);
+            response.setObservationCollection(observationMerger.mergeObservations(response.getObservationCollection(), ObservationMergeIndicator.defaultObservationMergerIndicator()));
         }
     }
 
@@ -361,12 +352,24 @@ public class SplitMergeObservations
                 }
             }
 
-            if (encoder != null) {
-                return encoder.shouldObservationsWithSameXBeMerged();
+            if (encoder != null && encoder.shouldObservationsWithSameXBeMerged()) {
+                if (Sos1Constants.SERVICEVERSION.equals(response.getVersion())) {
+                    return checkResultModel(response);
+                }
+                return true;
             }
 
         }
         return false;
+    }
+
+    private boolean checkResultModel(GetObservationResponse response) {
+        if (response.isSetResultModel()) {
+            if (!OmConstants.OBS_TYPE_OBSERVATION.equals(response.getResultModel())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private AbstractServiceResponse mergeObservations(GetObservationResponse response) throws OwsExceptionReport {
@@ -398,7 +401,6 @@ public class SplitMergeObservations
 
     @Override
     public RequestResponseModifierFacilitator getFacilitator() {
-        // TODO Auto-generated method stub
         return new RequestResponseModifierFacilitator().setMerger(true).setSplitter(true);
     }
 

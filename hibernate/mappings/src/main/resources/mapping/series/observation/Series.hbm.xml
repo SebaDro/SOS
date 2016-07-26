@@ -10,9 +10,7 @@
             </generator>
         </id>
         <many-to-one name="featureOfInterest"
-                     class="org.n52.sos.ds.hibernate.entities.FeatureOfInterest"
-                     fetch="select"
-                     lazy="no-proxy"
+                     class="org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest"
                      foreign-key="seriesFeatureFk">
             <column index="seriesFeatureIdx"
                     name="featureOfInterestId"
@@ -22,8 +20,6 @@
         </many-to-one>
         <many-to-one name="observableProperty"
                      class="org.n52.sos.ds.hibernate.entities.ObservableProperty"
-                     fetch="select"
-                     lazy="no-proxy"
                      foreign-key="seriesObPropFk">
             <column index="seriesObsPropIdx"
                     name="observablePropertyId"
@@ -33,8 +29,6 @@
         </many-to-one>
         <many-to-one name="procedure"
                      class="org.n52.sos.ds.hibernate.entities.Procedure"
-                     fetch="select"
-                     lazy="no-proxy"
                      foreign-key="seriesProcedureFk">
             <column index="seriesProcedureIdx"
                     name="procedureId"
@@ -54,7 +48,7 @@
             <formula>'F'</formula>
         </property>
         <property name="published"
-        			type="org.hibernate.type.TrueFalseType">
+                    type="org.hibernate.type.TrueFalseType">
             <formula>'T'</formula>
         </property>
         <property name="hiddenChild"
@@ -88,12 +82,40 @@
         </property>
         <many-to-one name="unit"
                      class="org.n52.sos.ds.hibernate.entities.Unit"
-                     fetch="select"
-                     lazy="no-proxy"
                      foreign-key="seriesUnitFk" insert="false" update="false">
             <column name="seriesId"
                     not-null="false" >
             </column>
         </many-to-one>
+        <property name="identifier" type="string">
+            <column name="identifier" not-null="false" unique-key="seriesIdentifierUK">
+                <comment>The identifier of the series, gml:identifier. Unique</comment>
+            </column>
+        </property>
+        <many-to-one name="codespace" class="org.n52.sos.ds.hibernate.entities.Codespace" foreign-key="seriesCodespaceIdentifierFk">
+            <column name="codespace">
+                <comment>Relation/foreign key to the codespace table. Contains the gml:identifier codespace. Optional</comment>
+            </column>
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name">
+                <comment>The name of the series, gml:name. Optional</comment>
+            </column>
+        </property>
+        <many-to-one name="codespaceName" class="org.n52.sos.ds.hibernate.entities.Codespace" foreign-key="seriesCodespaceNameFk">
+            <column name="codespaceName">
+                <comment>Relation/foreign key to the codespace table. Contains the gml:name codespace. Optional</comment>
+            </column>
+        </many-to-one>
+        <property name="description" type="string">
+            <column name="description">
+                <comment>Description of the series, gml:description. Optional</comment>
+            </column>
+        </property>
+        <property name="seriesType" type="string">
+            <column name="seriesType" not-null="false">
+                <comment>Definition of the series type, e.g. measurement for OM_Measurement. Optional</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

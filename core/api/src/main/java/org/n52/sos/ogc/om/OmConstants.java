@@ -166,7 +166,7 @@ public interface OmConstants {
     String EN_NAMED_VALUE = "NamedValue";
 
     String EN_VALID_TIME = "validTime";
-
+    
     // /////////////////////////////////////////////////////////////////////////////////
     // other constants
     String PHEN_SAMPLING_TIME = "http://www.opengis.net/def/property/OGC/0/SamplingTime";
@@ -189,9 +189,31 @@ public interface OmConstants {
 
     String PARAM_NAME_SAMPLING_GEOMETRY = "http://www.opengis.net/def/param-name/OGC-OM/2.0/samplingGeometry";
   
-    String PARAMETER_NAME_DEPTH = "http://www.opengis.net/def/param-name/OGC-OM/2.0/depth";
+    String PARAMETER_NAME_DEPTH_URL = "http://www.opengis.net/def/param-name/OGC-OM/2.0/depth";
   
-    String PARAMETER_NAME_HEIGHT = "http://www.opengis.net/def/param-name/OGC-OM/2.0/height";
+    String PARAMETER_NAME_HEIGHT_URL = "http://www.opengis.net/def/param-name/OGC-OM/2.0/height";
+    
+    String PARAMETER_NAME_DEPTH = "depth";
+    
+    String PARAMETER_NAME_HEIGHT = "height";
+    
+    String PARAMETER_NAME_ELEVATION = "elevation";
+    
+    String PARAMETER_NAME_FROM = "from";
+    
+    String PARAMETER_NAME_TO = "to";
+    
+    String PARAMETER_NAME_FROM_DEPTH = "fromDepth";
+    
+    String PARAMETER_NAME_TO_DEPTH = "toDepth";
+    
+    String PARAMETER_NAME_FROM_HEIGHT = "fromHeight";
+    
+    String PARAMETER_NAME_TO_HEIGHT = "toHeight";
+    
+    String PARAMETER_NAME_FROM_ELEVATION = "fromEelvation";
+    
+    String PARAMETER_NAME_TO_ELEVATION = "toElevation";
 
     // observation types
     String OBS_TYPE_MEASUREMENT = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement";
@@ -277,7 +299,7 @@ public interface OmConstants {
     QName QN_OM_20_PARAMETER = new QName(NS_OM_2, EN_PARAMETER, NS_OM_PREFIX);
 
     QName QN_OM_20_NAMED_VALUE = new QName(NS_OM_2, EN_NAMED_VALUE, NS_OM_PREFIX);
-
+    
     Set<String> OBSERVATION_TYPES = ImmutableSet.of(
             OBS_TYPE_MEASUREMENT,
             OBS_TYPE_CATEGORY_OBSERVATION,

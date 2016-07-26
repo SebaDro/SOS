@@ -37,10 +37,10 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.n52.sos.ds.hibernate.dao.observation.AbstractValueDAO;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.Procedure;
+import org.n52.sos.ds.hibernate.entities.feature.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.observation.legacy.AbstractValuedLegacyObservation;
 import org.n52.sos.ds.hibernate.entities.observation.legacy.TemporalReferencedLegacyObservation;
 import org.n52.sos.ds.hibernate.util.HibernateHelper;
@@ -317,14 +317,8 @@ public class ValueTimeDAO extends AbstractValueDAO {
         }
 
         String logArgs = "request, series, offerings";
-        if (temporalFilterCriterion != null) {
-            logArgs += ", filterCriterion";
-            c.add(temporalFilterCriterion);
-        }
-        if (sosIndeterminateTime != null) {
-            logArgs += ", sosIndeterminateTime";
-            addIndeterminateTimeRestriction(c, sosIndeterminateTime);
-        }
+        addTemporalFilterCriterion(c, temporalFilterCriterion, logArgs);
+        addIndeterminateTimeRestriction(c, sosIndeterminateTime, logArgs);
         addSpecificRestrictions(c, request);
         LOGGER.debug("QUERY getObservationFor({}): {}", logArgs, HibernateHelper.getSqlString(c));
         return c;

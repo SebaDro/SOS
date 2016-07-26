@@ -38,20 +38,13 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
-import net.opengis.om.x20.OMObservationType;
-
 import org.apache.xmlbeans.XmlBoolean;
 import org.apache.xmlbeans.XmlInteger;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.n52.sos.encode.streaming.OmV20XmlStreamWriter;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
 import org.n52.sos.exception.ows.concrete.UnsupportedEncoderInputException;
-import org.n52.sos.ogc.gml.GmlConstants;
-import org.n52.sos.ogc.gwml.GWMLConstants;
 import org.n52.sos.ogc.om.AbstractObservationValue;
 import org.n52.sos.ogc.om.MultiObservationValues;
 import org.n52.sos.ogc.om.NamedValue;
@@ -65,11 +58,11 @@ import org.n52.sos.ogc.om.values.CategoryValue;
 import org.n52.sos.ogc.om.values.ComplexValue;
 import org.n52.sos.ogc.om.values.CountValue;
 import org.n52.sos.ogc.om.values.CvDiscretePointCoverage;
-import org.n52.sos.ogc.om.values.GWGeologyLogCoverage;
 import org.n52.sos.ogc.om.values.GeometryValue;
 import org.n52.sos.ogc.om.values.HrefAttributeValue;
 import org.n52.sos.ogc.om.values.MultiPointCoverage;
 import org.n52.sos.ogc.om.values.NilTemplateValue;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.QuantityValue;
 import org.n52.sos.ogc.om.values.RectifiedGridCoverage;
 import org.n52.sos.ogc.om.values.ReferenceValue;
@@ -78,6 +71,7 @@ import org.n52.sos.ogc.om.values.TLVTValue;
 import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.om.values.UnknownValue;
+import org.n52.sos.ogc.om.values.XmlValue;
 import org.n52.sos.ogc.om.values.visitor.ValueVisitor;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sensorML.SensorMLConstants;
@@ -94,9 +88,13 @@ import org.n52.sos.util.StringHelper;
 import org.n52.sos.util.SweHelper;
 import org.n52.sos.util.http.MediaType;
 import org.n52.sos.w3c.SchemaLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
+
+import net.opengis.om.x20.OMObservationType;
 
 public class OmEncoderv20 extends AbstractOmEncoderv20 {
 
@@ -105,7 +103,7 @@ public class OmEncoderv20 extends AbstractOmEncoderv20 {
      * file
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(OmEncoderv20.class);
-    
+
     private static final Set<EncoderKey> ENCODER_KEYS = CodingHelper.encoderKeysForElements(OmConstants.NS_OM_2,
             OmObservation.class, NamedValue.class, SingleObservationValue.class, MultiObservationValues.class);
 
@@ -143,7 +141,7 @@ public class OmEncoderv20 extends AbstractOmEncoderv20 {
     
 
     @Override
-    public Map<String, Set<String>> getSupportedResponseFormatObsrevationTypes() {
+    public Map<String, Set<String>> getSupportedResponseFormatObservationTypes() {
         return Collections.singletonMap(OmConstants.NS_OM_2, getSupportedTypes().get(SupportedTypeKey.ObservationType));
     }
 
@@ -248,7 +246,7 @@ public class OmEncoderv20 extends AbstractOmEncoderv20 {
 
     @Override
     public String getDefaultFeatureEncodingNamespace() {
-        return SfConstants.NS_SAMS;
+        return null;
     }
 
     @Override
@@ -259,6 +257,11 @@ public class OmEncoderv20 extends AbstractOmEncoderv20 {
     @Override
     protected boolean convertEncodedProcedure() {
         return false;
+    }
+    
+    @Override
+    protected void addAddtitionalInformation(OMObservationType omot, OmObservation observation) throws OwsExceptionReport {
+        // do nothing
     }
 
     private XmlObject createSingleObservationToResult(final SingleObservationValue<?> observationValue) throws OwsExceptionReport {
@@ -466,6 +469,12 @@ public class OmEncoderv20 extends AbstractOmEncoderv20 {
         }
 
         @Override
+        public XmlObject visit(XmlValue value)
+                throws OwsExceptionReport {
+            return null;
+        }
+
+        @Override
         public XmlObject visit(CvDiscretePointCoverage value) throws OwsExceptionReport {
             return null;
         }
@@ -481,7 +490,7 @@ public class OmEncoderv20 extends AbstractOmEncoderv20 {
         }
 
         @Override
-        public XmlObject visit(GWGeologyLogCoverage value) throws OwsExceptionReport {
+        public XmlObject visit(ProfileValue value) throws OwsExceptionReport {
             return  CodingHelper.encodeObjectToXmlPropertyType(value.getDefaultElementEncoding(), value);
         }
 

@@ -30,11 +30,12 @@ package org.n52.sos.iso.gmd;
 
 import java.util.Set;
 
+import org.n52.sos.iso.gco.AbtractGmd;
 import org.n52.sos.util.CollectionHelper;
 
 import com.google.common.collect.Sets;
 
-public class PT_FreeText {
+public class PT_FreeText extends AbtractGmd {
     
     private Set<LocalisedCharacterString> textGroup = Sets.newHashSet();
 

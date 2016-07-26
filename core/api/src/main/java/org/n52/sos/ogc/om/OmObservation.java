@@ -113,6 +113,8 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
     private Set<OmObservationContext> relatedObservations = Sets.newHashSet();
     
     private String additionalMergeIndicator;
+    
+    private String seriesType;
 
     /**
      * constructor
@@ -358,7 +360,7 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
     /**
      * Merge this observation with passed observation
      * 
-     * @param sosObservation
+     * @param observationValue
      *            Observation to merge
      */
     public void mergeWithObservation(ObservationValue<?> observationValue) {
@@ -648,7 +650,9 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
     
     private boolean isHeightParameter(NamedValue<?> namedValue) {
         return namedValue.isSetName() && namedValue.getName().isSetHref()
-                && namedValue.getName().getHref().equals(OmConstants.PARAMETER_NAME_HEIGHT)
+                && (namedValue.getName().getHref().equals(OmConstants.PARAMETER_NAME_HEIGHT_URL)
+                 || namedValue.getName().getHref().equals(OmConstants.PARAMETER_NAME_HEIGHT)
+                 || namedValue.getName().getHref().equals(OmConstants.PARAMETER_NAME_ELEVATION))
                 && namedValue.getValue() instanceof QuantityValue;
     }
 
@@ -687,7 +691,8 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
     
     private boolean isDepthParameter(NamedValue<?> namedValue) {
         return namedValue.isSetName() && namedValue.getName().isSetHref()
-                && namedValue.getName().getHref().equals(OmConstants.PARAMETER_NAME_DEPTH)
+                && (namedValue.getName().getHref().equals(OmConstants.PARAMETER_NAME_DEPTH_URL)
+                || namedValue.getName().getHref().equals(OmConstants.PARAMETER_NAME_DEPTH))
                 && namedValue.getValue() instanceof QuantityValue;
     }
     
@@ -717,13 +722,27 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
        return cloneTemplate(new OmObservation());
     }
     
+    public OmObservation cloneTemplate(boolean withIdentifierNameDesription) {
+        OmObservation clonedTemplate = cloneTemplate(new OmObservation());
+        if (withIdentifierNameDesription) {
+            clonedTemplate.setIdentifier(this.getIdentifier());
+            clonedTemplate.setName(this.getName());
+            clonedTemplate.setDescription(this.getDescription());
+            
+        }
+        return clonedTemplate;
+     }
+    
     protected OmObservation cloneTemplate(OmObservation clone) {
         clone.setObservationConstellation(this.getObservationConstellation());
+        clone.setMetaDataProperty(this.getMetaDataProperty());
         clone.setParameter(this.getParameter());
+        clone.setRelatedObservations(this.getRelatedObservations());
         clone.setResultType(this.getResultType());
         clone.setTokenSeparator(this.getTokenSeparator());
         clone.setTupleSeparator(this.getTupleSeparator());
         clone.setDecimalSeparator(this.getDecimalSeparator());
+        clone.setSeriesType(this.getSeriesType());
         return clone;
     }
     
@@ -741,6 +760,7 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
         copyOf.setTupleSeparator(getTupleSeparator());
         copyOf.setDecimalSeparator(getDecimalSeparator());
         copyOf.setResultQuality(getResultQuality());
+        copyOf.setRelatedObservations(getRelatedObservations());
         copyOf.setAdditionalMergeIndicator(getAdditionalMergeIndicator());
         return copyOf;
     } 
@@ -824,7 +844,6 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
      *            the relatedObservations to set
      */
     public void addRelatedObservation(OmObservationContext relatedObservation) {
-        ;
         this.relatedObservations.add(relatedObservation);
     }
 
@@ -860,5 +879,22 @@ public class OmObservation extends AbstractFeature implements Serializable, Attr
         }
         return getObservationConstellation().equals(observation.getObservationConstellation()) && merge && getObservationConstellation().checkObservationTypeForMerging();
     }
+
+    /**
+     * @return the seriesType
+     */
+    public String getSeriesType() {
+        return seriesType;
+    }
+
+    /**
+     * @param seriesType the seriesType to set
+     */
+    public void setSeriesType(String seriesType) {
+        this.seriesType = seriesType;
+    }
     
+    public boolean isSetSeriesType() {
+        return !Strings.isNullOrEmpty(getSeriesType());
+    }
 }

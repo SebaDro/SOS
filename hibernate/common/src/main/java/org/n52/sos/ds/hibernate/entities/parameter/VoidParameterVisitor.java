@@ -28,16 +28,11 @@
  */
 package org.n52.sos.ds.hibernate.entities.parameter;
 
-import org.n52.sos.ds.hibernate.entities.parameter.BooleanValuedParameter;
-import org.n52.sos.ds.hibernate.entities.parameter.CategoryValuedParameter;
-import org.n52.sos.ds.hibernate.entities.parameter.CountValuedParameter;
-import org.n52.sos.ds.hibernate.entities.parameter.QuantityValuedParameter;
-import org.n52.sos.ds.hibernate.entities.parameter.TextValuedParameter;
 import org.n52.sos.ogc.om.NamedValue;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 
 public abstract class VoidParameterVisitor implements ParameterVisitor<Void> {
-    
+
     protected abstract void _visit(QuantityValuedParameter p)
             throws OwsExceptionReport;
 
@@ -52,7 +47,10 @@ public abstract class VoidParameterVisitor implements ParameterVisitor<Void> {
 
     protected abstract void _visit(TextValuedParameter p)
             throws OwsExceptionReport;
-    
+
+    protected abstract void _visit(XmlValuedParameter p)
+            throws OwsExceptionReport;
+
 
     @Override
     public NamedValue<Void> visit(QuantityValuedParameter p)
@@ -84,6 +82,13 @@ public abstract class VoidParameterVisitor implements ParameterVisitor<Void> {
 
     @Override
     public NamedValue<Void> visit(TextValuedParameter p)
+            throws OwsExceptionReport {
+        _visit(p);
+        return null;
+    }
+
+    @Override
+    public NamedValue<Void> visit(XmlValuedParameter p)
             throws OwsExceptionReport {
         _visit(p);
         return null;

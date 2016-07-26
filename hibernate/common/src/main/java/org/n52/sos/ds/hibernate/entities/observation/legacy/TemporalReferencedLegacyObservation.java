@@ -28,10 +28,10 @@
  */
 package org.n52.sos.ds.hibernate.entities.observation.legacy;
 
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasWriteableObservationContext;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.Procedure;
+import org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.observation.AbstractTemporalReferencedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.TemporalReferencedObservation;
 
@@ -49,7 +49,7 @@ public class TemporalReferencedLegacyObservation
 
     private ObservableProperty observableProperty;
     private Procedure procedure;
-    private FeatureOfInterest featureOfInterest;
+    private AbstractFeatureOfInterest featureOfInterest;
 
     @Override
     public ObservableProperty getObservableProperty() {
@@ -72,12 +72,12 @@ public class TemporalReferencedLegacyObservation
     }
 
     @Override
-    public FeatureOfInterest getFeatureOfInterest() {
+    public AbstractFeatureOfInterest getFeatureOfInterest() {
         return this.featureOfInterest;
     }
 
     @Override
-    public void setFeatureOfInterest(FeatureOfInterest featureOfInterest) {
+    public void setFeatureOfInterest(AbstractFeatureOfInterest featureOfInterest) {
         this.featureOfInterest = featureOfInterest;
     }
 

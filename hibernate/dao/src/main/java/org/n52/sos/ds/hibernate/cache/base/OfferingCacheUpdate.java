@@ -48,7 +48,6 @@ import org.n52.sos.ds.hibernate.entities.TOffering;
 import org.n52.sos.ds.hibernate.util.ObservationConstellationInfo;
 import org.n52.sos.ds.hibernate.util.OfferingTimeExtrema;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
-import org.n52.sos.util.CacheHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,9 +109,8 @@ public class OfferingCacheUpdate extends AbstractQueueingDatasourceCacheUpdate<O
         for (Offering offering : getOfferingsToUpdate()) {
             String offeringId = offering.getIdentifier();
             if (shouldOfferingBeProcessed(offeringId)) {
-                String prefixedOfferingId = CacheHelper.addPrefixOrGetOfferingIdentifier(offeringId);
-                getCache().addOffering(prefixedOfferingId);
-                getCache().setAllowedObservationTypeForOffering(prefixedOfferingId,
+                getCache().addOffering(offeringId);
+                getCache().setAllowedObservationTypeForOffering(offeringId,
                         getObservationTypesFromObservationType(offering.getObservationTypes()));
 
                 if (offering instanceof TOffering) {
@@ -120,10 +118,12 @@ public class OfferingCacheUpdate extends AbstractQueueingDatasourceCacheUpdate<O
                     // Related features
                     Set<String> relatedFeatures = getRelatedFeatureIdentifiersFrom(tOffering);
                     if (!relatedFeatures.isEmpty()) {
-                        getCache().setRelatedFeaturesForOffering(prefixedOfferingId, relatedFeatures);
+                        getCache().setRelatedFeaturesForOffering(offeringId, relatedFeatures);
                     }
+                    getCache().setAllowedObservationTypeForOffering(offeringId,
+                            getObservationTypesFromObservationType(tOffering.getObservationTypes()));
                     // featureOfInterestTypes
-                    getCache().setAllowedFeatureOfInterestTypeForOffering(prefixedOfferingId,
+                    getCache().setAllowedFeatureOfInterestTypeForOffering(offeringId,
                             getFeatureOfInterestTypesFromFeatureOfInterestType(tOffering.getFeatureOfInterestTypes()));
                 }
                 Collection<String> parentOfferings = procedureMap.get(offeringId);

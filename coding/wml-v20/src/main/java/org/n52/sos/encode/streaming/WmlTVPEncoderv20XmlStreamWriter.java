@@ -42,7 +42,7 @@ import org.n52.sos.ogc.om.SingleObservationValue;
 import org.n52.sos.ogc.om.StreamingValue;
 import org.n52.sos.ogc.om.TimeValuePair;
 import org.n52.sos.ogc.om.values.CountValue;
-import org.n52.sos.ogc.om.values.GWGeologyLogCoverage;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.QuantityValue;
 import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
@@ -124,6 +124,11 @@ public class WmlTVPEncoderv20XmlStreamWriter extends AbstractOmV20XmlStreamWrite
         }
     }
 
+    @Override
+    protected void writeAddtitionalNamespaces() throws XMLStreamException {
+        namespace(WaterMLConstants.NS_WML_20_PREFIX, WaterMLConstants.NS_WML_20);
+    }
+
     /**
      * Close written wml:MeasurementTimeseries and om:result tags
      * 
@@ -149,13 +154,13 @@ public class WmlTVPEncoderv20XmlStreamWriter extends AbstractOmV20XmlStreamWrite
     private void writeMeasurementTimeseriesMetadata(String id) throws XMLStreamException {
         start(WaterMLConstants.QN_METADATA);
         writeNewLine();
-        start(WaterMLConstants.QN_TIMESERIES_METADATA);
+        start(WaterMLConstants.QN_MEASUREMENT_TIMESERIES_METADATA);
         writeNewLine();
         empty(WaterMLConstants.QN_TEMPORAL_EXTENT);
         addXlinkHrefAttr("#" + id);
         writeNewLine();
         indent--;
-        end(WaterMLConstants.QN_TIMESERIES_METADATA);
+        end(WaterMLConstants.QN_MEASUREMENT_TIMESERIES_METADATA);
         writeNewLine();
         end(WaterMLConstants.QN_METADATA);
         indent++;
@@ -222,8 +227,8 @@ public class WmlTVPEncoderv20XmlStreamWriter extends AbstractOmV20XmlStreamWrite
         if (value instanceof QuantityValue) {
             QuantityValue quantityValue = (QuantityValue) value;
             return Double.toString(quantityValue.getValue().doubleValue());
-        } else if (value instanceof GWGeologyLogCoverage) {
-            GWGeologyLogCoverage gwglcValue = (GWGeologyLogCoverage)value;
+        } else if (value instanceof ProfileValue) {
+            ProfileValue gwglcValue = (ProfileValue)value;
             if (gwglcValue.isSetValue()) {
                 return getValue(gwglcValue.getValue().iterator().next().getSimpleValue());
             }       

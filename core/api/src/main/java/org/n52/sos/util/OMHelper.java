@@ -43,7 +43,7 @@ import org.n52.sos.ogc.om.values.CategoryValue;
 import org.n52.sos.ogc.om.values.ComplexValue;
 import org.n52.sos.ogc.om.values.CountValue;
 import org.n52.sos.ogc.om.values.CvDiscretePointCoverage;
-import org.n52.sos.ogc.om.values.GWGeologyLogCoverage;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.GeometryValue;
 import org.n52.sos.ogc.om.values.HrefAttributeValue;
 import org.n52.sos.ogc.om.values.MultiPointCoverage;
@@ -57,9 +57,11 @@ import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.om.values.UnknownValue;
 import org.n52.sos.ogc.om.values.Value;
+import org.n52.sos.ogc.om.values.XmlValue;
 import org.n52.sos.ogc.om.values.visitor.ValueVisitor;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.swe.SweAbstractDataComponent;
+import org.n52.sos.ogc.swe.SweDataArray;
 import org.n52.sos.ogc.swe.SweDataRecord;
 import org.n52.sos.ogc.swe.simpleType.SweBoolean;
 import org.n52.sos.ogc.swe.simpleType.SweCategory;
@@ -88,6 +90,8 @@ public final class OMHelper {
                 || SfConstants.FT_SAMPLINGCURVE.equals(featureType)
                 || SfConstants.FT_SAMPLINGSURFACE.equals(featureType)) {
             return SfConstants.NS_SA;
+        } else if (SfConstants.SAMPLING_FEAT_TYPE_SF_SPECIMEN.equals(featureType)) {
+            return SfConstants.NS_SPEC;
         }
         return SfConstants.NS_SAMS;
     }
@@ -105,6 +109,8 @@ public final class OMHelper {
             return OmConstants.OBS_TYPE_CATEGORY_OBSERVATION;
         } else if (component instanceof SweDataRecord) {
             return OmConstants.OBS_TYPE_COMPLEX_OBSERVATION;
+        } else if (component instanceof SweDataArray) {
+            return OmConstants.OBS_TYPE_SWE_ARRAY_OBSERVATION;
         }
         // TODO Check for missing types
         throw new NoApplicableCodeException().withMessage(
@@ -253,6 +259,12 @@ public final class OMHelper {
             return defaultValue();
         }
 
+        @Override
+        public String visit(XmlValue value)
+                throws OwsExceptionReport {
+            return defaultValue();
+        }
+
         private static String defaultValue() {
             return OmConstants.OBS_TYPE_OBSERVATION;
         }
@@ -273,8 +285,8 @@ public final class OMHelper {
         }
 
         @Override
-        public String visit(GWGeologyLogCoverage value) throws OwsExceptionReport {
-            return GWMLConstants.OBS_TYPE_GEOLOGY_LOG_COVERAGE;
+        public String visit(ProfileValue value) throws OwsExceptionReport {
+            return GWMLConstants.OBS_TYPE_GEOLOGY_LOG;
         }
     }
 }

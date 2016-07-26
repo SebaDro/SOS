@@ -47,7 +47,7 @@ import org.n52.sos.ogc.om.values.CategoryValue;
 import org.n52.sos.ogc.om.values.ComplexValue;
 import org.n52.sos.ogc.om.values.CountValue;
 import org.n52.sos.ogc.om.values.CvDiscretePointCoverage;
-import org.n52.sos.ogc.om.values.GWGeologyLogCoverage;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.GeometryValue;
 import org.n52.sos.ogc.om.values.HrefAttributeValue;
 import org.n52.sos.ogc.om.values.MultiPointCoverage;
@@ -61,6 +61,7 @@ import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.om.values.UnknownValue;
 import org.n52.sos.ogc.om.values.Value;
+import org.n52.sos.ogc.om.values.XmlValue;
 import org.n52.sos.ogc.om.values.visitor.ValueVisitor;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sos.SosConstants;
@@ -231,7 +232,6 @@ public abstract class AbstractCVDiscretePointCoverageTypeEncoder<T>
         @Override
         public XmlObject visit(CategoryValue value) throws OwsExceptionReport {
             if (value.isSetValue() && !value.getValue().isEmpty()) {
-                Map<HelperValues, String> additionalValue = new EnumMap<>(HelperValues.class);
                 return encodeGML(value);
             }
             return null;
@@ -321,6 +321,11 @@ public abstract class AbstractCVDiscretePointCoverageTypeEncoder<T>
         }
 
         @Override
+        public XmlObject visit(XmlValue value) throws OwsExceptionReport {
+            return value.getValue();
+        }
+
+        @Override
         public XmlObject visit(UnknownValue value) throws OwsExceptionReport {
             return null;
         }
@@ -341,7 +346,7 @@ public abstract class AbstractCVDiscretePointCoverageTypeEncoder<T>
         }
 
         @Override
-        public XmlObject visit(GWGeologyLogCoverage value) throws OwsExceptionReport {
+        public XmlObject visit(ProfileValue value) throws OwsExceptionReport {
             return CodingHelper.encodeObjectToXml(value.getDefaultElementEncoding(), value);
         }
     }
