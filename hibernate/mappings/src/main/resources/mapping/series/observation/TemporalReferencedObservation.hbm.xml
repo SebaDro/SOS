@@ -21,7 +21,7 @@
            	</column>
         </many-to-one>
         <property name="phenomenonTimeStart"
-                  type="timestamp" insert="false" update="false">
+                  type="iso_string" insert="false" update="false">
             <column index="obsPhenTimeStartIdx"
                     name="phenomenonTime"
                     length="29"
@@ -29,7 +29,7 @@
             </column>
         </property>
         <property name="phenomenonTimeEnd"
-                  type="timestamp" insert="false" update="false">
+                  type="iso_string" insert="false" update="false">
             <column index="obsPhenTimeEndIdx"
                     name="phenomenonTime"
                     length="29"
@@ -37,7 +37,7 @@
             </column>
         </property>
         <property name="resultTime"
-                  type="timestamp" insert="false" update="false">
+                  type="iso_string" insert="false" update="false">
             <column index="obsResultTimeIdx"
                     name="phenomenonTime"
                     length="29"

@@ -18,14 +18,14 @@
             </column>
         </property>
         <many-to-one name="codespace" class="org.n52.sos.ds.hibernate.entities.Codespace" foreign-key="procCodespaceIdentifierFk">
-            	<formula>1</formula>
+            	<formula>null</formula>
         </many-to-one>
         <property name="name" type="string">
             <column name="name">
             </column>
         </property>
         <many-to-one name="codespaceName" class="org.n52.sos.ds.hibernate.entities.Codespace" foreign-key="procCodespaceNameFk">
-            	<formula>1</formula>
+            	<formula>null</formula>
         </many-to-one>
         <property name="description" type="string">
             	<formula>null</formula>
