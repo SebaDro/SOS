@@ -71,6 +71,11 @@
 </style>
 
 <div>
+    <h3>Provider of the example data</h3>
+    <a target="_blank" href="http://www.brgm.fr/"><img alt="BRGM - Bureau de Recherches Géologiques et Minières" align="middle" width="172" src="<c:url value="/static/images/funding/173px-Logo_BRGM.svg.png"/>"/></a>
+    <p>The data offered by the <a href="<c:url value="http://www.brgm.fr"/>">BRGM</a> are so-called raw data - ie issues directly - without validation - piezometers, environmental monitoring facilities themselves from a larger network, the French network of groundwater monitoring . These data come from installed pressure sensors in situ, in boreholes or wells, and are transmitted via GPRS protocol, once a day (24 values per shipment) to the central information system, overseen by the BRGM.</p>
+    <p>For further information concerning these data, their origin or their scientific interpretation, thank you to contact the BRGM.</p>
+    <a href="<c:url value="http://www.brgm.fr/content/contact" />">http://www.brgm.fr/content/contact</a>
     <h3>Examples</h3>
     <p><b>NOTE:</b> Requests use example values and are not dynamically 
     generated from values in this SOS. Construct valid requests by changing 

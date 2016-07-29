@@ -12,7 +12,10 @@
             <source>src/assembly/52nSOS.png</source>
         </file>
         <file>
-            <source>src/assembly/52nSOS.sql</source>
+            <source>src/assembly/schema_rawdata.sql</source>
+        </file>
+        <file>
+            <source>src/assembly/schema_sos_rawdb.sql</source>
         </file>
         <file>
             <source>src/assembly/logo.gif</source>
