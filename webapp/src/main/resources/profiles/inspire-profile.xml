@@ -6,7 +6,7 @@
 	<profile:activeProfile>false</profile:activeProfile>
 	<profile:observationResponseFormat>http://inspire.ec.europa.eu/schemas/omso/3.0</profile:observationResponseFormat>
 	<profile:encodeFeatureOfInterestInObservations>true</profile:encodeFeatureOfInterestInObservations>
-	<profile:encodingNamespaceForFeatureOfInterestEncoding></profile:encodingNamespaceForFeatureOfInterestEncoding>
+	<profile:encodingNamespaceForFeatureOfInterestEncoding>true</profile:encodingNamespaceForFeatureOfInterestEncoding>
 	<profile:showMetadataOfEmptyObservations>false</profile:showMetadataOfEmptyObservations>
 	<profile:listFeatureOfInterestsInOfferings>true</profile:listFeatureOfInterestsInOfferings>
 	<profile:encodeChildProcedureDescriptions>false</profile:encodeChildProcedureDescriptions>
