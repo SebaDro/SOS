@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.n52.sensorweb.sos</groupId>
 		<artifactId>coding</artifactId>
-		<version>4.3.6</version>
+		<version>4.4.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>coding-sensorML-v20</artifactId>
@@ -18,10 +18,6 @@
 		<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>coding-sensorML</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
         </dependency>
 		<!-- XML Beans Generated Classes -->
 		<dependency>

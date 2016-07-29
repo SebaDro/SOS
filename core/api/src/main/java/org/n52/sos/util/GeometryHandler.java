@@ -45,7 +45,6 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.factory.AbstractAuthorityFactory;
 import org.geotools.referencing.factory.DeferredAuthorityFactory;
-import org.geotools.util.WeakCollectionCleaner;
 import org.n52.sos.config.SettingsManager;
 import org.n52.sos.config.annotation.Configurable;
 import org.n52.sos.config.annotation.Setting;
@@ -516,9 +515,6 @@ public class GeometryHandler implements Cleanupable, EpsgConstants {
      * @return WKT string
      */
     public String getWktString(Object longitude, Object latitude, int epsg) {
-        if (isNorthingFirstEpsgCode(epsg)) {
-            return getWktString(latitude, longitude);
-        }
         return getWktString(longitude, latitude);
     }
 

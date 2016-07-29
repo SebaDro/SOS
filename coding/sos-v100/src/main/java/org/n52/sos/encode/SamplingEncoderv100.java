@@ -135,8 +135,10 @@ public class SamplingEncoderv100 extends AbstractXmlEncoder<AbstractFeature> {
     public XmlObject encode(AbstractFeature abstractFeature, Map<HelperValues, String> additionalValues)
             throws OwsExceptionReport {
         XmlObject encodedObject = createFeature(abstractFeature);
-        LOGGER.debug("Encoded object {} is valid: {}", encodedObject.schemaType().toString(),
-                XmlHelper.validateDocument(encodedObject));
+        if (LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Encoded object {} is valid: {}", encodedObject.schemaType().toString(),
+                    XmlHelper.validateDocument(encodedObject));
+        }
         return encodedObject;
     }
 
@@ -152,6 +154,7 @@ public class SamplingEncoderv100 extends AbstractXmlEncoder<AbstractFeature> {
                 addValuesToFeature(xbSamplingPoint, sampFeat);
                 XmlObject xbGeomety = getEncodedGeometry(sampFeat.getGeometry(), absFeature.getGmlId());
                 xbSamplingPoint.addNewPosition().addNewPoint().set(xbGeomety);
+                sampFeat.wasEncoded();
                 return xbSamplingPointDoc;
             } else if (sampFeat.getFeatureType().equals(SfConstants.FT_SAMPLINGCURVE)
                     || sampFeat.getFeatureType().equals(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE)
@@ -162,6 +165,7 @@ public class SamplingEncoderv100 extends AbstractXmlEncoder<AbstractFeature> {
                 addValuesToFeature(xbSamplingCurve, sampFeat);
                 XmlObject xbGeomety = getEncodedGeometry(sampFeat.getGeometry(), absFeature.getGmlId());
                 xbSamplingCurve.addNewShape().addNewCurve().set(xbGeomety);
+                sampFeat.wasEncoded();
                 return xbSamplingCurveDoc;
             } else if (sampFeat.getFeatureType().equals(SfConstants.FT_SAMPLINGSURFACE)
                     || sampFeat.getFeatureType().equals(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_SURFACE)
@@ -172,6 +176,7 @@ public class SamplingEncoderv100 extends AbstractXmlEncoder<AbstractFeature> {
                 addValuesToFeature(xbSamplingSurface, sampFeat);
                 XmlObject xbGeomety = getEncodedGeometry(sampFeat.getGeometry(), absFeature.getGmlId());
                 xbSamplingSurface.addNewShape().addNewSurface().set(xbGeomety);
+                sampFeat.wasEncoded();
                 return xbSamplingSurfaceDoc;
             }
         } else if (absFeature instanceof FeatureCollection) {

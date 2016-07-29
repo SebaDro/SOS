@@ -35,28 +35,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.gml.AbstractFeatureCollectionType;
-import net.opengis.gml.AbstractRingPropertyType;
-import net.opengis.gml.AbstractRingType;
-import net.opengis.gml.CodeType;
-import net.opengis.gml.DirectPositionListType;
-import net.opengis.gml.DirectPositionType;
-import net.opengis.gml.EnvelopeType;
-import net.opengis.gml.FeatureCollectionDocument2;
-import net.opengis.gml.FeaturePropertyType;
-import net.opengis.gml.LineStringType;
-import net.opengis.gml.LinearRingType;
-import net.opengis.gml.MeasureType;
-import net.opengis.gml.PointType;
-import net.opengis.gml.PolygonType;
-import net.opengis.gml.ReferenceType;
-import net.opengis.gml.TimeIndeterminateValueType;
-import net.opengis.gml.TimeInstantDocument;
-import net.opengis.gml.TimeInstantType;
-import net.opengis.gml.TimePeriodDocument;
-import net.opengis.gml.TimePeriodType;
-import net.opengis.gml.TimePositionType;
-
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlRuntimeException;
@@ -68,10 +46,10 @@ import org.n52.sos.ogc.gml.AbstractFeature;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
 import org.n52.sos.ogc.gml.GmlConstants;
 import org.n52.sos.ogc.gml.time.Time;
+import org.n52.sos.ogc.gml.time.Time.TimeIndeterminateValue;
 import org.n52.sos.ogc.gml.time.TimeInstant;
 import org.n52.sos.ogc.gml.time.TimePeriod;
 import org.n52.sos.ogc.gml.time.TimePosition;
-import org.n52.sos.ogc.gml.time.Time.TimeIndeterminateValue;
 import org.n52.sos.ogc.om.features.FeatureCollection;
 import org.n52.sos.ogc.om.features.SfConstants;
 import org.n52.sos.ogc.om.features.samplingFeatures.SamplingFeature;
@@ -100,6 +78,28 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.util.PolygonExtracter;
+
+import net.opengis.gml.AbstractFeatureCollectionType;
+import net.opengis.gml.AbstractRingPropertyType;
+import net.opengis.gml.AbstractRingType;
+import net.opengis.gml.CodeType;
+import net.opengis.gml.DirectPositionListType;
+import net.opengis.gml.DirectPositionType;
+import net.opengis.gml.EnvelopeType;
+import net.opengis.gml.FeatureCollectionDocument2;
+import net.opengis.gml.FeaturePropertyType;
+import net.opengis.gml.LineStringType;
+import net.opengis.gml.LinearRingType;
+import net.opengis.gml.MeasureType;
+import net.opengis.gml.PointType;
+import net.opengis.gml.PolygonType;
+import net.opengis.gml.ReferenceType;
+import net.opengis.gml.TimeIndeterminateValueType;
+import net.opengis.gml.TimeInstantDocument;
+import net.opengis.gml.TimeInstantType;
+import net.opengis.gml.TimePeriodDocument;
+import net.opengis.gml.TimePeriodType;
+import net.opengis.gml.TimePositionType;
 
 /**
  * @since 4.0.0
@@ -159,8 +159,10 @@ public class GmlEncoderv311 extends AbstractXmlEncoder<Object> {
         } else {
             throw new UnsupportedEncoderInputException(this, element);
         }
-        LOGGER.debug("Encoded object {} is valid: {}", encodedObject.schemaType().toString(),
-                XmlHelper.validateDocument(encodedObject));
+        if (LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Encoded object {} is valid: {}", encodedObject.schemaType().toString(),
+                    XmlHelper.validateDocument(encodedObject));
+        }
         return encodedObject;
     }
 
@@ -283,7 +285,7 @@ public class GmlEncoderv311 extends AbstractXmlEncoder<Object> {
         if (geom instanceof Point) {
             PointType xbPoint = PointType.Factory.newInstance(XmlOptionsHelper.getInstance().getXmlOptions());
             if (foiId != null) {
-                xbPoint.setId("point_" + foiId);
+                xbPoint.setId(geom.getGeometryType() + "_" + foiId);
             }
             createPointFromJtsGeometry((Point) geom, xbPoint);
             return xbPoint;
@@ -291,14 +293,14 @@ public class GmlEncoderv311 extends AbstractXmlEncoder<Object> {
             LineStringType xbLineString =
                     LineStringType.Factory.newInstance(XmlOptionsHelper.getInstance().getXmlOptions());
             if (foiId != null) {
-                xbLineString.setId("lineString_" + foiId);
+                xbLineString.setId(geom.getGeometryType() + "_" + foiId);
             }
             createLineStringFromJtsGeometry((LineString) geom, xbLineString);
             return xbLineString;
         } else if (geom instanceof Polygon) {
             PolygonType xbPolygon = PolygonType.Factory.newInstance(XmlOptionsHelper.getInstance().getXmlOptions());
             if (foiId != null) {
-                xbPolygon.setId("polygon_" + foiId);
+                xbPolygon.setId(geom.getGeometryType() + "_" + foiId);
             }
             createPolygonFromJtsGeometry((Polygon) geom, xbPolygon);
             return xbPolygon;
@@ -476,10 +478,6 @@ public class GmlEncoderv311 extends AbstractXmlEncoder<Object> {
                     }
                     return featureProperty;
                 }
-                StringBuilder builder = new StringBuilder();
-                builder.append("sf_");
-                builder.append(JavaHelper.generateID(sosAbstractFeature.getIdentifierCodeWithAuthority().getValue()));
-                sosAbstractFeature.setGmlId(builder.toString());
                 Encoder<XmlObject, SamplingFeature> encoder = CodingHelper.getEncoder(SfConstants.NS_SA, sampFeat);
                 if (encoder != null) {
                     return encoder.encode(sampFeat);
