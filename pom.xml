@@ -48,7 +48,7 @@
     </licenses>
     <properties>
         <!-- sos name -->
-        <conf.sos.name>52nSOS</conf.sos.name>
+        <conf.sos.name>52nSOS-FOSS4G2016</conf.sos.name>
         <!-- version of the current osgeo-live-release in development -->
         <conf.osgeo.live.version>10.0</conf.osgeo.live.version>
         <timestamp>${maven.build.timestamp}</timestamp>

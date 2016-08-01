@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<swes:DescribeSensor service="SOS" version="2.0.0" xmlns:swes="http://www.opengis.net/swes/2.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:swe="http://www.opengis.net/swe/2.0" 
+	xsi:schemaLocation="http://www.opengis.net/swes/2.0 http://schemas.opengis.net/swes/2.0/swes.xsd http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd">
+	<swes:procedure>http://id.eaufrance.fr/met/403.xml</swes:procedure>
+	<swes:procedureDescriptionFormat>http://inspire.ec.europa.eu/featureconcept/Process</swes:procedureDescriptionFormat>
+</swes:DescribeSensor>

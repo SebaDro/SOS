@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gda:GetDataAvailability service="SOS" version="2.0.0"
+	xmlns:gda="http://www.opengis.net/sosgda/1.0" xmlns:swes="http://www.opengis.net/swes/2.0"
+	xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:swe="http://www.opengis.net/swe/2.0">
+	<gda:procedure>http://id.eaufrance.fr/met/403.xml</gda:procedure>
+	<gda:observedProperty>http://id.eaufrance.fr/par/1689.xml</gda:observedProperty>
+	<gda:featureOfInterest>http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2</gda:featureOfInterest>
+	<gda:featureOfInterest>http://ressource.brgm-rec.fr/data/Piezometre/06288X0096/SB/PZ/2</gda:featureOfInterest>
+	<gda:offering>http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/00463X0036/H1/PZ/2</gda:offering>
+	<gda:offering>http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/06288X0096/SB/PZ/2</gda:offering>
+</gda:GetDataAvailability>

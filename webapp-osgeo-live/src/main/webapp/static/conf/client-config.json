@@ -1,0 +1,1512 @@
+{
+	"examples":[
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"DescribeSensor",
+				"procedure":"http://id.eaufrance.fr/met/403.xml",
+				"procedureDescriptionFormat":"http://inspire.ec.europa.eu/featureconcept/Process"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"DescribeSensor",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"DescribeSensor",
+				"procedure":"http://id.eaufrance.fr/met/403.xml",
+				"procedureDescriptionFormat":"http://inspire.ec.europa.eu/featureconcept/Process",
+				"crs":"EPSG::4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"DescribeSensor",
+			"title":"crs = EPSG::4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetCapabilities",
+			"title":"minimal",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"crs":"4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetCapabilities",
+			"title":"crs = 4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"crs":"EPSG:4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetCapabilities",
+			"title":"crs = EPSG:4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"crs":"EPSG::4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetCapabilities",
+			"title":"crs = EPSG::4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"crs":"http://www.opengis.net/def/crs/EPSG/0/4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetCapabilities",
+			"title":"crs = http://www.opengis.net/def/crs/EPSG/0/4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"crs":"urn:ogc:def:crs:EPSG::4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetCapabilities",
+			"title":"crs = urn:ogc:def:crs:EPSG::4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"Sections":"Contents"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetCapabilities",
+			"title":"only Contents section",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"Sections":"OperationsMetadata"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetCapabilities",
+			"title":"only OperationsMetadata section",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"request":"GetCapabilities",
+				"AcceptVersions":"2.0.0"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetCapabilities",
+			"title":"with AcceptVersions=2.0.0",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetDataAvailability",
+				"observedProperty":[
+					"http://id.eaufrance.fr/par/1689.xml"
+				],
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				],
+				"featureOfInterest":[
+					"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/00487X0015/S1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/06288X0096/SB/PZ/2"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetDataAvailability",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetDataAvailability",
+				"observedProperty":[
+					"http://id.eaufrance.fr/par/1689.xml"
+				],
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				],
+				"featureOfInterest":[
+					"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/00487X0015/S1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/06288X0096/SB/PZ/2"
+				],
+				"responseFormat":"http://www.opengis.net/sosgda/2.0"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetDataAvailability",
+			"title":"GDA v2.0",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetDataAvailability"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetDataAvailability",
+			"title":"minimal",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"featureOfInterest":"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"featureOfInterest",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"featureOfInterest":[
+					"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/00636X0020/P/PZ/2"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"featureOfInterests",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"minimal",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"crs":"EPSG::4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"crs=EPSG::4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"observedProperty":[
+					"http://id.eaufrance.fr/par/1689.xml"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"observableProperties",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"observedProperty":"http://id.eaufrance.fr/par/1689.xml"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"observableProperty",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"procedure":"http://id.eaufrance.fr/met/403.xml"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"procedure",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"procedures",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"namespaces":[
+					"xmlns(sams,http://www.opengis.net/samplingSpatial/2.0)",
+					"xmlns(om,http://www.opengis.net/om/2.0)"
+				],
+				"spatialFilter":"om:featureOfInterest/*/sams:shape,0.0,0.0,60.0,60.0,http://www.opengis.net/def/crs/EPSG/0/4326"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"spatial filter, URL",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetFeatureOfInterest",
+				"namespaces":[
+					"xmlns(sams,http://www.opengis.net/samplingSpatial/2.0)",
+					"xmlns(om,http://www.opengis.net/om/2.0)"
+				],
+				"spatialFilter":"om:featureOfInterest/*/sams:shape,0.0,0.0,60.0,60.0,urn:ogc:def:crs:EPSG::4326"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetFeatureOfInterest",
+			"title":"spatial filter, URN",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"MergeObservationsIntoDataArray":"true",
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"Extension 'MergeObservationsIntoDataArray'",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"featureOfInterest":"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"featureOfInterest",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"featureOfInterest":[
+					"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/00487X0015/S1/PZ/2"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"featureOfInterests",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"offering":"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/00463X0036/H1/PZ/2",
+				"observedProperty":"http://id.eaufrance.fr/par/1689.xml",
+				"procedure":"http://id.eaufrance.fr/met/403.xml",
+				"namespaces":[
+					"xmlns(sams,http://www.opengis.net/samplingSpatial/2.0)",
+					"xmlns(om,http://www.opengis.net/om/2.0)"
+				],
+				"spatialFilter":"om:featureOfInterest/*/sams:shape,0.0,0.0,60.0,60.0,urn:ogc:def:crs:EPSG::4326",
+				"temporalFilter":"om:phenomenonTime,2016-01-31T14:00:00.000+01:00/2016-02-01T15:00:00.000+01:00"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"full",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"observedProperty":[
+					"http://id.eaufrance.fr/par/1689.xml"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"observableProperties",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"observedProperty":"http://id.eaufrance.fr/par/1689.xml"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"observableProperty",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"offering":"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/00463X0036/H1/PZ/2"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"offering",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"offering":"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/00463X0036/H1/PZ/2",
+				"crs":"EPSG::4258"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetObservation",
+			"title":"offering, crs=EPSG::4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"offering":[
+					"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/00463X0036/H1/PZ/2",
+					"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/00636X0020/P/PZ/2"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"offerings",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"procedure":"http://id.eaufrance.fr/met/403.xml"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"procedure",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				]
+
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"procedures",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":[
+					"xmlns(sams,http://www.opengis.net/samplingSpatial/2.0)",
+					"xmlns(om,http://www.opengis.net/om/2.0)"
+				],
+				"spatialFilter":"om:featureOfInterest/*/sams:shape,0.0,0.0,60.0,60.0,http://www.opengis.net/def/crs/EPSG/0/4326"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"spatial filter, URL",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":[
+					"xmlns(sams,http://www.opengis.net/samplingSpatial/2.0)",
+					"xmlns(om,http://www.opengis.net/om/2.0)"
+				],
+				"spatialFilter":"om:featureOfInterest/*/sams:shape,0.0,0.0,60.0,60.0,urn:ogc:def:crs:EPSG::4326"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"spatial filter, URN",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":"xmlns(om,http://www.opengis.net/om/2.0)",
+				"temporalFilter":"om:phenomenonTime,2016-01-31T14:00:00.000+01:00/2016-02-01T15:00:00.000+01:00"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"temporal filter during",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":"xmlns(om,http://www.opengis.net/om/2.0)",
+				"temporalFilter":"om:phenomenonTime,2016-01-31T14:00:00.000+01:00"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"temporal filter equal",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":"xmlns(om,http://www.opengis.net/om/2.0)",
+				"temporalFilter":"om:phenomenonTime,2016-01-31T14:00:00.000+01:00"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"temporal filter equal, negativ time zone",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":"xmlns(om,http://www.opengis.net/om/2.0)",
+				"temporalFilter":"om:phenomenonTime,2016-01-31"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"temporal filter equal, reduced time",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":"xmlns(om,http://www.opengis.net/om/2.0)",
+				"temporalFilter":"om:phenomenonTime,first"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"temporal filter first",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservation",
+				"namespaces":"xmlns(om,http://www.opengis.net/om/2.0)",
+				"temporalFilter":"om:phenomenonTime,latest"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/x-kvp",
+			"operation":"GetObservation",
+			"title":"temporal filter latest",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservationById",
+				"observation":"http://ressource.brgm-rec.fr/obs/rawSeriePiezo/00463X0036/H1/PZ/2-622",
+				"responseFormat":"http://inspire.ec.europa.eu/schemas/omso/3.0"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetObservationById",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"param":{
+				"service":"SOS",
+				"version":"2.0.0",
+				"request":"GetObservationById",
+				"observation":"http://ressource.brgm-rec.fr/obs/rawSeriePiezo/00463X0036/H1/PZ/2-622",
+				"crs":"EPSG::4258",
+				"responseFormat":"http://inspire.ec.europa.eu/schemas/omso/3.0"
+			},
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding":"/kvp",
+			"operation":"GetObservationById",
+			"title":"crs=EPSG::4258",
+			"headers":{
+				"Accept":"application/xml"
+			},
+			"method":"GET"
+		},
+		{
+			"request":"static/examples/foss4g/requests_xml/DescribeSensor.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/xml",
+			"operation":"DescribeSensor",
+			"headers":{
+				"Accept":"application/xml",
+				"Content-Type":"application/xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_xml/GetCapabilities.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/xml",
+			"operation":"GetCapabilities",
+			"headers":{
+				"Accept":"application/xml",
+				"Content-Type":"application/xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_xml/GetDataAvailability.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/xml",
+			"operation":"GetDataAvailability",
+			"headers":{
+				"Accept":"application/xml",
+				"Content-Type":"application/xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_xml/GetDataAvailability20.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/xml",
+			"operation":"GetDataAvailability",
+			"title":"GDA v2.0",
+			"headers":{
+				"Accept":"application/xml",
+				"Content-Type":"application/xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_xml/GetFeatureOfInterest.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/xml",
+			"operation":"GetFeatureOfInterest",
+			"headers":{
+				"Accept":"application/xml",
+				"Content-Type":"application/xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_xml/GetObservation.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/xml",
+			"operation":"GetObservation",
+			"headers":{
+				"Accept":"application/xml",
+				"Content-Type":"application/xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_xml/GetObservationById.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/xml",
+			"operation":"GetObservationById",
+			"headers":{
+				"Accept":"application/xml",
+				"Content-Type":"application/xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_soap/DescribeSensor.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/soap+xml",
+			"operation":"DescribeSensor",
+			"headers":{
+				"Accept":"application/soap+xml",
+				"Content-Type":"application/soap+xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_soap/GetCapabilities.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/soap+xml",
+			"operation":"GetCapabilities",
+			"headers":{
+				"Accept":"application/soap+xml",
+				"Content-Type":"application/soap+xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_soap/GetDataAvailability.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/soap+xml",
+			"operation":"GetDataAvailability",
+			"headers":{
+				"Accept":"application/soap+xml",
+				"Content-Type":"application/soap+xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_soap/GetDataAvailability20.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/soap+xml",
+			"operation":"GetDataAvailability",
+			"title":"GDA v2.0",
+			"headers":{
+				"Accept":"application/soap+xml",
+				"Content-Type":"application/soap+xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_soap/GetFeatureOfInterest.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/soap+xml",
+			"operation":"GetFeatureOfInterest",
+			"headers":{
+				"Accept":"application/soap+xml",
+				"Content-Type":"application/soap+xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_soap/GetObservation.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/soap+xml",
+			"operation":"GetObservation",
+			"headers":{
+				"Accept":"application/soap+xml",
+				"Content-Type":"application/soap+xml"
+			},
+			"method":"POST"
+		},
+		{
+			"request":"static/examples/foss4g/requests_soap/GetObservationById.xml",
+			"service":"SOS",
+			"version":"2.0.0",
+			"binding": "application/soap+xml",
+			"operation":"GetObservationById",
+			"headers":{
+				"Accept":"application/soap+xml",
+				"Content-Type":"application/soap+xml"
+			},
+			"method":"POST"
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetCapabilities",
+			"title":"Minimal",
+			"request":{
+				"request":"GetCapabilities",
+				"service":"SOS"
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetCapabilities",
+			"title":"Contents section",
+			"request":{
+				"request":"GetCapabilities",
+				"service":"SOS",
+				"sections":[
+					"Contents"
+				]
+
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetCapabilities",
+			"title":"All sections",
+			"request":{
+				"request":"GetCapabilities",
+				"service":"SOS",
+				"sections":[
+					"ServiceIdentification",
+					"ServiceProvider",
+					"OperationsMetadata",
+					"FilterCapabilities",
+					"Contents"
+				]
+
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"DescribeSensor",
+			"request":{
+				"request":"DescribeSensor",
+				"service":"SOS",
+				"version":"2.0.0",
+				"procedure":"http://id.eaufrance.fr/met/403.xml",
+				"procedureDescriptionFormat":"http://inspire.ec.europa.eu/featureconcept/Process"
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetObservation",
+			"title":"no filter",
+			"request":{
+				"request":"GetObservation",
+				"service":"SOS",
+				"version":"2.0.0"
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetObservation",
+			"title":"Merge observations",
+			"request":{
+				"request":"GetObservation",
+				"service":"SOS",
+				"version":"2.0.0",
+				"procedure":"http://id.eaufrance.fr/met/403.xml",
+				"extensions": [
+				    {
+				        "definition": "MergeObservationsIntoDataArray",
+				        "value": true
+				    }
+				]
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetObservation",
+			"title":"single filter",
+			"request":{
+				"request":"GetObservation",
+				"service":"SOS",
+				"version":"2.0.0",
+				"procedure":"http://id.eaufrance.fr/met/403.xml",
+				"offering":"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/06993X0087/F6/PZ/2",
+				"observedProperty":"http://id.eaufrance.fr/par/1689.xml",
+				"featureOfInterest":"http://ressource.brgm-rec.fr/data/Piezometre/06993X0087/F6/PZ/2",
+				"spatialFilter":{
+					"bbox":{
+						"ref":"om:featureOfInterest/sams:SF_SpatialSamplingFeature/sams:shape",
+						"value":{
+							"type":"Polygon",
+							"coordinates":[
+								[
+									[
+										50.0,
+										7.0
+									],
+									[
+										53.0,
+										7.0
+									],
+									[
+										53.0,
+										10.0
+									],
+									[
+										50.0,
+										10.0
+									],
+									[
+										50.0,
+										7.0
+									]
+
+								]
+
+							]
+
+						}
+
+					}
+
+				},
+				"temporalFilter":{
+					"during":{
+						"ref":"om:phenomenonTime",
+						"value":[
+							"2016-01-31T14:00:00.000+01:00",
+							"2016-01-31T14:00:00.000+01:00"
+						]
+
+					}
+
+				}
+
+			}
+
+		},
+		{
+            "service":"SOS",
+            "version":"2.0.0",
+            "method":"POST",
+            "binding": "application/json",
+            "headers":{
+                "Accept":"application/json",
+                "Content-Type":"application/json"
+            },
+            "operation":"GetObservation",
+            "title":"Spatial Filtering Profile",
+            "request":{
+                "request":"GetObservation",
+                "service":"SOS",
+                "version":"2.0.0",
+                "spatialFilter":{
+                    "bbox":{
+                        "ref":"http://www.opengis.net/req/omxml/2.0/data/samplingGeometry",
+                        "value":{
+                            "type":"Polygon",
+                            "coordinates":[
+                                [
+                                    [
+                                        50.0,
+                                        7.0
+                                    ],
+                                    [
+                                        53.0,
+                                        7.0
+                                    ],
+                                    [
+                                        53.0,
+                                        10.0
+                                    ],
+                                    [
+                                        50.0,
+                                        10.0
+                                    ],
+                                    [
+                                        50.0,
+                                        7.0
+                                    ]
+
+                                ]
+
+                            ]
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        },
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetObservation",
+			"title":"multiple filter",
+			"request":{
+				"request":"GetObservation",
+				"service":"SOS",
+				"version":"2.0.0",
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				],
+				"offering":[
+					"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/06993X0087/F6/PZ/2",
+					"http://ressource.brgm-rec.fr/obs/rawOfferingPiezo/00463X0036/H1/PZ/2"
+				],
+				"observedProperty":[
+					"http://id.eaufrance.fr/par/1689.xml"
+				],
+				"featureOfInterest":[
+					"http://ressource.brgm-rec.fr/data/Piezometre/06993X0087/F6/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2"
+				],
+				"spatialFilter":{
+					"bbox":{
+						"ref":"om:featureOfInterest/sams:SF_SpatialSamplingFeature/sams:shape",
+						"value":{
+							"type":"Polygon",
+							"coordinates":[
+								[
+									[
+										50.0,
+										7.0
+									],
+									[
+										53.0,
+										7.0
+									],
+									[
+										53.0,
+										10.0
+									],
+									[
+										50.0,
+										10.0
+									],
+									[
+										50.0,
+										7.0
+									]
+
+								]
+
+							]
+
+						}
+
+					}
+
+				},
+				"temporalFilter":[
+					{
+						"during":{
+							"ref":"om:phenomenonTime",
+							"value":[
+								"2016-01-31T14:00:00.000+01:00",
+								"2016-02-01T15:00:00.000+01:00"
+							]
+
+						}
+
+					},
+					{
+						"equals":{
+							"ref":"om:phenomenonTime",
+							"value":"2016-01-31T14:00:00.000+01:00"
+						}
+
+					}
+
+				]
+
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetDataAvailability",
+			"title":"single parameter",
+			"request":{
+				"request":"GetDataAvailability",
+				"service":"SOS",
+				"version":"2.0.0",
+				"procedure":"http://id.eaufrance.fr/met/403.xml",
+				"observedProperty":"http://id.eaufrance.fr/par/1689.xml",
+				"featureOfInterest":"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2"
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetDataAvailability",
+			"title":"multiple parameter",
+			"request":{
+				"request":"GetDataAvailability",
+				"service":"SOS",
+				"version":"2.0.0",
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				],
+				"observedProperty":[
+					"http://id.eaufrance.fr/par/1689.xml"
+				],
+				"featureOfInterest":[
+					"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/06987A0186/S/PZ/2"
+				]
+
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetFeatureOfInterest",
+			"title":"single parameter",
+			"request":{
+				"request":"GetFeatureOfInterest",
+				"service":"SOS",
+				"version":"2.0.0",
+				"featureOfInterest":"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2",
+				"observedProperty":"http://id.eaufrance.fr/par/1689.xml",
+				"procedure":"http://id.eaufrance.fr/met/403.xml"
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetFeatureOfInterest",
+			"title":"multiple parameter",
+			"request":{
+				"request":"GetFeatureOfInterest",
+				"service":"SOS",
+				"version":"2.0.0",
+				"featureOfInterest":[
+					"http://ressource.brgm-rec.fr/data/Piezometre/00463X0036/H1/PZ/2",
+					"http://ressource.brgm-rec.fr/data/Piezometre/06987A0186/S/PZ/2"
+				],
+				"observedProperty":[
+					"http://id.eaufrance.fr/par/1689.xml"
+				],
+				"procedure":[
+					"http://id.eaufrance.fr/met/403.xml"
+				],
+				"spatialFilter":{
+					"bbox":{
+						"ref":"om:featureOfInterest/sams:SF_SpatialSamplingFeature/sams:shape",
+						"value":{
+							"type":"Polygon",
+							"coordinates":[
+								[
+									[
+										50.0,
+										7.0
+									],
+									[
+										53.0,
+										7.0
+									],
+									[
+										53.0,
+										10.0
+									],
+									[
+										50.0,
+										10.0
+									],
+									[
+										50.0,
+										7.0
+									]
+
+								]
+
+							]
+
+						}
+
+					}
+
+				}
+
+			}
+
+		},
+		{
+			"service":"SOS",
+			"version":"2.0.0",
+			"method":"POST",
+			"binding": "application/json",
+			"headers":{
+				"Accept":"application/json",
+				"Content-Type":"application/json"
+			},
+			"operation":"GetObservationById",
+			"request":{
+				"request":"GetObservationById",
+				"service":"SOS",
+				"version":"2.0.0",
+				"observation":[
+					"http://ressource.brgm-rec.fr/obs/rawSeriePiezo/00463X0036/H1/PZ/2-622"
+				]
+
+			}
+
+		}
+	]
+}
