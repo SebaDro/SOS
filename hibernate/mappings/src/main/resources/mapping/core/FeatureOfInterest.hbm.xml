@@ -10,7 +10,7 @@
 			<column name="featureOfInterestId" />
 			<generator class="assigned"></generator>
 		</id>
-		<discriminator formula="(SELECT DISTINCT null FROM dual)" type="string" />
+		<discriminator formula="(SELECT null FROM dual)" type="string" />
         <many-to-one name="featureOfInterestType" class="org.n52.sos.ds.hibernate.entities.FeatureOfInterestType" foreign-key="featureFeatureTypeFk">
             <formula>1</formula>
         </many-to-one>

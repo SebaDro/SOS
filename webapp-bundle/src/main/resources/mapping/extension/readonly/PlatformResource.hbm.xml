@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.n52.series.db.da.beans.ext.PlatformEntity" table="`procedure`">
+    <class name="org.n52.series.db.beans.PlatformEntity" table="`procedure`">
         <id name="pkid" type="long">
             <column name="procedureid" />
             <generator class="assigned" />

@@ -3,7 +3,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="org.n52.sos.ds.hibernate.entities.ProcedureDescriptionFormat" table="procedureDescriptionFormat">
-        <subselect>(SELECT 1 AS procedureDescriptionFormatId, CAST('http://www.opengis.net/sensorml/2.0' AS VARCHAR(100)) AS procedureDescriptionFormat)</subselect>
+        <subselect>(SELECT 1 AS procedureDescriptionFormatId, CAST('http://www.opengis.net/sensorml/2.0' AS VARCHAR(100)) AS procedureDescriptionFormat FROM dual)</subselect>
         <id name="procedureDescriptionFormatId" type="long" />
         <property name="procedureDescriptionFormat" type="string" insert="false" update="false" />
     </class>

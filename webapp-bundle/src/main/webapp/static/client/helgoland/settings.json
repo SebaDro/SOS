@@ -5,12 +5,11 @@
   "aggregateServices": true,
   "saveStatus": true,
   "restApiUrls": {
-        "http://codm.hzg.de/52n-sos-webapp/api/v1/": "1",
-
+        "http://codm.hzg.de/52n-sos-webapp/api/v1/": "1"
     },
     "defaultProvider": {
         "serviceID": "1",
-        "apiUrl": "http://codm.hzg.de:8080/52n-sos-webapp/api/v1/"
+        "apiUrl": "http://codm.hzg.de/52n-sos-webapp/api/v1/"
     },
   "chartOptions": {
     "yaxis": {

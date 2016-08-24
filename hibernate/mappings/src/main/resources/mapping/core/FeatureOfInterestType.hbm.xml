@@ -3,7 +3,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="org.n52.sos.ds.hibernate.entities.FeatureOfInterestType" table="featureOfInterestType">
-		<subselect>(SELECT 1 AS featureOfInterestTypeId, CAST('http://www.opengis.net/def/nil/OGC/0/unknown' AS VARCHAR(100)) AS featureOfInterestType)</subselect>
+		<subselect>(SELECT 1 AS featureOfInterestTypeId, CAST('http://www.opengis.net/def/nil/OGC/0/unknown' AS VARCHAR(100)) AS featureOfInterestType FROM dual)</subselect>
 		<id name="featureOfInterestTypeId" type="long" />
 		<property name="featureOfInterestType" type="string" insert="false" update="false" />
     </class>
