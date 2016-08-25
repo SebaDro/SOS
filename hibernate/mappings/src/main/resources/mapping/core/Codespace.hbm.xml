@@ -4,7 +4,7 @@
 <!-- Generated 10.07.2012 15:18:27 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="org.n52.sos.ds.hibernate.entities.Codespace" table="codespace">
-		<subselect>(SELECT 1 AS codespaceId, CAST('http://www.opengis.net/def/nil/OGC/0/unknown' AS VARCHAR(100)) AS codespace)</subselect>
+		<subselect>(SELECT 1 AS codespaceId, CAST('http://www.opengis.net/def/nil/OGC/0/unknown' AS VARCHAR(100)) AS codespace FROM dual)</subselect>
         <id name="codespaceId" type="long" />
         <property name="codespace" type="string" insert="false" update="false" />
     </class>
