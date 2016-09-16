@@ -76,10 +76,10 @@ import org.n52.sos.exception.CodedException;
 import org.n52.sos.exception.ows.concrete.UnsupportedOperatorException;
 import org.n52.sos.exception.ows.concrete.UnsupportedTimeException;
 import org.n52.sos.exception.ows.concrete.UnsupportedValueReferenceException;
-import org.n52.sos.ogc.gml.ReferenceType;
 import org.n52.sos.ogc.gml.time.Time;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sos.SosProcedureDescription;
+import org.n52.sos.ogc.sos.SosProcedureDescriptionUnknowType;
 import org.n52.sos.util.CollectionHelper;
 import org.n52.sos.util.DateTimeHelper;
 import org.slf4j.Logger;
@@ -125,7 +125,7 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
      */
     @SuppressWarnings("unchecked")
     public List<Procedure> getProcedureObjects(final Session session) {
-        Criteria criteria = session.createCriteria(Procedure.class);
+        Criteria criteria = getDefaultCriteria(session);
         LOGGER.debug("QUERY getProcedureObjects(): {}", HibernateHelper.getSqlString(criteria));
         return criteria.list();
     }
@@ -139,14 +139,13 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
      *         identifier collections
      */
     public Map<String, Collection<String>> getProcedureIdentifiers(final Session session) {
-        Criteria criteria = session.createCriteria(Procedure.class).add(Restrictions.eq(Procedure.DELETED, false));
+        Criteria criteria = getDefaultCriteria(session);
         ProjectionList projectionList = Projections.projectionList();
         projectionList.add(Projections.property(Procedure.IDENTIFIER));
         criteria.createAlias(Procedure.PARENTS, "pp", JoinType.LEFT_OUTER_JOIN);
         projectionList.add(Projections.property("pp." + Procedure.IDENTIFIER));
         criteria.setProjection(projectionList);
-        // return as List<Object[]> even if there's only one column for
-        // consistency
+        // return as List<Object[]> even if there's only one column for consistency
         criteria.setResultTransformer(NoopTransformerAdapter.INSTANCE);
 
         LOGGER.debug("QUERY getProcedureIdentifiers(): {}", HibernateHelper.getSqlString(criteria));
@@ -261,7 +260,6 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
      *
      * @return Map of foi identifier to procedure identifier collection
      * @throws HibernateException
-     * @throws CodedException
      */
     public Map<String, Collection<String>> getProceduresForAllFeaturesOfInterest(final Session session) {
         List<Object[]> results = getFeatureProcedureResult(session);
@@ -288,7 +286,6 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
      *            Hibernate session
      *
      * @return Map of procedure identifier to foi identifier collection
-     * @throws CodedException
      */
     public Map<String, Collection<String>> getFeaturesOfInterestsForAllProcedures(final Session session) {
         List<Object[]> results = getFeatureProcedureResult(session);
@@ -847,10 +844,13 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
      *            Hibernate session
      * @return Procedure object
      */
+    @Deprecated
     public Procedure getOrInsertProcedure(final String identifier,
             final ProcedureDescriptionFormat procedureDescriptionFormat, final Collection<String> parentProcedures,
             final Session session) {
-        return getOrInsertProcedure(identifier, procedureDescriptionFormat, parentProcedures, null, false, true, session);
+        SosProcedureDescription procedure = new SosProcedureDescriptionUnknowType(identifier,
+                procedureDescriptionFormat.getProcedureDescriptionFormat(), "").setParentProcedures(parentProcedures);
+        return getOrInsertProcedure(identifier, procedureDescriptionFormat, procedure, false, session);
     }
 
     /**
@@ -869,29 +869,31 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
      */
     public Procedure getOrInsertProcedure(String identifier, ProcedureDescriptionFormat procedureDescriptionFormat,
             SosProcedureDescription procedureDescription, boolean isType, Session session) {
-        return getOrInsertProcedure(identifier, procedureDescriptionFormat,
-                procedureDescription.getParentProcedures(), procedureDescription.getTypeOf(), isType,
-                procedureDescription.isAggragation(), session);
-    }
-    
-    private Procedure getOrInsertProcedure(String identifier, ProcedureDescriptionFormat procedureDescriptionFormat,
-            Collection<String> parentProcedures, ReferenceType typeOf, boolean isType, boolean isAggregation, Session session) {
         Procedure procedure = getProcedureForIdentifierIncludeDeleted(identifier, session);
         if (procedure == null) {
             final TProcedure tProcedure = new TProcedure();
             tProcedure.setProcedureDescriptionFormat(procedureDescriptionFormat);
             tProcedure.setIdentifier(identifier);
-            if (CollectionHelper.isNotEmpty(parentProcedures)) {
-                tProcedure.setParents(Sets.newHashSet(getProceduresForIdentifiers(parentProcedures, session)));
+            if (procedureDescription.isSetProcedureName()) {
+                tProcedure.setName(procedureDescription.getProcedureName());
             }
-            if (typeOf != null && !tProcedure.isSetTypeOf()) {
-                Procedure typeOfProc = getProcedureForIdentifier(typeOf.getTitle(), session);
+            if (procedureDescription.isSetParentProcedures()) {
+                tProcedure.setParents(Sets.newHashSet(getProceduresForIdentifiers(procedureDescription.getParentProcedures(), session)));
+            }
+            if (procedureDescription.isSetTypeOf() && !tProcedure.isSetTypeOf()) {
+                Procedure typeOfProc = getProcedureForIdentifier(procedureDescription.getTypeOf().getTitle(), session);
                 if (typeOfProc != null) {
                     tProcedure.setTypeOf(typeOfProc);
                 }
             }
             tProcedure.setIsType(isType);
-            tProcedure.setIsAggregation(isAggregation);
+            tProcedure.setIsAggregation(procedureDescription.isAggragation());
+            if (procedureDescription.isSetMobile()) {
+                tProcedure.setMobile(procedureDescription.getMobile());
+            }
+            if (procedureDescription.isSetInsitu()) {
+                tProcedure.setInsitu(procedureDescription.getInsitu());
+            }
             procedure = tProcedure;
         }
         procedure.setDeleted(false);
@@ -1044,7 +1046,7 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
             // get the latest validProcedureTimes' procedureDescriptionFormats
             return new ValidProcedureTimeDAO().getTProcedureFormatMap(session);
         } else {
-            Criteria criteria = session.createCriteria(Procedure.class);
+            Criteria criteria = getDefaultCriteria(session);
             criteria.createAlias(Procedure.PROCEDURE_DESCRIPTION_FORMAT, "pdf");
             criteria.setProjection(Projections.projectionList().add(Projections.property(Procedure.IDENTIFIER))
                     .add(Projections.property("pdf." + ProcedureDescriptionFormat.PROCEDURE_DESCRIPTION_FORMAT)));
@@ -1090,7 +1092,7 @@ public class ProcedureDAO extends AbstractIdentifierNameDescriptionDAO implement
         }
 
         @Override
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @SuppressWarnings({ "rawtypes"})
         public List transformList(List collection) {
             return collection;
         }

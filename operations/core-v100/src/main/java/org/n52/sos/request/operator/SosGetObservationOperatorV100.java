@@ -60,6 +60,7 @@ import org.n52.sos.service.Configurator;
 import org.n52.sos.util.CodingHelper;
 import org.n52.sos.util.OMHelper;
 import org.n52.sos.util.SosHelper;
+import org.opengis.parameter.InvalidParameterCardinalityException;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -163,15 +164,7 @@ public class SosGetObservationOperatorV100 extends
             exceptions.add(owse);
         }
         if (sosRequest.isSetResultModel()) {
-            for (String offering : sosRequest.getOfferings()) {
-                Collection<String> observationTypesForResultModel = getCache().getObservationTypesForOffering(offering);
-                if (!observationTypesForResultModel.contains(sosRequest.getResultModel())) {
-                    exceptions.add(new InvalidParameterValueException().at(
-                            Sos1Constants.GetObservationParams.resultModel).withMessage(
-                            "The value '%s' is invalid for the requested offering!",
-                            OMHelper.getEncodedResultModelFor(sosRequest.getResultModel())));
-                }
-            }
+            checkResultModel(sosRequest, exceptions);
         }
 
         exceptions.throwIfNotEmpty();
@@ -227,8 +220,13 @@ public class SosGetObservationOperatorV100 extends
             Map<String, String> ncOfferings = SosHelper.getNcNameResolvedOfferings(offerings);
             CompositeOwsException exceptions = new CompositeOwsException();
 
-            if (offeringIds.size() != 1) {
+            //SOS 1.0 GetObservation requires exactly one offering
+            if (offeringIds.isEmpty()) {
                 throw new MissingOfferingParameterException();
+            } else if (offeringIds.size() > 1) {
+                throw new InvalidParameterCardinalityException(
+                        "Exactly one offering is required",
+                        SosConstants.GetObservationParams.offering.name());
             }
 
             for (String offeringId : offeringIds) {
@@ -249,6 +247,7 @@ public class SosGetObservationOperatorV100 extends
     }
 
     // TODO check for SOS 1.0.0
+    @SuppressWarnings("rawtypes")
     private boolean checkForObservationAndMeasurementV20Type(String responseFormat) throws OwsExceptionReport {
         Encoder<XmlObject, OmObservation> encoder = CodingHelper.getEncoder(responseFormat, new OmObservation());
         if (encoder instanceof ObservationEncoder) {
@@ -283,5 +282,21 @@ public class SosGetObservationOperatorV100 extends
                     .withMessage("The response exceeds the size limit! Please define some filtering parameters.");
         }
 
+    }
+
+    private void checkResultModel(GetObservationRequest sosRequest, CompositeOwsException exceptions) {
+        if (!OmConstants.OBS_TYPE_OBSERVATION.equals(sosRequest.getResultModel())) {
+            for (String offering : sosRequest.getOfferings()) {
+                Collection<String> observationTypesForResultModel =
+                        getCache().getObservationTypesForOffering(offering);
+                if (!observationTypesForResultModel.contains(sosRequest.getResultModel())) {
+                    exceptions.add(
+                            new InvalidParameterValueException().at(Sos1Constants.GetObservationParams.resultModel)
+                                    .withMessage("The value '%s' is invalid for the requested offering!",
+                                            OMHelper.getEncodedResultModelFor(sosRequest.getResultModel())));
+                }
+            }
+        }
+        
     }
 }

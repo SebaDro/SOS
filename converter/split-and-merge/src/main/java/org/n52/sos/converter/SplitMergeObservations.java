@@ -73,12 +73,10 @@ import org.n52.sos.response.GetObservationResponse;
 import org.n52.sos.response.InsertObservationResponse;
 import org.n52.sos.service.Configurator;
 import org.n52.sos.service.profile.Profile;
-import org.n52.sos.util.http.MediaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.n52.sos.util.DateTimeHelper;
 import org.n52.sos.util.OMHelper;
 import org.n52.sos.util.http.HTTPStatus;
+import org.n52.sos.util.http.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -356,12 +354,24 @@ public class SplitMergeObservations
                 }
             }
 
-            if (encoder != null) {
-                return encoder.shouldObservationsWithSameXBeMerged();
+            if (encoder != null && encoder.shouldObservationsWithSameXBeMerged()) {
+                if (Sos1Constants.SERVICEVERSION.equals(response.getVersion())) {
+                    return checkResultModel(response);
+                }
+                return true;
             }
 
         }
         return false;
+    }
+
+    private boolean checkResultModel(GetObservationResponse response) {
+        if (response.isSetResultModel()) {
+            if (!OmConstants.OBS_TYPE_OBSERVATION.equals(response.getResultModel())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private AbstractServiceResponse mergeObservations(GetObservationResponse response) throws OwsExceptionReport {
@@ -393,7 +403,6 @@ public class SplitMergeObservations
 
     @Override
     public RequestResponseModifierFacilitator getFacilitator() {
-        // TODO Auto-generated method stub
         return new RequestResponseModifierFacilitator().setMerger(true).setSplitter(true);
     }
 

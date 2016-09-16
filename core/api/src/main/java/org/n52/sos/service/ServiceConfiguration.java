@@ -29,19 +29,15 @@
 package org.n52.sos.service;
 
 import static org.n52.sos.service.MiscSettings.CHARACTER_ENCODING;
-import static org.n52.sos.service.MiscSettings.DEFAULT_FEATURE_PREFIX;
-import static org.n52.sos.service.MiscSettings.DEFAULT_OBSERVABLEPROPERTY_PREFIX;
-import static org.n52.sos.service.MiscSettings.DEFAULT_OFFERING_PREFIX;
-import static org.n52.sos.service.MiscSettings.DEFAULT_PROCEDURE_PREFIX;
 import static org.n52.sos.service.MiscSettings.HTTP_STATUS_CODE_USE_IN_KVP_POX_BINDING;
 import static org.n52.sos.service.MiscSettings.SRS_NAME_PREFIX_SOS_V1;
 import static org.n52.sos.service.MiscSettings.SRS_NAME_PREFIX_SOS_V2;
 import static org.n52.sos.service.ServiceSettings.SENSOR_DIRECTORY;
 import static org.n52.sos.service.ServiceSettings.SERVICE_URL;
 import static org.n52.sos.service.ServiceSettings.STRICT_SPATIAL_FILTERING_PROFILE;
-import static org.n52.sos.service.ServiceSettings.USE_DEFAULT_PREFIXES;
 import static org.n52.sos.service.ServiceSettings.VALIDATE_RESPONSE;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Locale;
 
@@ -159,6 +155,12 @@ public class ServiceConfiguration {
     private boolean streamingEncoding = true;
 
     private boolean includeChildObservableProperties = false;
+    
+    private boolean updateFeatureGeometry = false;
+
+    private File cacheFileFolder;
+
+    private boolean createFeatureGeometryFromSamplingGeometries = false;
 
     /**
      * Returns the default token seperator for results.
@@ -212,43 +214,47 @@ public class ServiceConfiguration {
         return defaultOfferingPrefix;
     }
 
-    @Setting(DEFAULT_OFFERING_PREFIX)
+    @Deprecated
     public void setDefaultOfferingPrefix(final String prefix) {
         defaultOfferingPrefix = prefix;
     }
 
+    @Deprecated
     public String getDefaultProcedurePrefix() {
         return defaultProcedurePrefix;
     }
 
-    @Setting(DEFAULT_OBSERVABLEPROPERTY_PREFIX)
+    @Deprecated
     public void setDefaultObservablePropertyPrefix(final String prefix) {
         defaultObservablePropertyPrefix = prefix;
     }
 
+    @Deprecated
     public String getDefaultObservablePropertyPrefix() {
         return defaultObservablePropertyPrefix;
     }
 
-    @Setting(DEFAULT_PROCEDURE_PREFIX)
+    @Deprecated
     public void setDefaultProcedurePrefix(final String prefix) {
         defaultProcedurePrefix = prefix;
     }
 
+    @Deprecated
     public String getDefaultFeaturePrefix() {
         return defaultFeaturePrefix;
     }
 
-    @Setting(DEFAULT_FEATURE_PREFIX)
+    @Deprecated
     public void setDefaultFeaturePrefix(final String prefix) {
         defaultFeaturePrefix = prefix;
     }
 
+    @Deprecated
     public boolean isUseDefaultPrefixes() {
         return useDefaultPrefixes;
     }
-
-    @Setting(USE_DEFAULT_PREFIXES)
+    
+    @Deprecated
     public void setUseDefaultPrefixes(final boolean prefix) {
         useDefaultPrefixes = prefix;
     }
@@ -476,7 +482,39 @@ public class ServiceConfiguration {
     public void setIncludeChildObservableProperties(boolean include) {
         this.includeChildObservableProperties = include;
     }
+    
+    @Setting(ServiceSettings.UPDATE_FEATURE_GEOMETRY)
+    public void setUpdateFeatureGeometry(boolean updateFeatureGeometry) {
+        this.updateFeatureGeometry = updateFeatureGeometry;
+    }
 
+    public boolean isUpdateFeatureGeometry() {
+        return this.updateFeatureGeometry;
+    }
+
+    /**
+     * @return the cacheFileFolder
+     */
+    public File getCacheFileFolder() {
+        return cacheFileFolder;
+    }
+
+    /**
+     * @param cacheFileFolder the cacheFileFolder to set
+     */
+    @Setting(ServiceSettings.CACHE_FILE_FOLDER)
+    public void setCacheFileFolder(File cacheFileFolder) {
+        this.cacheFileFolder = cacheFileFolder;
+    }
+    
+    @Setting(ServiceSettings.CREATE_FOI_GEOM_FROM_SAMPLING_GEOMS)
+    public void setCreateFeatureGeometryFromSamplingGeometries(boolean createFeatureGeometryFromSamplingGeometries) {
+        this.createFeatureGeometryFromSamplingGeometries  = createFeatureGeometryFromSamplingGeometries;
+    }
+
+    public boolean isCreateFeatureGeometryFromSamplingGeometries() {
+        return createFeatureGeometryFromSamplingGeometries;
+    }
 
     /*
      * Now, we return the list of returned features and not a complex encoded

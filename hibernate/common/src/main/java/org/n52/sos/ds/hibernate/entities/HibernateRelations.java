@@ -335,7 +335,16 @@ public interface HibernateRelations {
 
         void setProcedure(Procedure procedure);
     }
+    
+    interface HasSeriesType {
 
+        void setSeriesType(String seriesType);
+        
+        String getSeriesType();
+        
+        boolean isSetSeriesType();
+    }
+    
     interface HasProcedureDescriptionFormat {
         String PROCEDURE_DESCRIPTION_FORMAT = "procedureDescriptionFormat";
 
@@ -575,11 +584,11 @@ public interface HibernateRelations {
 
         Object getLongitude();
 
-        void setLongitude(Object longitude);
+        HasCoordinate setLongitude(Object longitude);
 
         Object getLatitude();
 
-        void setLatitude(Object latitude);
+        HasCoordinate setLatitude(Object latitude);
 
         /**
          * Are longitude and latitude set
@@ -590,7 +599,7 @@ public interface HibernateRelations {
 
         Object getAltitude();
 
-        void setAltitude(Object altitude);
+        HasCoordinate setAltitude(Object altitude);
 
         /**
          * Is altitude set

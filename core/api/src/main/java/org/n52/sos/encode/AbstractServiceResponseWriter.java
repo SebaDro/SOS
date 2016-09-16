@@ -36,6 +36,7 @@ import org.n52.sos.encode.streaming.StreamingEncoder;
 import org.n52.sos.exception.ows.concrete.NoEncoderForKeyException;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.request.ResponseFormat;
+import org.n52.sos.response.AbstractOperationResponse;
 import org.n52.sos.response.AbstractServiceResponse;
 import org.n52.sos.response.StreamingDataResponse;
 import org.n52.sos.service.ServiceConfiguration;
@@ -91,15 +92,24 @@ public class AbstractServiceResponseWriter extends AbstractResponseWriter<Abstra
      * @param asr
      *            {@link AbstractServiceResponse} to get {@link Encoder} for
      * @return {@link Encoder} for the {@link AbstractServiceResponse}
+     * @throws NoEncoderForKeyException
      */
-    private Encoder<Object, AbstractServiceResponse> getEncoder(AbstractServiceResponse asr) {
-        OperationEncoderKey key = new OperationEncoderKey(asr.getOperationKey(), getEncodedContentType(asr));
+    private Encoder<Object, AbstractServiceResponse> getEncoder(AbstractServiceResponse asr) throws NoEncoderForKeyException {
+        OperationEncoderKey key = getEncoderKey(asr); 
         Encoder<Object, AbstractServiceResponse> encoder = getEncoder(key);
         if (encoder == null) {
-            throw new RuntimeException(new NoEncoderForKeyException(new OperationEncoderKey(asr.getOperationKey(),
-                    getContentType())));
+            throw new NoEncoderForKeyException(new OperationEncoderKey(asr.getOperationKey(),
+                    getContentType()));
         }
         return encoder;
+    }
+
+    private OperationEncoderKey getEncoderKey(AbstractServiceResponse asr) {
+        if (asr instanceof AbstractOperationResponse && ((AbstractOperationResponse) asr).isSetOperationVersion()) {
+            return new VersionedOperationEncoderKey(asr.getOperationKey(), getEncodedContentType(asr), ((AbstractOperationResponse) asr).getOperationVersion());
+        } else {
+            return new OperationEncoderKey(asr.getOperationKey(), getEncodedContentType(asr));
+        }
     }
 
     private MediaType getEncodedContentType(AbstractServiceResponse asr) {
@@ -121,9 +131,14 @@ public class AbstractServiceResponseWriter extends AbstractResponseWriter<Abstra
      *         {@link StreamingEncoder}
      */
     private boolean isStreaming(AbstractServiceResponse asr) {
-        if (getEncoder(asr) instanceof StreamingEncoder) {
-            return ServiceConfiguration.getInstance().isForceStreamingEncoding()
-                    || ((StreamingEncoder<?, ?>) getEncoder(asr)).forceStreaming();
+        try {
+            if (getEncoder(asr) instanceof StreamingEncoder) {
+                return ServiceConfiguration.getInstance().isForceStreamingEncoding()
+                        || ((StreamingEncoder<?, ?>) getEncoder(asr)).forceStreaming();
+            }
+        } catch (NoEncoderForKeyException e) {
+            // no encoder was found, return false
+            return false;
         }
         return false;
     }
