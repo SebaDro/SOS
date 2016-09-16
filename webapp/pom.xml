@@ -523,7 +523,7 @@
 		</dependency>
 		<!-- MQTT extension -->
 		<dependency>
-		  <groupId>org.fusesource.mqtt-client</groupId>
+		  <groupId>${project.groupId}</groupId>
 		  <artifactId>mqtt-client</artifactId>
 		</dependency>
     </dependencies>

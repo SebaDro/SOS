@@ -1,27 +1,53 @@
+/**
+ * Copyright (C) 2012-2016 52°North Initiative for Geospatial Open Source
+ * Software GmbH
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
+ *
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
+ *
+ *     - Apache License, version 2.0
+ *     - Apache Software License, version 1.0
+ *     - GNU Lesser General Public License, version 3
+ *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
+ *     - Common Development and Distribution License (CDDL), version 1.0
+ *
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public
+ * License version 2 and the aforementioned licenses.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.
+ */
 package org.n52.sos.mqtt.convert;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.n52.sos.encode.SensorMLEncoderv20;
 import org.n52.sos.mqtt.api.AdsbMessage;
 import org.n52.sos.ogc.OGCConstants;
 import org.n52.sos.ogc.om.OmConstants;
-import org.n52.sos.ogc.om.OmObservation;
 import org.n52.sos.ogc.om.features.SfConstants;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
-import org.n52.sos.ogc.sensorML.SensorML20Constants;
-import org.n52.sos.ogc.sensorML.SmlContact;
 import org.n52.sos.ogc.sensorML.elements.SmlCapabilities;
+import org.n52.sos.ogc.sensorML.elements.SmlCapability;
 import org.n52.sos.ogc.sensorML.elements.SmlClassifier;
 import org.n52.sos.ogc.sensorML.elements.SmlIdentifier;
 import org.n52.sos.ogc.sensorML.elements.SmlIo;
+import org.n52.sos.ogc.sensorML.v20.PhysicalSystem;
 import org.n52.sos.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.ogc.sos.SosOffering;
 import org.n52.sos.ogc.swe.SweField;
-import org.n52.sos.ogc.swe.SweSimpleDataRecord;
+import org.n52.sos.ogc.swe.simpleType.SweBoolean;
 import org.n52.sos.ogc.swe.simpleType.SweObservableProperty;
 import org.n52.sos.ogc.swe.simpleType.SweQuantity;
 import org.n52.sos.ogc.swe.simpleType.SweText;
@@ -41,7 +67,7 @@ public class AdsbToInsertSensor {
     
     private InsertSensorRequest prepareSmlInsertSensorRequest(AdsbMessage message) {
         final InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
-        final org.n52.sos.ogc.sensorML.v20.PhysicalSystem system = new org.n52.sos.ogc.sensorML.v20.PhysicalSystem();
+        final PhysicalSystem system = new PhysicalSystem();
         
         final String procedureId = message.getHex();
         final SosOffering sosOffering = new SosOffering(procedureId);
@@ -51,12 +77,13 @@ public class AdsbToInsertSensor {
                 .setIdentifications(createIdentificationList(procedureId))
                 .setClassifications(createClassificationList())
                 .addCapabilities(createCapabilities(sosOffering))
+                .addCapabilities(createMobileInsitu())
 //                .addContact(createContact(schemaDescription.getDataset())) // TODO
                 // ... // TODO
                 .setIdentifier(procedureId)
                 ;
         
-        system.setSensorDescriptionXmlString(encodeToXml(system));
+//        system.setSensorDescriptionXmlString(encodeToXml(system));
         
         insertSensorRequest.setAssignedOfferings(Collections.singletonList(sosOffering));
         insertSensorRequest.setAssignedProcedureIdentifier(procedureId);
@@ -64,7 +91,7 @@ public class AdsbToInsertSensor {
         return insertSensorRequest;
     }
 
-    private static String encodeToXml(final org.n52.sos.ogc.sensorML.v20.PhysicalSystem system) {
+    private static String encodeToXml(final PhysicalSystem system) {
         try {
             return new SensorMLEncoderv20().encode(system).xmlText();
         } catch (OwsExceptionReport ex) {
@@ -140,14 +167,27 @@ public class AdsbToInsertSensor {
         return capabilities;
     }
     
+    private SmlCapabilities createMobileInsitu() {
+        SmlCapabilities capabilities = new SmlCapabilities("metadata");
+        
+        SmlCapability insitu = new SmlCapability("insitu");
+        insitu.setAbstractDataComponent(new SweBoolean().setValue(false).addName("insitu"));
+        capabilities.addCapability(insitu);
+        
+        SmlCapability mobile = new SmlCapability("mobile");
+        mobile.setAbstractDataComponent(new SweBoolean().setValue(true).addName("mobile"));
+        capabilities.addCapability(mobile);
+        
+        return capabilities;
+    }
+
     private SmlCapabilities createOfferingCapabilities(SosOffering offering) {
-        SmlCapabilities offeringCapabilities = new SmlCapabilities("offerings");
-        final SweSimpleDataRecord record = new SweSimpleDataRecord()
-                .addField(createTextField(
-                        "field_0",
-                        SensorML20Constants.OFFERING_FIELD_DEFINITION, 
-                        offering.getIdentifier()));
-        return offeringCapabilities.setDataRecord(record);
+        SmlCapabilities capabilities = new SmlCapabilities("offerings");
+        
+        SmlCapability insitu = new SmlCapability("offeringID");
+        insitu.setAbstractDataComponent(createTextField(offering.getIdentifier(), "offeringID", "urn:ogc:def:identifier:OGC:offeringID"));
+        capabilities.addCapability(insitu);
+        return capabilities;
     }
 
     private SweField createTextField(String name, String definition, String value) {
@@ -157,7 +197,7 @@ public class AdsbToInsertSensor {
 
     private SosInsertionMetadata createInsertSensorMetadata() {
         SosInsertionMetadata metadata = new SosInsertionMetadata();
-        metadata.setFeatureOfInterestTypes(Collections.singleton(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_FEATURE));
+        metadata.setFeatureOfInterestTypes(Collections.singleton(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE));
         metadata.setObservationTypes(Collections.singleton(OmConstants.OBS_TYPE_MEASUREMENT));
         return metadata;
     }

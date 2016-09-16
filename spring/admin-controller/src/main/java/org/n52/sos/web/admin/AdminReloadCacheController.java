@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import org.n52.sos.exception.JSONException;
+import org.n52.sos.mqtt.MqttConsumer;
 import org.n52.sos.ogc.ows.CompositeOwsException;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.service.Configurator;
@@ -63,6 +64,12 @@ public class AdminReloadCacheController extends AbstractAdminController {
         if (!cacheIsLoading()) {
             LOG.debug("Reloading Capabilitities Cache");
             updateCache();
+            try {
+                new MqttConsumer();
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+            
         }
         // TODO display other message here because the WebUI is displaying information about successful cache update start but nothing is happening
     }
