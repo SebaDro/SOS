@@ -65,9 +65,9 @@ public class AdminReloadCacheController extends AbstractAdminController {
             LOG.debug("Reloading Capabilitities Cache");
             updateCache();
             try {
-                new MqttConsumer();
+                MqttConsumer.getInstance().connect();
             } catch (Exception e) {
-                // TODO: handle exception
+               LOG.error("Error while statring MqttConsumer", e);
             }
             
         }

@@ -34,36 +34,17 @@ import java.util.Set;
 import org.n52.sos.config.SettingDefinition;
 import org.n52.sos.config.SettingDefinitionGroup;
 import org.n52.sos.config.SettingDefinitionProvider;
-import org.n52.sos.config.SettingsManager;
-import org.n52.sos.config.annotation.Configurable;
-import org.n52.sos.config.annotation.Setting;
 import org.n52.sos.config.settings.StringSettingDefinition;
 
 import com.google.common.collect.ImmutableSet;
 
-@Configurable
+
 public class MqttSettings implements SettingDefinitionProvider {
     
-    public static MqttSettings instance;
     public static final String MQTT_HOST = "mqtt.host";
     public static final String MQTT_PORT = "mqtt.port";
     public static final String MQTT_TOPIC = "mqtt.topic";
     public static final SettingDefinitionGroup GROUP = new SettingDefinitionGroup().setTitle("MQTT").setOrder(10);
-    private String topic;
-    private String host;
-    private String port;
-    
-    private MqttSettings() {
-        
-    }
-    
-    public static MqttSettings getInstance() {
-        if (instance == null) {
-            instance = new MqttSettings();
-            SettingsManager.getInstance().configure(instance);
-        }
-        return instance;
-    }
     
     public static final StringSettingDefinition MQTT_HOST_DEFINITION =
             new StringSettingDefinition()
@@ -80,7 +61,7 @@ public class MqttSettings implements SettingDefinitionProvider {
                     .setGroup(GROUP)
                     .setOrder(ORDER_1)
                     .setKey(MQTT_PORT)
-                    .setDefaultValue("ows.dev.52north.org")
+                    .setDefaultValue("1883")
                     .setOptional(true)
                     .setTitle("MQTT broker port")
                     .setDescription("");
@@ -90,46 +71,11 @@ public class MqttSettings implements SettingDefinitionProvider {
                     .setGroup(GROUP)
                     .setOrder(ORDER_2)
                     .setKey(MQTT_TOPIC)
-                    .setDefaultValue("ows.dev.52north.org")
+                    .setDefaultValue("dump1090")
                     .setOptional(true)
                     .setTitle("MQTT broker topic")
                     .setDescription("");
     
-    @Setting(MqttSettings.MQTT_TOPIC)
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    @Setting(MqttSettings.MQTT_HOST)
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    @Setting(MqttSettings.MQTT_PORT)
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    /**
-     * @return the topic
-     */
-    public String getTopic() {
-        return topic;
-    }
-
-    /**
-     * @return the host
-     */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * @return the port
-     */
-    public String getPort() {
-        return port;
-    }
 
     private static final Set<SettingDefinition<?, ?>> DEFINITIONS = ImmutableSet.<SettingDefinition<?, ?>> of(
             MQTT_HOST_DEFINITION, MQTT_PORT_DEFINITION, MQTT_TOPIC_DEFINITION);

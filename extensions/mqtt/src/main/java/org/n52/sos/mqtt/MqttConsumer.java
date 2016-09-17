@@ -33,7 +33,9 @@ import java.util.UUID;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.n52.sos.config.SettingsManager;
 import org.n52.sos.config.annotation.Configurable;
+import org.n52.sos.config.annotation.Setting;
 import org.n52.sos.service.SosContextListener;
 import org.n52.sos.util.Cleanupable;
 import org.slf4j.Logger;
@@ -47,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class MqttConsumer implements Cleanupable {
 
     private static final Logger LOG = LoggerFactory.getLogger(MqttConsumer.class);
-
+    private static MqttConsumer instance;
     /*
      * Procedure: hex FeatureOfInterest: flight / hex Phenomenon: track, speed,
      * altitude Offering: hex SamplingGeometry: lat, lon timestamp:
@@ -55,7 +57,9 @@ public class MqttConsumer implements Cleanupable {
      * 
      * Local caching + expire time (last update)
      */
-
+    private String topic;
+    private String host;
+    private String port;
     private MqttClient client;
 
     /**
@@ -65,10 +69,18 @@ public class MqttConsumer implements Cleanupable {
         AT_MOST_ONCE, AT_LEAST_ONCE, EXACTLY_ONCE
     }
 
-    public MqttConsumer() {
+    private MqttConsumer() {
         SosContextListener.registerShutdownHook(this);
-        getMqttSetting();
     }
+    
+    public static MqttConsumer getInstance() {
+        if (instance == null) {
+            instance = new MqttConsumer();
+            SettingsManager.getInstance().configure(instance);
+        }
+        return instance;
+    }
+    
     
     /**
      * connects the client
@@ -76,10 +88,17 @@ public class MqttConsumer implements Cleanupable {
      * @throws MqttException
      */
     public void connect() throws MqttException {
-        this.client = new MqttClient(String.format("tcp://%s:%s", getMqttSetting().getHost(), getMqttSetting().getPort()), getId(), new MemoryPersistence());
-        client.connect();
-        client.setCallback(new SosMqttCallback());
-        subscribe(getMqttSetting().getTopic(), QualityOfService.EXACTLY_ONCE);
+        if (client == null) {
+            this.client = new MqttClient(String.format("tcp://%s:%s", getHost(), getPort()), getId(), new MemoryPersistence());
+            LOG.debug("MQTT client created!");
+        }
+        if (!client.isConnected()) {
+            client.connect();
+            LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
+            client.setCallback(new SosMqttCallback());
+        }
+        subscribe(getTopic(), QualityOfService.EXACTLY_ONCE);
+        LOG.debug("Subscibed to topic: {}", getTopic());
     }
 
     /**
@@ -100,7 +119,7 @@ public class MqttConsumer implements Cleanupable {
     public void cleanup() {
         try {
             if (client != null) {
-                client.unsubscribe(getMqttSetting().getTopic());
+                client.unsubscribe(getTopic());
                 client.disconnect();
             }
         } catch (MqttException e) {
@@ -114,8 +133,40 @@ public class MqttConsumer implements Cleanupable {
        return UUID.randomUUID().toString();
     }
     
-    private MqttSettings getMqttSetting() {
-        return MqttSettings.getInstance();
+    @Setting(MqttSettings.MQTT_TOPIC)
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    @Setting(MqttSettings.MQTT_HOST)
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    @Setting(MqttSettings.MQTT_PORT)
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    /**
+     * @return the topic
+     */
+    public String getTopic() {
+        return topic;
+    }
+
+    /**
+     * @return the host
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * @return the port
+     */
+    public String getPort() {
+        return port;
     }
     
 //    public static void main(String[] args) throws MqttException {

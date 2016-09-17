@@ -83,11 +83,12 @@ public class AdsbToInsertSensor {
                 .setIdentifier(procedureId)
                 ;
         
-//        system.setSensorDescriptionXmlString(encodeToXml(system));
+        system.setSensorDescriptionXmlString(encodeToXml(system));
         
         insertSensorRequest.setAssignedOfferings(Collections.singletonList(sosOffering));
         insertSensorRequest.setAssignedProcedureIdentifier(procedureId);
         insertSensorRequest.setProcedureDescription(system);
+        insertSensorRequest.setMetadata(createInsertSensorMetadata());
         return insertSensorRequest;
     }
 
