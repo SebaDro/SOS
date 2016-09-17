@@ -170,12 +170,12 @@ public class MqttConsumer implements Cleanupable {
     }
     
 //    public static void main(String[] args) throws MqttException {
-//        String host = "ows.dev.52north.org";
-//        String topic = "n52.adsb";
-//
 //        MqttConsumer c = new MqttConsumer();
+//        c.setHost("ows.dev.52north.org");
+//        c.setTopic("n52.adsb");
+//        c.setPort("1883");
 //        c.connect();
-//        c.subscribe(topic, QualityOfService.EXACTLY_ONCE);
+//        c.subscribe(c.getTopic(), QualityOfService.EXACTLY_ONCE);
 //
 //        while (true) {
 //

@@ -71,7 +71,7 @@ public class MqttSettings implements SettingDefinitionProvider {
                     .setGroup(GROUP)
                     .setOrder(ORDER_2)
                     .setKey(MQTT_TOPIC)
-                    .setDefaultValue("dump1090")
+                    .setDefaultValue("n52.adsb")
                     .setOptional(true)
                     .setTitle("MQTT broker topic")
                     .setDescription("");
