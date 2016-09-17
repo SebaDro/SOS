@@ -80,14 +80,21 @@
                                                 <span class="menu-title">Client</span>
                                             </a>
                                             <ul>
+                                              <c:if test="${sos:staticExtensionExists(pageContext.servletContext, 'client/helgoland/index.html')}">
+                                                <li>
+                                                    <a id="jsclient-menuitem" target="_blank" href="<c:url value="/static/client/helgoland/index.html" />">
+                                                        <span class="menu-title">Sensor Web Thin Client (Helgoland)</span>
+                                                    </a>
+                                                </li>
+                                              </c:if>
                                              	<c:if test="${sos:staticExtensionExists(pageContext.servletContext, 'client/jsClient/index.html')}">
-			                                        <li>
-			                                            <a id="jsclient-menuitem" target="_blank" href="<c:url value="/static/client/jsClient" />">
-			                                                <span class="menu-title">Sensor Web JS Client</span>
-			                                            </a>
-			                                        </li>
-		                                    	</c:if>
-                                   			 </ul>
+				                                        <li>
+				                                            <a id="jsclient-menuitem" target="_blank" href="<c:url value="/static/client/jsClient/index.html" />">
+				                                                <span class="menu-title">Sensor Web JS Client (old)</span>
+				                                            </a>
+				                                        </li>
+		                                    	    </c:if>
+                                            </ul>
                                         </li>
                                     </c:if>
                                         <li>
@@ -97,7 +104,7 @@
                                             <ul>
                                             	<c:if test="${sos:documentExtensionExists(pageContext.servletContext, 'api-doc/index.html')}">
 			                                        <li>
-			                                            <a id="rest-menuitem" target="_blank" href="<c:url value="/static/doc/api-doc" />">
+			                                            <a id="rest-menuitem" target="_blank" href="<c:url value="/static/doc/api-doc/index.html" />">
 			                                                <span class="menu-title">Sensor Web Client REST-API</span>
 			                                            </a>
 			                                        </li>
@@ -205,7 +212,7 @@
                                     </c:if>
                                     <sec:authorize access="hasRole('ROLE_ADMIN')">
 										<li style="float: right;">
-											<a id="logout-menuitem" class="menu-item4" href="<c:url value="/j_spring_security_logout" />">
+											<a id="logout-menuitem" class="menu-item4" href="<c:url value="/logout" />">
 												<span class="menu-title">Logout</span>
 											</a>
 										</li>
