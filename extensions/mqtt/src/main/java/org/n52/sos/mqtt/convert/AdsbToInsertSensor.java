@@ -38,12 +38,16 @@ import org.n52.sos.ogc.OGCConstants;
 import org.n52.sos.ogc.om.OmConstants;
 import org.n52.sos.ogc.om.features.SfConstants;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.n52.sos.ogc.sensorML.SensorML20Constants;
+import org.n52.sos.ogc.sensorML.SensorMLConstants;
 import org.n52.sos.ogc.sensorML.elements.SmlCapabilities;
 import org.n52.sos.ogc.sensorML.elements.SmlCapability;
 import org.n52.sos.ogc.sensorML.elements.SmlClassifier;
 import org.n52.sos.ogc.sensorML.elements.SmlIdentifier;
 import org.n52.sos.ogc.sensorML.elements.SmlIo;
 import org.n52.sos.ogc.sensorML.v20.PhysicalSystem;
+import org.n52.sos.ogc.sos.Sos2Constants;
+import org.n52.sos.ogc.sos.SosConstants;
 import org.n52.sos.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.ogc.sos.SosOffering;
 import org.n52.sos.ogc.swe.SweField;
@@ -52,6 +56,7 @@ import org.n52.sos.ogc.swe.simpleType.SweObservableProperty;
 import org.n52.sos.ogc.swe.simpleType.SweQuantity;
 import org.n52.sos.ogc.swe.simpleType.SweText;
 import org.n52.sos.request.InsertSensorRequest;
+import org.n52.sos.request.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +72,10 @@ public class AdsbToInsertSensor {
     
     private InsertSensorRequest prepareSmlInsertSensorRequest(AdsbMessage message) {
         final InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
+        insertSensorRequest.setService(SosConstants.SOS);
+        insertSensorRequest.setVersion(Sos2Constants.SERVICEVERSION);
+        insertSensorRequest.setRequestContext(new RequestContext());
+        insertSensorRequest.setProcedureDescriptionFormat(SensorML20Constants.NS_SML_20);
         final PhysicalSystem system = new PhysicalSystem();
         
         final String procedureId = message.getHex();

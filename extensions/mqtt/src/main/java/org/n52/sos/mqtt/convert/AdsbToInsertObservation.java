@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.joda.time.ReadWritableDateTime;
 import org.n52.sos.mqtt.api.AdsbMessage;
 import org.n52.sos.ogc.gml.AbstractFeature;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
@@ -50,8 +51,10 @@ import org.n52.sos.ogc.om.values.QuantityValue;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sensorML.v20.PhysicalSystem;
 import org.n52.sos.ogc.sos.Sos2Constants;
+import org.n52.sos.ogc.sos.SosConstants;
 import org.n52.sos.ogc.sos.SosProcedureDescription;
 import org.n52.sos.request.InsertObservationRequest;
+import org.n52.sos.request.RequestContext;
 import org.n52.sos.util.GeometryHandler;
 import org.n52.sos.util.JTSHelper;
 
@@ -69,6 +72,9 @@ public class AdsbToInsertObservation {
         observations.add(createAltitudeObservation(message));
         
         InsertObservationRequest request = new InsertObservationRequest();
+        request.setService(SosConstants.SOS);
+        request.setVersion(Sos2Constants.SERVICEVERSION);
+        request.setRequestContext(new RequestContext());
         request.setOfferings(Lists.newArrayList(message.getHex()));
         request.setObservation(observations);
         return request;
