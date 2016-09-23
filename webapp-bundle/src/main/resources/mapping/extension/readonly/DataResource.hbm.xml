@@ -8,7 +8,7 @@
         </id>
         <discriminator formula="'measurement'" force="true" type="string"/>
         <property column="seriesid" name="seriesPkid" type="long"/>
-        <property column="phenomenontime" name="timestamp" type="timestamp"/>
+        <property column="phenomenontime" name="timestamp" type="iso_string"/>
         <property name="deleted" type="org.hibernate.type.TrueFalseType" formula="'F'" />
         <!-- <property fo name="validTimeStart" not-null="false" type="timestamp"/>
         <property column="validTimeEnd" name="validTimeEnd" not-null="false" type="timestamp"/> -->
