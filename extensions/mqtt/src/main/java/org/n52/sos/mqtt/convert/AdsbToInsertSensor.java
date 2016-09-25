@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.media.jai.operator.IDCTDescriptor;
+
 import org.n52.sos.encode.SensorMLEncoderv20;
 import org.n52.sos.mqtt.api.AdsbMessage;
 import org.n52.sos.ogc.OGCConstants;
@@ -57,6 +59,7 @@ import org.n52.sos.ogc.swe.simpleType.SweQuantity;
 import org.n52.sos.ogc.swe.simpleType.SweText;
 import org.n52.sos.request.InsertSensorRequest;
 import org.n52.sos.request.RequestContext;
+import org.n52.sos.util.net.IPAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,12 +77,15 @@ public class AdsbToInsertSensor {
         final InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
         insertSensorRequest.setService(SosConstants.SOS);
         insertSensorRequest.setVersion(Sos2Constants.SERVICEVERSION);
-        insertSensorRequest.setRequestContext(new RequestContext());
+        RequestContext requestContext = new RequestContext();
+        requestContext.setIPAddress(new IPAddress("127.0.0.1"));
+        insertSensorRequest.setRequestContext(requestContext);
         insertSensorRequest.setProcedureDescriptionFormat(SensorML20Constants.NS_SML_20);
         final PhysicalSystem system = new PhysicalSystem();
         
         final String procedureId = message.getHex();
-        final SosOffering sosOffering = new SosOffering(procedureId);
+        final SosOffering sosOffering = new SosOffering(procedureId, true);
+        system.addOffering(sosOffering);
         system
                 .setInputs(createInputs())
                 .setOutputs(createOutputs())
@@ -89,13 +95,11 @@ public class AdsbToInsertSensor {
                 .addCapabilities(createMobileInsitu())
 //                .addContact(createContact(schemaDescription.getDataset())) // TODO
                 // ... // TODO
-                .setIdentifier(procedureId)
-                ;
+                .setIdentifier(procedureId);
         
         system.setSensorDescriptionXmlString(encodeToXml(system));
         
-        insertSensorRequest.setAssignedOfferings(Collections.singletonList(sosOffering));
-        insertSensorRequest.setAssignedProcedureIdentifier(procedureId);
+        insertSensorRequest.setObservableProperty(createObservableProperties());
         insertSensorRequest.setProcedureDescription(system);
         insertSensorRequest.setMetadata(createInsertSensorMetadata());
         return insertSensorRequest;
@@ -194,16 +198,23 @@ public class AdsbToInsertSensor {
     private SmlCapabilities createOfferingCapabilities(SosOffering offering) {
         SmlCapabilities capabilities = new SmlCapabilities("offerings");
         
-        SmlCapability insitu = new SmlCapability("offeringID");
-        insitu.setAbstractDataComponent(createTextField(offering.getIdentifier(), "offeringID", "urn:ogc:def:identifier:OGC:offeringID"));
-        capabilities.addCapability(insitu);
+        SmlCapability ofering = new SmlCapability("offeringID", createText("urn:ogc:def:identifier:OGC:offeringID", offering.getIdentifier()));
+        capabilities.addCapability(ofering);
         return capabilities;
     }
 
     private SweField createTextField(String name, String definition, String value) {
         return new SweField(name, new SweText().setValue(value).setDefinition(definition));
     }
+    
+    private SweText createText(String definition, String value) {
+        return (SweText) new SweText().setValue(value).setDefinition(definition);
+    } 
 
+
+    private List<String> createObservableProperties() {
+        return Lists.newArrayList(AdsbMessage.ALTITUDE, AdsbMessage.SPEED, AdsbMessage.TRACK);
+    }
 
     private SosInsertionMetadata createInsertSensorMetadata() {
         SosInsertionMetadata metadata = new SosInsertionMetadata();

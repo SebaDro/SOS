@@ -69,14 +69,21 @@ public class SosMqttCallback implements MqttCallback {
     }
 
     @Override
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
-        for (AdsbMessage adsbMessage : adsbDecoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
-            if (!isProcedureRegistered(adsbMessage.getHex())) {
-                InsertSensorRequest request = adsbToInsertSensor.convert(adsbMessage);
+    public void messageArrived(String topic, MqttMessage message) {
+        try {
+            for (AdsbMessage adsbMessage : adsbDecoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
+                if (!isProcedureRegistered(adsbMessage.getHex())) {
+                    InsertSensorRequest request;
+                    
+                        request = adsbToInsertSensor.convert(adsbMessage);
+                   
+                    getServiceOperator(request).receiveRequest(request);
+                }
+                InsertObservationRequest request = adsbToInsertObservation.convert(adsbMessage);
                 getServiceOperator(request).receiveRequest(request);
             }
-            InsertObservationRequest request = adsbToInsertObservation.convert(adsbMessage);
-            getServiceOperator(request).receiveRequest(request);
+        } catch (OwsExceptionReport e) {
+           LOG.error("Error while processing messages!", e);
         }
     }
 

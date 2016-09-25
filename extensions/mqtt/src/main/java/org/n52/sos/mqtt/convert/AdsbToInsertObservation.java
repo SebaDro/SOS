@@ -57,6 +57,7 @@ import org.n52.sos.request.InsertObservationRequest;
 import org.n52.sos.request.RequestContext;
 import org.n52.sos.util.GeometryHandler;
 import org.n52.sos.util.JTSHelper;
+import org.n52.sos.util.net.IPAddress;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -74,7 +75,9 @@ public class AdsbToInsertObservation {
         InsertObservationRequest request = new InsertObservationRequest();
         request.setService(SosConstants.SOS);
         request.setVersion(Sos2Constants.SERVICEVERSION);
-        request.setRequestContext(new RequestContext());
+        RequestContext requestContext = new RequestContext();
+        requestContext.setIPAddress(new IPAddress("127.0.0.1"));
+        request.setRequestContext(requestContext);
         request.setOfferings(Lists.newArrayList(message.getHex()));
         request.setObservation(observations);
         return request;
