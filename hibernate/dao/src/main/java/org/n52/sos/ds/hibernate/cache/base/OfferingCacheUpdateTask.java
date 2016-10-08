@@ -46,9 +46,9 @@ import org.n52.sos.ds.hibernate.dao.FeatureOfInterestDAO;
 import org.n52.sos.ds.hibernate.dao.ObservablePropertyDAO;
 import org.n52.sos.ds.hibernate.dao.ProcedureDAO;
 import org.n52.sos.ds.hibernate.dao.observation.AbstractObservationDAO;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
 import org.n52.sos.ds.hibernate.entities.Offering;
+import org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest;
 import org.n52.sos.ds.hibernate.util.HibernateHelper;
 import org.n52.sos.ds.hibernate.util.ObservationConstellationInfo;
 import org.n52.sos.i18n.I18NDAORepository;
@@ -146,8 +146,8 @@ public class OfferingCacheUpdateTask extends AbstractThreadableDatasourceCacheUp
         List<String> featureOfInterestIdentifiers =
                 featureDAO.getFeatureOfInterestIdentifiersForOffering(offeringId, session);
         getCache().setFeaturesOfInterestForOffering(offeringId, featureOfInterestIdentifiers);
-        getCache().setFeatureOfInterestTypesForOffering(offeringId,
-                getFeatureOfInterestTypes(featureOfInterestIdentifiers, session));
+        getCache().addOfferingForFeaturesOfInterest(offeringId, featureOfInterestIdentifiers);
+        getCache().setFeatureOfInterestTypesForOffering(offeringId, getFeatureOfInterestTypes(featureOfInterestIdentifiers, session));
 
         // Spatial Envelope
         getCache().setEnvelopeForOffering(offeringId,
@@ -307,11 +307,11 @@ public class OfferingCacheUpdateTask extends AbstractThreadableDatasourceCacheUp
 
     protected Set<String> getFeatureOfInterestTypes(List<String> featureOfInterestIdentifiers, Session session) {
         if (CollectionHelper.isNotEmpty(featureOfInterestIdentifiers)) {
-            List<FeatureOfInterest> featureOfInterestObjects =
-                    featureDAO.getFeatureOfInterestObject(featureOfInterestIdentifiers, session);
+            List<AbstractFeatureOfInterest> featureOfInterestObjects =
+                    featureDAO.getFeatureOfInterestObjects(featureOfInterestIdentifiers, session);
             if (CollectionHelper.isNotEmpty(featureOfInterestObjects)) {
                 Set<String> featureTypes = Sets.newHashSet();
-                for (FeatureOfInterest featureOfInterest : featureOfInterestObjects) {
+                for (AbstractFeatureOfInterest featureOfInterest : featureOfInterestObjects) {
                     if (!OGCConstants.UNKNOWN.equals(featureOfInterest.getFeatureOfInterestType()
                             .getFeatureOfInterestType())) {
                         featureTypes.add(featureOfInterest.getFeatureOfInterestType().getFeatureOfInterestType());

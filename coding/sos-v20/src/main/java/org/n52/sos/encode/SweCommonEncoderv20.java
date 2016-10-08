@@ -48,6 +48,7 @@ import org.n52.sos.exception.ows.concrete.NotYetSupportedException;
 import org.n52.sos.exception.ows.concrete.UnsupportedEncoderInputException;
 import org.n52.sos.exception.ows.concrete.XmlDecodingException;
 import org.n52.sos.ogc.OGCConstants;
+import org.n52.sos.ogc.UoM;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sos.ConformanceClasses;
 import org.n52.sos.ogc.sos.SosConstants;
@@ -468,7 +469,7 @@ public class SweCommonEncoderv20 extends AbstractXmlEncoder<Object> {
             xbQuantity.setValue(quantity.getValue());
         }
         if (quantity.isSetUom()) {
-            xbQuantity.setUom(createUnitReference(quantity.getUom()));
+            xbQuantity.setUom(createUnitReference(quantity.getUomObject()));
         } else {
             xbQuantity.setUom(createUnknownUnitReference());
         }
@@ -491,7 +492,7 @@ public class SweCommonEncoderv20 extends AbstractXmlEncoder<Object> {
             xbQuantityRange.setValue(quantityRange.getValue().getRangeAsList());
         }
         if (quantityRange.isSetUom()) {
-            xbQuantityRange.setUom(createUnitReference(quantityRange.getUom()));
+            xbQuantityRange.setUom(createUnitReference(quantityRange.getUomObject()));
         } else {
             xbQuantityRange.setUom(createUnknownUnitReference());
         }
@@ -518,10 +519,10 @@ public class SweCommonEncoderv20 extends AbstractXmlEncoder<Object> {
     private TimeType createTime(final SweTime sosTime) throws OwsExceptionReport {
         final TimeType xbTime = TimeType.Factory.newInstance(getXmlOptions());
         if (sosTime.isSetValue()) {
-            xbTime.setValue(sosTime.getValue());
+            xbTime.setValue(DateTimeHelper.formatDateTime2IsoString(sosTime.getValue()));
         }
         if (sosTime.isSetUom()) {
-            xbTime.setUom(createUnitReference(sosTime.getUom()));
+            xbTime.setUom(createUnitReference(sosTime.getUomObject()));
         }
         if (sosTime.isSetQuality()) {
             xbTime.setQualityArray(createQuality(sosTime.getQuality()));
@@ -789,6 +790,23 @@ public class SweCommonEncoderv20 extends AbstractXmlEncoder<Object> {
         return xbTextEncoding;
     }
 
+    private UnitReference createUnitReference(final UoM uom) {
+        final UnitReference unitReference =
+                UnitReference.Factory.newInstance(getXmlOptions());
+        if (!uom.isSetLink() && (uom.getUom().startsWith("urn:") || uom.getUom().startsWith("http://"))) {
+            unitReference.setHref(uom.getUom());
+        } else {
+            unitReference.setCode(uom.getUom());
+        }
+        if (uom.isSetName()) {
+            unitReference.setTitle(uom.getName());
+        }
+        if (uom.isSetLink()) {
+            unitReference.setHref(uom.getLink());
+        }
+        return unitReference;
+    }
+    
     private UnitReference createUnitReference(final String uom) {
         final UnitReference unitReference =
                 UnitReference.Factory.newInstance(getXmlOptions());

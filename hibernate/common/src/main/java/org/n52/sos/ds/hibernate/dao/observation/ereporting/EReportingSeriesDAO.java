@@ -45,6 +45,8 @@ import org.n52.sos.ds.hibernate.entities.observation.ereporting.EReportingSeries
 import org.n52.sos.ds.hibernate.entities.observation.series.Series;
 import org.n52.sos.exception.CodedException;
 import org.n52.sos.exception.ows.OptionNotSupportedException;
+import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.n52.sos.request.GetObservationByIdRequest;
 import org.n52.sos.request.GetObservationRequest;
 
 public class EReportingSeriesDAO extends AbstractSeriesDAO {
@@ -56,8 +58,14 @@ public class EReportingSeriesDAO extends AbstractSeriesDAO {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Series> getSeries(GetObservationRequest request, Collection<String> features, Session session) throws CodedException {
+    public List<Series> getSeries(GetObservationRequest request, Collection<String> features, Session session) throws OwsExceptionReport {
         return getSeriesCriteria(request, features, session).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Series> getSeries(GetObservationByIdRequest request, Session session) throws OwsExceptionReport {
+        return getSeriesCriteria(request, session).list();
     }
 
     @Override
@@ -71,6 +79,13 @@ public class EReportingSeriesDAO extends AbstractSeriesDAO {
     public List<Series> getSeries(Collection<String> procedures, Collection<String> observedProperties,
             Collection<String> features, Session session) {
         return getSeriesCriteria(procedures, observedProperties, features, session).list();
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Series> getSeries(Collection<String> procedures, Collection<String> observedProperties,
+            Collection<String> features, Collection<String>offerings, Session session) throws OwsExceptionReport {
+        return getSeriesCriteria(procedures, observedProperties, features, offerings, session).list();
     }
 
     @Override

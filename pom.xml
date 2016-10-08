@@ -167,6 +167,26 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>coding-gml</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>coding-gml-cov</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>coding-cv-gml</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>coding-gwml</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>core-v100</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -336,6 +356,21 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>coding-inspire-omso</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>inspire-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>inspire-coding</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>inspire-code</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -392,6 +427,12 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>ereporting-identifier</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- Related offering encoding -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>coding-related-offering</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- Split and Merge observatioons -->
@@ -520,7 +561,6 @@
                 <version>2.3</version>
             </dependency>
 
-
             <!-- Hibernate Core Dependencies -->
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -588,6 +628,57 @@
                 <artifactId>sqlite-jdbc</artifactId>
                 <version>${sqlite.version}</version>
             </dependency>
+            <!-- TODO change if dependencies are officially released -->
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-cv-v022</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+           <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-inspire-base2-v20</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-inspire-base-v33</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-inspire-omor-v30</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-inspire-ompr-v30</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-inspire-omso-v30</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-inspire-omso-v301</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-inspire-ef-v40</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+               </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-gml-v33</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-gwml-v22</artifactId>
+                <version>2.1.1-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>org.n52.sensorweb</groupId>
                 <artifactId>52n-xml-gml-v311</artifactId>
@@ -596,6 +687,11 @@
             <dependency>
                 <groupId>org.n52.sensorweb</groupId>
                 <artifactId>52n-xml-gml-v321</artifactId>
+                <version>${n52.common.xml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>52n-xml-gmlcov-v10</artifactId>
                 <version>${n52.common.xml.version}</version>
             </dependency>
             <dependency>
@@ -946,6 +1042,11 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>gda-coding</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>gda-hibernate</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1045,6 +1146,12 @@
                 <groupId>se.jiderhamn</groupId>
                 <artifactId>classloader-leak-prevention</artifactId>
                 <version>1.13.0</version>
+                <exclusions>
+                	<exclusion>
+                		<groupId>javax.servlet</groupId>
+                		<artifactId>servlet-api</artifactId>
+                	</exclusion>
+                </exclusions>
             </dependency>
             <!-- third party dialects -->
             <!-- Remove third party ncname resolver from SOS and use OXF 

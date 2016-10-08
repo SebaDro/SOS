@@ -33,15 +33,16 @@ import java.util.Date;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.Procedure;
 import org.n52.sos.ds.hibernate.entities.Unit;
+import org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.observation.AbstractTemporalReferencedObservation;
-import org.n52.sos.ds.hibernate.entities.parameter.Parameter;
-import org.n52.sos.ds.hibernate.entities.parameter.ValuedParameterVisitor;
-import org.n52.sos.ds.hibernate.util.observation.ObservationValueCreator;
+import org.n52.sos.ds.hibernate.entities.parameter.observation.ParameterAdder;
 import org.n52.sos.ds.hibernate.util.HibernateGeometryCreator;
+import org.n52.sos.ds.hibernate.util.observation.ObservationValueCreator;
+import org.n52.sos.ds.hibernate.util.observation.RelatedObservationAdder;
+import org.n52.sos.ogc.gml.CodeType;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
 import org.n52.sos.ogc.gml.ReferenceType;
 import org.n52.sos.ogc.gml.time.TimeInstant;
@@ -76,7 +77,7 @@ public abstract class AbstractValuedLegacyObservation<T>
     private Unit unit;
     private Procedure procedure;
     private ObservableProperty observableProperty;
-    private FeatureOfInterest featureOfInterest;
+    private AbstractFeatureOfInterest featureOfInterest;
 
     @Override
     public Unit getUnit() {
@@ -114,12 +115,12 @@ public abstract class AbstractValuedLegacyObservation<T>
     }
 
     @Override
-    public FeatureOfInterest getFeatureOfInterest() {
+    public AbstractFeatureOfInterest getFeatureOfInterest() {
         return featureOfInterest;
     }
 
     @Override
-    public void setFeatureOfInterest(FeatureOfInterest featureOfInterest) {
+    public void setFeatureOfInterest(AbstractFeatureOfInterest featureOfInterest) {
         this.featureOfInterest = featureOfInterest;
     }
     
@@ -146,14 +147,21 @@ public abstract class AbstractValuedLegacyObservation<T>
     public OmObservation addValuesToObservation(OmObservation observation, String responseFormat)
             throws OwsExceptionReport {
         observation.setObservationID(Long.toString(getObservationId()));
-        if (isSetIdentifier()) {
+        if (!observation.isSetIdentifier() && isSetIdentifier()) {
             CodeWithAuthority identifier = new CodeWithAuthority(getIdentifier());
             if (isSetCodespace()) {
                 identifier.setCodeSpace(getCodespace().getCodespace());
             }
             observation.setIdentifier(identifier);
         }
-        if (isSetDescription()) {
+        if (!observation.isSetName() && isSetDescription()) {
+            CodeType name = new CodeType(getName());
+            if (isSetCodespace()) {
+                name.setCodeSpace(getCodespace().getCodespace());
+            }
+            observation.setName(name);
+        }
+        if (!observation.isSetDescription() && isSetDescription()) {
             observation.setDescription(getDescription());
         }
         Value<?> value = accept(new ObservationValueCreator());
@@ -167,6 +175,7 @@ public abstract class AbstractValuedLegacyObservation<T>
         } else if (isSetLongLat()) {
             observation.addParameter(createSpatialFilteringProfileParameter(new HibernateGeometryCreator().createGeometry(this)));
         }
+        addRelatedObservation(observation);
         addParameter(observation);
         addValueSpecificDataToObservation(observation, responseFormat);
         addObservationValueToObservation(observation, value, responseFormat);
@@ -236,12 +245,12 @@ public abstract class AbstractValuedLegacyObservation<T>
         return new SingleObservationValue(createPhenomenonTime(), value);
     }
     
+    private void addRelatedObservation(OmObservation observation) throws OwsExceptionReport {
+        new RelatedObservationAdder(observation, this).add();
+    }
+    
     private void addParameter(OmObservation observation) throws OwsExceptionReport {
-        if (hasParameters()) {
-            for (Parameter<?> parameter : getParameters()) {
-                observation.addParameter(parameter.accept(new ValuedParameterVisitor()));
-            }
-        }
+        new ParameterAdder(observation, this).add();
     }
 
     @Override

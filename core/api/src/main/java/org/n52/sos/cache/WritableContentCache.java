@@ -62,6 +62,11 @@ public interface WritableContentCache
      * @return all features of interest associated with an offering
      */
     Set<String> getFeaturesOfInterestWithOffering();
+    
+    /**
+     * @return all offerings associated with a features of interest
+     */
+    Set<String> getOfferingWithFeaturesOfInterest();
 
     /**
      * Allow the specified observation type for the passed offering.
@@ -120,6 +125,16 @@ public interface WritableContentCache
      *            the feature of interest
      */
     void addFeatureOfInterestForOffering(String offering, String feature);
+    
+    /**
+     * Associate the specified offering with the specified features of interest.
+     * 
+     * @param offering
+     *            he offering
+     * @param featuresOfInterest
+     *            the features of interest
+     */
+    void addOfferingForFeaturesOfInterest(String offering, Collection<String> featuresOfInterest);
 
     /**
      * Associate the specified result template with the specified feature of
@@ -264,6 +279,26 @@ public interface WritableContentCache
      *            the parent procedures
      */
     void addParentProcedures(String procedure, Collection<String> parentProcedures);
+    
+    /**
+     * Associate the specified parent offering with the specified offering
+     *
+     * @param offering
+     *            the offering
+     * @param parentOffering
+     *            the parent offering
+     */
+    void addParentOffering(String offering, String parentOffering);
+
+    /**
+     * Associate the specified parent procedures with the specified offering
+     *
+     * @param offering
+     *            the offering
+     * @param parentOfferings
+     *            the parent offerings
+     */
+    void addParentOfferings(String offering, Collection<String> parentOfferings);
 
     /**
      * Add the specified procedure.
@@ -385,6 +420,8 @@ public interface WritableContentCache
     void addProcedureIdentifierHumanReadableName(String identifier, String humanReadableName);
 
     void addOfferingIdentifierHumanReadableName(String identifier, String humanReadableName);
+    
+    void addProcedureDescriptionFormatsForProcedure(String identifier, Set<String> formats);
 
     /**
      * Dissociate the specified allowed observation type with the specified
@@ -634,6 +671,14 @@ public interface WritableContentCache
      *            the procedure
      */
     void removeProcedureForOffering(String offering, String procedure);
+    
+    /**
+     * Remove the specified procedure from map.
+     * 
+     * @param identifier
+     *            the procedure
+     */
+    void removeProcedureDescriptionFormatsForProcedure(String identifier);
 
     /**
      * Dissociate the specified procedure with the specified offering.
@@ -1061,6 +1106,11 @@ public interface WritableContentCache
      */
     void clearFeaturesOfInterestForOfferings();
 
+    /**
+     * Reset the feature of interest to offering relation.
+     */
+    void clearOfferingsForFeaturesOfInterest();
+    
     /**
      * Add the specified offering.
      *

@@ -19,8 +19,7 @@
         "favorite": "Favoriten",
         "provider": "Anbieter",
         "listSelection": "Listenauswahl",
-        "settings": "Einstellungen",
-        "trajectories": "Trajektorien"
+        "settings": "Einstellungen"
     },
     "chart": {
         "noTimeseriesSelected": "Sie haben keine Zeitreihe ausgewählt, die gewählten Zeitreihen haben keine Werte in dem derzeitigen Zeitraum oder die Zeitreihen sind unsichtbar.",
@@ -76,19 +75,6 @@
         },
         "warning": {
             "moreThanOneTimeseries": "Mehr als eine Zeitreihe gefunden"
-        }
-    },
-    "trajectories": {
-        "header": "Listenbasierte Fahrtenauswahl",
-        "headers": {
-            "platform": "Mobile Platform",
-            "track": "Pfad",
-            "phenomenon": "Phänomen",
-            "series": "Serie"
-        },
-        "noSupport": "Anbieter liefert keine Trajektorien",
-        "map": {
-          "loading": "Daten werden geladen"
         }
     },
     "legend": {

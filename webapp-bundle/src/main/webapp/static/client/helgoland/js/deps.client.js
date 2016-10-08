@@ -54725,55 +54725,55 @@ jsqrencode | (c) 2010 tz@execpc.com | GPL v3 License
 !function(a){"use strict";function b(){return T?new r:a.document.createElement("canvas")}function c(){return T?new x:a.document.createElement("img")}function d(b,c,d){var e=c.mime||B;a.location.href=b.toDataURL(e).replace(e,C),"function"==typeof d&&d()}function e(a){return"string"==typeof a&&(a={value:a}),a||{}}function f(a){function b(b){a[b]=function(){throw new Error(b+" requires HTML5 canvas element support")}}var c,d=["canvas","image","save","saveSync","toDataURL"];for(c=0;c<d.length;c++)b(d[c])}function g(a,b,c){function d(){w.write(e,f,0,f.length,0,function(a){w.close(e),c(a)})}if("string"!=typeof b.path)return c(new TypeError("Invalid path type: "+typeof b.path));var e,f;a.toBuffer(function(a,b){return a?c(a):(f=b,void(e&&d()))}),w.open(b.path,"w",N,function(a,b){return a?c(a):(e=b,void(f&&d()))})}function h(a,b){if("string"!=typeof b.path)throw new TypeError("Invalid path type: "+typeof b.path);var c=a.toBuffer(),d=w.openSync(b.path,"w",N);try{w.writeSync(d,c,0,c.length,0)}finally{w.closeSync(d)}}function i(a,b){var c;a>b&&(c=a,a=b,b=c),c=b,c*=b,c+=b,c>>=1,c+=a,S[c]=1}function j(a,b){var c;for(R[a+z*b]=1,c=-2;2>c;c++)R[a+c+z*(b-2)]=1,R[a-2+z*(b+c+1)]=1,R[a+2+z*(b+c)]=1,R[a+c+1+z*(b+2)]=1;for(c=0;2>c;c++)i(a-1,b+c),i(a+1,b-c),i(a-c,b-1),i(a+c,b+1)}function k(a){for(;a>=255;)a-=255,a=(a>>8)+(255&a);return a}function l(a,b,c,d){var e,f,g;for(f=0;d>f;f++)W[c+f]=0;for(f=0;b>f;f++){if(e=H[W[a+f]^W[c]],255!==e)for(g=1;d>g;g++)W[c+g-1]=W[c+g]^G[k(e+U[d-g])];else for(g=c;c+d>g;g++)W[g]=W[g+1];W[c+d-1]=255===e?0:G[k(e+U[0])]}}function m(a,b){var c;return a>b&&(c=a,a=b,b=c),c=b,c+=b*b,c>>=1,c+=a,1===S[c]}function n(a){var b,c,d,e;switch(a){case 0:for(c=0;z>c;c++)for(b=0;z>b;b++)b+c&1||m(b,c)||(R[b+c*z]^=1);break;case 1:for(c=0;z>c;c++)for(b=0;z>b;b++)1&c||m(b,c)||(R[b+c*z]^=1);break;case 2:for(c=0;z>c;c++)for(d=0,b=0;z>b;b++,d++)3===d&&(d=0),d||m(b,c)||(R[b+c*z]^=1);break;case 3:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=e,b=0;z>b;b++,d++)3===d&&(d=0),d||m(b,c)||(R[b+c*z]^=1);break;case 4:for(c=0;z>c;c++)for(d=0,e=c>>1&1,b=0;z>b;b++,d++)3===d&&(d=0,e=!e),e||m(b,c)||(R[b+c*z]^=1);break;case 5:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=0,b=0;z>b;b++,d++)3===d&&(d=0),(b&c&1)+!(!d|!e)||m(b,c)||(R[b+c*z]^=1);break;case 6:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=0,b=0;z>b;b++,d++)3===d&&(d=0),(b&c&1)+(d&&d===e)&1||m(b,c)||(R[b+c*z]^=1);break;case 7:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=0,b=0;z>b;b++,d++)3===d&&(d=0),(d&&d===e)+(b+c&1)&1||m(b,c)||(R[b+c*z]^=1)}}function o(a){var b,c=0;for(b=0;a>=b;b++)O[b]>=5&&(c+=I+O[b]-5);for(b=3;a-1>b;b+=2)O[b-2]===O[b+2]&&O[b+2]===O[b-1]&&O[b-1]===O[b+1]&&3*O[b-1]===O[b]&&(0===O[b-3]||b+3>a||3*O[b-3]>=4*O[b]||3*O[b+3]>=4*O[b])&&(c+=K);return c}function p(){var a,b,c,d,e,f,g,h,i;for(c=e=f=0,i=0;z-1>i;i++)for(h=0;z-1>h;h++)(R[h+z*i]&&R[h+1+z*i]&&R[h+z*(i+1)]&&R[h+1+z*(i+1)]||!(R[h+z*i]||R[h+1+z*i]||R[h+z*(i+1)]||R[h+1+z*(i+1)]))&&(c+=J);for(i=0;z>i;i++){for(O[0]=0,g=a=h=0;z>h;h++)(b=R[h+z*i])===a?O[g]++:O[++g]=1,a=b,e+=a?1:-1;c+=o(g)}for(0>e&&(e=-e),d=e,d+=d<<2,d<<=1;d>z*z;)d-=z*z,f++;for(c+=f*L,h=0;z>h;h++){for(O[0]=0,g=a=i=0;z>i;i++)(b=R[h+z*i])===a?O[g]++:O[++g]=1,a=b;c+=o(g)}return c}function q(a){var b,c,d,e,f,g,h,o;f=a.length,y=0;do if(y++,d=4*(Q-1)+16*(y-1),u=D[d++],v=D[d++],s=D[d++],t=D[d],d=s*(u+v)+v-3+(9>=y),d>=f)break;while(40>y);for(z=17+4*y,g=s+(s+t)*(u+v)+v,f=0;g>f;f++)P[f]=0;for(W=a.slice(0),f=0;z*z>f;f++)R[f]=0;for(f=0;(z*(z+1)+1)/2>f;f++)S[f]=0;for(f=0;3>f;f++){for(d=o=0,1===f&&(d=z-7),2===f&&(o=z-7),R[o+3+z*(d+3)]=1,h=0;6>h;h++)R[o+h+z*d]=1,R[o+z*(d+h+1)]=1,R[o+6+z*(d+h)]=1,R[o+h+1+z*(d+6)]=1;for(h=1;5>h;h++)i(o+h,d+1),i(o+1,d+h+1),i(o+5,d+h),i(o+h+1,d+5);for(h=2;4>h;h++)R[o+h+z*(d+2)]=1,R[o+2+z*(d+h+1)]=1,R[o+4+z*(d+h)]=1,R[o+h+1+z*(d+4)]=1}if(y>1)for(f=A[y],o=z-7;;){for(h=z-7;h>f-3&&(j(h,o),!(f>h));)h-=f;if(f+9>=o)break;o-=f,j(6,o),j(o,6)}for(R[8+z*(z-8)]=1,o=0;7>o;o++)i(7,o),i(z-8,o),i(7,o+z-7);for(h=0;8>h;h++)i(h,7),i(h+z-8,7),i(h,z-8);for(h=0;9>h;h++)i(h,8);for(h=0;8>h;h++)i(h+z-8,8),i(8,h);for(o=0;7>o;o++)i(8,o+z-7);for(h=0;z-14>h;h++)1&h?(i(8+h,6),i(6,8+h)):(R[8+h+6*z]=1,R[6+z*(8+h)]=1);if(y>6)for(f=M[y-7],d=17,h=0;6>h;h++)for(o=0;3>o;o++,d--)1&(d>11?y>>d-12:f>>d)?(R[5-h+z*(2-o+z-11)]=1,R[2-o+z-11+z*(5-h)]=1):(i(5-h,2-o+z-11),i(2-o+z-11,5-h));for(o=0;z>o;o++)for(h=0;o>=h;h++)R[h+z*o]&&i(h,o);for(g=W.length,b=0;g>b;b++)P[b]=W.charCodeAt(b);if(W=P.slice(0),h=s*(u+v)+v,g>=h-2&&(g=h-2,y>9&&g--),b=g,y>9){for(W[b+2]=0,W[b+3]=0;b--;)f=W[b],W[b+3]|=255&f<<4,W[b+2]=f>>4;W[2]|=255&g<<4,W[1]=g>>4,W[0]=64|g>>12}else{for(W[b+1]=0,W[b+2]=0;b--;)f=W[b],W[b+2]|=255&f<<4,W[b+1]=f>>4;W[1]|=255&g<<4,W[0]=64|g>>4}for(b=g+3-(10>y);h>b;)W[b++]=236,W[b++]=17;for(U[0]=1,b=0;t>b;b++){for(U[b+1]=1,c=b;c>0;c--)U[c]=U[c]?U[c-1]^G[k(H[U[c]]+b)]:U[c-1];U[0]=G[k(H[U[0]]+b)]}for(b=0;t>=b;b++)U[b]=H[U[b]];for(d=h,o=0,b=0;u>b;b++)l(o,s,d,t),o+=s,d+=t;for(b=0;v>b;b++)l(o,s+1,d,t),o+=s+1,d+=t;for(o=0,b=0;s>b;b++){for(c=0;u>c;c++)P[o++]=W[b+c*s];for(c=0;v>c;c++)P[o++]=W[u*s+b+c*(s+1)]}for(c=0;v>c;c++)P[o++]=W[u*s+b+c*(s+1)];for(b=0;t>b;b++)for(c=0;u+v>c;c++)P[o++]=W[h+b+c*t];for(W=P,h=o=z-1,d=g=1,e=(s+t)*(u+v)+v,b=0;e>b;b++)for(f=W[b],c=0;8>c;c++,f<<=1){128&f&&(R[h+z*o]=1);do g?h--:(h++,d?0!==o?o--:(h-=2,d=!d,6===h&&(h--,o=9)):o!==z-1?o++:(h-=2,d=!d,6===h&&(h--,o-=8))),g=!g;while(m(h,o))}for(W=R.slice(0),f=0,o=3e4,d=0;8>d&&(n(d),h=p(),o>h&&(o=h,f=d),7!==f);d++)R=W.slice(0);for(f!==d&&n(f),o=F[f+(Q-1<<3)],d=0;8>d;d++,o>>=1)1&o&&(R[z-1-d+8*z]=1,6>d?R[8+z*d]=1:R[8+z*(d+1)]=1);for(d=0;7>d;d++,o>>=1)1&o&&(R[8+z*(z-7+d)]=1,d?R[6-d+8*z]=1:R[7+8*z]=1);return R}var r,s,t,u,v,w,x,y,z,A=[0,11,15,19,23,27,31,16,18,20,22,24,26,28,20,22,24,24,26,28,28,22,24,24,26,26,28,28,24,24,26,26,26,28,28,24,26,26,26,28,28],B="image/png",C="image/octet-stream",D=[1,0,19,7,1,0,16,10,1,0,13,13,1,0,9,17,1,0,34,10,1,0,28,16,1,0,22,22,1,0,16,28,1,0,55,15,1,0,44,26,2,0,17,18,2,0,13,22,1,0,80,20,2,0,32,18,2,0,24,26,4,0,9,16,1,0,108,26,2,0,43,24,2,2,15,18,2,2,11,22,2,0,68,18,4,0,27,16,4,0,19,24,4,0,15,28,2,0,78,20,4,0,31,18,2,4,14,18,4,1,13,26,2,0,97,24,2,2,38,22,4,2,18,22,4,2,14,26,2,0,116,30,3,2,36,22,4,4,16,20,4,4,12,24,2,2,68,18,4,1,43,26,6,2,19,24,6,2,15,28,4,0,81,20,1,4,50,30,4,4,22,28,3,8,12,24,2,2,92,24,6,2,36,22,4,6,20,26,7,4,14,28,4,0,107,26,8,1,37,22,8,4,20,24,12,4,11,22,3,1,115,30,4,5,40,24,11,5,16,20,11,5,12,24,5,1,87,22,5,5,41,24,5,7,24,30,11,7,12,24,5,1,98,24,7,3,45,28,15,2,19,24,3,13,15,30,1,5,107,28,10,1,46,28,1,15,22,28,2,17,14,28,5,1,120,30,9,4,43,26,17,1,22,28,2,19,14,28,3,4,113,28,3,11,44,26,17,4,21,26,9,16,13,26,3,5,107,28,3,13,41,26,15,5,24,30,15,10,15,28,4,4,116,28,17,0,42,26,17,6,22,28,19,6,16,30,2,7,111,28,17,0,46,28,7,16,24,30,34,0,13,24,4,5,121,30,4,14,47,28,11,14,24,30,16,14,15,30,6,4,117,30,6,14,45,28,11,16,24,30,30,2,16,30,8,4,106,26,8,13,47,28,7,22,24,30,22,13,15,30,10,2,114,28,19,4,46,28,28,6,22,28,33,4,16,30,8,4,122,30,22,3,45,28,8,26,23,30,12,28,15,30,3,10,117,30,3,23,45,28,4,31,24,30,11,31,15,30,7,7,116,30,21,7,45,28,1,37,23,30,19,26,15,30,5,10,115,30,19,10,47,28,15,25,24,30,23,25,15,30,13,3,115,30,2,29,46,28,42,1,24,30,23,28,15,30,17,0,115,30,10,23,46,28,10,35,24,30,19,35,15,30,17,1,115,30,14,21,46,28,29,19,24,30,11,46,15,30,13,6,115,30,14,23,46,28,44,7,24,30,59,1,16,30,12,7,121,30,12,26,47,28,39,14,24,30,22,41,15,30,6,14,121,30,6,34,47,28,46,10,24,30,2,64,15,30,17,4,122,30,29,14,46,28,49,10,24,30,24,46,15,30,4,18,122,30,13,32,46,28,48,14,24,30,42,32,15,30,20,4,117,30,40,7,47,28,43,22,24,30,10,67,15,30,19,6,118,30,18,31,47,28,34,34,24,30,20,61,15,30],E={L:1,M:2,Q:3,H:4},F=[30660,29427,32170,30877,26159,25368,27713,26998,21522,20773,24188,23371,17913,16590,20375,19104,13663,12392,16177,14854,9396,8579,11994,11245,5769,5054,7399,6608,1890,597,3340,2107],G=[1,2,4,8,16,32,64,128,29,58,116,232,205,135,19,38,76,152,45,90,180,117,234,201,143,3,6,12,24,48,96,192,157,39,78,156,37,74,148,53,106,212,181,119,238,193,159,35,70,140,5,10,20,40,80,160,93,186,105,210,185,111,222,161,95,190,97,194,153,47,94,188,101,202,137,15,30,60,120,240,253,231,211,187,107,214,177,127,254,225,223,163,91,182,113,226,217,175,67,134,17,34,68,136,13,26,52,104,208,189,103,206,129,31,62,124,248,237,199,147,59,118,236,197,151,51,102,204,133,23,46,92,184,109,218,169,79,158,33,66,132,21,42,84,168,77,154,41,82,164,85,170,73,146,57,114,228,213,183,115,230,209,191,99,198,145,63,126,252,229,215,179,123,246,241,255,227,219,171,75,150,49,98,196,149,55,110,220,165,87,174,65,130,25,50,100,200,141,7,14,28,56,112,224,221,167,83,166,81,162,89,178,121,242,249,239,195,155,43,86,172,69,138,9,18,36,72,144,61,122,244,245,247,243,251,235,203,139,11,22,44,88,176,125,250,233,207,131,27,54,108,216,173,71,142,0],H=[255,0,1,25,2,50,26,198,3,223,51,238,27,104,199,75,4,100,224,14,52,141,239,129,28,193,105,248,200,8,76,113,5,138,101,47,225,36,15,33,53,147,142,218,240,18,130,69,29,181,194,125,106,39,249,185,201,154,9,120,77,228,114,166,6,191,139,98,102,221,48,253,226,152,37,179,16,145,34,136,54,208,148,206,143,150,219,189,241,210,19,92,131,56,70,64,30,66,182,163,195,72,126,110,107,58,40,84,250,133,186,61,202,94,155,159,10,21,121,43,78,212,229,172,115,243,167,87,7,112,192,247,140,128,99,13,103,74,222,237,49,197,254,24,227,165,153,119,38,184,180,124,17,68,146,217,35,32,137,46,55,63,209,91,149,188,207,205,144,135,151,178,220,252,190,97,242,86,211,171,20,42,93,158,132,60,57,83,71,109,65,162,31,45,67,216,183,123,164,118,196,23,73,236,127,12,111,246,108,161,59,82,41,157,85,170,251,96,134,177,187,204,62,90,203,89,95,176,156,169,160,81,11,245,22,235,122,117,44,215,79,174,213,233,230,231,173,232,116,214,244,234,168,80,88,175],I=3,J=3,K=40,L=10,M=[3220,1468,2713,1235,3062,1890,2119,1549,2344,2936,1117,2583,1330,2470,1667,2249,2028,3780,481,4011,142,3098,831,3445,592,2517,1776,2234,1951,2827,1070,2660,1345,3177],N=parseInt("0666",8),O=[],P=[],Q=1,R=[],S=[],T=!1,U=[],V=a.qr,W=[],X={VERSION:"1.1.3",canvas:function(a){a=e(a);var c=a.size>=1&&a.size<=10?a.size:4;c*=25;var d=a.canvas||b(),f=d.getContext("2d");f.canvas.width=c,f.canvas.height=c,f.fillStyle=a.background||"#fff",f.fillRect(0,0,c,c),Q=E[a.level&&a.level.toUpperCase()||"L"];var g=q(a.value||"");f.lineWidth=1;var h=c;h/=z,h=Math.floor(h),f.clearRect(0,0,c,c),f.fillStyle=a.background||"#fff",f.fillRect(0,0,h*(z+8),h*(z+8)),f.fillStyle=a.foreground||"#000";var i,j;for(i=0;z>i;i++)for(j=0;z>j;j++)g[j*z+i]&&f.fillRect(h*i,h*j,h,h);return d},image:function(a){a=e(a);var b=this.canvas(a),d=a.image||c();return d.src=b.toDataURL(a.mime||B),d.height=b.height,d.width=b.width,d},save:function(a,b,c){function f(a){h||(h=!0,c(a))}switch(a=e(a),typeof b){case"function":c=b,b=null;break;case"string":a.path=b}if("function"!=typeof c)throw new TypeError("Invalid callback type: "+typeof c);var h=!1,i=this.canvas(a);T?g(i,a,f):d(i,a,f)},saveSync:function(a,b){a=e(a),"string"==typeof b&&(a.path=b);var c=this.canvas(a);T?h(c,a):d(c,a)},toDataURL:function(a){return a=e(a),this.canvas(a).toDataURL(a.mime||B)},noConflict:function(){return a.qr=V,this}};"undefined"!=typeof exports?(T=!0,"undefined"!=typeof module&&module.exports&&(exports=module.exports=X),exports.qr=X,r=require("canvas"),x=r.Image,w=require("fs")):"function"==typeof define&&define.amd?define(function(){return X}):(a.HTMLCanvasElement||f(X),a.qr=X)}(this);
 //# sourceMappingURL=qr.min.map
 /*!
-*  ui-leaflet 1.0.1 2016-06-08
+*  ui-leaflet 1.0.0 2016-07-06
 *  ui-leaflet - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/angular-ui/ui-leaflet
 */
 (function(angular){
 'use strict';
-angular.module('ui-leaflet', ['nemLogging']).directive('leaflet',
-    ["$q", "leafletData", "leafletMapDefaults", "leafletHelpers", "leafletMapEvents", function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletMapEvents) {
+'use strict';
+
+angular.module('ui-leaflet', ['nemLogging']).directive('leaflet', ["$q", "leafletData", "leafletMapDefaults", "leafletHelpers", "leafletMapEvents", function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletMapEvents) {
     return {
         restrict: "EA",
         replace: true,
         scope: {
-            center         : '=',
-            lfCenter       : '=',
-            defaults       : '=',
-            maxbounds      : '=',
-            bounds         : '=',
-            markers        : '=',
-            legend         : '=',
-            geojson        : '=',
-            paths          : '=',
-            tiles          : '=',
-            layers         : '=',
-            controls       : '=',
-            decorations    : '=',
-            eventBroadcast : '=',
-            markersWatchOptions : '=',
-            geojsonWatchOptions : '='
+            center: '=',
+            lfCenter: '=',
+            defaults: '=',
+            maxbounds: '=',
+            bounds: '=',
+            markers: '=',
+            legend: '=',
+            geojson: '=',
+            paths: '=',
+            tiles: '=',
+            layers: '=',
+            controls: '=',
+            decorations: '=',
+            eventBroadcast: '=',
+            watchOptions: '='
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
-        controller: ["$scope", function ($scope) {
+        controller: ["$scope", function controller($scope) {
             this._leafletMap = $q.defer();
             this.getMap = function () {
                 return this._leafletMap.promise;
             };
 
-            this.getLeafletScope = function() {
+            this.getLeafletScope = function () {
                 return $scope;
             };
         }],
 
-        link: function(scope, element, attrs, ctrl) {
+        link: function link(scope, element, attrs, ctrl) {
             var isDefined = leafletHelpers.isDefined,
-                defaults  = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
+                defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 mapEvents = leafletMapEvents.getAvailableMapEvents(),
                 addEvents = leafletMapEvents.addEvents;
 
-            scope.mapId =  attrs.id;
+            scope.mapId = attrs.id;
             leafletData.setDirectiveControls({}, attrs.id);
 
             // Set width and height utility functions
@@ -54793,19 +54793,21 @@ angular.module('ui-leaflet', ['nemLogging']).directive('leaflet',
                 }
             }
 
+            // Create the Leaflet Map Object with the options
+            var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
+            ctrl._leafletMap.resolve(map);
+
             // If the width attribute defined update css
             // Then watch if bound property changes and update css
             if (isDefined(attrs.width)) {
                 updateWidth();
 
-                scope.$watch(
-                    function () {
-                        return element[0].getAttribute('width');
-                    },
-                    function () {
-                        updateWidth();
-                        map.invalidateSize();
-                    });
+                scope.$watch(function () {
+                    return element[0].getAttribute('width');
+                }, function () {
+                    updateWidth();
+                    map.invalidateSize();
+                });
             }
 
             // If the height attribute defined update css
@@ -54813,48 +54815,37 @@ angular.module('ui-leaflet', ['nemLogging']).directive('leaflet',
             if (isDefined(attrs.height)) {
                 updateHeight();
 
-                scope.$watch(
-                    function () {
-                        return element[0].getAttribute('height');
-                    },
-                    function () {
-                        updateHeight();
-                        map.invalidateSize();
-                    });
+                scope.$watch(function () {
+                    return element[0].getAttribute('height');
+                }, function () {
+                    updateHeight();
+                    map.invalidateSize();
+                });
             }
-
-            // Create the Leaflet Map Object with the options
-            var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
-            ctrl._leafletMap.resolve(map);
 
             if (!isDefined(attrs.center) && !isDefined(attrs.lfCenter)) {
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
             // If no layers nor tiles defined, set the default tileLayer
-            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers))) {
+            if (!isDefined(attrs.tiles) && !isDefined(attrs.layers)) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
                 leafletData.setTiles(tileLayerObj, attrs.id);
             }
 
             // Set zoom control configuration
-            if (isDefined(map.zoomControl) &&
-                isDefined(defaults.zoomControlPosition)) {
+            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
 
-            if (isDefined(map.zoomControl) &&
-                defaults.zoomControl===false) {
+            if (isDefined(map.zoomControl) && defaults.zoomControl === false) {
                 map.zoomControl.removeFrom(map);
             }
 
-            if (isDefined(map.zoomsliderControl) &&
-                isDefined(defaults.zoomsliderControl) &&
-                defaults.zoomsliderControl===false) {
+            if (isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
                 map.zoomsliderControl.removeFrom(map);
             }
-
 
             // if no event-broadcast attribute, all events are broadcasted
             if (!isDefined(attrs.eventBroadcast)) {
@@ -54863,7 +54854,7 @@ angular.module('ui-leaflet', ['nemLogging']).directive('leaflet',
             }
 
             // Resolve the map object to the promises
-            map.whenReady(function() {
+            map.whenReady(function () {
                 leafletData.setMap(map, attrs.id);
             });
 
@@ -54876,12 +54867,108 @@ angular.module('ui-leaflet', ['nemLogging']).directive('leaflet',
             //Handle request to invalidate the map size
             //Up scope using $scope.$emit('invalidateSize')
             //Down scope using $scope.$broadcast('invalidateSize')
-            scope.$on('invalidateSize', function() {
+            scope.$on('invalidateSize', function () {
                 map.invalidateSize();
             });
         }
     };
 }]);
+
+'use strict';
+
+(function () {
+    angular.module('ui-leaflet').factory('eventManager', [function () {
+        var EventManager = function EventManager() {
+            this.listeners = {};
+        };
+
+        EventManager.prototype = {
+            addEventListener: function addEventListener(type, callback, scope) {
+                var args = [];
+                var numOfArgs = arguments.length;
+                for (var i = 0; i < numOfArgs; i++) {
+                    args.push(arguments[i]);
+                }
+                args = args.length > 3 ? args.splice(3, args.length - 1) : [];
+                if (typeof this.listeners[type] !== "undefined") {
+                    this.listeners[type].push({ scope: scope, callback: callback, args: args });
+                } else {
+                    this.listeners[type] = [{ scope: scope, callback: callback, args: args }];
+                }
+            },
+            removeEventListener: function removeEventListener(type, callback, scope) {
+                if (typeof this.listeners[type] !== "undefined") {
+                    var numOfCallbacks = this.listeners[type].length;
+                    var newArray = [];
+                    for (var i = 0; i < numOfCallbacks; i++) {
+                        var listener = this.listeners[type][i];
+                        if (listener.scope === scope && listener.callback === callback) {} else {
+                            newArray.push(listener);
+                        }
+                    }
+                    this.listeners[type] = newArray;
+                }
+            },
+            hasEventListener: function hasEventListener(type, callback, scope) {
+                if (typeof this.listeners[type] !== "undefined") {
+                    var numOfCallbacks = this.listeners[type].length;
+                    if (callback === undefined && scope === undefined) {
+                        return numOfCallbacks > 0;
+                    }
+                    for (var i = 0; i < numOfCallbacks; i++) {
+                        var listener = this.listeners[type][i];
+                        if ((scope ? listener.scope === scope : true) && listener.callback === callback) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            },
+            dispatch: function dispatch(type, target) {
+                var numOfListeners = 0;
+                var event = {
+                    type: type,
+                    target: target
+                };
+                var args = [];
+                var numOfArgs = arguments.length;
+                for (var i = 0; i < numOfArgs; i++) {
+                    args.push(arguments[i]);
+                }
+                args = args.length > 2 ? args.splice(2, args.length - 1) : [];
+                args = [event].concat(args);
+                if (typeof this.listeners[type] !== "undefined") {
+                    var numOfCallbacks = this.listeners[type].length;
+                    for (var x = 0; x < numOfCallbacks; x++) {
+                        var listener = this.listeners[type][x];
+                        if (listener && listener.callback) {
+                            var concatArgs = args.concat(listener.args);
+                            listener.callback.apply(listener.scope, concatArgs);
+                            numOfListeners += 1;
+                        }
+                    }
+                }
+            },
+            getEvents: function getEvents() {
+                var str = "";
+                for (var type in this.listeners) {
+                    var numOfCallbacks = this.listeners[type].length;
+                    for (var i = 0; i < numOfCallbacks; i++) {
+                        var listener = this.listeners[type][i];
+                        str += listener.scope && listener.scope.className ? listener.scope.className : "anonymous";
+                        str += " listen for '" + type + "'\n";
+                    }
+                }
+                return str;
+            }
+        };
+        return EventManager;
+    }]).service('eventManager', ["EventManager", function (EventManager) {
+        return new EventManager();
+    }]);
+})();
+
+'use strict';
 
 angular.module('ui-leaflet').factory('leafletBoundsHelpers', ["leafletLogger", "leafletHelpers", function (leafletLogger, leafletHelpers) {
 
@@ -54892,28 +54979,20 @@ angular.module('ui-leaflet').factory('leafletBoundsHelpers', ["leafletLogger", "
         $log = leafletLogger;
 
     function _isValidBounds(bounds) {
-        return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&
-               angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) &&
-               angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) &&
-               angular.isNumber(bounds.northEast.lng);
+        return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) && angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) && angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) && angular.isNumber(bounds.northEast.lng);
     }
 
     return {
-        createLeafletBounds: function(bounds) {
+        createLeafletBounds: function createLeafletBounds(bounds) {
             if (_isValidBounds(bounds)) {
-                return L.latLngBounds([bounds.southWest.lat, bounds.southWest.lng],
-                                      [bounds.northEast.lat, bounds.northEast.lng ]);
+                return L.latLngBounds([bounds.southWest.lat, bounds.southWest.lng], [bounds.northEast.lat, bounds.northEast.lng]);
             }
         },
 
         isValidBounds: _isValidBounds,
 
-        createBoundsFromArray: function(boundsArray) {
-            if (!(isArray(boundsArray) && boundsArray.length === 2 &&
-                  isArray(boundsArray[0]) && isArray(boundsArray[1]) &&
-                  boundsArray[0].length === 2 && boundsArray[1].length === 2 &&
-                  isNumber(boundsArray[0][0]) && isNumber(boundsArray[0][1]) &&
-                  isNumber(boundsArray[1][0]) && isNumber(boundsArray[1][1]))) {
+        createBoundsFromArray: function createBoundsFromArray(boundsArray) {
+            if (!(isArray(boundsArray) && boundsArray.length === 2 && isArray(boundsArray[0]) && isArray(boundsArray[1]) && boundsArray[0].length === 2 && boundsArray[1].length === 2 && isNumber(boundsArray[0][0]) && isNumber(boundsArray[0][1]) && isNumber(boundsArray[1][0]) && isNumber(boundsArray[1][1]))) {
                 $log.error("[AngularJS - Leaflet] The bounds array is not valid.");
                 return;
             }
@@ -54930,7 +55009,7 @@ angular.module('ui-leaflet').factory('leafletBoundsHelpers', ["leafletLogger", "
             };
         },
 
-        createBoundsFromLeaflet: function(lfBounds) {
+        createBoundsFromLeaflet: function createBoundsFromLeaflet(lfBounds) {
             if (!(isDefined(lfBounds) && isFunction(lfBounds.getNorthEast) && isFunction(lfBounds.getSouthWest))) {
                 $log.error("[AngularJS - Leaflet] The leaflet bounds is not valid object.");
                 return;
@@ -54953,6 +55032,8 @@ angular.module('ui-leaflet').factory('leafletBoundsHelpers', ["leafletLogger", "
     };
 }]);
 
+'use strict';
+
 angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "leafletLogger", "leafletHelpers", "leafletLayerHelpers", "leafletMapDefaults", function ($rootScope, leafletLogger, leafletHelpers, leafletLayerHelpers, leafletMapDefaults) {
     var isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
@@ -54961,16 +55042,16 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
         errorHeader = leafletHelpers.errorHeader + ' [Controls] ',
         $log = leafletLogger;
 
-    var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
+    var _controlLayersMustBeVisible = function _controlLayersMustBeVisible(baselayers, overlays, mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);
-        if(!defaults.controls.layers.visible) {
+        if (!defaults.controls.layers.visible) {
             return false;
         }
 
         var atLeastOneControlItemMustBeShown = false;
 
         if (isObject(baselayers)) {
-            Object.keys(baselayers).forEach(function(key) {
+            Object.keys(baselayers).forEach(function (key) {
                 var layer = baselayers[key];
                 if (!isDefined(layer.layerOptions) || layer.layerOptions.showOnSelector !== false) {
                     atLeastOneControlItemMustBeShown = true;
@@ -54979,7 +55060,7 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
         }
 
         if (isObject(overlays)) {
-            Object.keys(overlays).forEach(function(key) {
+            Object.keys(overlays).forEach(function (key) {
                 var layer = overlays[key];
                 if (!isDefined(layer.layerParams) || layer.layerParams.showOnSelector !== false) {
                     atLeastOneControlItemMustBeShown = true;
@@ -54990,7 +55071,7 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
         return atLeastOneControlItemMustBeShown;
     };
 
-    var _createLayersControl = function(mapId) {
+    var _createLayersControl = function _createLayersControl(mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);
         var controlOptions = {
             collapsed: defaults.controls.layers.collapsed,
@@ -55001,75 +55082,75 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
         angular.extend(controlOptions, defaults.controls.layers.options);
 
         var control;
-        if(defaults.controls.layers && isDefined(defaults.controls.layers.control)) {
-			control = defaults.controls.layers.control.apply(this, [[], [], controlOptions]);
-		} else {
-			control = new L.control.layers([], [], controlOptions);
-		}
+        if (defaults.controls.layers && isDefined(defaults.controls.layers.control)) {
+            control = defaults.controls.layers.control.apply(this, [[], [], controlOptions]);
+        } else {
+            control = new L.control.layers([], [], controlOptions);
+        }
 
         return control;
     };
 
     var controlTypes = {
         draw: {
-            isPluginLoaded: function() {
+            isPluginLoaded: function isPluginLoaded() {
                 if (!angular.isDefined(L.Control.Draw)) {
                     $log.error(errorHeader + ' Draw plugin is not loaded.');
                     return false;
                 }
                 return true;
             },
-            checkValidParams: function(/* params */) {
+            checkValidParams: function checkValidParams() /* params */{
                 return true;
             },
-            createControl: function(params) {
+            createControl: function createControl(params) {
                 return new L.Control.Draw(params);
             }
         },
         scale: {
-            isPluginLoaded: function() {
+            isPluginLoaded: function isPluginLoaded() {
                 return true;
             },
-            checkValidParams: function(/* params */) {
+            checkValidParams: function checkValidParams() /* params */{
                 return true;
             },
-            createControl: function(params) {
+            createControl: function createControl(params) {
                 return new L.control.scale(params);
             }
         },
         fullscreen: {
-            isPluginLoaded: function() {
+            isPluginLoaded: function isPluginLoaded() {
                 if (!angular.isDefined(L.Control.Fullscreen)) {
                     $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
                     return false;
                 }
                 return true;
             },
-            checkValidParams: function(/* params */) {
+            checkValidParams: function checkValidParams() /* params */{
                 return true;
             },
-            createControl: function(params) {
+            createControl: function createControl(params) {
                 return new L.Control.Fullscreen(params);
             }
         },
         search: {
-            isPluginLoaded: function() {
+            isPluginLoaded: function isPluginLoaded() {
                 if (!angular.isDefined(L.Control.Search)) {
                     $log.error(errorHeader + ' Search plugin is not loaded.');
                     return false;
                 }
                 return true;
             },
-            checkValidParams: function(/* params */) {
+            checkValidParams: function checkValidParams() /* params */{
                 return true;
             },
-            createControl: function(params) {
+            createControl: function createControl(params) {
                 return new L.Control.Search(params);
             }
         },
         custom: {},
         minimap: {
-            isPluginLoaded: function() {
+            isPluginLoaded: function isPluginLoaded() {
                 if (!angular.isDefined(L.Control.MiniMap)) {
                     $log.error(errorHeader + ' Minimap plugin is not loaded.');
                     return false;
@@ -55077,14 +55158,14 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
 
                 return true;
             },
-            checkValidParams: function(params) {
-                if(!isDefined(params.layer)) {
-                    $log.warn(errorHeader +' minimap "layer" option should be defined.');
+            checkValidParams: function checkValidParams(params) {
+                if (!isDefined(params.layer)) {
+                    $log.warn(errorHeader + ' minimap "layer" option should be defined.');
                     return false;
                 }
                 return true;
             },
-            createControl: function(params) {
+            createControl: function createControl(params) {
                 var layer = createLayer(params.layer);
 
                 if (!isDefined(layer)) {
@@ -55100,11 +55181,11 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
     return {
         layersControlMustBeVisible: _controlLayersMustBeVisible,
 
-        isValidControlType: function(type) {
+        isValidControlType: function isValidControlType(type) {
             return Object.keys(controlTypes).indexOf(type) !== -1;
         },
 
-        createControl: function (type, params) {
+        createControl: function createControl(type, params) {
             if (!controlTypes[type].checkValidParams(params)) {
                 return;
             }
@@ -55112,7 +55193,7 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
             return controlTypes[type].createControl(params);
         },
 
-        updateLayersControl: function(map, mapId, loaded, baselayers, overlays, leafletLayers) {
+        updateLayersControl: function updateLayersControl(map, mapId, loaded, baselayers, overlays, leafletLayers) {
             var i;
             var _layersControl = _controls[mapId];
             var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays, mapId);
@@ -55132,15 +55213,13 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
                 _layersControl = _createLayersControl(mapId);
                 _controls[mapId] = _layersControl;
                 for (i in baselayers) {
-                    var hideOnSelector = isDefined(baselayers[i].layerOptions) &&
-                                         baselayers[i].layerOptions.showOnSelector === false;
+                    var hideOnSelector = isDefined(baselayers[i].layerOptions) && baselayers[i].layerOptions.showOnSelector === false;
                     if (!hideOnSelector && isDefined(leafletLayers.baselayers[i])) {
                         _layersControl.addBaseLayer(leafletLayers.baselayers[i], baselayers[i].name);
                     }
                 }
                 for (i in overlays) {
-                	var hideOverlayOnSelector = isDefined(overlays[i].layerParams) &&
-                            overlays[i].layerParams.showOnSelector === false;
+                    var hideOverlayOnSelector = isDefined(overlays[i].layerParams) && overlays[i].layerParams.showOnSelector === false;
                     if (!hideOverlayOnSelector && isDefined(leafletLayers.overlays[i])) {
                         _layersControl.addOverlay(leafletLayers.overlays[i], overlays[i].name);
                     }
@@ -55153,37 +55232,31 @@ angular.module('ui-leaflet').factory('leafletControlHelpers', ["$rootScope", "le
     };
 }]);
 
+'use strict';
+
 angular.module('ui-leaflet').service('leafletData', ["leafletLogger", "$q", "leafletHelpers", function (leafletLogger, $q, leafletHelpers) {
     var getDefer = leafletHelpers.getDefer,
         getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
         setResolvedDefer = leafletHelpers.setResolvedDefer;
-        // $log = leafletLogger;
+    // $log = leafletLogger;
 
     var _private = {};
     var self = this;
 
-    var upperFirst = function (string) {
+    var upperFirst = function upperFirst(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
-    var _privateItems = [
-        'map',
-        'tiles',
-        'layers',
-        'paths',
-        'markers',
-        'geoJSON',
-        'UTFGrid', //odd ball on naming convention keeping to not break
-        'decorations',
-        'directiveControls'];
+    var _privateItems = ['map', 'tiles', 'layers', 'paths', 'markers', 'geoJSON', 'UTFGrid', //odd ball on naming convention keeping to not break
+    'decorations', 'directiveControls'];
 
     //init
-    _privateItems.forEach(function(itemName){
+    _privateItems.forEach(function (itemName) {
         _private[itemName] = {};
     });
 
-    this.unresolveMap = function (mapId) {
-        var id = leafletHelpers.obtainEffectiveMapId(_private.map, mapId);
+    this.unresolveMap = function (scopeId) {
+        var id = leafletHelpers.obtainEffectiveMapId(_private.map, scopeId);
         _privateItems.forEach(function (itemName) {
             _private[itemName][id] = undefined;
         });
@@ -55192,21 +55265,22 @@ angular.module('ui-leaflet').service('leafletData', ["leafletLogger", "$q", "lea
     //int repetitive stuff (get and sets)
     _privateItems.forEach(function (itemName) {
         var name = upperFirst(itemName);
-        self['set' + name] = function (lObject, mapId) {
-            var defer = getUnresolvedDefer(_private[itemName], mapId);
+        self['set' + name] = function (lObject, scopeId) {
+            var defer = getUnresolvedDefer(_private[itemName], scopeId);
             defer.resolve(lObject);
-            setResolvedDefer(_private[itemName], mapId);
+            setResolvedDefer(_private[itemName], scopeId);
         };
 
-        self['get' + name] = function (mapId) {
-            var defer = getDefer(_private[itemName], mapId);
+        self['get' + name] = function (scopeId) {
+            var defer = getDefer(_private[itemName], scopeId);
             return defer.promise;
         };
     });
 }]);
 
-angular.module('ui-leaflet')
-.service('leafletDirectiveControlsHelpers', ["leafletLogger", "leafletData", "leafletHelpers", function (leafletLogger, leafletData, leafletHelpers) {
+'use strict';
+
+angular.module('ui-leaflet').service('leafletDirectiveControlsHelpers', ["leafletLogger", "leafletData", "leafletHelpers", function (leafletLogger, leafletData, leafletHelpers) {
     var _isDefined = leafletHelpers.isDefined,
         _isString = leafletHelpers.isString,
         _isObject = leafletHelpers.isObject,
@@ -55215,52 +55289,50 @@ angular.module('ui-leaflet')
 
     var _errorHeader = _mainErrorHeader + '[leafletDirectiveControlsHelpers';
 
-    var extend = function(id, thingToAddName, createFn, cleanFn){
+    var _extend = function _extend(id, thingToAddName, createFn, cleanFn) {
         var _fnHeader = _errorHeader + '.extend] ';
         var extender = {};
-        if(!_isDefined(thingToAddName)){
+        if (!_isDefined(thingToAddName)) {
             $log.error(_fnHeader + 'thingToAddName cannot be undefined');
             return;
         }
 
-        if(_isString(thingToAddName) && _isDefined(createFn) && _isDefined(cleanFn)){
+        if (_isString(thingToAddName) && _isDefined(createFn) && _isDefined(cleanFn)) {
             extender[thingToAddName] = {
                 create: createFn,
                 clean: cleanFn
             };
-        }
-        else if(_isObject(thingToAddName) && !_isDefined(createFn) && !_isDefined(cleanFn)){
+        } else if (_isObject(thingToAddName) && !_isDefined(createFn) && !_isDefined(cleanFn)) {
             extender = thingToAddName;
-        }
-        else{
+        } else {
             $log.error(_fnHeader + 'incorrect arguments');
             return;
         }
 
         //add external control to create / destroy markers without a watch
-        leafletData.getDirectiveControls(id)
-        .then(function(controls){
+        leafletData.getDirectiveControls().then(function (controls) {
             angular.extend(controls, extender);
             leafletData.setDirectiveControls(controls, id);
         });
     };
 
     return {
-        extend: extend
+        extend: _extend
     };
 }]);
 
-angular.module('ui-leaflet')
-.service('leafletGeoJsonHelpers', ["leafletHelpers", "leafletIterators", function (leafletHelpers, leafletIterators) {
+'use strict';
+
+angular.module('ui-leaflet').service('leafletGeoJsonHelpers', ["leafletHelpers", "leafletIterators", function (leafletHelpers, leafletIterators) {
     var lHlp = leafletHelpers,
-    lIt = leafletIterators;
-    var Point = function(lat,lng){
+        lIt = leafletIterators;
+    var Point = function Point(lat, lng) {
         this.lat = lat;
         this.lng = lng;
         return this;
     };
 
-    var _getLat = function(value) {
+    var _getLat = function _getLat(value) {
         if (Array.isArray(value) && value.length === 2) {
             return value[1];
         } else if (lHlp.isDefined(value.type) && value.type === 'Point') {
@@ -55270,7 +55342,7 @@ angular.module('ui-leaflet')
         }
     };
 
-    var _getLng = function(value) {
+    var _getLng = function _getLng(value) {
         if (Array.isArray(value) && value.length === 2) {
             return value[0];
         } else if (lHlp.isDefined(value.type) && value.type === 'Point') {
@@ -55280,7 +55352,7 @@ angular.module('ui-leaflet')
         }
     };
 
-    var _validateCoords = function(coords) {
+    var _validateCoords = function _validateCoords(coords) {
         if (lHlp.isUndefined(coords)) {
             return false;
         }
@@ -55289,54 +55361,50 @@ angular.module('ui-leaflet')
                 return true;
             }
         } else if (lHlp.isDefined(coords.type)) {
-            if (
-                coords.type === 'Point' && lHlp.isArray(coords.coordinates) &&
-                coords.coordinates.length === 2  &&
-                lHlp.isNumber(coords.coordinates[0]) &&
-                lHlp.isNumber(coords.coordinates[1])) {
-                    return true;
-                }
+            if (coords.type === 'Point' && lHlp.isArray(coords.coordinates) && coords.coordinates.length === 2 && lHlp.isNumber(coords.coordinates[0]) && lHlp.isNumber(coords.coordinates[1])) {
+                return true;
             }
+        }
 
-            var ret = lIt.all(['lat', 'lng'], function(pos){
-                return lHlp.isDefined(coords[pos]) && lHlp.isNumber(coords[pos]);
-            });
-            return ret;
-        };
+        var ret = lIt.all(['lat', 'lng'], function (pos) {
+            return lHlp.isDefined(coords[pos]) && lHlp.isNumber(coords[pos]);
+        });
+        return ret;
+    };
 
-        var _getCoords = function(value) {
-            if (!value || !_validateCoords(value)) {
-                return;
-            }
-            var p =  null;
-            if (Array.isArray(value) && value.length === 2) {
-                p = new Point(value[1], value[0]);
-            } else if (lHlp.isDefined(value.type) && value.type === 'Point') {
-                p = new Point(value.coordinates[1], value.coordinates[0]);
-            } else {
-                return value;
-            }
-            //note angular.merge is avail in angular 1.4.X we might want to fill it here
-            return angular.extend(value, p);//tap on lat, lng if it doesnt exist
-        };
+    var _getCoords = function _getCoords(value) {
+        if (!value || !_validateCoords(value)) {
+            return;
+        }
+        var p = null;
+        if (Array.isArray(value) && value.length === 2) {
+            p = new Point(value[1], value[0]);
+        } else if (lHlp.isDefined(value.type) && value.type === 'Point') {
+            p = new Point(value.coordinates[1], value.coordinates[0]);
+        } else {
+            return value;
+        }
+        //note angular.merge is avail in angular 1.4.X we might want to fill it here
+        return angular.extend(value, p); //tap on lat, lng if it doesnt exist
+    };
 
+    return {
+        getLat: _getLat,
+        getLng: _getLng,
+        validateCoords: _validateCoords,
+        getCoords: _getCoords
+    };
+}]);
 
-        return {
-            getLat: _getLat,
-            getLng: _getLng,
-            validateCoords: _validateCoords,
-            getCoords: _getCoords
-        };
-    }]);
+'use strict';
 
-angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($q, $log) {
-    var _errorHeader = '[AngularJS - Leaflet] ';
+angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", "$timeout", function ($q, $log, $timeout) {
+    var _errorHeader = '[ui-leaflet] ';
     var _copy = angular.copy;
     var _clone = _copy;
     /*
     For parsing paths to a field in an object
-
-    Example:
+     Example:
     var obj = {
         bike:{
          1: 'hi'
@@ -55346,16 +55414,15 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
     _getObjectValue(obj,"bike.1") returns 'hi'
     this is getPath in ui-gmap
      */
-    var _getObjectValue = function(object, pathStr) {
+    var _getObjectValue = function _getObjectValue(object, pathStr) {
         var obj;
-        if (!object || !angular.isObject(object))
-            return;
+        if (!object || !angular.isObject(object)) return;
         //if the key is not a sting then we already have the value
-        if ((pathStr === null) || !angular.isString(pathStr)) {
+        if (pathStr === null || !angular.isString(pathStr)) {
             return pathStr;
         }
         obj = object;
-        pathStr.split('.').forEach(function(value) {
+        pathStr.split('.').forEach(function (value) {
             if (obj) {
                 obj = obj[value];
             }
@@ -55369,8 +55436,8 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
      returns:
      'bike["one"]["two"]'
      */
-    var _getObjectArrayPath = function(pathStr) {
-        return pathStr.split('.').reduce(function(previous, current) {
+    var _getObjectArrayPath = function _getObjectArrayPath(pathStr) {
+        return pathStr.split('.').reduce(function (previous, current) {
             return previous + '["' + current + '"]';
         });
     };
@@ -55380,28 +55447,25 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
      returns:
      "bike.one.two"
      */
-    var _getObjectDotPath = function(arrayOfStrings) {
-        return arrayOfStrings.reduce(function(previous, current) {
+    var _getObjectDotPath = function _getObjectDotPath(arrayOfStrings) {
+        return arrayOfStrings.reduce(function (previous, current) {
             return previous + '.' + current;
         });
     };
 
     function _obtainEffectiveMapId(d, mapId) {
-        var id,
-            keys = Object.keys(d);
-
+        var id, i;
         if (!angular.isDefined(mapId)) {
-            if (keys.length === 0 || (keys.length === 1 && keys[0] === 'main')) {
-                //default non id attribute map
-                // OR one key 'main'
-                /*
-                    Main Reason:
-                    Initally if we have only one map and no "id" then d will be undefined initially.
-                    On subsequent runs it will be just d.main so we need to return the last map.
-                */
+            if (Object.keys(d).length === 0) {
                 id = "main";
+            } else if (Object.keys(d).length >= 1) {
+                for (i in d) {
+                    if (d.hasOwnProperty(i)) {
+                        id = i;
+                    }
+                }
             } else {
-                throw new Error(_errorHeader + "- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call. Where one of the following mapIds " + Object.keys(d).join(',') + ' are available.');
+                $log.error(_errorHeader + "- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
             id = mapId;
@@ -55427,10 +55491,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         return defer;
     }
 
-    var _isDefined = function(value) {
+    var _isDefined = function _isDefined(value) {
         return angular.isDefined(value) && value !== null;
     };
-    var _isUndefined = function(value) {
+    var _isUndefined = function _isUndefined(value) {
         return !_isDefined(value);
     };
 
@@ -55448,8 +55512,8 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
     @param name Name to normalize
      */
 
-    var camelCase = function(name) {
-        return name.replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+    var camelCase = function camelCase(name) {
+        return name.replace(SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
             if (offset) {
                 return letter.toUpperCase();
             } else {
@@ -55458,19 +55522,33 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         }).replace(MOZ_HACK_REGEXP, "Moz$1");
     };
 
-
     /**
-    Converts all accepted directives format into proper directive name.
-    @param name Name to normalize
-     */
+        Converts all accepted directives format into proper directive name.
+        @param name Name to normalize
+    */
 
-    var directiveNormalize = function(name) {
+    var directiveNormalize = function directiveNormalize(name) {
         return camelCase(name.replace(PREFIX_REGEXP, ""));
     };
-
     // END AngularJS port
 
+    var _watchTrapDelayMilliSec = 10;
+
+    var _modelChangeInDirective = function _modelChangeInDirective(trapObj, trapField, cbToExec) {
+        if (!trapObj) throw new Error(_errorHeader + 'trapObj is undefined');
+        if (!trapField) throw new Error(_errorHeader + 'trapField is undefined');
+
+        trapObj[trapField] = true;
+        var ret = cbToExec();
+        $timeout(function () {
+            trapObj[trapField] = false;
+        }, _watchTrapDelayMilliSec);
+        return ret;
+    };
+
     return {
+        watchTrapDelayMilliSec: _watchTrapDelayMilliSec,
+        modelChangeInDirective: _modelChangeInDirective,
         camelCase: camelCase,
         directiveNormalize: directiveNormalize,
         copy: _copy,
@@ -55479,21 +55557,21 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         getObjectValue: _getObjectValue,
         getObjectArrayPath: _getObjectArrayPath,
         getObjectDotPath: _getObjectDotPath,
-        defaultTo: function(val, _default) {
+        defaultTo: function defaultTo(val, _default) {
             return _isDefined(val) ? val : _default;
         },
         //mainly for checking attributes of directives lets keep this minimal (on what we accept)
-        isTruthy: function(val) {
+        isTruthy: function isTruthy(val) {
             return val === 'true' || val === true;
         },
         //Determine if a reference is {}
-        isEmpty: function(value) {
+        isEmpty: function isEmpty(value) {
             return Object.keys(value).length === 0;
         },
 
         //Determine if a reference is undefined or {}
-        isUndefinedOrEmpty: function(value) {
-            return (angular.isUndefined(value) || value === null) || Object.keys(value).length === 0;
+        isUndefinedOrEmpty: function isUndefinedOrEmpty(value) {
+            return angular.isUndefined(value) || value === null || Object.keys(value).length === 0;
         },
 
         // Determine if a reference is defined
@@ -55506,12 +55584,11 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         isFunction: angular.isFunction,
         equals: angular.equals,
 
-        isValidCenter: function(center) {
-            return angular.isDefined(center) && angular.isNumber(center.lat) &&
-                angular.isNumber(center.lng) && angular.isNumber(center.zoom);
+        isValidCenter: function isValidCenter(center) {
+            return angular.isDefined(center) && angular.isNumber(center.lat) && angular.isNumber(center.lng) && angular.isNumber(center.zoom);
         },
 
-        isValidPoint: function(point) {
+        isValidPoint: function isValidPoint(point) {
             if (!angular.isDefined(point)) {
                 return false;
             }
@@ -55521,19 +55598,16 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             return angular.isNumber(point.lat) && angular.isNumber(point.lng);
         },
 
-        isSameCenterOnMap: function(centerModel, map) {
+        isSameCenterOnMap: function isSameCenterOnMap(centerModel, map) {
             var mapCenter = map.getCenter();
             var zoom = map.getZoom();
-            if (centerModel.lat && centerModel.lng &&
-                mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) &&
-                mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) &&
-                zoom === centerModel.zoom) {
+            if (centerModel.lat && centerModel.lng && mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) && mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) && zoom === centerModel.zoom) {
                 return true;
             }
             return false;
         },
 
-        safeApply: function($scope, fn) {
+        safeApply: function safeApply($scope, fn) {
             var phase = $scope.$root.$$phase;
             if (phase === '$apply' || phase === '$digest') {
                 $scope.$eval(fn);
@@ -55544,7 +55618,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
 
         obtainEffectiveMapId: _obtainEffectiveMapId,
 
-        getDefer: function(d, mapId) {
+        getDefer: function getDefer(d, mapId) {
             var id = _obtainEffectiveMapId(d, mapId),
                 defer;
             if (!angular.isDefined(d[id]) || d[id].resolvedDefer === false) {
@@ -55557,41 +55631,41 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
 
         getUnresolvedDefer: _getUnresolvedDefer,
 
-        setResolvedDefer: function(d, mapId) {
+        setResolvedDefer: function setResolvedDefer(d, mapId) {
             var id = _obtainEffectiveMapId(d, mapId);
             d[id].resolvedDefer = true;
         },
 
-        rangeIsSupported: function() {
+        rangeIsSupported: function rangeIsSupported() {
             var testrange = document.createElement('input');
             testrange.setAttribute('type', 'range');
             return testrange.type === 'range';
         },
 
         FullScreenControlPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.Control.Fullscreen);
             }
         },
 
         MiniMapControlPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.Control.MiniMap);
             }
         },
 
         AwesomeMarkersPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);
             },
-            is: function(icon) {
+            is: function is(icon) {
                 if (this.isLoaded()) {
                     return icon instanceof L.AwesomeMarkers.Icon;
                 } else {
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function equal(iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55604,17 +55678,17 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         },
 
         VectorMarkersPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.VectorMarkers) && angular.isDefined(L.VectorMarkers.Icon);
             },
-            is: function(icon) {
+            is: function is(icon) {
                 if (this.isLoaded()) {
                     return icon instanceof L.VectorMarkers.Icon;
                 } else {
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function equal(iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55627,21 +55701,21 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         },
 
         DomMarkersPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 if (angular.isDefined(L.DomMarkers) && angular.isDefined(L.DomMarkers.Icon)) {
                     return true;
                 } else {
                     return false;
                 }
             },
-            is: function(icon) {
+            is: function is(icon) {
                 if (this.isLoaded()) {
                     return icon instanceof L.DomMarkers.Icon;
                 } else {
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function equal(iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55654,21 +55728,21 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         },
 
         PolylineDecoratorPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 if (angular.isDefined(L.PolylineDecorator)) {
                     return true;
                 } else {
                     return false;
                 }
             },
-            is: function(decoration) {
+            is: function is(decoration) {
                 if (this.isLoaded()) {
                     return decoration instanceof L.PolylineDecorator;
                 } else {
                     return false;
                 }
             },
-            equal: function(decorationA, decorationB) {
+            equal: function equal(decorationA, decorationB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55681,21 +55755,21 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         },
 
         MakiMarkersPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 if (angular.isDefined(L.MakiMarkers) && angular.isDefined(L.MakiMarkers.Icon)) {
                     return true;
                 } else {
                     return false;
                 }
             },
-            is: function(icon) {
+            is: function is(icon) {
                 if (this.isLoaded()) {
                     return icon instanceof L.MakiMarkers.Icon;
                 } else {
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function equal(iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55707,21 +55781,21 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         ExtraMarkersPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 if (angular.isDefined(L.ExtraMarkers) && angular.isDefined(L.ExtraMarkers.Icon)) {
                     return true;
                 } else {
                     return false;
                 }
             },
-            is: function(icon) {
+            is: function is(icon) {
                 if (this.isLoaded()) {
                     return icon instanceof L.ExtraMarkers.Icon;
                 } else {
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function equal(iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55733,10 +55807,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         LabelPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.Label);
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.MarkerClusterGroup;
                 } else {
@@ -55745,10 +55819,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         MarkerClusterPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.MarkerClusterGroup);
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.MarkerClusterGroup;
                 } else {
@@ -55756,23 +55830,11 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                 }
             }
         },
-        GoogleLayerPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Google);
-            },
-            is: function(layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.Google;
-                } else {
-                    return false;
-                }
-            }
-        },
         LeafletProviderPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.TileLayer.Provider);
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.TileLayer.Provider;
                 } else {
@@ -55780,50 +55842,11 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                 }
             }
         },
-        ChinaLayerPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.tileLayer.chinaProvider);
-            }
-        },
-        HeatLayerPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.heatLayer);
-            }
-        },
-        WebGLHeatMapLayerPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.TileLayer.WebGLHeatMap);
-            }
-        },
-        BingLayerPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.BingLayer);
-            },
-            is: function(layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.BingLayer;
-                } else {
-                    return false;
-                }
-            }
-        },
-        WFSLayerPlugin: {
-            isLoaded: function() {
-                return L.GeoJSON.WFS !== undefined;
-            },
-            is: function(layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.GeoJSON.WFS;
-                } else {
-                    return false;
-                }
-            }
-        },
         AGSBaseLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return L.esri !== undefined && L.esri.basemapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.basemapLayer;
                 } else {
@@ -55832,10 +55855,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return lvector !== undefined && lvector.AGS !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof lvector.AGS;
                 } else {
@@ -55844,10 +55867,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSFeatureLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return L.esri !== undefined && L.esri.featureLayer !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.featureLayer;
                 } else {
@@ -55856,10 +55879,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSTiledMapLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return L.esri !== undefined && L.esri.tiledMapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.tiledMapLayer;
                 } else {
@@ -55868,10 +55891,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSDynamicMapLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.dynamicMapLayer;
                 } else {
@@ -55880,10 +55903,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSImageMapLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return L.esri !== undefined && L.esri.imageMapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.imageMapLayer;
                 } else {
@@ -55892,10 +55915,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSClusteredLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return L.esri !== undefined && L.esri.clusteredFeatureLayer !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.clusteredFeatureLayer;
                 } else {
@@ -55904,10 +55927,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSHeatmapLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return L.esri !== undefined && L.esri.heatmapFeatureLayer !== undefined;
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.heatmapFeatureLayer;
                 } else {
@@ -55915,23 +55938,11 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                 }
             }
         },
-        YandexLayerPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Yandex);
-            },
-            is: function(layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.Yandex;
-                } else {
-                    return false;
-                }
-            }
-        },
         GeoJSONPlugin: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return angular.isDefined(L.TileLayer.GeoJSON);
             },
-            is: function(layer) {
+            is: function is(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.TileLayer.GeoJSON;
                 } else {
@@ -55939,24 +55950,11 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                 }
             }
         },
-        UTFGridPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.UtfGrid);
-            },
-            is: function(layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.UtfGrid;
-                } else {
-                    $log.error('[AngularJS - Leaflet] No UtfGrid plugin found.');
-                    return false;
-                }
-            }
-        },
         CartoDB: {
-            isLoaded: function() {
+            isLoaded: function isLoaded() {
                 return cartodb;
             },
-            is: function( /*layer*/ ) {
+            is: function is() /*layer*/{
                 return true;
                 /*
                 if (this.isLoaded()) {
@@ -55968,10 +55966,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         },
         Leaflet: {
             DivIcon: {
-                is: function(icon) {
+                is: function is(icon) {
                     return icon instanceof L.DivIcon;
                 },
-                equal: function(iconA, iconB) {
+                equal: function equal(iconA, iconB) {
                     if (this.is(iconA)) {
                         return angular.equals(iconA, iconB);
                     } else {
@@ -55980,10 +55978,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                 }
             },
             Icon: {
-                is: function(icon) {
+                is: function is(icon) {
                     return icon instanceof L.Icon;
                 },
-                equal: function(iconA, iconB) {
+                equal: function equal(iconA, iconB) {
                     if (this.is(iconA)) {
                         return angular.equals(iconA, iconB);
                     } else {
@@ -55996,28 +55994,26 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
          watchOptions - object to set deep nested watches and turn off watches all together
          (rely on control / functional updates)
          watchOptions - Object
-             doWatch:boolean
-             isDeep:boolean (sets $watch(function,isDeep))
+             type: string. //One of ['watch', 'watchCollection', 'watchDeep', null]
              individual
-                 doWatch:boolean
-                 isDeep:boolean
+                 type: string
          */
         //legacy defaults
         watchOptions: {
-            doWatch: true,
-            isDeep: true,
+            type: 'watchDeep',
             individual: {
-                doWatch: true,
-                isDeep: true
+                type: 'watchDeep'
             }
         }
     };
 }]);
 
+'use strict';
+
 angular.module('ui-leaflet').service('leafletIterators', ["leafletLogger", "leafletHelpers", function (leafletLogger, leafletHelpers) {
 
   var lHlp = leafletHelpers,
-  errorHeader = leafletHelpers.errorHeader + 'leafletIterators: ';
+      errorHeader = leafletHelpers.errorHeader + 'leafletIterators: ';
 
   //BEGIN COPY from underscore
   var _keys = Object.keys;
@@ -56030,18 +56026,18 @@ angular.module('ui-leaflet').service('leafletIterators', ["leafletLogger", "leaf
   // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
   var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
 
-  var _isArrayLike = function(collection) {
+  var _isArrayLike = function _isArrayLike(collection) {
     var length = collection !== null && collection.length;
-    return  lHlp.isNumber(length) && length >= 0 && length <= MAX_ARRAY_INDEX;
+    return lHlp.isNumber(length) && length >= 0 && length <= MAX_ARRAY_INDEX;
   };
 
   // Keep the identity function around for default iteratees.
-  var _identity = function(value) {
+  var _identity = function _identity(value) {
     return value;
   };
 
-  var _property = function(key) {
-    return function(obj) {
+  var _property = function _property(key) {
+    return function (obj) {
       return obj === null ? void 0 : obj[key];
     };
   };
@@ -56049,30 +56045,34 @@ angular.module('ui-leaflet').service('leafletIterators', ["leafletLogger", "leaf
   // Internal function that returns an efficient (for current engines) version
   // of the passed-in callback, to be repeatedly applied in other Underscore
   // functions.
-  var optimizeCb = function(func, context, argCount) {
+  var optimizeCb = function optimizeCb(func, context, argCount) {
     if (context === void 0) return func;
     switch (argCount === null ? 3 : argCount) {
-      case 1: return function(value) {
-        return func.call(context, value);
-      };
-      case 2: return function(value, other) {
-        return func.call(context, value, other);
-      };
-      case 3: return function(value, index, collection) {
-        return func.call(context, value, index, collection);
-      };
-      case 4: return function(accumulator, value, index, collection) {
-        return func.call(context, accumulator, value, index, collection);
-      };
+      case 1:
+        return function (value) {
+          return func.call(context, value);
+        };
+      case 2:
+        return function (value, other) {
+          return func.call(context, value, other);
+        };
+      case 3:
+        return function (value, index, collection) {
+          return func.call(context, value, index, collection);
+        };
+      case 4:
+        return function (accumulator, value, index, collection) {
+          return func.call(context, accumulator, value, index, collection);
+        };
     }
-    return function() {
+    return function () {
       return func.apply(context, arguments);
     };
   };
 
   // An internal function for creating assigner functions.
-  var createAssigner = function(keysFunc, undefinedOnly) {
-    return function(obj) {
+  var createAssigner = function createAssigner(keysFunc, undefinedOnly) {
+    return function (obj) {
       var length = arguments.length;
       if (length < 2 || obj === null) return obj;
       for (var index = 1; index < length; index++) {
@@ -56090,12 +56090,14 @@ angular.module('ui-leaflet').service('leafletIterators', ["leafletLogger", "leaf
 
   // Assigns a given object with all the own properties in the passed-in object(s)
   // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
-  var _extendOwn, _assign = null;
+  var _extendOwn,
+      _assign = null;
   _extendOwn = _assign = createAssigner(_keys);
 
   // Returns whether an object has a given set of `key:value` pairs.
-  var _isMatch = function(object, attrs) {
-    var keys = _keys(attrs), length = keys.length;
+  var _isMatch = function _isMatch(object, attrs) {
+    var keys = _keys(attrs),
+        length = keys.length;
     if (object === null) return !length;
     var obj = Object(object);
     for (var i = 0; i < length; i++) {
@@ -56107,30 +56109,31 @@ angular.module('ui-leaflet').service('leafletIterators', ["leafletLogger", "leaf
 
   // Returns a predicate for checking whether an object has a given set of
   // `key:value` pairs.
-  var _matcher, _matches = null;
-  _matcher = _matches = function(attrs) {
+  var _matcher,
+      _matches = null;
+  _matcher = _matches = function _matches(attrs) {
     attrs = _extendOwn({}, attrs);
-    return function(obj) {
+    return function (obj) {
       return _isMatch(obj, attrs);
     };
   };
 
-
   // A mostly-internal function to generate callbacks that can be applied
   // to each element in a collection, returning the desired result — either
   // identity, an arbitrary callback, a property matcher, or a property accessor.
-  var cb = function(value, context, argCount) {
+  var cb = function cb(value, context, argCount) {
     if (value === null) return _identity;
     if (_isFunction(value)) return optimizeCb(value, context, argCount);
     if (_isObject(value)) return _matcher(value);
     return _property(value);
   };
 
-  var _every, _all = null;
-  _every = _all = function(obj, predicate, context) {
+  var _every,
+      _all = null;
+  _every = _all = function _all(obj, predicate, context) {
     predicate = cb(predicate, context);
     var keys = !_isArrayLike(obj) && _keys(obj),
-    length = (keys || obj).length;
+        length = (keys || obj).length;
     for (var index = 0; index < length; index++) {
       var currentKey = keys ? keys[index] : index;
       if (!predicate(obj[currentKey], currentKey, obj)) return false;
@@ -56140,51 +56143,52 @@ angular.module('ui-leaflet').service('leafletIterators', ["leafletLogger", "leaf
 
   //END COPY fron underscore
 
-  var _hasErrors = function(collection, cb, ignoreCollection, cbName){
-    if(!ignoreCollection) {
+  var _hasErrors = function _hasErrors(collection, cb, ignoreCollection, cbName) {
+    if (!ignoreCollection) {
       if (!lHlp.isDefined(collection) || !lHlp.isDefined(cb)) {
         return true;
       }
     }
-    if(!lHlp.isFunction(cb)){
-      cbName = lHlp.defaultTo(cb,'cb');
+    if (!lHlp.isFunction(cb)) {
+      cbName = lHlp.defaultTo(cb, 'cb');
       $log.error(errorHeader + cbName + ' is not a function');
       return true;
     }
     return false;
   };
 
-  var _iterate = function(collection, externalCb, internalCb){
-    if(_hasErrors(undefined, internalCb, true, 'internalCb')){
+  var _iterate = function _iterate(collection, externalCb, internalCb) {
+    if (_hasErrors(undefined, internalCb, true, 'internalCb')) {
       return;
     }
-    if(!_hasErrors(collection, externalCb)){
-      for(var key in collection){
-          if (collection.hasOwnProperty(key)) {
-              internalCb(collection[key], key);
-          }
+    if (!_hasErrors(collection, externalCb)) {
+      for (var key in collection) {
+        if (collection.hasOwnProperty(key)) {
+          internalCb(collection[key], key);
+        }
       }
     }
   };
 
   //see http://jsperf.com/iterators/3
   //utilizing for in is way faster
-  var _each = function(collection, cb){
-    _iterate(collection, cb, function(val, key){
+  var _each = function _each(collection, cb) {
+    _iterate(collection, cb, function (val, key) {
       cb(val, key);
     });
   };
 
   return {
-    each:_each,
+    each: _each,
     forEach: _each,
     every: _every,
     all: _all
   };
 }]);
 
-angular.module('ui-leaflet')
-.factory('leafletLayerHelpers', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletIterators", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletIterators) {
+'use strict';
+
+angular.module('ui-leaflet').factory('leafletLayerHelpers', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletIterators", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletIterators) {
     var Helpers = leafletHelpers;
     var isString = leafletHelpers.isString;
     var isObject = leafletHelpers.isObject;
@@ -56194,27 +56198,48 @@ angular.module('ui-leaflet')
     var $it = leafletIterators;
     var $log = leafletLogger;
 
-    var utfGridCreateLayer = function(params) {
+    var utfGridCreateLayer = function utfGridCreateLayer(params) {
         if (!Helpers.UTFGridPlugin.isLoaded()) {
             $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
             return;
         }
         var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
 
-        utfgrid.on('mouseover', function(e) {
-            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
+        var toSend = {
+            model: params.$parent
+        };
+
+        // TODO Use event manager
+        utfgrid.on('mouseover', function (e) {
+            angular.extend(toSend, {
+                leafletEvent: e,
+                leafletObject: e.target
+            });
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', toSend);
         });
 
-        utfgrid.on('mouseout', function(e) {
-            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
+        utfgrid.on('mouseout', function (e) {
+            angular.extend(toSend, {
+                leafletEvent: e,
+                leafletObject: e.target
+            });
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', toSend);
         });
 
-        utfgrid.on('click', function(e) {
-            $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
+        utfgrid.on('click', function (e) {
+            angular.extend(toSend, {
+                leafletEvent: e,
+                leafletObject: e.target
+            });
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', toSend);
         });
 
-        utfgrid.on('mousemove', function(e) {
-            $rootScope.$broadcast('leafletDirectiveMap.utfgridMousemove', e);
+        utfgrid.on('mousemove', function (e) {
+            angular.extend(toSend, {
+                leafletEvent: e,
+                leafletObject: e.target
+            });
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMousemove', toSend);
         });
 
         return utfgrid;
@@ -56223,26 +56248,24 @@ angular.module('ui-leaflet')
     var layerTypes = {
         xyz: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 return L.tileLayer(params.url, params.options);
             }
         },
         mapbox: {
             mustHaveKey: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 var version = 3;
-                if(isDefined(params.options.version) && params.options.version === 4) {
+                if (isDefined(params.options.version) && params.options.version === 4) {
                     version = params.options.version;
                 }
-                var url = version === 3?
-                    '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png':
-                    '//api.tiles.mapbox.com/v4/' + params.key + '/{z}/{x}/{y}.png?access_token=' + params.apiKey;
+                var url = version === 3 ? '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png' : '//api.tiles.mapbox.com/v4/' + params.key + '/{z}/{x}/{y}.png?access_token=' + params.apiKey;
                 return L.tileLayer(url, params.options);
             }
         },
         geoJSON: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.GeoJSONPlugin.isLoaded()) {
                     return;
                 }
@@ -56251,101 +56274,97 @@ angular.module('ui-leaflet')
         },
         geoJSONShape: {
             mustHaveUrl: false,
-            createLayer: function(params) {
-                        return new L.GeoJSON(params.data,
-                            params.options);
+            createLayer: function createLayer(params) {
+                return new L.GeoJSON(params.data, params.options);
             }
         },
         geoJSONAwesomeMarker: {
             mustHaveUrl: false,
-            createLayer: function(params) {
-                    return new L.geoJson(params.data, {
-                        pointToLayer: function (feature, latlng) {
-                            return L.marker(latlng, {icon: L.AwesomeMarkers.icon(params.icon)});
+            createLayer: function createLayer(params) {
+                return new L.geoJson(params.data, {
+                    pointToLayer: function pointToLayer(feature, latlng) {
+                        return L.marker(latlng, { icon: L.AwesomeMarkers.icon(params.icon) });
                     }
                 });
             }
         },
         geoJSONVectorMarker: {
             mustHaveUrl: false,
-            createLayer: function(params) {
-                    return new L.geoJson(params.data, {
-                        pointToLayer: function (feature, latlng) {
-                            return L.marker(latlng, {icon: L.VectorMarkers.icon(params.icon)});
+            createLayer: function createLayer(params) {
+                return new L.geoJson(params.data, {
+                    pointToLayer: function pointToLayer(feature, latlng) {
+                        return L.marker(latlng, { icon: L.VectorMarkers.icon(params.icon) });
                     }
                 });
             }
         },
-        utfGrid: {
-            mustHaveUrl: true,
-            createLayer: utfGridCreateLayer
-        },
         cartodbTiles: {
             mustHaveKey: true,
-            createLayer: function(params) {
-                var url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+            createLayer: function createLayer(params) {
+                var url = isDefined(params.url) ? params.url + '/' + params.user : '//' + params.user + '.cartodb.com';
+                url += '/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
                 return L.tileLayer(url, params.options);
             }
         },
         cartodbUTFGrid: {
             mustHaveKey: true,
-            mustHaveLayer : true,
-            createLayer: function(params) {
-                params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
+            mustHaveLayer: true,
+            createLayer: function createLayer(params) {
+                var url = isDefined(params.url) ? params.url + '/' + params.user : '//' + params.user + '.cartodb.com';
+                params.url = url + '/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
                 return utfGridCreateLayer(params);
             }
         },
         cartodbInteractive: {
             mustHaveKey: true,
-            mustHaveLayer : true,
-            createLayer: function(params) {
-                var tilesURL = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+            mustHaveLayer: true,
+            createLayer: function createLayer(params) {
+                var url = isDefined(params.url) ? params.url + '/' + params.user : '//' + params.user + '.cartodb.com';
+                var tilesURL = url + '/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
                 var tileLayer = L.tileLayer(tilesURL, params.options);
-                params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
-                var utfLayer = utfGridCreateLayer(params);
-                return L.layerGroup([tileLayer, utfLayer]);
+                var layers = [tileLayer];
+
+                var addUtfLayer = function addUtfLayer(parent, params, layer) {
+                    var paramsCopy = angular.copy(params);
+                    paramsCopy.url = url + '/api/v1/map/' + paramsCopy.key + '/' + layer + '/{z}/{x}/{y}.grid.json';
+                    parent.push(utfGridCreateLayer(paramsCopy));
+                };
+
+                if (isArray(params.layer)) {
+                    for (var i = 0; i < params.layer.length; i++) {
+                        addUtfLayer(layers, params, params.layer[i]);
+                    }
+                } else {
+                    addUtfLayer(layers, params, params.layer);
+                }
+                return L.layerGroup(layers);
             }
         },
         wms: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 return L.tileLayer.wms(params.url, params.options);
             }
         },
         wmts: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 return L.tileLayer.wmts(params.url, params.options);
-            }
-        },
-        wfs: {
-            mustHaveUrl: true,
-            mustHaveLayer : true,
-            createLayer: function(params) {
-                if (!Helpers.WFSLayerPlugin.isLoaded()) {
-                    return;
-                }
-                var options = angular.copy(params.options);
-                if(options.crs && 'string' === typeof options.crs) {
-                    /*jshint -W061 */
-                    options.crs = eval(options.crs);
-                }
-                return new L.GeoJSON.WFS(params.url, params.layer, options);
             }
         },
         group: {
             mustHaveUrl: false,
-            createLayer: function (params) {
+            createLayer: function createLayer(params) {
                 var lyrs = [];
-                $it.each(params.options.layers, function(l){
-                  lyrs.push(createLayer(l));
+                $it.each(params.options.layers, function (l) {
+                    lyrs.push(_createLayer(l));
                 });
-                params.options.loadedDefer = function() {
+                params.options.loadedDefer = function () {
                     var defers = [];
-                    if(isDefined(params.options.layers)) {
+                    if (isDefined(params.options.layers)) {
                         for (var i = 0; i < params.options.layers.length; i++) {
                             var d = params.options.layers[i].layerOptions.loadedDefer;
-                            if(isDefined(d)) {
+                            if (isDefined(d)) {
                                 defers.push(d);
                             }
                         }
@@ -56357,43 +56376,23 @@ angular.module('ui-leaflet')
         },
         featureGroup: {
             mustHaveUrl: false,
-            createLayer: function () {
+            createLayer: function createLayer() {
                 return L.featureGroup();
-            }
-        },
-        google: {
-            mustHaveUrl: false,
-            createLayer: function(params) {
-                var type = params.type || 'SATELLITE';
-                if (!Helpers.GoogleLayerPlugin.isLoaded()) {
-                    return;
-                }
-                return new L.Google(type, params.options);
             }
         },
         here: {
             mustHaveUrl: false,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 var provider = params.provider || 'HERE.terrainDay';
                 if (!Helpers.LeafletProviderPlugin.isLoaded()) {
                     return;
                 }
                 return new L.TileLayer.Provider(provider, params.options);
             }
-        },            
-        china:{
-            mustHaveUrl:false,
-            createLayer:function(params){
-                var type = params.type || '';
-                if(!Helpers.ChinaLayerPlugin.isLoaded()){
-                    return;
-                }
-                return L.tileLayer.chinaProvider(type, params.options);
-            }
         },
         agsBase: {
-            mustHaveLayer : true,
-            createLayer: function (params) {
+            mustHaveLayer: true,
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSBaseLayerPlugin.isLoaded()) {
                     return;
                 }
@@ -56402,7 +56401,7 @@ angular.module('ui-leaflet')
         },
         ags: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSLayerPlugin.isLoaded()) {
                     return;
                 }
@@ -56412,10 +56411,10 @@ angular.module('ui-leaflet')
                     url: params.url
                 });
                 var layer = new lvector.AGS(options);
-                layer.onAdd = function(map) {
+                layer.onAdd = function (map) {
                     this.setMap(map);
                 };
-                layer.onRemove = function() {
+                layer.onRemove = function () {
                     this.setMap(null);
                 };
                 return layer;
@@ -56423,7 +56422,7 @@ angular.module('ui-leaflet')
         },
         agsFeature: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSFeatureLayerPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
@@ -56432,12 +56431,12 @@ angular.module('ui-leaflet')
                 params.options.url = params.url;
 
                 var layer = L.esri.featureLayer(params.options);
-                var load = function() {
-                    if(isDefined(params.options.loadedDefer)) {
+                var load = function load() {
+                    if (isDefined(params.options.loadedDefer)) {
                         params.options.loadedDefer.resolve();
                     }
                 };
-                layer.on('loading', function() {
+                layer.on('loading', function () {
                     params.options.loadedDefer = $q.defer();
                     layer.off('load', load);
                     layer.on('load', load);
@@ -56448,7 +56447,7 @@ angular.module('ui-leaflet')
         },
         agsTiled: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSTiledMapLayerPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
@@ -56461,7 +56460,7 @@ angular.module('ui-leaflet')
         },
         agsDynamic: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSDynamicMapLayerPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
@@ -56474,25 +56473,25 @@ angular.module('ui-leaflet')
         },
         agsImage: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSImageMapLayerPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                 params.options.url = params.url;
+                params.options.url = params.url;
 
                 return L.esri.imageMapLayer(params.options);
             }
         },
         agsClustered: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSClusteredLayerPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The esri clustered layer plugin is not loaded.');
                     return;
                 }
 
-                if(!Helpers.MarkerClusterPlugin.isLoaded()) {
+                if (!Helpers.MarkerClusterPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
                     return;
                 }
@@ -56501,13 +56500,13 @@ angular.module('ui-leaflet')
         },
         agsHeatmap: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.AGSHeatmapLayerPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The esri heatmap layer plugin is not loaded.');
                     return;
                 }
 
-                if(!Helpers.HeatLayerPlugin.isLoaded()) {
+                if (!Helpers.HeatLayerPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The heatlayer plugin is not loaded.');
                     return;
                 }
@@ -56516,7 +56515,7 @@ angular.module('ui-leaflet')
         },
         markercluster: {
             mustHaveUrl: false,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 if (!Helpers.MarkerClusterPlugin.isLoaded()) {
                     $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
                     return;
@@ -56524,70 +56523,16 @@ angular.module('ui-leaflet')
                 return new L.MarkerClusterGroup(params.options);
             }
         },
-        bing: {
-            mustHaveUrl: false,
-            createLayer: function(params) {
-                if (!Helpers.BingLayerPlugin.isLoaded()) {
-                    return;
-                }
-                return new L.BingLayer(params.key, params.options);
-            }
-        },
-        webGLHeatmap: {
-            mustHaveUrl: false,
-            mustHaveData: true,
-            createLayer: function(params) {
-                if (!Helpers.WebGLHeatMapLayerPlugin.isLoaded()) {
-                    return;
-                }
-                var layer = new L.TileLayer.WebGLHeatMap(params.options);
-                if (isDefined(params.data)) {
-                    layer.setData(params.data);
-                }
-
-                return layer;
-            }
-        },
-        heat: {
-            mustHaveUrl: false,
-            mustHaveData: true,
-            createLayer: function(params) {
-                if (!Helpers.HeatLayerPlugin.isLoaded()) {
-                    return;
-                }
-                var layer = new L.heatLayer();
-
-                if (isArray(params.data)) {
-                    layer.setLatLngs(params.data);
-                }
-
-                if (isObject(params.options)) {
-                    layer.setOptions(params.options);
-                }
-
-                return layer;
-            }
-        },
-        yandex: {
-            mustHaveUrl: false,
-            createLayer: function(params) {
-                var type = params.type || 'map';
-                if (!Helpers.YandexLayerPlugin.isLoaded()) {
-                    return;
-                }
-                return new L.Yandex(type, params.options);
-            }
-        },
         imageOverlay: {
             mustHaveUrl: true,
-            mustHaveBounds : true,
-            createLayer: function(params) {
+            mustHaveBounds: true,
+            createLayer: function createLayer(params) {
                 return L.imageOverlay(params.url, params.bounds, params.options);
             }
         },
         iip: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 return L.tileLayer.iip(params.url, params.options);
             }
         },
@@ -56597,18 +56542,17 @@ angular.module('ui-leaflet')
         // so we let user to define their own layer outside the directive,
         // and pass it on "createLayer" result for next processes
         custom: {
-            createLayer: function (params) {
+            createLayer: function createLayer(params) {
                 if (params.layer instanceof L.Class) {
                     return angular.copy(params.layer);
-                }
-                else {
+                } else {
                     $log.error('[AngularJS - Leaflet] A custom layer must be a leaflet Class');
                 }
             }
         },
         cartodb: {
             mustHaveUrl: true,
-            createLayer: function(params) {
+            createLayer: function createLayer(params) {
                 return cartodb.createLayer(params.map, params.url);
             }
         }
@@ -56637,24 +56581,24 @@ angular.module('ui-leaflet')
             return false;
         }
 
-        if(layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
+        if (layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
             $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have an layer defined');
             return false;
         }
 
         if (layerTypes[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
             $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have bounds defined');
-            return false ;
+            return false;
         }
 
         if (layerTypes[layerDefinition.type].mustHaveKey && !isDefined(layerDefinition.key)) {
             $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have key defined');
-            return false ;
+            return false;
         }
         return true;
     }
 
-    function createLayer(layerDefinition) {
+    function _createLayer(layerDefinition) {
         if (!isValidLayerType(layerDefinition)) {
             return;
         }
@@ -56687,7 +56631,8 @@ angular.module('ui-leaflet')
             key: layerDefinition.key,
             apiKey: layerDefinition.apiKey,
             pluginOptions: layerDefinition.pluginOptions,
-            user: layerDefinition.user
+            user: layerDefinition.user,
+            $parent: layerDefinition
         };
 
         //TODO Add $watch to the layer properties
@@ -56703,27 +56648,27 @@ angular.module('ui-leaflet')
     }
 
     function safeRemoveLayer(map, layer, layerOptions) {
-        if(isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
-            if(angular.isFunction(layerOptions.loadedDefer)) {
+        if (isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
+            if (angular.isFunction(layerOptions.loadedDefer)) {
                 var defers = layerOptions.loadedDefer();
                 $log.debug('Loaded Deferred', defers);
                 var count = defers.length;
-                if(count > 0) {
-                    var resolve = function() {
+                if (count > 0) {
+                    var resolve = function resolve() {
                         count--;
-                        if(count === 0) {
+                        if (count === 0) {
                             map.removeLayer(layer);
                         }
                     };
 
-                    for(var i = 0; i < defers.length; i++) {
+                    for (var i = 0; i < defers.length; i++) {
                         defers[i].promise.then(resolve);
                     }
                 } else {
                     map.removeLayer(layer);
                 }
             } else {
-                layerOptions.loadedDefer.promise.then(function() {
+                layerOptions.loadedDefer.promise.then(function () {
                     map.removeLayer(layer);
                 });
             }
@@ -56732,27 +56677,39 @@ angular.module('ui-leaflet')
         }
     }
 
+    var changeOpacityListener = function changeOpacityListener(op) {
+        return function (ly) {
+            if (isDefined(ly.setOpacity)) {
+                ly.setOpacity(op);
+            }
+        };
+    };
+
     return {
-        createLayer: createLayer,
+        createLayer: _createLayer,
+        layerTypes: layerTypes,
         safeAddLayer: safeAddLayer,
-        safeRemoveLayer: safeRemoveLayer
+        safeRemoveLayer: safeRemoveLayer,
+        changeOpacityListener: changeOpacityListener
     };
 }]);
 
+'use strict';
+
 angular.module("ui-leaflet").factory('leafletLegendHelpers', ["$http", "$q", "$log", "leafletHelpers", function ($http, $q, $log, leafletHelpers) {
 	var requestQueue = {},
-		isDefined = leafletHelpers.isDefined;
+	    isDefined = leafletHelpers.isDefined;
 
-	var _execNext = function(mapId) {
+	var _execNext = function _execNext(mapId) {
 		var queue = requestQueue[mapId];
 		var task = queue[0];
-		$http(task.c).then(function(data) {
+		$http(task.c).then(function (data) {
 			queue.shift();
 			task.d.resolve(data);
 			if (queue.length > 0) {
 				_execNext(mapId);
 			}
-		}, function(err) {
+		}, function (err) {
 			queue.shift();
 			task.d.reject(err);
 			if (queue.length > 0) {
@@ -56761,31 +56718,28 @@ angular.module("ui-leaflet").factory('leafletLegendHelpers', ["$http", "$q", "$l
 		});
 	};
 
-	var _updateLegend = function(div, legendData, type, url) {
+	var _updateLegend = function _updateLegend(div, legendData, type, url) {
 		div.innerHTML = '';
-		if(legendData.error) {
+		if (legendData.error) {
 			div.innerHTML += '<div class="info-title alert alert-danger">' + legendData.error.message + '</div>';
 		} else {
 			if (type === 'arcgis') {
 				for (var i = 0; i < legendData.layers.length; i++) {
 					var layer = legendData.layers[i];
 					div.innerHTML += '<div class="info-title" data-layerid="' + layer.layerId + '">' + layer.layerName + '</div>';
-					for(var j = 0; j < layer.legend.length; j++) {
+					for (var j = 0; j < layer.legend.length; j++) {
 						var leg = layer.legend[j];
-						div.innerHTML +=
-							'<div class="inline" data-layerid="' + layer.layerId + '"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' +
-							'<div class="info-label" data-layerid="' + layer.layerId + '">' + leg.label + '</div>';
+						div.innerHTML += '<div class="inline" data-layerid="' + layer.layerId + '"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label" data-layerid="' + layer.layerId + '">' + leg.label + '</div>';
 					}
 				}
-			}
-			else if (type === 'image') {
+			} else if (type === 'image') {
 				div.innerHTML = '<img src="' + url + '"/>';
 			}
 		}
 	};
 
-	var _getOnAddLegend = function(legendData, legendClass, type, url) {
-		return function(/*map*/) {
+	var _getOnAddLegend = function _getOnAddLegend(legendData, legendClass, type, url) {
+		return function () /*map*/{
 			var div = L.DomUtil.create('div', legendClass);
 
 			if (!L.Browser.touch) {
@@ -56799,21 +56753,19 @@ angular.module("ui-leaflet").factory('leafletLegendHelpers', ["$http", "$q", "$l
 		};
 	};
 
-	var _getOnAddArrayLegend = function(legend, legendClass) {
-		return function(/*map*/) {
+	var _getOnAddArrayLegend = function _getOnAddArrayLegend(legend, legendClass) {
+		return function () /*map*/{
 			var div = L.DomUtil.create('div', legendClass);
-            for (var i = 0; i < legend.colors.length; i++) {
-                div.innerHTML +=
-                    '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' +
-                    '<div class="info-label">' + legend.labels[i] + '</div>';
-            }
-            if (!L.Browser.touch) {
+			for (var i = 0; i < legend.colors.length; i++) {
+				div.innerHTML += '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' + '<div class="info-label">' + legend.labels[i] + '</div>';
+			}
+			if (!L.Browser.touch) {
 				L.DomEvent.disableClickPropagation(div);
 				L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
 			} else {
 				L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
 			}
-            return div;
+			return div;
 		};
 	};
 
@@ -56821,12 +56773,12 @@ angular.module("ui-leaflet").factory('leafletLegendHelpers', ["$http", "$q", "$l
 		getOnAddLegend: _getOnAddLegend,
 		getOnAddArrayLegend: _getOnAddArrayLegend,
 		updateLegend: _updateLegend,
-		addLegendURL: function(mapId, config) {
+		addLegendURL: function addLegendURL(mapId, config) {
 			var d = $q.defer();
-			if(!isDefined(requestQueue[mapId])) {
+			if (!isDefined(requestQueue[mapId])) {
 				requestQueue[mapId] = [];
 			}
-			requestQueue[mapId].push({c:config,d:d});
+			requestQueue[mapId].push({ c: config, d: d });
 			if (requestQueue[mapId].length === 1) {
 				_execNext(mapId);
 			}
@@ -56834,6 +56786,8 @@ angular.module("ui-leaflet").factory('leafletLegendHelpers', ["$http", "$q", "$l
 		}
 	};
 }]);
+
+'use strict';
 
 angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelpers", function ($q, leafletHelpers) {
     function _getDefaults() {
@@ -56873,7 +56827,8 @@ angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelper
                 lat: 0,
                 lng: 0,
                 zoom: 1
-            }
+            },
+            trackResize: true
         };
     }
 
@@ -56884,15 +56839,15 @@ angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelper
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
-        reset: function () {
-           defaults = {};
+        reset: function reset() {
+            defaults = {};
         },
-        getDefaults: function (scopeId) {
+        getDefaults: function getDefaults(scopeId) {
             var mapId = obtainEffectiveMapId(defaults, scopeId);
             return defaults[mapId];
         },
 
-        getMapCreationDefaults: function (scopeId) {
+        getMapCreationDefaults: function getMapCreationDefaults(scopeId) {
             var mapId = obtainEffectiveMapId(defaults, scopeId);
             var d = defaults[mapId];
 
@@ -56907,7 +56862,8 @@ angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelper
                 touchZoom: d.touchZoom,
                 attributionControl: d.attributionControl,
                 worldCopyJump: d.worldCopyJump,
-                crs: d.crs
+                crs: d.crs,
+                trackResize: d.trackResize
             };
 
             if (isDefined(d.minZoom)) {
@@ -56935,7 +56891,7 @@ angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelper
             return mapDefaults;
         },
 
-        setDefaults: function (userDefaults, scopeId) {
+        setDefaults: function setDefaults(userDefaults, scopeId) {
             var newDefaults = _getDefaults();
 
             if (isDefined(userDefaults)) {
@@ -56950,6 +56906,7 @@ angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelper
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
+                newDefaults.trackResize = isDefined(userDefaults.trackResize) ? userDefaults.trackResize : newDefaults.trackResize;
 
                 if (isDefined(userDefaults.controls)) {
                     angular.extend(newDefaults.controls, userDefaults.controls);
@@ -57009,7 +56966,9 @@ angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelper
     };
 }]);
 
-angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$timeout", "leafletHelpers", "leafletLogger", "$compile", "leafletGeoJsonHelpers", function ($rootScope, $timeout, leafletHelpers, leafletLogger, $compile, leafletGeoJsonHelpers) {
+'use strict';
+
+angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$timeout", "leafletHelpers", "leafletLogger", "$compile", "leafletGeoJsonHelpers", "leafletWatchHelpers", function ($rootScope, $timeout, leafletHelpers, leafletLogger, $compile, leafletGeoJsonHelpers, leafletWatchHelpers) {
     var isDefined = leafletHelpers.isDefined,
         defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
@@ -57026,9 +56985,10 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         groups = {},
         geoHlp = leafletGeoJsonHelpers,
         errorHeader = leafletHelpers.errorHeader,
+        maybeWatch = leafletWatchHelpers.maybeWatch,
         $log = leafletLogger;
 
-    var _string = function (marker) {
+    var _string = function _string(marker) {
         //this exists since JSON.stringify barfs on cyclic
         var retStr = '';
         ['_icon', '_latlng', '_leaflet_id', '_map', '_shadow'].forEach(function (prop) {
@@ -57036,12 +56996,16 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         });
         return '[leafletMarker] : \n' + retStr;
     };
-    var _log = function (marker, useConsole) {
+    var _log = function _log(marker, useConsole) {
         var logger = useConsole ? console : $log;
         logger.debug(_string(marker));
     };
 
-    var createLeafletIcon = function (iconData) {
+    var existDomContainer = function existDomContainer(groupName) {
+        return angular.element(groups[groupName]._map._container).parent().length > 0;
+    };
+
+    var createLeafletIcon = function createLeafletIcon(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
             if (!AwesomeMarkersPlugin.isLoaded()) {
                 $log.error(errorHeader + ' The AwesomeMarkers Plugin is not loaded.');
@@ -57110,17 +57074,25 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         return new L.Icon(iconData);
     };
 
-    var _resetMarkerGroup = function (groupName) {
+    var _resetMarkerGroup = function _resetMarkerGroup(groupName) {
         if (isDefined(groups[groupName])) {
-            groups.splice(groupName, 1);
+            delete groups[groupName];
         }
     };
 
-    var _resetMarkerGroups = function () {
+    var _resetMarkerGroups = function _resetMarkerGroups() {
         groups = {};
     };
 
-    var _deleteMarker = function (marker, map, layers) {
+    var _resetUnusedMarkerGroups = function _resetUnusedMarkerGroups() {
+        for (var groupName in groups) {
+            if (!existDomContainer(groupName)) {
+                _resetMarkerGroup(groupName);
+            }
+        }
+    };
+
+    var _deleteMarker = function _deleteMarker(marker, map, layers) {
         marker.closePopup();
         // There is no easy way to know if a marker is added to a layer, so we search for it
         // if there are overlays
@@ -57148,7 +57120,7 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         }
     };
 
-    var adjustPopupPan = function(marker, map) {
+    var adjustPopupPan = function adjustPopupPan(marker, map) {
         var containerHeight = marker._popup._container.offsetHeight,
             layerPos = new L.Point(marker._popup._containerLeft, -containerHeight - marker._popup._containerBottom),
             containerPos = map.layerPointToContainerPoint(layerPos);
@@ -57157,11 +57129,11 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         }
     };
 
-    var compilePopup = function(marker, markerScope) {
+    var compilePopup = function compilePopup(marker, markerScope) {
         $compile(marker._popup._contentNode)(markerScope);
     };
 
-    var updatePopup = function (marker, markerScope, map) {
+    var updatePopup = function updatePopup(marker, markerScope, map) {
         //The innerText should be more than 1 once angular has compiled.
         //We need to keep trying until angular has compiled before we _updateLayout and _updatePosition
         //This should take care of any scenario , eg ngincludes, whatever.
@@ -57187,7 +57159,7 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         return reflow;
     };
 
-    var _manageOpenPopup = function (marker, markerData, map) {
+    var _manageOpenPopup = function _manageOpenPopup(marker, markerData, map) {
         // The marker may provide a scope returning function used to compile the message
         // default to $rootScope otherwise
         var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
@@ -57204,8 +57176,7 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         }
     };
 
-
-    var _manageOpenLabel = function (marker, markerData) {
+    var _manageOpenLabel = function _manageOpenLabel(marker, markerData) {
         var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
             labelScope = angular.isFunction(markerData.getLabelScope) ? markerData.getLabelScope() : markerScope,
             compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
@@ -57220,248 +57191,246 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         }
     };
 
-    var _updateMarker = function (markerData, oldMarkerData, marker, name, leafletScope, layers, map) {
-            if (!isDefined(oldMarkerData)) {
-                return;
-            }
+    var _updateMarker = function _updateMarker(markerData, oldMarkerData, marker, name, leafletScope, layers, map) {
+        if (!isDefined(oldMarkerData)) {
+            return;
+        }
 
-            // Update the lat-lng property (always present in marker properties)
-            if (!geoHlp.validateCoords(markerData)) {
-                $log.warn('There are problems with lat-lng data, please verify your marker model');
-                _deleteMarker(marker, map, layers);
-                return;
-            }
+        // Update the lat-lng property (always present in marker properties)
+        if (!geoHlp.validateCoords(markerData)) {
+            $log.warn('There are problems with lat-lng data, please verify your marker model');
+            _deleteMarker(marker, map, layers);
+            return;
+        }
 
-            // watch is being initialized if old and new object is the same
-            var isInitializing = markerData === oldMarkerData;
+        // watch is being initialized if old and new object is the same
+        var isInitializing = markerData === oldMarkerData;
 
-            // Update marker rotation
-            if (isDefined(markerData.iconAngle) && oldMarkerData.iconAngle !== markerData.iconAngle) {
-                marker.setIconAngle(markerData.iconAngle);
-            }
+        // Update marker rotation
+        if (isDefined(markerData.iconAngle) && oldMarkerData.iconAngle !== markerData.iconAngle) {
+            marker.setIconAngle(markerData.iconAngle);
+        }
 
-            // It is possible that the layer has been removed or the layer marker does not exist
-            // Update the layer group if present or move it to the map if not
-            if (!isString(markerData.layer)) {
-                // There is no layer information, we move the marker to the map if it was in a layer group
-                if (isString(oldMarkerData.layer)) {
-                    // Remove from the layer group that is supposed to be
-                    if (isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
-                        layers.overlays[oldMarkerData.layer].removeLayer(marker);
-                        marker.closePopup();
-                    }
-                    // Test if it is not on the map and add it
-                    if (!map.hasLayer(marker)) {
-                        map.addLayer(marker);
-                    }
-                }
-            }
-
-            if ((isNumber(markerData.opacity) || isNumber(parseFloat(markerData.opacity))) && markerData.opacity !== oldMarkerData.opacity) {
-                // There was a different opacity so we update it
-                marker.setOpacity(markerData.opacity);
-            }
-
-            if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {
-                // If it was on a layer group we have to remove it
-                if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
+        // It is possible that the layer has been removed or the layer marker does not exist
+        // Update the layer group if present or move it to the map if not
+        if (!isString(markerData.layer)) {
+            // There is no layer information, we move the marker to the map if it was in a layer group
+            if (isString(oldMarkerData.layer)) {
+                // Remove from the layer group that is supposed to be
+                if (isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
                     layers.overlays[oldMarkerData.layer].removeLayer(marker);
-                }
-                marker.closePopup();
-
-                // Remove it from the map in case the new layer is hidden or there is an error in the new layer
-                if (map.hasLayer(marker)) {
-                    map.removeLayer(marker);
-                }
-
-                // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
-                if (!isDefined(layers.overlays[markerData.layer])) {
-                    $log.error(errorHeader + 'You must use a name of an existing layer');
-                    return;
-                }
-                // Is a group layer?
-                var layerGroup = layers.overlays[markerData.layer];
-                if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                    $log.error(errorHeader + 'A marker can only be added to a layer of type "group" or "featureGroup"');
-                    return;
-                }
-                // The marker goes to a correct layer group, so first of all we add it
-                layerGroup.addLayer(marker);
-                // The marker is automatically added to the map depending on the visibility
-                // of the layer, so we only have to open the popup if the marker is in the map
-                if (map.hasLayer(marker) && markerData.focus === true) {
-                    marker.openPopup();
-                }
-            }
-
-            // Update the draggable property
-            if (markerData.draggable !== true && oldMarkerData.draggable === true && (isDefined(marker.dragging))) {
-                marker.dragging.disable();
-            }
-
-            if (markerData.draggable === true && oldMarkerData.draggable !== true) {
-                // The markerData.draggable property must be true so we update if there wasn't a previous value or it wasn't true
-                if (marker.dragging) {
-                    marker.dragging.enable();
-                } else {
-                    if (L.Handler.MarkerDrag) {
-                        marker.dragging = new L.Handler.MarkerDrag(marker);
-                        marker.options.draggable = true;
-                        marker.dragging.enable();
-                    }
-                }
-            }
-
-            // Update the icon property
-            if (!isObject(markerData.icon)) {
-                // If there is no icon property or it's not an object
-                if (isObject(oldMarkerData.icon)) {
-                    // If there was an icon before restore to the default
-                    marker.setIcon(createLeafletIcon());
                     marker.closePopup();
-                    marker.unbindPopup();
-                    if (isString(markerData.message)) {
-                        marker.bindPopup(markerData.message, markerData.popupOptions);
-                    }
+                }
+                // Test if it is not on the map and add it
+                if (!map.hasLayer(marker)) {
+                    map.addLayer(marker);
                 }
             }
+        }
 
-            if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
-                var dragG = false;
-                if (marker.dragging) {
-                    dragG = marker.dragging.enabled();
-                }
-                marker.setIcon(createLeafletIcon(markerData.icon));
-                if (dragG) {
+        if ((isNumber(markerData.opacity) || isNumber(parseFloat(markerData.opacity))) && markerData.opacity !== oldMarkerData.opacity) {
+            // There was a different opacity so we update it
+            marker.setOpacity(markerData.opacity);
+        }
+
+        if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {
+            // If it was on a layer group we have to remove it
+            if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
+                layers.overlays[oldMarkerData.layer].removeLayer(marker);
+            }
+            marker.closePopup();
+
+            // Remove it from the map in case the new layer is hidden or there is an error in the new layer
+            if (map.hasLayer(marker)) {
+                map.removeLayer(marker);
+            }
+
+            // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
+            if (!isDefined(layers.overlays[markerData.layer])) {
+                $log.error(errorHeader + 'You must use a name of an existing layer');
+                return;
+            }
+            // Is a group layer?
+            var layerGroup = layers.overlays[markerData.layer];
+            if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
+                $log.error(errorHeader + 'A marker can only be added to a layer of type "group" or "featureGroup"');
+                return;
+            }
+            // The marker goes to a correct layer group, so first of all we add it
+            layerGroup.addLayer(marker);
+            // The marker is automatically added to the map depending on the visibility
+            // of the layer, so we only have to open the popup if the marker is in the map
+            if (map.hasLayer(marker) && markerData.focus === true) {
+                marker.openPopup();
+            }
+        }
+
+        // Update the draggable property
+        if (markerData.draggable !== true && oldMarkerData.draggable === true && isDefined(marker.dragging)) {
+            marker.dragging.disable();
+        }
+
+        if (markerData.draggable === true && oldMarkerData.draggable !== true) {
+            // The markerData.draggable property must be true so we update if there wasn't a previous value or it wasn't true
+            if (marker.dragging) {
+                marker.dragging.enable();
+            } else {
+                if (L.Handler.MarkerDrag) {
+                    marker.dragging = new L.Handler.MarkerDrag(marker);
+                    marker.options.draggable = true;
                     marker.dragging.enable();
                 }
+            }
+        }
+
+        // Update the icon property
+        if (!isObject(markerData.icon)) {
+            // If there is no icon property or it's not an object
+            if (isObject(oldMarkerData.icon)) {
+                // If there was an icon before restore to the default
+                marker.setIcon(createLeafletIcon());
                 marker.closePopup();
                 marker.unbindPopup();
                 if (isString(markerData.message)) {
                     marker.bindPopup(markerData.message, markerData.popupOptions);
-                    // if marker has been already focused, reopen popup
-                    if (map.hasLayer(marker) && markerData.focus === true) {
-                        marker.openPopup();
-                    }
                 }
             }
+        }
 
-            // Update the Popup message property
-            if (!isString(markerData.message) && isString(oldMarkerData.message)) {
-                marker.closePopup();
-                marker.unbindPopup();
+        if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
+            var dragG = false;
+            if (marker.dragging) {
+                dragG = marker.dragging.enabled();
             }
-
-            // Update the label content or bind a new label if the old one has been removed.
-            if (Helpers.LabelPlugin.isLoaded()) {
-                if (isDefined(markerData.label) && isDefined(markerData.label.message)) {
-                    if ('label' in oldMarkerData && 'message' in oldMarkerData.label && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
-                        marker.updateLabelContent(markerData.label.message);
-                    } else if (!angular.isFunction(marker.getLabel) || angular.isFunction(marker.getLabel) && !isDefined(marker.getLabel())) {
-                        marker.bindLabel(markerData.label.message, markerData.label.options);
-                        _manageOpenLabel(marker, markerData);
-                    } else {
-                        _manageOpenLabel(marker, markerData);
-                    }
-                } else if (!('label' in markerData && !('message' in markerData.label))) {
-                    if (angular.isFunction(marker.unbindLabel)) {
-                        marker.unbindLabel();
-                    }
-                }
+            marker.setIcon(createLeafletIcon(markerData.icon));
+            if (dragG) {
+                marker.dragging.enable();
             }
-
-            // There is some text in the popup, so we must show the text or update existing
-            if (isString(markerData.message) && !isString(oldMarkerData.message)) {
-                // There was no message before so we create it
+            marker.closePopup();
+            marker.unbindPopup();
+            if (isString(markerData.message)) {
                 marker.bindPopup(markerData.message, markerData.popupOptions);
-            }
-
-            if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
-                // There was a different previous message so we update it
-                marker.setPopupContent(markerData.message);
-            }
-
-            // Update the focus property
-            var updatedFocus = false;
-            if (markerData.focus !== true && oldMarkerData.focus === true) {
-                // If there was a focus property and was true we turn it off
-                marker.closePopup();
-                updatedFocus = true;
-            }
-
-            // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-            if (markerData.focus === true && ( !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
-                // Reopen the popup when focus is still true
-                marker.openPopup();
-                updatedFocus = true;
-            }
-
-            // zIndexOffset adjustment
-            if (oldMarkerData.zIndexOffset !== markerData.zIndexOffset) {
-                marker.setZIndexOffset(markerData.zIndexOffset);
-            }
-
-            var markerLatLng = marker.getLatLng();
-            var isCluster = (isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]));
-            // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
-            if (isCluster) {
-                // The focus has changed even by a user click or programatically
-                if (updatedFocus) {
-                    // We only have to update the location if it was changed programatically, because it was
-                    // changed by a user drag the marker data has already been updated by the internal event
-                    // listened by the directive
-                    if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
-                        layers.overlays[markerData.layer].removeLayer(marker);
-                        marker.setLatLng([markerData.lat, markerData.lng]);
-                        layers.overlays[markerData.layer].addLayer(marker);
-                    }
-                } else {
-                    // The marker has possibly moved. It can be moved by a user drag (marker location and data are equal but old
-                    // data is diferent) or programatically (marker location and data are diferent)
-                    if ((markerLatLng.lat !== markerData.lat) || (markerLatLng.lng !== markerData.lng)) {
-                        // The marker was moved by a user drag
-                        layers.overlays[markerData.layer].removeLayer(marker);
-                        marker.setLatLng([markerData.lat, markerData.lng]);
-                        layers.overlays[markerData.layer].addLayer(marker);
-                    } else if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
-                        // The marker was moved programatically
-                        layers.overlays[markerData.layer].removeLayer(marker);
-                        marker.setLatLng([markerData.lat, markerData.lng]);
-                        layers.overlays[markerData.layer].addLayer(marker);
-                    } else if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
-                        layers.overlays[markerData.layer].removeLayer(marker);
-                        layers.overlays[markerData.layer].addLayer(marker);
-                    }
+                // if marker has been already focused, reopen popup
+                if (map.hasLayer(marker) && markerData.focus === true) {
+                    marker.openPopup();
                 }
-            } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
-                marker.setLatLng([markerData.lat, markerData.lng]);
             }
-        };
+        }
 
-    var _getLayerModels = function (models, layerName){
-      if (!isDefined(models))
-        return;
-      if (layerName)
-        return models[layerName];
-      return models;
+        // Update the Popup message property
+        if (!isString(markerData.message) && isString(oldMarkerData.message)) {
+            marker.closePopup();
+            marker.unbindPopup();
+        }
+
+        // Update the label content or bind a new label if the old one has been removed.
+        if (Helpers.LabelPlugin.isLoaded()) {
+            if (isDefined(markerData.label) && isDefined(markerData.label.message)) {
+                if ('label' in oldMarkerData && 'message' in oldMarkerData.label && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
+                    marker.updateLabelContent(markerData.label.message);
+                } else if (!angular.isFunction(marker.getLabel) || angular.isFunction(marker.getLabel) && !isDefined(marker.getLabel())) {
+                    marker.bindLabel(markerData.label.message, markerData.label.options);
+                    _manageOpenLabel(marker, markerData);
+                } else {
+                    _manageOpenLabel(marker, markerData);
+                }
+            } else if (!('label' in markerData && !('message' in markerData.label))) {
+                if (angular.isFunction(marker.unbindLabel)) {
+                    marker.unbindLabel();
+                }
+            }
+        }
+
+        // There is some text in the popup, so we must show the text or update existing
+        if (isString(markerData.message) && !isString(oldMarkerData.message)) {
+            // There was no message before so we create it
+            marker.bindPopup(markerData.message, markerData.popupOptions);
+        }
+
+        if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
+            // There was a different previous message so we update it
+            marker.setPopupContent(markerData.message);
+        }
+
+        // Update the focus property
+        var updatedFocus = false;
+        if (markerData.focus !== true && oldMarkerData.focus === true) {
+            // If there was a focus property and was true we turn it off
+            marker.closePopup();
+            updatedFocus = true;
+        }
+
+        // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
+        if (markerData.focus === true && (!isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || isInitializing && markerData.focus === true) {
+            // Reopen the popup when focus is still true
+            marker.openPopup();
+            updatedFocus = true;
+        }
+
+        // zIndexOffset adjustment
+        if (oldMarkerData.zIndexOffset !== markerData.zIndexOffset) {
+            marker.setZIndexOffset(markerData.zIndexOffset);
+        }
+
+        var markerLatLng = marker.getLatLng();
+        var isCluster = isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]);
+        // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
+        if (isCluster) {
+            // The focus has changed even by a user click or programatically
+            if (updatedFocus) {
+                // We only have to update the location if it was changed programatically, because it was
+                // changed by a user drag the marker data has already been updated by the internal event
+                // listened by the directive
+                if (markerData.lat !== oldMarkerData.lat || markerData.lng !== oldMarkerData.lng) {
+                    layers.overlays[markerData.layer].removeLayer(marker);
+                    marker.setLatLng([markerData.lat, markerData.lng]);
+                    layers.overlays[markerData.layer].addLayer(marker);
+                }
+            } else {
+                // The marker has possibly moved. It can be moved by a user drag (marker location and data are equal but old
+                // data is diferent) or programatically (marker location and data are diferent)
+                if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
+                    // The marker was moved by a user drag
+                    layers.overlays[markerData.layer].removeLayer(marker);
+                    marker.setLatLng([markerData.lat, markerData.lng]);
+                    layers.overlays[markerData.layer].addLayer(marker);
+                } else if (markerData.lat !== oldMarkerData.lat || markerData.lng !== oldMarkerData.lng) {
+                    // The marker was moved programatically
+                    layers.overlays[markerData.layer].removeLayer(marker);
+                    marker.setLatLng([markerData.lat, markerData.lng]);
+                    layers.overlays[markerData.layer].addLayer(marker);
+                } else if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
+                    layers.overlays[markerData.layer].removeLayer(marker);
+                    layers.overlays[markerData.layer].addLayer(marker);
+                }
+            }
+        } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
+            marker.setLatLng([markerData.lat, markerData.lng]);
+        }
     };
 
-    var _getModelFromModels = function (models, id, layerName){
-      if(!isDefined(models))
-        return;
-      if(!id){
-        $log.error(errorHeader + 'marker id missing in getMarker');
-        return;
-      }
-      if(layerName)
-        return models[layerName][id];
+    var _getLayerModels = function _getLayerModels(models, layerName) {
+        if (!isDefined(models)) return;
+        if (layerName) return models[layerName];
+        return models;
+    };
 
-      return models[id];
+    var _getModelFromModels = function _getModelFromModels(models, id, layerName) {
+        if (!isDefined(models)) return;
+        if (!id) {
+            $log.error(errorHeader + 'marker id missing in getMarker');
+            return;
+        }
+        if (layerName) return models[layerName][id];
+
+        return models[id];
     };
     return {
         resetMarkerGroup: _resetMarkerGroup,
 
         resetMarkerGroups: _resetMarkerGroups,
+
+        resetUnusedMarkerGroups: _resetUnusedMarkerGroups,
 
         deleteMarker: _deleteMarker,
 
@@ -57469,7 +57438,7 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
 
         manageOpenLabel: _manageOpenLabel,
 
-        createMarker: function (markerData) {
+        createMarker: function createMarker(markerData) {
             if (!isDefined(markerData) || !geoHlp.validateCoords(markerData)) {
                 $log.error(errorHeader + 'The marker definition is not valid.');
                 return;
@@ -57506,7 +57475,7 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
             return marker;
         },
 
-        addMarkerToGroup: function (marker, groupName, groupOptions, map) {
+        addMarkerToGroup: function addMarkerToGroup(marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
                 $log.error(errorHeader + 'The marker group you have specified is invalid.');
                 return;
@@ -57523,49 +57492,49 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
             groups[groupName].addLayer(marker);
         },
 
-        listenMarkerEvents: function (marker, markerData, leafletScope, doWatch, map) {
-            marker.on("popupopen", function (/* event */) {
+        listenMarkerEvents: function listenMarkerEvents(marker, markerData, leafletScope, watchType, map) {
+            marker.on("popupopen", function () /* event */{
                 safeApply(leafletScope, function () {
                     if (isDefined(marker._popup) || isDefined(marker._popup._contentNode)) {
                         markerData.focus = true;
-                        _manageOpenPopup(marker, markerData, map);//needed since markerData is now a copy
+                        _manageOpenPopup(marker, markerData, map); //needed since markerData is now a copy
                     }
                 });
             });
-            marker.on("popupclose", function (/* event */) {
+            marker.on("popupclose", function () /* event */{
                 safeApply(leafletScope, function () {
                     markerData.focus = false;
                 });
             });
-            marker.on("add", function (/* event */) {
+            marker.on("add", function () /* event */{
                 safeApply(leafletScope, function () {
-                    if ('label' in markerData)
-                        _manageOpenLabel(marker, markerData);
+                    if ('label' in markerData) _manageOpenLabel(marker, markerData);
                 });
             });
         },
 
         updateMarker: _updateMarker,
 
-        addMarkerWatcher: function (marker, name, leafletScope, layers, map, isDeepWatch) {
+        addMarkerWatcher: function addMarkerWatcher(marker, name, leafletScope, layers, map, watchOptions) {
             var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
-            isDeepWatch = defaultTo(isDeepWatch, true);
 
-            var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
+            maybeWatch(leafletScope, markerWatchPath, watchOptions, function (markerData, oldMarkerData, clearWatch) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
                     clearWatch();
                     return;
                 }
                 _updateMarker(markerData, oldMarkerData, marker, name, leafletScope, layers, map);
-            } , isDeepWatch);
+            });
         },
         string: _string,
         log: _log,
-        getModelFromModels : _getModelFromModels,
-        getLayerModels : _getLayerModels
+        getModelFromModels: _getModelFromModels,
+        getLayerModels: _getLayerModels
     };
 }]);
+
+'use strict';
 
 angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leafletLogger", "leafletHelpers", function ($rootScope, leafletLogger, leafletHelpers) {
     var isDefined = leafletHelpers.isDefined,
@@ -57573,19 +57542,15 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
         isNumber = leafletHelpers.isNumber,
         isValidPoint = leafletHelpers.isValidPoint,
         $log = leafletLogger;
-        
-    var availableOptions = [
-        // Path options
-        'stroke', 'weight', 'color', 'opacity',
-        'fill', 'fillColor', 'fillOpacity',
-        'dashArray', 'lineCap', 'lineJoin', 'clickable',
-        'pointerEvents', 'className',
 
-        // Polyline options
-        'smoothFactor', 'noClip'
-    ];
+    var availableOptions = [
+    // Path options
+    'stroke', 'weight', 'color', 'opacity', 'fill', 'fillColor', 'fillOpacity', 'dashArray', 'lineCap', 'lineJoin', 'clickable', 'pointerEvents', 'className',
+
+    // Polyline options
+    'smoothFactor', 'noClip'];
     function _convertToLeafletLatLngs(latlngs) {
-        return latlngs.filter(function(latlng) {
+        return latlngs.filter(function (latlng) {
             return isValidPoint(latlng);
         }).map(function (latlng) {
             return _convertToLeafletLatLng(latlng);
@@ -57601,7 +57566,7 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
     }
 
     function _convertToLeafletMultiLatLngs(paths) {
-        return paths.map(function(latlngs) {
+        return paths.map(function (latlngs) {
             return _convertToLeafletLatLngs(latlngs);
         });
     }
@@ -57621,7 +57586,7 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
         return options;
     }
 
-    var _updatePathOptions = function (path, data) {
+    var _updatePathOptions = function _updatePathOptions(path, data) {
         var updatedStyle = {};
         for (var i = 0; i < availableOptions.length; i++) {
             var optionName = availableOptions[i];
@@ -57632,7 +57597,7 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
         path.setStyle(data);
     };
 
-    var _isValidPolyline = function(latlngs) {
+    var _isValidPolyline = function _isValidPolyline(latlngs) {
         if (!isArray(latlngs)) {
             return false;
         }
@@ -57647,21 +57612,21 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
 
     var pathTypes = {
         polyline: {
-            isValid: function(pathData) {
+            isValid: function isValid(pathData) {
                 var latlngs = pathData.latlngs;
                 return _isValidPolyline(latlngs);
             },
-            createPath: function(options) {
+            createPath: function createPath(options) {
                 return new L.Polyline([], options);
             },
-            setPath: function(path, data) {
+            setPath: function setPath(path, data) {
                 path.setLatLngs(_convertToLeafletLatLngs(data.latlngs));
                 _updatePathOptions(path, data);
                 return;
             }
         },
         multiPolyline: {
-            isValid: function(pathData) {
+            isValid: function isValid(pathData) {
                 var latlngs = pathData.latlngs;
                 if (!isArray(latlngs)) {
                     return false;
@@ -57676,31 +57641,31 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
 
                 return true;
             },
-            createPath: function(options) {
-                return new L.multiPolyline([[[0,0],[1,1]]], options);
+            createPath: function createPath(options) {
+                return new L.multiPolyline([[[0, 0], [1, 1]]], options);
             },
-            setPath: function(path, data) {
+            setPath: function setPath(path, data) {
                 path.setLatLngs(_convertToLeafletMultiLatLngs(data.latlngs));
                 _updatePathOptions(path, data);
                 return;
             }
-        } ,
+        },
         polygon: {
-            isValid: function(pathData) {
+            isValid: function isValid(pathData) {
                 var latlngs = pathData.latlngs;
                 return _isValidPolyline(latlngs);
             },
-            createPath: function(options) {
+            createPath: function createPath(options) {
                 return new L.Polygon([], options);
             },
-            setPath: function(path, data) {
+            setPath: function setPath(path, data) {
                 path.setLatLngs(_convertToLeafletLatLngs(data.latlngs));
                 _updatePathOptions(path, data);
                 return;
             }
         },
         multiPolygon: {
-            isValid: function(pathData) {
+            isValid: function isValid(pathData) {
                 var latlngs = pathData.latlngs;
 
                 if (!isArray(latlngs)) {
@@ -57716,17 +57681,17 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
 
                 return true;
             },
-            createPath: function(options) {
-                return new L.MultiPolygon([[[0,0],[1,1],[0,1]]], options);
+            createPath: function createPath(options) {
+                return new L.MultiPolygon([[[0, 0], [1, 1], [0, 1]]], options);
             },
-            setPath: function(path, data) {
+            setPath: function setPath(path, data) {
                 path.setLatLngs(_convertToLeafletMultiLatLngs(data.latlngs));
                 _updatePathOptions(path, data);
                 return;
             }
         },
         rectangle: {
-            isValid: function(pathData) {
+            isValid: function isValid(pathData) {
                 var latlngs = pathData.latlngs;
 
                 if (!isArray(latlngs) || latlngs.length !== 2) {
@@ -57742,23 +57707,23 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
 
                 return true;
             },
-            createPath: function(options) {
-                return new L.Rectangle([[0,0],[1,1]], options);
+            createPath: function createPath(options) {
+                return new L.Rectangle([[0, 0], [1, 1]], options);
             },
-            setPath: function(path, data) {
+            setPath: function setPath(path, data) {
                 path.setBounds(new L.LatLngBounds(_convertToLeafletLatLngs(data.latlngs)));
                 _updatePathOptions(path, data);
             }
         },
         circle: {
-            isValid: function(pathData) {
-                var point= pathData.latlngs;
+            isValid: function isValid(pathData) {
+                var point = pathData.latlngs;
                 return isValidPoint(point) && isNumber(pathData.radius);
             },
-            createPath: function(options) {
-                return new L.Circle([0,0], 1, options);
+            createPath: function createPath(options) {
+                return new L.Circle([0, 0], 1, options);
             },
-            setPath: function(path, data) {
+            setPath: function setPath(path, data) {
                 path.setLatLng(_convertToLeafletLatLng(data.latlngs));
                 if (isDefined(data.radius)) {
                     path.setRadius(data.radius);
@@ -57767,14 +57732,14 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
             }
         },
         circleMarker: {
-            isValid: function(pathData) {
-                var point= pathData.latlngs;
+            isValid: function isValid(pathData) {
+                var point = pathData.latlngs;
                 return isValidPoint(point) && isNumber(pathData.radius);
             },
-            createPath: function(options) {
-                return new L.CircleMarker([0,0], options);
+            createPath: function createPath(options) {
+                return new L.CircleMarker([0, 0], options);
             },
-            setPath: function(path, data) {
+            setPath: function setPath(path, data) {
                 path.setLatLng(_convertToLeafletLatLng(data.latlngs));
                 if (isDefined(data.radius)) {
                     path.setRadius(data.radius);
@@ -57784,7 +57749,7 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
         }
     };
 
-    var _getPathData = function(path) {
+    var _getPathData = function _getPathData(path) {
         var pathData = {};
         if (path.latlngs) {
             pathData.latlngs = path.latlngs;
@@ -57798,14 +57763,14 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
     };
 
     return {
-        setPathOptions: function(leafletPath, pathType, data) {
-            if(!isDefined(pathType)) {
+        setPathOptions: function setPathOptions(leafletPath, pathType, data) {
+            if (!isDefined(pathType)) {
                 pathType = "polyline";
             }
             pathTypes[pathType].setPath(leafletPath, data);
         },
-        createPath: function(name, path, defaults) {
-            if(!isDefined(path.type)) {
+        createPath: function createPath(name, path, defaults) {
+            if (!isDefined(path.type)) {
                 path.type = "polyline";
             }
             var options = _getOptions(path, defaults);
@@ -57821,62 +57786,62 @@ angular.module('ui-leaflet').factory('leafletPathsHelpers', ["$rootScope", "leaf
     };
 }]);
 
-angular.module('ui-leaflet')
-.service('leafletWatchHelpers', function (){
+'use strict';
 
-    var _maybe = function(scope, watchFunctionName, thingToWatchStr, watchOptions, initCb){
-        //watchOptions.isDeep is/should be ignored in $watchCollection
-        var unWatch = scope[watchFunctionName](thingToWatchStr, function(newValue, oldValue) {
-            initCb(newValue, oldValue);
-            if(!watchOptions.doWatch)
-                unWatch();
-        }, watchOptions.isDeep);
+angular.module('ui-leaflet').service('leafletWatchHelpers', function () {
+
+    var _maybe = function _maybe(scope, watchFunctionName, thingToWatchStr, watchOptions, initCb) {
+        var unWatch = scope[watchFunctionName](thingToWatchStr, function (newValue, oldValue) {
+            //make the unWatch function available to the callback as well.
+            initCb(newValue, oldValue, unWatch);
+            if (watchOptions.type === null) unWatch();
+        }, watchOptions.type === 'watchDeep');
 
         return unWatch;
     };
 
-  /*
-  @name: maybeWatch
-  @description: Utility to watch something once or forever.
-  @returns unWatch function
-  @param watchOptions - see markersWatchOptions and or derrivatives. This object is used
-  to set watching to once and its watch depth.
-  */
-  var _maybeWatch = function(scope, thingToWatchStr, watchOptions, initCb){
-      return _maybe(scope, '$watch', thingToWatchStr, watchOptions, initCb);
-  };
+    /*
+    @name: maybeWatch
+    @description: Utility to watch something once or forever.
+    @returns unWatch function
+    @param watchOptions - This object is used to determine the type of
+    watch used.
+    */
+    var _maybeWatch = function _maybeWatch(scope, thingToWatchStr, watchOptions, initCb) {
+        var watchMethod;
 
-  /*
-  @name: _maybeWatchCollection
-  @description: Utility to watch something once or forever.
-  @returns unWatch function
-  @param watchOptions - see markersWatchOptions and or derrivatives. This object is used
-  to set watching to once and its watch depth.
-  */
-  var _maybeWatchCollection = function(scope, thingToWatchStr, watchOptions, initCb){
-      return _maybe(scope, '$watchCollection', thingToWatchStr, watchOptions, initCb);
-  };
+        if (watchOptions.type === 'watchCollection') {
+            watchMethod = '$watchCollection';
+        } else {
+            watchMethod = '$watch';
+        }
 
-  return {
-    maybeWatch: _maybeWatch,
-    maybeWatchCollection: _maybeWatchCollection
-  };
+        return _maybe(scope, watchMethod, thingToWatchStr, watchOptions, initCb);
+    };
+
+    return {
+        maybeWatch: _maybeWatch
+    };
 });
 
-angular.module('ui-leaflet').service('leafletLogger', ["nemSimpleLogger", function(nemSimpleLogger) {
+'use strict';
+
+angular.module('ui-leaflet').service('leafletLogger', ["nemSimpleLogger", function (nemSimpleLogger) {
   return nemSimpleLogger.spawn();
 }]);
+
+'use strict';
 
 angular.module('ui-leaflet').factory('nominatimService', ["$q", "$http", "leafletHelpers", "leafletMapDefaults", function ($q, $http, leafletHelpers, leafletMapDefaults) {
     var isDefined = leafletHelpers.isDefined;
 
     return {
-        query: function(address, mapId) {
+        query: function query(address, mapId) {
             var defaults = leafletMapDefaults.getDefaults(mapId);
             var url = defaults.nominatim.server;
             var df = $q.defer();
 
-            $http.get(url, { params: { format: 'json', limit: 1, q: address } }).success(function(data) {
+            $http.get(url, { params: { format: 'json', limit: 1, q: address } }).success(function (data) {
                 if (data.length > 0 && isDefined(data[0].boundingbox)) {
                     df.resolve(data[0]);
                 } else {
@@ -57889,24 +57854,25 @@ angular.module('ui-leaflet').factory('nominatimService', ["$q", "$http", "leafle
     };
 }]);
 
+'use strict';
+
 angular.module('ui-leaflet').directive('bounds', ["leafletLogger", "$timeout", "$http", "leafletHelpers", "nominatimService", "leafletBoundsHelpers", function (leafletLogger, $timeout, $http, leafletHelpers, nominatimService, leafletBoundsHelpers) {
     var $log = leafletLogger;
     return {
         restrict: "A",
         scope: false,
         replace: false,
-        require: [ 'leaflet' ],
+        require: ['leaflet'],
 
-        link: function(scope, element, attrs, controller) {
+        link: function link(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined;
             var createLeafletBounds = leafletBoundsHelpers.createLeafletBounds;
             var leafletScope = controller[0].getLeafletScope();
             var mapController = controller[0];
             var errorHeader = leafletHelpers.errorHeader + ' [Bounds] ';
 
-            var emptyBounds = function(bounds) {
-                return (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 &&
-                        bounds._northEast.lat === 0 && bounds._northEast.lng === 0);
+            var emptyBounds = function emptyBounds(bounds) {
+                return bounds._southWest.lat === 0 && bounds._southWest.lng === 0 && bounds._northEast.lat === 0 && bounds._northEast.lng === 0;
             };
 
             mapController.getMap().then(function (map) {
@@ -57932,26 +57898,25 @@ angular.module('ui-leaflet').directive('bounds', ["leafletLogger", "$timeout", "
                     if (!angular.equals(scope.bounds, newScopeBounds)) {
                         scope.bounds = newScopeBounds;
                     }
-                    $timeout( function() {
+                    $timeout(function () {
                         scope.settingBoundsFromLeaflet = false;
                     });
                 });
 
                 var lastNominatimQuery;
                 leafletScope.$watch('bounds', function (bounds) {
-                    if (scope.settingBoundsFromLeaflet)
-                        return;
+                    if (scope.settingBoundsFromLeaflet) return;
                     if (isDefined(bounds.address) && bounds.address !== lastNominatimQuery) {
                         scope.settingBoundsFromScope = true;
-                        nominatimService.query(bounds.address, attrs.id).then(function(data) {
+                        nominatimService.query(bounds.address, attrs.id).then(function (data) {
                             var b = data.boundingbox;
-                            var newBounds = [ [ b[0], b[2]], [ b[1], b[3]] ];
+                            var newBounds = [[b[0], b[2]], [b[1], b[3]]];
                             map.fitBounds(newBounds);
-                        }, function(errMsg) {
+                        }, function (errMsg) {
                             $log.error(errorHeader + ' ' + errMsg + '.');
                         });
                         lastNominatimQuery = bounds.address;
-                        $timeout( function() {
+                        $timeout(function () {
                             scope.settingBoundsFromScope = false;
                         });
                         return;
@@ -57961,7 +57926,7 @@ angular.module('ui-leaflet').directive('bounds', ["leafletLogger", "$timeout", "
                     if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
                         scope.settingBoundsFromScope = true;
                         map.fitBounds(leafletBounds, bounds.options);
-                        $timeout( function() {
+                        $timeout(function () {
                             scope.settingBoundsFromScope = false;
                         });
                     }
@@ -57971,14 +57936,13 @@ angular.module('ui-leaflet').directive('bounds', ["leafletLogger", "$timeout", "
     };
 }]);
 
+'use strict';
+
 var centerDirectiveTypes = ['center', 'lfCenter'],
     centerDirectives = {};
 
-centerDirectiveTypes.forEach(function(directiveName) {
-    centerDirectives[directiveName] = ['leafletLogger', '$q', '$location', '$timeout', 'leafletMapDefaults', 'leafletHelpers',
-        'leafletBoundsHelpers', 'leafletMapEvents',
-        function(leafletLogger, $q, $location, $timeout, leafletMapDefaults, leafletHelpers,
-      leafletBoundsHelpers, leafletMapEvents) {
+centerDirectiveTypes.forEach(function (directiveName) {
+    centerDirectives[directiveName] = ['leafletLogger', '$q', '$location', '$timeout', 'leafletMapDefaults', 'leafletHelpers', 'leafletBoundsHelpers', 'leafletMapEvents', function (leafletLogger, $q, $location, $timeout, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletMapEvents) {
 
         var isDefined = leafletHelpers.isDefined,
             isNumber = leafletHelpers.isNumber,
@@ -57990,7 +57954,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
             errorHeader = leafletHelpers.errorHeader,
             $log = leafletLogger;
 
-        var shouldInitializeMapWithBounds = function(bounds, center) {
+        var shouldInitializeMapWithBounds = function shouldInitializeMapWithBounds(bounds, center) {
             return isDefined(bounds) && isValidBounds(bounds) && isUndefinedOrEmpty(center);
         };
 
@@ -58000,17 +57964,17 @@ centerDirectiveTypes.forEach(function(directiveName) {
             scope: false,
             replace: false,
             require: 'leaflet',
-            controller: function() {
+            controller: function controller() {
                 _leafletCenter = $q.defer();
-                this.getCenter = function() {
+                this.getCenter = function () {
                     return _leafletCenter.promise;
                 };
             },
-            link: function(scope, element, attrs, controller) {
+            link: function link(scope, element, attrs, controller) {
                 var leafletScope = controller.getLeafletScope(),
                     centerModel = leafletScope[directiveName];
 
-                controller.getMap().then(function(map) {
+                controller.getMap().then(function (map) {
                     var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
                     if (attrs[directiveName].search("-") !== -1) {
@@ -58020,7 +57984,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                     } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
                         map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds), leafletScope.bounds.options);
                         centerModel = map.getCenter();
-                        safeApply(leafletScope, function(scope) {
+                        safeApply(leafletScope, function (scope) {
                             angular.extend(scope[directiveName], {
                                 lat: map.getCenter().lat,
                                 lng: map.getCenter().lng,
@@ -58028,7 +57992,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                                 autoDiscover: false
                             });
                         });
-                        safeApply(leafletScope, function(scope) {
+                        safeApply(leafletScope, function (scope) {
                             var mapBounds = map.getBounds();
                             scope.bounds = {
                                 northEast: {
@@ -58051,11 +58015,12 @@ centerDirectiveTypes.forEach(function(directiveName) {
 
                     var urlCenterHash, mapReady;
                     if (attrs.urlHashCenter === "yes") {
-                        var extractCenterFromUrl = function() {
+                        var extractCenterFromUrl = function extractCenterFromUrl() {
                             var search = $location.search();
                             var centerParam;
-                            if (isDefined(search.c)) {
-                                var cParam = search.c.split(":");
+                            var centerKey = attrs.urlHashParam ? attrs.urlHashParam : 'c';
+                            if (isDefined(search[centerKey])) {
+                                var cParam = search[centerKey].split(":");
                                 if (cParam.length === 3) {
                                     centerParam = {
                                         lat: parseFloat(cParam[0]),
@@ -58068,7 +58033,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                         };
                         urlCenterHash = extractCenterFromUrl();
 
-                        leafletScope.$on('$locationChangeSuccess', function(event) {
+                        leafletScope.$on('$locationChangeSuccess', function (event) {
                             var scope = event.currentScope;
                             //$log.debug("updated location...");
                             var urlCenter = extractCenterFromUrl();
@@ -58083,9 +58048,8 @@ centerDirectiveTypes.forEach(function(directiveName) {
                         });
                     }
 
-                    leafletScope.$watch(directiveName, function(center) {
-                        if (leafletScope.settingCenterFromLeaflet)
-                            return;
+                    leafletScope.$watch(directiveName, function (center) {
+                        if (leafletScope.settingCenterFromLeaflet) return;
                         //$log.debug("updated center model...");
                         // The center from the URL has priority
                         if (isDefined(urlCenterHash)) {
@@ -58130,17 +58094,17 @@ centerDirectiveTypes.forEach(function(directiveName) {
                         leafletScope.settingCenterFromScope = true;
                         map.setView([center.lat, center.lng], center.zoom);
                         leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
-                        $timeout(function() {
+                        $timeout(function () {
                             leafletScope.settingCenterFromScope = false;
                             //$log.debug("allow center scope updates");
                         });
                     }, true);
 
-                    map.whenReady(function() {
+                    map.whenReady(function () {
                         mapReady = true;
                     });
 
-                    map.on('moveend', function( /* event */ ) {
+                    map.on('moveend', function () /* event */{
                         // Resolve the center after the first map position
                         _leafletCenter.resolve();
                         leafletMapEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
@@ -58150,7 +58114,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                             return;
                         }
                         leafletScope.settingCenterFromLeaflet = true;
-                        safeApply(leafletScope, function(scope) {
+                        safeApply(leafletScope, function (scope) {
                             if (!leafletScope.settingCenterFromScope) {
                                 //$log.debug("updating center model...", map.getCenter(), map.getZoom());
                                 angular.extend(scope[directiveName], {
@@ -58161,14 +58125,14 @@ centerDirectiveTypes.forEach(function(directiveName) {
                                 });
                             }
                             leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
-                            $timeout(function() {
+                            $timeout(function () {
                                 leafletScope.settingCenterFromLeaflet = false;
                             });
                         });
                     });
 
                     if (centerModel.autoDiscover === true) {
-                        map.on('locationerror', function() {
+                        map.on('locationerror', function () {
                             $log.warn(errorHeader + " The Geolocation API is unauthorized on this page.");
                             if (isValidCenter(centerModel)) {
                                 map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
@@ -58182,13 +58146,14 @@ centerDirectiveTypes.forEach(function(directiveName) {
                 });
             }
         };
-    }
-    ];
+    }];
 });
 
-centerDirectiveTypes.forEach(function(dirType){
-  angular.module('ui-leaflet').directive(dirType, centerDirectives[dirType]);
+centerDirectiveTypes.forEach(function (dirType) {
+    angular.module('ui-leaflet').directive(dirType, centerDirectives[dirType]);
 });
+
+'use strict';
 
 angular.module('ui-leaflet').directive('controls', ["leafletLogger", "leafletHelpers", "leafletControlHelpers", function (leafletLogger, leafletHelpers, leafletControlHelpers) {
     var $log = leafletLogger;
@@ -58198,22 +58163,22 @@ angular.module('ui-leaflet').directive('controls', ["leafletLogger", "leafletHel
         replace: false,
         require: '?^leaflet',
 
-        link: function(scope, element, attrs, controller) {
-            if(!controller) {
+        link: function link(scope, element, attrs, controller) {
+            if (!controller) {
                 return;
             }
 
             var createControl = leafletControlHelpers.createControl;
             var isValidControlType = leafletControlHelpers.isValidControlType;
-            var leafletScope  = controller.getLeafletScope();
+            var leafletScope = controller.getLeafletScope();
             var isDefined = leafletHelpers.isDefined;
             var isArray = leafletHelpers.isArray;
             var leafletControls = {};
             var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
-            controller.getMap().then(function(map) {
+            controller.getMap().then(function (map) {
 
-                leafletScope.$watchCollection('controls', function(newControls) {
+                leafletScope.$watchCollection('controls', function (newControls) {
 
                     // Delete controls from the array
                     for (var name in leafletControls) {
@@ -58242,7 +58207,7 @@ angular.module('ui-leaflet').directive('controls', ["leafletLogger", "leafletHel
                         } else {
                             var customControlValue = newControls[newName];
                             if (isArray(customControlValue)) {
-                                for (var i in customControlValue) {
+                                for (var i = 0; i < customControlValue.length; i++) {
                                     var customControl = customControlValue[i];
                                     map.addControl(customControl);
                                     leafletControls[newName] = !isDefined(leafletControls[newName]) ? [customControl] : leafletControls[newName].concat([customControl]);
@@ -58253,15 +58218,15 @@ angular.module('ui-leaflet').directive('controls', ["leafletLogger", "leafletHel
                             }
                         }
                     }
-
                 });
-
             });
         }
     };
 }]);
 
-angular.module('ui-leaflet').directive("decorations", ["leafletLogger", "leafletHelpers", function(leafletLogger, leafletHelpers) {
+"use strict";
+
+angular.module('ui-leaflet').directive("decorations", ["leafletLogger", "leafletHelpers", function (leafletLogger, leafletHelpers) {
 	var $log = leafletLogger;
 	return {
 		restrict: "A",
@@ -58269,11 +58234,11 @@ angular.module('ui-leaflet').directive("decorations", ["leafletLogger", "leaflet
 		replace: false,
 		require: 'leaflet',
 
-		link: function(scope, element, attrs, controller) {
+		link: function link(scope, element, attrs, controller) {
 			var leafletScope = controller.getLeafletScope(),
-				PolylineDecoratorPlugin = leafletHelpers.PolylineDecoratorPlugin,
-				isDefined = leafletHelpers.isDefined,
-				leafletDecorations = {};
+			    PolylineDecoratorPlugin = leafletHelpers.PolylineDecoratorPlugin,
+			    isDefined = leafletHelpers.isDefined,
+			    leafletDecorations = {};
 
 			/* Creates an "empty" decoration with a set of coordinates, but no pattern. */
 			function createDecoration(options) {
@@ -58297,8 +58262,8 @@ angular.module('ui-leaflet').directive("decorations", ["leafletLogger", "leaflet
 				}
 			}
 
-			controller.getMap().then(function(map) {
-				leafletScope.$watch("decorations", function(newDecorations) {
+			controller.getMap().then(function (map) {
+				leafletScope.$watch("decorations", function (newDecorations) {
 					for (var name in leafletDecorations) {
 						if (!isDefined(newDecorations[name]) || !angular.equals(newDecorations[name], leafletDecorations)) {
 							map.removeLayer(leafletDecorations[name]);
@@ -58308,7 +58273,7 @@ angular.module('ui-leaflet').directive("decorations", ["leafletLogger", "leaflet
 
 					for (var newName in newDecorations) {
 						var decorationData = newDecorations[newName],
-							newDecoration = createDecoration(decorationData);
+						    newDecoration = createDecoration(decorationData);
 
 						if (isDefined(newDecoration)) {
 							leafletDecorations[newName] = newDecoration;
@@ -58322,6 +58287,8 @@ angular.module('ui-leaflet').directive("decorations", ["leafletLogger", "leaflet
 	};
 }]);
 
+'use strict';
+
 angular.module('ui-leaflet').directive('eventBroadcast', ["leafletLogger", "$rootScope", "leafletHelpers", "leafletMapEvents", "leafletIterators", function (leafletLogger, $rootScope, leafletHelpers, leafletMapEvents, leafletIterators) {
     var $log = leafletLogger;
     return {
@@ -58330,15 +58297,15 @@ angular.module('ui-leaflet').directive('eventBroadcast', ["leafletLogger", "$roo
         replace: false,
         require: 'leaflet',
 
-        link: function(scope, element, attrs, controller) {
+        link: function link(scope, element, attrs, controller) {
             var isObject = leafletHelpers.isObject,
                 isDefined = leafletHelpers.isDefined,
-                leafletScope  = controller.getLeafletScope(),
+                leafletScope = controller.getLeafletScope(),
                 eventBroadcast = leafletScope.eventBroadcast,
                 availableMapEvents = leafletMapEvents.getAvailableMapEvents(),
                 addEvents = leafletMapEvents.addEvents;
 
-            controller.getMap().then(function(map) {
+            controller.getMap().then(function (map) {
 
                 var mapEvents = [],
                     logic = "broadcast";
@@ -58364,14 +58331,13 @@ angular.module('ui-leaflet').directive('eventBroadcast', ["leafletLogger", "$roo
                         $log.warn("[AngularJS - Leaflet] event-broadcast.map.enable must be an object check your model.");
                     } else {
                         // Enable events
-                        leafletIterators.each(eventBroadcast.map.enable, function(eventName) {
+                        leafletIterators.each(eventBroadcast.map.enable, function (eventName) {
                             // Do we have already the event enabled?
                             if (mapEvents.indexOf(eventName) === -1 && availableMapEvents.indexOf(eventName) !== -1) {
                                 mapEvents.push(eventName);
                             }
                         });
                     }
-
                 }
                 // as long as the map is removed in the root leaflet directive we
                 // do not need ot clean up the events as leaflet does it itself
@@ -58381,15 +58347,16 @@ angular.module('ui-leaflet').directive('eventBroadcast', ["leafletLogger", "$roo
     };
 }]);
 
-angular.module('ui-leaflet')
-.directive('geojson', ["leafletLogger", "$rootScope", "leafletData", "leafletHelpers", "leafletWatchHelpers", "leafletDirectiveControlsHelpers", "leafletIterators", "leafletGeoJsonEvents", function (leafletLogger, $rootScope, leafletData, leafletHelpers,
-    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators, leafletGeoJsonEvents) {
+'use strict';
+
+angular.module('ui-leaflet').directive('geojson', ["$timeout", "leafletLogger", "leafletData", "leafletHelpers", "leafletWatchHelpers", "leafletDirectiveControlsHelpers", "leafletIterators", "leafletGeoJsonEvents", function ($timeout, leafletLogger, leafletData, leafletHelpers, leafletWatchHelpers, leafletDirectiveControlsHelpers, leafletIterators, leafletGeoJsonEvents) {
     var _maybeWatch = leafletWatchHelpers.maybeWatch,
-        _watchOptions = leafletHelpers.watchOptions,
+        _defaultWatchOptions = leafletHelpers.watchOptions,
         _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
         hlp = leafletHelpers,
-        $it = leafletIterators;
-        // $log = leafletLogger;
+        $it = leafletIterators,
+        watchTrap = { changeFromDirective: false };
+    // $log = leafletLogger;
 
     return {
         restrict: "A",
@@ -58397,48 +58364,49 @@ angular.module('ui-leaflet')
         replace: false,
         require: 'leaflet',
 
-        link: function(scope, element, attrs, controller) {
+        link: function link(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                leafletScope  = controller.getLeafletScope(),
+                leafletScope = controller.getLeafletScope(),
                 leafletGeoJSON = {},
                 _hasSetLeafletData = false;
 
-            controller.getMap().then(function(map) {
-                var watchOptions = leafletScope.geojsonWatchOptions || _watchOptions;
+            controller.getMap().then(function (map) {
+                var watchOptions;
+                if (leafletScope.watchOptions && leafletScope.watchOptions.geojson) {
+                    watchOptions = leafletScope.watchOptions.geojson;
+                } else {
+                    watchOptions = _defaultWatchOptions;
+                }
 
-                var _hookUpEvents = function(geojson, maybeName){
+                var _hookUpEvents = function _hookUpEvents(geojson, maybeName) {
                     var onEachFeature;
 
                     if (angular.isFunction(geojson.onEachFeature)) {
                         onEachFeature = geojson.onEachFeature;
                     } else {
-                        onEachFeature = function(feature, layer) {
+                        onEachFeature = function onEachFeature(feature, layer) {
                             if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(feature.properties.description)) {
                                 layer.bindLabel(feature.properties.description);
                             }
 
-                            leafletGeoJsonEvents.bindEvents(attrs.id, layer, null, feature,
-                                leafletScope, maybeName,
-                                {resetStyleOnMouseout: geojson.resetStyleOnMouseout,
-                                mapId: attrs.id});
+                            leafletGeoJsonEvents.bindEvents(attrs.id, layer, null, feature, leafletScope, maybeName, { resetStyleOnMouseout: geojson.resetStyleOnMouseout,
+                                mapId: attrs.id });
                         };
                     }
                     return onEachFeature;
                 };
 
-                var isNested = (hlp.isDefined(attrs.geojsonNested) &&
-                    hlp.isTruthy(attrs.geojsonNested));
+                var isNested = hlp.isDefined(attrs.geojsonNested) && hlp.isTruthy(attrs.geojsonNested);
 
-                var _clean = function(){
-                    if(!leafletGeoJSON)
-                        return;
-                    var _remove = function(lObject) {
+                var _clean = function _clean() {
+                    if (!leafletGeoJSON) return;
+                    var _remove = function _remove(lObject) {
                         if (isDefined(lObject) && map.hasLayer(lObject)) {
                             map.removeLayer(lObject);
                         }
                     };
-                    if(isNested) {
-                        $it.each(leafletGeoJSON, function(lObject) {
+                    if (isNested) {
+                        $it.each(leafletGeoJSON, function (lObject) {
                             _remove(lObject);
                         });
                         return;
@@ -58446,51 +58414,49 @@ angular.module('ui-leaflet')
                     _remove(leafletGeoJSON);
                 };
 
-                var _addGeojson = function(model, maybeName){
-                    var geojson = angular.copy(model);
+                var _addGeojson = function _addGeojson(geojson, maybeName) {
+
                     if (!(isDefined(geojson) && isDefined(geojson.data))) {
                         return;
                     }
                     var onEachFeature = _hookUpEvents(geojson, maybeName);
 
                     if (!isDefined(geojson.options)) {
-                        //right here is why we use a clone / copy (we modify and thus)
-                        //would kick of a watcher.. we need to be more careful everywhere
-                        //for stuff like this
-                        geojson.options = {
-                            style: geojson.style,
-                            filter: geojson.filter,
-                            onEachFeature: onEachFeature,
-                            pointToLayer: geojson.pointToLayer
-                        };
+                        hlp.modelChangeInDirective(watchTrap, "changeFromDirective", function () {
+                            geojson.options = {
+                                style: geojson.style,
+                                filter: geojson.filter,
+                                onEachFeature: onEachFeature,
+                                pointToLayer: geojson.pointToLayer
+                            };
+                        });
                     }
 
                     var lObject = L.geoJson(geojson.data, geojson.options);
 
-                    if(maybeName && hlp.isString(maybeName)){
+                    if (maybeName && hlp.isString(maybeName)) {
                         leafletGeoJSON[maybeName] = lObject;
-                    }
-                    else{
+                    } else {
                         leafletGeoJSON = lObject;
                     }
 
                     lObject.addTo(map);
 
-                    if(!_hasSetLeafletData){//only do this once and play with the same ref forever
+                    if (!_hasSetLeafletData) {
+                        //only do this once and play with the same ref forever
                         _hasSetLeafletData = true;
                         leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
                     }
                 };
 
-                var _create = function(model){
+                var _create = function _create(model) {
                     _clean();
-                    if(isNested) {
-                        if(!model || !Object.keys(model).length)
-                            return;
-                        $it.each(model, function(m, name) {
+                    if (isNested) {
+                        if (!model || !Object.keys(model).length) return;
+                        $it.each(model, function (m, name) {
                             //name could be layerName and or groupName
                             //for now it is not tied to a layer
-                            _addGeojson(m,name);
+                            _addGeojson(m, name);
                         });
                         return;
                     }
@@ -58499,13 +58465,16 @@ angular.module('ui-leaflet')
 
                 _extendDirectiveControls(attrs.id, 'geojson', _create, _clean);
 
-                _maybeWatch(leafletScope,'geojson', watchOptions, function(geojson){
+                _maybeWatch(leafletScope, 'geojson', watchOptions, function (geojson) {
+                    if (watchTrap.changeFromDirective) return;
                     _create(geojson);
                 });
             });
         }
     };
 }]);
+
+'use strict';
 
 angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogger", "leafletData", "leafletHelpers", function ($filter, leafletLogger, leafletData, leafletHelpers) {
     var $log = leafletLogger;
@@ -58517,32 +58486,33 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
             showGroups: '=?', // Hide other opacity controls when one is activated.
             title: '@',
             baseTitle: '@',
-            overlaysTitle: '@'
+            overlaysTitle: '@',
+            mapId: '@'
         },
         replace: true,
         transclude: false,
         require: '^leaflet',
-        controller: ["$scope", "$element", "$sce", function ($scope, $element, $sce) {
+        controller: ["$scope", "$element", "$sce", function controller($scope, $element, $sce) {
             $log.debug('[Angular Directive - Layers] layers', $scope, $element);
             var safeApply = leafletHelpers.safeApply,
-            isDefined = leafletHelpers.isDefined;
+                isDefined = leafletHelpers.isDefined;
             angular.extend($scope, {
                 baselayer: '',
                 oldGroup: '',
                 layerProperties: {},
                 groupProperties: {},
                 rangeIsSupported: leafletHelpers.rangeIsSupported(),
-                changeBaseLayer: function(key, e) {
-                    leafletHelpers.safeApply($scope, function(scp) {
+                changeBaseLayer: function changeBaseLayer(key, e) {
+                    leafletHelpers.safeApply($scope, function (scp) {
                         scp.baselayer = key;
-                        leafletData.getMap().then(function(map) {
-                            leafletData.getLayers().then(function(leafletLayers) {
-                                if(map.hasLayer(leafletLayers.baselayers[key])) {
+                        leafletData.getMap($scope.mapId).then(function (map) {
+                            leafletData.getLayers($scope.mapId).then(function (leafletLayers) {
+                                if (map.hasLayer(leafletLayers.baselayers[key])) {
                                     return;
                                 }
-                                for(var i in scp.layers.baselayers) {
+                                for (var i in scp.layers.baselayers) {
                                     scp.layers.baselayers[i].icon = scp.icons.unradio;
-                                    if(map.hasLayer(leafletLayers.baselayers[i])) {
+                                    if (map.hasLayer(leafletLayers.baselayers[i])) {
                                         map.removeLayer(leafletLayers.baselayers[i]);
                                     }
                                 }
@@ -58553,18 +58523,18 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
                     });
                     e.preventDefault();
                 },
-                moveLayer: function(ly, newIndex, e) {
+                moveLayer: function moveLayer(ly, newIndex, e) {
                     var delta = Object.keys($scope.layers.baselayers).length;
-                    if(newIndex >= (1+delta) && newIndex <= ($scope.overlaysArray.length+delta)) {
+                    if (newIndex >= 1 + delta && newIndex <= $scope.overlaysArray.length + delta) {
                         var oldLy;
-                        for(var key in $scope.layers.overlays) {
-                            if($scope.layers.overlays[key].index === newIndex) {
+                        for (var key in $scope.layers.overlays) {
+                            if ($scope.layers.overlays[key].index === newIndex) {
                                 oldLy = $scope.layers.overlays[key];
                                 break;
                             }
                         }
-                        if(oldLy) {
-                            safeApply($scope, function() {
+                        if (oldLy) {
+                            safeApply($scope, function () {
                                 oldLy.index = ly.index;
                                 ly.index = newIndex;
                             });
@@ -58573,17 +58543,17 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
                     e.stopPropagation();
                     e.preventDefault();
                 },
-                initIndex: function(layer, idx) {
+                initIndex: function initIndex(layer, idx) {
                     var delta = Object.keys($scope.layers.baselayers).length;
-                    layer.index = isDefined(layer.index)? layer.index:idx+delta+1;
+                    layer.index = isDefined(layer.index) ? layer.index : idx + delta + 1;
                 },
-                initGroup: function(groupName) {
-                    $scope.groupProperties[groupName] = $scope.groupProperties[groupName]? $scope.groupProperties[groupName]:{};
+                initGroup: function initGroup(groupName) {
+                    $scope.groupProperties[groupName] = $scope.groupProperties[groupName] ? $scope.groupProperties[groupName] : {};
                 },
-                toggleOpacity: function(e, layer) {
-                    if(layer.visible) {
-                        if($scope.autoHideOpacity && !$scope.layerProperties[layer.name].opacityControl) {
-                            for(var k in $scope.layerProperties) {
+                toggleOpacity: function toggleOpacity(e, layer) {
+                    if (layer.visible) {
+                        if ($scope.autoHideOpacity && !$scope.layerProperties[layer.name].opacityControl) {
+                            for (var k in $scope.layerProperties) {
                                 $scope.layerProperties[k].opacityControl = false;
                             }
                         }
@@ -58592,56 +58562,29 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
                     e.stopPropagation();
                     e.preventDefault();
                 },
-                toggleLegend: function(layer) {
+                toggleLegend: function toggleLegend(layer) {
                     $scope.layerProperties[layer.name].showLegend = !$scope.layerProperties[layer.name].showLegend;
                 },
-                showLegend: function(layer) {
+                showLegend: function showLegend(layer) {
                     return layer.legend && $scope.layerProperties[layer.name].showLegend;
                 },
-                unsafeHTML: function(html) {
+                unsafeHTML: function unsafeHTML(html) {
                     return $sce.trustAsHtml(html);
                 },
-                getOpacityIcon: function(layer) {
-                    return layer.visible && $scope.layerProperties[layer.name].opacityControl? $scope.icons.close:$scope.icons.open;
+                getOpacityIcon: function getOpacityIcon(layer) {
+                    return layer.visible && $scope.layerProperties[layer.name].opacityControl ? $scope.icons.close : $scope.icons.open;
                 },
-                getGroupIcon: function(group) {
-                    return group.visible? $scope.icons.check:$scope.icons.uncheck;
+                getGroupIcon: function getGroupIcon(group) {
+                    return group.visible ? $scope.icons.check : $scope.icons.uncheck;
                 },
-                changeOpacity: function(layer) {
-                    var op = $scope.layerProperties[layer.name].opacity;
-                    leafletData.getMap().then(function(map) {
-                        leafletData.getLayers().then(function(leafletLayers) {
-                            var ly;
-                            for(var k in $scope.layers.overlays) {
-                                if($scope.layers.overlays[k] === layer) {
-                                    ly = leafletLayers.overlays[k];
-                                    break;
-                                }
-                            }
-
-                            if(map.hasLayer(ly)) {
-                                if(ly.setOpacity) {
-                                    ly.setOpacity(op/100);
-                                }
-                                if(ly.getLayers && ly.eachLayer) {
-                                    ly.eachLayer(function(lay) {
-                                        if(lay.setOpacity) {
-                                            lay.setOpacity(op/100);
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    });
-                },
-                changeGroupVisibility: function(groupName) {
-                    if(!isDefined($scope.groupProperties[groupName])) {
+                changeGroupVisibility: function changeGroupVisibility(groupName) {
+                    if (!isDefined($scope.groupProperties[groupName])) {
                         return;
                     }
                     var visible = $scope.groupProperties[groupName].visible;
-                    for(var k in $scope.layers.overlays) {
+                    for (var k in $scope.layers.overlays) {
                         var layer = $scope.layers.overlays[k];
-                        if(layer.group === groupName) {
+                        if (layer.group === groupName) {
                             layer.visible = visible;
                         }
                     }
@@ -58656,59 +58599,13 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
                 L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
             }
         }],
-        template:
-        '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' +
-            '<h4 ng-if="title">{{ title }}</h4>' +
-            '<div class="lf-baselayers">' +
-                '<h5 class="lf-title" ng-if="baseTitle">{{ baseTitle }}</h5>' +
-                '<div class="lf-row" ng-repeat="(key, layer) in baselayersArray">' +
-                    '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' +
-                        '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' +
-                            'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' +
-                        '<i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i>' +
-                        '<div class="lf-text">{{layer.name}}</div>' +
-                    '</label>' +
-                '</div>' +
-            '</div>' +
-            '<div class="lf-overlays">' +
-                '<h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5>' +
-                '<div class="lf-container">' +
-                    '<div class="lf-row" ng-repeat="layer in (o = (overlaysArray | orderBy:\'index\':order))" ng-init="initIndex(layer, $index)">' +
-                        '<label class="lf-icon-ol-group" ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group">' +
-                            '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ' +
-                                'ng-change="changeGroupVisibility(layer.group)" ng-model="groupProperties[layer.group].visible"/> ' +
-                            '<i class="lf-icon lf-icon-check" ng-class="getGroupIcon(groupProperties[layer.group])"></i>' +
-                            '<div class="lf-text">{{ layer.group }}</div>' +
-                        '</label>'+
-                        '<label class="lf-icon-ol">' +
-                            '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
-                            '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
-                            '<div class="lf-text">{{layer.name}}</div>' +
-                        '</label>'+
-                        '<div class="lf-icons">' +
-                            '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
-                            '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
-                            '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> ' +
-                            '<i class="lf-icon lf-open" ng-class="getOpacityIcon(layer)" ng-click="toggleOpacity($event, layer)"></i>' +
-                        '</div>' +
-                        '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
-                        '<div class="lf-opacity clearfix" ng-if="layer.visible &amp;&amp; layerProperties[layer.name].opacityControl">' +
-                            '<label ng-if="rangeIsSupported" class="pull-left" style="width: 50%">0</label>' +
-                            '<label ng-if="rangeIsSupported" class="pull-left text-right" style="width: 50%">100</label>' +
-                            '<input ng-if="rangeIsSupported" class="clearfix" type="range" min="0" max="100" class="lf-opacity-control" ' +
-                                'ng-model="layerProperties[layer.name].opacity" ng-change="changeOpacity(layer)"/>' +
-                            '<h6 ng-if="!rangeIsSupported">Range is not supported in this browser</h6>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-        '</div>',
-        link: function(scope, element, attrs, controller) {
+        template: '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' + '<h4 ng-if="title">{{ title }}</h4>' + '<div class="lf-baselayers">' + '<h5 class="lf-title" ng-if="baseTitle">{{ baseTitle }}</h5>' + '<div class="lf-row" ng-repeat="(key, layer) in baselayersArray">' + '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' + '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' + 'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' + '<i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i>' + '<div class="lf-text">{{layer.name}}</div>' + '</label>' + '</div>' + '</div>' + '<div class="lf-overlays">' + '<h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5>' + '<div class="lf-container">' + '<div class="lf-row" ng-repeat="layer in (o = (overlaysArray | orderBy:\'index\':order))" ng-init="initIndex(layer, $index)">' + '<label class="lf-icon-ol-group" ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group">' + '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ' + 'ng-change="changeGroupVisibility(layer.group)" ng-model="groupProperties[layer.group].visible"/> ' + '<i class="lf-icon lf-icon-check" ng-class="getGroupIcon(groupProperties[layer.group])"></i>' + '<div class="lf-text">{{ layer.group }}</div>' + '</label>' + '<label class="lf-icon-ol">' + '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' + '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' + '<div class="lf-text">{{layer.name}}</div>' + '</label>' + '<div class="lf-icons">' + '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' + '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' + '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> ' + '<i class="lf-icon lf-open" ng-class="getOpacityIcon(layer)" ng-click="toggleOpacity($event, layer)"></i>' + '</div>' + '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' + '<div class="lf-opacity clearfix" ng-if="layer.visible &amp;&amp; layerProperties[layer.name].opacityControl">' + '<label ng-if="rangeIsSupported" class="pull-left" style="width: 50%">0</label>' + '<label ng-if="rangeIsSupported" class="pull-left text-right" style="width: 50%">100</label>' + '<input ng-if="rangeIsSupported" class="clearfix" type="range" min="0" max="1" step="0.05" ' + 'class="lf-opacity-control" ng-model="layerProperties[layer.name].layerOptions.opacity"/>' + '<h6 ng-if="!rangeIsSupported">Range is not supported in this browser</h6>' + '</div>' + '</div>' + '</div>' + '</div>' + '</div>',
+        link: function link(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-            leafletScope = controller.getLeafletScope(),
-            layers = leafletScope.layers;
+                leafletScope = controller.getLeafletScope(),
+                layers = leafletScope.layers;
 
-            scope.$watch('icons', function() {
+            scope.$watch('icons', function () {
                 var defaultIcons = {
                     uncheck: 'fa fa-square-o',
                     check: 'fa fa-check-square-o',
@@ -58720,7 +58617,7 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
                     close: 'fa fa-angle-double-up',
                     toggleLegend: 'fa fa-pencil-square-o'
                 };
-                if(isDefined(scope.icons)) {
+                if (isDefined(scope.icons)) {
                     angular.extend(defaultIcons, scope.icons);
                     angular.extend(scope.icons, defaultIcons);
                 } else {
@@ -58729,62 +58626,66 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
             });
 
             // Setting layer stack order.
-            attrs.order = (isDefined(attrs.order) && (attrs.order === 'normal' || attrs.order === 'reverse'))? attrs.order:'normal';
+            attrs.order = isDefined(attrs.order) && (attrs.order === 'normal' || attrs.order === 'reverse') ? attrs.order : 'normal';
             scope.order = attrs.order === 'normal';
-            scope.orderNumber = attrs.order === 'normal'? -1:1;
+            scope.orderNumber = attrs.order === 'normal' ? -1 : 1;
 
             scope.layers = layers;
-            controller.getMap().then(function(map) {
-                leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+            controller.getMap().then(function (map) {
+                leafletScope.$watch('layers.baselayers', function (newBaseLayers) {
                     var baselayersArray = {};
-                    leafletData.getLayers().then(function(leafletLayers) {
+                    leafletData.getLayers(scope.mapId).then(function (leafletLayers) {
                         var key;
-                        for(key in newBaseLayers) {
+                        for (key in newBaseLayers) {
                             var layer = newBaseLayers[key];
-                            layer.icon = scope.icons[map.hasLayer(leafletLayers.baselayers[key])? 'radio':'unradio'];
+                            layer.icon = scope.icons[map.hasLayer(leafletLayers.baselayers[key]) ? 'radio' : 'unradio'];
                             baselayersArray[key] = layer;
                         }
                         scope.baselayersArray = baselayersArray;
                     });
                 });
 
-                leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                leafletScope.$watch('layers.overlays', function (newOverlayLayers) {
                     var overlaysArray = [];
                     var groupVisibleCount = {};
-                    leafletData.getLayers().then(function(leafletLayers) {
+                    leafletData.getLayers(scope.mapId).then(function (leafletLayers) {
                         var key;
-                        for(key in newOverlayLayers) {
+                        for (key in newOverlayLayers) {
                             var layer = newOverlayLayers[key];
-                            layer.icon = scope.icons[(layer.visible? 'check':'uncheck')];
+                            layer.icon = scope.icons[layer.visible ? 'check' : 'uncheck'];
                             overlaysArray.push(layer);
-                            if(!isDefined(scope.layerProperties[layer.name])) {
+
+                            if (!isDefined(scope.layerProperties[layer.name])) {
+                                if (isDefined(layer.layerOptions.opacity)) {
+                                    layer.layerOptions.opacity = 1;
+                                }
                                 scope.layerProperties[layer.name] = {
-                                    opacity: isDefined(layer.layerOptions.opacity)? layer.layerOptions.opacity*100:100,
                                     opacityControl: false,
-                                    showLegend: true
+                                    showLegend: true,
+                                    layerOptions: layer.layerOptions
                                 };
                             }
-                            if(isDefined(layer.group)) {
-                                if(!isDefined(scope.groupProperties[layer.group])) {
+                            if (isDefined(layer.group)) {
+                                if (!isDefined(scope.groupProperties[layer.group])) {
                                     scope.groupProperties[layer.group] = {
                                         visible: false
                                     };
                                 }
-                                groupVisibleCount[layer.group] = isDefined(groupVisibleCount[layer.group])? groupVisibleCount[layer.group]:{
+                                groupVisibleCount[layer.group] = isDefined(groupVisibleCount[layer.group]) ? groupVisibleCount[layer.group] : {
                                     count: 0,
                                     visibles: 0
                                 };
                                 groupVisibleCount[layer.group].count++;
-                                if(layer.visible) {
+                                if (layer.visible) {
                                     groupVisibleCount[layer.group].visibles++;
                                 }
                             }
-                            if(isDefined(layer.index) && leafletLayers.overlays[key].setZIndex) {
+                            if (isDefined(layer.index) && leafletLayers.overlays[key].setZIndex) {
                                 leafletLayers.overlays[key].setZIndex(newOverlayLayers[key].index);
                             }
                         }
 
-                        for(key in groupVisibleCount) {
+                        for (key in groupVisibleCount) {
                             scope.groupProperties[key].visible = groupVisibleCount[key].visibles === groupVisibleCount[key].count;
                         }
                         scope.overlaysArray = overlaysArray;
@@ -58795,6 +58696,8 @@ angular.module('ui-leaflet').directive('layercontrol', ["$filter", "leafletLogge
     };
 }]);
 
+'use strict';
+
 angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafletData", "leafletHelpers", "leafletLayerHelpers", "leafletControlHelpers", function (leafletLogger, $q, leafletData, leafletHelpers, leafletLayerHelpers, leafletControlHelpers) {
     // var $log = leafletLogger;
     return {
@@ -58802,24 +58705,25 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
         scope: false,
         replace: false,
         require: 'leaflet',
-        controller: ["$scope", function ($scope) {
+        controller: ["$scope", function controller($scope) {
             $scope._leafletLayers = $q.defer();
             this.getLayers = function () {
                 return $scope._leafletLayers.promise;
             };
         }],
-        link: function(scope, element, attrs, controller){
+        link: function link(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 leafletLayers = {},
-                leafletScope  = controller.getLeafletScope(),
+                leafletScope = controller.getLeafletScope(),
                 layers = leafletScope.layers,
                 createLayer = leafletLayerHelpers.createLayer,
                 safeAddLayer = leafletLayerHelpers.safeAddLayer,
                 safeRemoveLayer = leafletLayerHelpers.safeRemoveLayer,
+                changeOpacityListener = leafletLayerHelpers.changeOpacityListener,
                 updateLayersControl = leafletControlHelpers.updateLayersControl,
                 isLayersControlVisible = false;
 
-            controller.getMap().then(function(map) {
+            controller.getMap().then(function (map) {
 
                 // We have baselayers to add to the map
                 scope._leafletLayers.resolve(leafletLayers);
@@ -58854,9 +58758,7 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
 
                 // Setup the Overlays
                 for (layerName in layers.overlays) {
-                    if(layers.overlays[layerName].type === 'cartodb') {
-
-                    }
+                    if (layers.overlays[layerName].type === 'cartodb') {}
                     var newOverlayLayer = createLayer(layers.overlays[layerName]);
                     if (!isDefined(newOverlayLayer)) {
                         delete layers.overlays[layerName];
@@ -58870,8 +58772,8 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
                 }
 
                 // Watch for the base layers
-                leafletScope.$watch('layers.baselayers', function(newBaseLayers, oldBaseLayers) {
-                    if(angular.equals(newBaseLayers, oldBaseLayers)) {
+                leafletScope.$watch('layers.baselayers', function (newBaseLayers, oldBaseLayers) {
+                    if (angular.equals(newBaseLayers, oldBaseLayers)) {
                         isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, newBaseLayers, layers.overlays, leafletLayers);
                         return true;
                     }
@@ -58928,8 +58830,8 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
                 }, true);
 
                 // Watch for the overlay layers
-                leafletScope.$watch('layers.overlays', function(newOverlayLayers, oldOverlayLayers) {
-                    if(angular.equals(newOverlayLayers, oldOverlayLayers)) {
+                leafletScope.$watch('layers.overlays', function (newOverlayLayers, oldOverlayLayers) {
+                    if (angular.equals(newOverlayLayers, oldOverlayLayers)) {
                         isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, layers.baselayers, newOverlayLayers, leafletLayers);
                         return true;
                     }
@@ -58940,8 +58842,7 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
                             // Remove from the map if it's on it
                             if (map.hasLayer(leafletLayers.overlays[name])) {
                                 // Safe remove when ArcGIS layers is loading.
-                                var options = isDefined(newOverlayLayers[name])?
-                                    newOverlayLayers[name].layerOptions:null;
+                                var options = isDefined(newOverlayLayers[name]) ? newOverlayLayers[name].layerOptions : null;
                                 safeRemoveLayer(map, leafletLayers.overlays[name], options);
                             }
                             // TODO: Depending on the layer type we will have to delete what's included on it
@@ -58973,6 +58874,18 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
                                 // Safe remove when ArcGIS layers is loading.
                                 safeRemoveLayer(map, leafletLayers.overlays[newName], newOverlayLayers[newName].layerOptions);
                             }
+
+                            // check for the .layerOptions.opacity property has changed.
+                            if (newOverlayLayers[newName].layerOptions.opacity !== oldOverlayLayers[newName].layerOptions.opacity && map.hasLayer(leafletLayers.overlays[newName])) {
+
+                                var ly = leafletLayers.overlays[newName];
+                                if (isDefined(ly.setOpacity)) {
+                                    ly.setOpacity(newOverlayLayers[newName].layerOptions.opacity);
+                                }
+                                if (isDefined(ly.getLayers) && isDefined(ly.eachLayer)) {
+                                    ly.eachLayer(changeOpacityListener(newOverlayLayers[newName].layerOptions.opacity));
+                                }
+                            }
                         }
 
                         //refresh heatmap data if present
@@ -58990,154 +58903,154 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
     };
 }]);
 
+'use strict';
+
 angular.module("ui-leaflet").directive('legend', ["leafletLogger", "$http", "$timeout", "leafletHelpers", "leafletLegendHelpers", function (leafletLogger, $http, $timeout, leafletHelpers, leafletLegendHelpers) {
-        var $log = leafletLogger,
-            errorHeader = leafletHelpers.errorHeader + ' [Legend] ';
-        return {
-            restrict: "A",
-            scope: false,
-            replace: false,
-            require: 'leaflet',
-            transclude: false,
+    var $log = leafletLogger,
+        errorHeader = leafletHelpers.errorHeader + ' [Legend] ';
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        require: 'leaflet',
+        transclude: false,
 
-            link: function (scope, element, attrs, controller) {
+        link: function link(scope, element, attrs, controller) {
 
-                var isArray = leafletHelpers.isArray,
-                    isString = leafletHelpers.isString,
-                    isDefined = leafletHelpers.isDefined,
-                    isFunction = leafletHelpers.isFunction,
-                    leafletScope = controller.getLeafletScope(),
-                    legend = leafletScope.legend;
+            var isArray = leafletHelpers.isArray,
+                isString = leafletHelpers.isString,
+                isDefined = leafletHelpers.isDefined,
+                isFunction = leafletHelpers.isFunction,
+                leafletScope = controller.getLeafletScope(),
+                legend = leafletScope.legend;
 
-                var legendClass;
-                var position;
-                var leafletLegend;
-                var type;
+            var legendClass;
+            var position;
+            var leafletLegend;
+            var type;
 
-                leafletScope.$watch('legend', function (newLegend) {
+            leafletScope.$watch('legend', function (newLegend) {
 
-                    if (isDefined(newLegend)) {
-                        legendClass = newLegend.legendClass ? newLegend.legendClass : "legend";
-                        position = newLegend.position || 'bottomright';
-                        // default to arcgis
-                        type = newLegend.type || 'arcgis';
-                    }
-                }, true);
+                if (isDefined(newLegend)) {
+                    legendClass = newLegend.legendClass ? newLegend.legendClass : "legend";
+                    position = newLegend.position || 'bottomright';
+                    // default to arcgis
+                    type = newLegend.type || 'arcgis';
+                }
+            }, true);
 
-                var createLegend = function(map, legendData, newURL) {
-                    if(legendData && legendData.layers && legendData.layers.length > 0) {
-                        if (isDefined(leafletLegend)) {
-                            leafletLegendHelpers.updateLegend(leafletLegend.getContainer(), legendData, type, newURL);
-                        } else {
-                            leafletLegend = L.control({
-                                position: position
-                            });
-                            leafletLegend.onAdd = leafletLegendHelpers.getOnAddLegend(legendData, legendClass, type, newURL);
-                            leafletLegend.addTo(map);
-                        }
-
-                        if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
-                            legend.loadedData();
-                        }
-                    }
-                };
-
-                controller.getMap().then(function (map) {
-                    leafletScope.$watch('legend', function (newLegend) {
-                        if (!isDefined(newLegend)) {
-                            if (isDefined(leafletLegend)) {
-                                leafletLegend.removeFrom(map);
-                                leafletLegend= null;
-                            }
-
-                            return;
-                        }
-
-                        if (!isDefined(newLegend.url) && (type === 'arcgis') && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
-                            $log.warn(errorHeader + " legend.colors and legend.labels must be set.");
-                            return;
-                        }
-
-                        if (isDefined(newLegend.url)) {
-                            $log.info(errorHeader + " loading legend service.");
-                            return;
-                        }
-
-                        if (isDefined(leafletLegend)) {
-                            leafletLegend.removeFrom(map);
-                            leafletLegend= null;
-                        }
-
+            var createLegend = function createLegend(map, legendData, newURL) {
+                if (legendData && legendData.layers && legendData.layers.length > 0) {
+                    if (isDefined(leafletLegend)) {
+                        leafletLegendHelpers.updateLegend(leafletLegend.getContainer(), legendData, type, newURL);
+                    } else {
                         leafletLegend = L.control({
                             position: position
                         });
-
-                        if (type === 'arcgis') {
-                            leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(newLegend, legendClass);
-                        }
+                        leafletLegend.onAdd = leafletLegendHelpers.getOnAddLegend(legendData, legendClass, type, newURL);
                         leafletLegend.addTo(map);
+                    }
+
+                    if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
+                        legend.loadedData();
+                    }
+                }
+            };
+
+            controller.getMap().then(function (map) {
+                leafletScope.$watch('legend', function (newLegend) {
+                    if (!isDefined(newLegend)) {
+                        if (isDefined(leafletLegend)) {
+                            leafletLegend.removeFrom(map);
+                            leafletLegend = null;
+                        }
+
+                        return;
+                    }
+
+                    if (!isDefined(newLegend.url) && type === 'arcgis' && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
+                        $log.warn(errorHeader + " legend.colors and legend.labels must be set.");
+                        return;
+                    }
+
+                    if (isDefined(newLegend.url)) {
+                        $log.info(errorHeader + " loading legend service.");
+                        return;
+                    }
+
+                    if (isDefined(leafletLegend)) {
+                        leafletLegend.removeFrom(map);
+                        leafletLegend = null;
+                    }
+
+                    leafletLegend = L.control({
+                        position: position
                     });
 
-                    leafletScope.$watch('legend.url', function (newURL) {
-                        if (!isDefined(newURL)) {
-                            return;
-                        }
-
-                        if(!isArray(newURL) && !isString(newURL)) {
-                            $log.warn(errorHeader + " legend.url must be an array or string.");
-                            return;
-                        }
-
-                        var urls = isString(newURL)? [newURL]:newURL;
-
-                        var legendData;
-                        var onResult = function(idx, url) {
-                            return function(ld) {
-                                if(isDefined(ld.data.error)) {
-                                    $log.warn(errorHeader + 'Error loadin legend from: ' + url, ld.data.error.message);
-                                } else {
-                                    if(legendData && legendData.layers && legendData.layers.length > 0) {
-                                        legendData.layers = legendData.layers.concat(ld.data.layers);
-                                    } else {
-                                        legendData = ld.data;
-                                    }
-                                }
-
-                                if(idx === urls.length-1) {
-                                    createLegend(map, legendData, newURL);
-                                }
-                            };
-                        };
-                        var onError = function(err) {
-                            $log.warn(errorHeader + ' legend.url not loaded.', err);
-                        };
-
-                        for(var i = 0; i < urls.length; i++) {
-                            leafletLegendHelpers.addLegendURL(attrs.id, {
-                                url: urls[i],
-                                method: 'GET'
-                            }).then(onResult(i)).catch(onError);
-                        }
-                    });
-
-                    leafletScope.$watch('legend.legendData', function (legendData) {
-                        $log.debug('legendData', legendData);
-                        if(isDefined(leafletScope.legend.url) || !isDefined(legendData)) {
-                            return;
-                        }
-
-                        createLegend(map, legendData);
-                    }, true);
+                    if (type === 'arcgis') {
+                        leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(newLegend, legendClass);
+                    }
+                    leafletLegend.addTo(map);
                 });
 
-            }
-        };
-    }]);
+                leafletScope.$watch('legend.url', function (newURL) {
+                    if (!isDefined(newURL)) {
+                        return;
+                    }
 
-angular.module('ui-leaflet').directive('markers',
-    ["leafletLogger", "$rootScope", "$q", "leafletData", "leafletHelpers", "leafletMapDefaults", "leafletMarkersHelpers", "leafletMarkerEvents", "leafletIterators", "leafletWatchHelpers", "leafletDirectiveControlsHelpers", function (leafletLogger, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
-              leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers,
-              leafletDirectiveControlsHelpers) {
+                    if (!isArray(newURL) && !isString(newURL)) {
+                        $log.warn(errorHeader + " legend.url must be an array or string.");
+                        return;
+                    }
+
+                    var urls = isString(newURL) ? [newURL] : newURL;
+
+                    var legendData;
+                    var onResult = function onResult(idx, url) {
+                        return function (ld) {
+                            if (isDefined(ld.data.error)) {
+                                $log.warn(errorHeader + 'Error loadin legend from: ' + url, ld.data.error.message);
+                            } else {
+                                if (legendData && legendData.layers && legendData.layers.length > 0) {
+                                    legendData.layers = legendData.layers.concat(ld.data.layers);
+                                } else {
+                                    legendData = ld.data;
+                                }
+                            }
+
+                            if (idx === urls.length - 1) {
+                                createLegend(map, legendData, newURL);
+                            }
+                        };
+                    };
+                    var onError = function onError(err) {
+                        $log.warn(errorHeader + ' legend.url not loaded.', err);
+                    };
+
+                    for (var i = 0; i < urls.length; i++) {
+                        leafletLegendHelpers.addLegendURL(attrs.id, {
+                            url: urls[i],
+                            method: 'GET'
+                        }).then(onResult(i)).catch(onError);
+                    }
+                });
+
+                leafletScope.$watch('legend.legendData', function (legendData) {
+                    $log.debug('legendData', legendData);
+                    if (isDefined(leafletScope.legend.url) || !isDefined(legendData)) {
+                        return;
+                    }
+
+                    createLegend(map, legendData);
+                }, true);
+            });
+        }
+    };
+}]);
+
+'use strict';
+
+angular.module('ui-leaflet').directive('markers', ["leafletLogger", "$rootScope", "$q", "leafletData", "leafletHelpers", "leafletMapDefaults", "leafletMarkersHelpers", "leafletMarkerEvents", "leafletIterators", "leafletWatchHelpers", "leafletDirectiveControlsHelpers", function (leafletLogger, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers, leafletDirectiveControlsHelpers) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         errorHeader = leafletHelpers.errorHeader,
@@ -59151,34 +59064,32 @@ angular.module('ui-leaflet').directive('markers',
         deleteMarker = leafletMarkersHelpers.deleteMarker,
         getModelFromModels = leafletMarkersHelpers.getModelFromModels,
         getLayerModels = leafletMarkersHelpers.getLayerModels,
+        resetUnusedMarkerGroups = leafletMarkersHelpers.resetUnusedMarkerGroups,
         $it = leafletIterators,
-        _markersWatchOptions = leafletHelpers.watchOptions,
+        _defaultWatchOptions = leafletHelpers.watchOptions,
         maybeWatch = leafletWatchHelpers.maybeWatch,
         extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
-        $log = leafletLogger;
+        $log = leafletLogger,
+        watchTrap = { changeFromDirective: false };
 
-    var _getLMarker = function(leafletMarkers, name, maybeLayerName){
-        if(!Object.keys(leafletMarkers).length) return;
-        if(maybeLayerName && isString(maybeLayerName)){
-            if(!leafletMarkers[maybeLayerName] || !Object.keys(leafletMarkers[maybeLayerName]).length)
-                return;
+    var _getLMarker = function _getLMarker(leafletMarkers, name, maybeLayerName) {
+        if (!Object.keys(leafletMarkers).length) return;
+        if (maybeLayerName && isString(maybeLayerName)) {
+            if (!leafletMarkers[maybeLayerName] || !Object.keys(leafletMarkers[maybeLayerName]).length) return;
             return leafletMarkers[maybeLayerName][name];
         }
         return leafletMarkers[name];
     };
 
-    var _setLMarker = function(lObject, leafletMarkers, name, maybeLayerName){
-        if(maybeLayerName && isString(maybeLayerName)){
-            if(!isDefined(leafletMarkers[maybeLayerName]))
-                leafletMarkers[maybeLayerName] = {};
+    var _setLMarker = function _setLMarker(lObject, leafletMarkers, name, maybeLayerName) {
+        if (maybeLayerName && isString(maybeLayerName)) {
+            if (!isDefined(leafletMarkers[maybeLayerName])) leafletMarkers[maybeLayerName] = {};
             leafletMarkers[maybeLayerName][name] = lObject;
-        }
-        else
-            leafletMarkers[name] = lObject;
+        } else leafletMarkers[name] = lObject;
         return lObject;
     };
 
-    var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
+    var _maybeAddMarkerToLayer = function _maybeAddMarkerToLayer(layerName, layers, model, marker, watchType, map) {
 
         if (!isString(layerName)) {
             $log.error(errorHeader + ' A layername must be a string');
@@ -59191,7 +59102,7 @@ angular.module('ui-leaflet').directive('markers',
         }
 
         if (!isDefined(layers.overlays) || !isDefined(layers.overlays[layerName])) {
-            $log.error(errorHeader +' A marker can only be added to a layer of type "group"');
+            $log.error(errorHeader + ' A marker can only be added to a layer of type "group"');
             return false;
         }
         var layerGroup = layers.overlays[layerName];
@@ -59205,130 +59116,115 @@ angular.module('ui-leaflet').directive('markers',
 
         // The marker is automatically added to the map depending on the visibility
         // of the layer, so we only have to open the popup if the marker is in the map
-        if (!doIndividualWatch && map.hasLayer(marker) && model.focus === true) {
+        if (watchType === null && map.hasLayer(marker) && model.focus === true) {
             marker.openPopup();
         }
         return true;
     };
     //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
-    var _addMarkers = function(mapId, markersToRender, oldModels, map, layers, leafletMarkers, leafletScope,
-                               watchOptions, maybeLayerName, skips){
-        for (var newName in markersToRender) {
-            if(skips[newName])
-                continue;
+    var _addMarkers = function _addMarkers(mapId, markersToRender, oldModels, map, layers, leafletMarkers, leafletScope, watchOptions, maybeLayerName, skips) {
+        $it.each(markersToRender, function (model, newName) {
+            if (skips[newName]) return;
 
             if (newName.search("-") !== -1) {
                 $log.error('The marker can\'t use a "-" on his key name: "' + newName + '".');
-                continue;
+                return;
             }
 
-            var model = Helpers.copy(markersToRender[newName]);
-            var pathToMarker = Helpers.getObjectDotPath(maybeLayerName? [maybeLayerName, newName]: [newName]);
-            var maybeLMarker = _getLMarker(leafletMarkers,newName, maybeLayerName);
-            if (!isDefined(maybeLMarker)) {
-                //(nmccready) very important to not have model changes when lObject is changed
-                //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
-                //if it is left as the reference then all changes from oldModel vs newModel are ignored
-                //see _destroy (where modelDiff becomes meaningless if we do not copy here)
-                var marker = createMarker(model);
-                var layerName = (model? model.layer : undefined) || maybeLayerName; //original way takes pref
-                if (!isDefined(marker)) {
-                    $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
-                    continue;
-                }
-                _setLMarker(marker, leafletMarkers, newName, maybeLayerName);
+            var pathToMarker = Helpers.getObjectDotPath(maybeLayerName ? [maybeLayerName, newName] : [newName]);
+            var maybeLMarker = _getLMarker(leafletMarkers, newName, maybeLayerName);
+            Helpers.modelChangeInDirective(watchTrap, "changeFromDirective", function () {
+                if (!isDefined(maybeLMarker)) {
 
-                // Bind message
-                if (isDefined(model.message)) {
-                    marker.bindPopup(model.message, model.popupOptions);
-                }
-
-                // Add the marker to a cluster group if needed
-                if (isDefined(model.group)) {
-                    var groupOptions = isDefined(model.groupOption) ? model.groupOption : null;
-                    addMarkerToGroup(marker, model.group, groupOptions, map);
-                }
-
-                // Show label if defined
-                if (Helpers.LabelPlugin.isLoaded() && isDefined(model.label) && isDefined(model.label.message)) {
-                    marker.bindLabel(model.label.message, model.label.options);
-                }
-
-                // Check if the marker should be added to a layer
-                if (isDefined(model) && (isDefined(model.layer) || isDefined(maybeLayerName))){
-
-                    var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker,
-                        watchOptions.individual.doWatch, map);
-                    if(!pass)
-                        continue; //something went wrong move on in the loop
-                } else if (!isDefined(model.group)) {
-                    // We do not have a layer attr, so the marker goes to the map layer
-                    map.addLayer(marker);
-                    if (!watchOptions.individual.doWatch && model.focus === true) {
-                        marker.openPopup();
+                    var marker = createMarker(model);
+                    var layerName = (model ? model.layer : undefined) || maybeLayerName; //original way takes pref
+                    if (!isDefined(marker)) {
+                        $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
+                        return;
                     }
-                }
+                    _setLMarker(marker, leafletMarkers, newName, maybeLayerName);
 
-                if (watchOptions.individual.doWatch) {
-                    addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map,
-                        watchOptions.individual.isDeep);
-                }
+                    // Bind message
+                    if (isDefined(model.message)) {
+                        marker.bindPopup(model.message, model.popupOptions);
+                    }
 
-                listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
-                leafletMarkerEvents.bindEvents(mapId, marker, pathToMarker, model, leafletScope, layerName);
-            }
-            else {
-                var oldModel = getModelFromModels(oldModels, newName, maybeLayerName);
-                updateMarker(model, oldModel, maybeLMarker, pathToMarker, leafletScope, layers, map);
-            }
-        }
+                    // Add the marker to a cluster group if needed
+                    if (isDefined(model.group)) {
+                        var groupOptions = isDefined(model.groupOption) ? model.groupOption : null;
+                        addMarkerToGroup(marker, model.group, groupOptions, map);
+                    }
+
+                    // Show label if defined
+                    if (Helpers.LabelPlugin.isLoaded() && isDefined(model.label) && isDefined(model.label.message)) {
+                        marker.bindLabel(model.label.message, model.label.options);
+                    }
+
+                    // Check if the marker should be added to a layer
+                    if (isDefined(model) && (isDefined(model.layer) || isDefined(maybeLayerName))) {
+
+                        var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker, watchOptions.individual.type, map);
+                        if (!pass) return; //something went wrong move on in the loop
+                    } else if (!isDefined(model.group)) {
+                        // We do not have a layer attr, so the marker goes to the map layer
+                        map.addLayer(marker);
+                        if (watchOptions.individual.type === null && model.focus === true) {
+                            marker.openPopup();
+                        }
+                    }
+
+                    if (watchOptions.individual.type !== null) {
+                        addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map, watchOptions.individual);
+                    }
+
+                    listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.type, map);
+                    leafletMarkerEvents.bindEvents(mapId, marker, pathToMarker, model, leafletScope, layerName);
+                } else {
+                    var oldModel = getModelFromModels(oldModels, newName, maybeLayerName);
+                    updateMarker(model, oldModel, maybeLMarker, pathToMarker, leafletScope, layers, map);
+                }
+            });
+        });
     };
-    var _seeWhatWeAlreadyHave = function(markerModels, oldMarkerModels, lMarkers, isEqual, cb){
+    var _seeWhatWeAlreadyHave = function _seeWhatWeAlreadyHave(markerModels, oldMarkerModels, lMarkers, isEqual, cb) {
         var hasLogged = false,
             equals = false,
             oldMarker,
             newMarker;
 
-        var doCheckOldModel =  isDefined(oldMarkerModels);
+        var doCheckOldModel = isDefined(oldMarkerModels);
         for (var name in lMarkers) {
-            if(!hasLogged) {
+            if (!hasLogged) {
                 $log.debug(errorHeader + "[markers] destroy: ");
                 hasLogged = true;
             }
 
-            if(doCheckOldModel){
+            if (doCheckOldModel) {
                 //might want to make the option (in watch options) to disable deep checking
                 //ie the options to only check !== (reference check) instead of angular.equals (slow)
                 newMarker = markerModels[name];
                 oldMarker = oldMarkerModels[name];
-                equals = angular.equals(newMarker,oldMarker) && isEqual;
+                equals = isEqual && angular.equals(newMarker, oldMarker);
             }
-            if (!isDefined(markerModels) ||
-                !Object.keys(markerModels).length ||
-                !isDefined(markerModels[name]) ||
-                !Object.keys(markerModels[name]).length ||
-                equals) {
-                if(cb && Helpers.isFunction(cb))
-                    cb(newMarker, oldMarker, name);
+            if (!isDefined(markerModels) || !Object.keys(markerModels).length || !isDefined(markerModels[name]) || !Object.keys(markerModels[name]).length || equals) {
+                if (cb && Helpers.isFunction(cb)) cb(newMarker, oldMarker, name);
             }
         }
     };
-    var _destroy = function(markerModels, oldMarkerModels, lMarkers, map, layers){
-        _seeWhatWeAlreadyHave(markerModels, oldMarkerModels, lMarkers, false,
-            function(newMarker, oldMarker, lMarkerName){
-                $log.debug(errorHeader + '[marker] is deleting marker: ' + lMarkerName);
-                deleteMarker(lMarkers[lMarkerName], map, layers);
-                delete lMarkers[lMarkerName];
-            });
+    var _destroy = function _destroy(markerModels, oldMarkerModels, lMarkers, map, layers) {
+        _seeWhatWeAlreadyHave(markerModels, oldMarkerModels, lMarkers, false, function (newMarker, oldMarker, lMarkerName) {
+            $log.debug(errorHeader + '[marker] is deleting marker: ' + lMarkerName);
+            deleteMarker(lMarkers[lMarkerName], map, layers);
+            delete lMarkers[lMarkerName];
+        });
     };
 
-    var _getNewModelsToSkipp =  function(newModels, oldModels, lMarkers){
+    var _getNewModelsToSkipp = function _getNewModelsToSkipp(newModels, oldModels, lMarkers) {
         var skips = {};
-        _seeWhatWeAlreadyHave(newModels, oldModels, lMarkers, true,
-            function(newMarker, oldMarker, lMarkerName){
-                $log.debug(errorHeader + '[marker] is already rendered, marker: ' + lMarkerName);
-                skips[lMarkerName] = newMarker;
-            });
+        _seeWhatWeAlreadyHave(newModels, oldModels, lMarkers, true, function (newMarker, oldMarker, lMarkerName) {
+            $log.debug(errorHeader + '[marker] is already rendered, marker: ' + lMarkerName);
+            skips[lMarkerName] = newMarker;
+        });
         return skips;
     };
 
@@ -59338,38 +59234,40 @@ angular.module('ui-leaflet').directive('markers',
         replace: false,
         require: ['leaflet', '?layers'],
 
-        link: function(scope, element, attrs, controller) {
+        link: function link(scope, element, attrs, controller) {
             var mapController = controller[0],
-                leafletScope  = mapController.getLeafletScope();
+                leafletScope = mapController.getLeafletScope();
 
-            mapController.getMap().then(function(map) {
-                var leafletMarkers = {}, getLayers;
+            mapController.getMap().then(function (map) {
+                var leafletMarkers = {},
+                    getLayers;
 
                 // If the layers attribute is used, we must wait until the layers are created
                 if (isDefined(controller[1])) {
                     getLayers = controller[1].getLayers;
                 } else {
-                    getLayers = function() {
+                    getLayers = function getLayers() {
                         var deferred = $q.defer();
                         deferred.resolve();
                         return deferred.promise;
                     };
                 }
 
-                var watchOptions = leafletScope.markersWatchOptions || _markersWatchOptions;
+                var watchOptions;
+                if (leafletScope.watchOptions && leafletScope.watchOptions.markers) {
+                    watchOptions = leafletScope.watchOptions.markers;
+                } else {
+                    watchOptions = _defaultWatchOptions;
+                }
 
-                // backwards compat
-                if(isDefined(attrs.watchMarkers))
-                    watchOptions.doWatch = watchOptions.individual.doWatch =
-                        (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
+                var isNested = isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested);
 
-                var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
-
-                getLayers().then(function(layers) {
-                    var _clean = function(models, oldModels){
-                        if(isNested) {
-                            $it.each(models, function(markerToMaybeDel, layerName) {
-                              var oldLayerModels = getLayerModels(oldModels, layerName);
+                getLayers().then(function (layers) {
+                    var _clean = function _clean(models, oldModels) {
+                        resetUnusedMarkerGroups();
+                        if (isNested) {
+                            $it.each(models, function (markerToMaybeDel, layerName) {
+                                var oldLayerModels = getLayerModels(oldModels, layerName);
                                 _destroy(markerToMaybeDel, oldLayerModels, leafletMarkers[layerName], map, layers);
                             });
                             return;
@@ -59377,27 +59275,26 @@ angular.module('ui-leaflet').directive('markers',
                         _destroy(models, oldModels, leafletMarkers, map, layers);
                     };
 
-                    var _create = function(models, oldModels){
+                    var _create = function _create(models, oldModels) {
                         _clean(models, oldModels);
                         var skips = null;
-                        if(isNested) {
-                            $it.each(models, function(markersToAdd, layerName) {
+                        if (isNested) {
+                            $it.each(models, function (markersToAdd, layerName) {
                                 var oldLayerModels = getLayerModels(oldModels, layerName);
                                 var newlayerModels = getLayerModels(models, layerName);
                                 skips = _getNewModelsToSkipp(newlayerModels, oldLayerModels, leafletMarkers[layerName]);
-                                _addMarkers(attrs.id, markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
-                                    watchOptions, layerName, skips);
+                                _addMarkers(attrs.id, markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope, watchOptions, layerName, skips);
                             });
                             return;
                         }
                         skips = _getNewModelsToSkipp(models, oldModels, leafletMarkers);
-                        _addMarkers(attrs.id, models, oldModels, map, layers, leafletMarkers, leafletScope,
-                            watchOptions, undefined, skips);
+                        _addMarkers(attrs.id, models, oldModels, map, layers, leafletMarkers, leafletScope, watchOptions, undefined, skips);
                     };
                     extendDirectiveControls(attrs.id, 'markers', _create, _clean);
                     leafletData.setMarkers(leafletMarkers, attrs.id);
 
-                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers, oldMarkers){
+                    maybeWatch(leafletScope, 'markers', watchOptions, function (newMarkers, oldMarkers) {
+                        if (watchTrap.changeFromDirective) return;
                         _create(newMarkers, oldMarkers);
                     });
                 });
@@ -59405,6 +59302,8 @@ angular.module('ui-leaflet').directive('markers',
         }
     };
 }]);
+
+'use strict';
 
 angular.module('ui-leaflet').directive('maxbounds', ["leafletLogger", "leafletMapDefaults", "leafletBoundsHelpers", "leafletHelpers", function (leafletLogger, leafletMapDefaults, leafletBoundsHelpers, leafletHelpers) {
     // var $log = leafletLogger;
@@ -59414,13 +59313,12 @@ angular.module('ui-leaflet').directive('maxbounds', ["leafletLogger", "leafletMa
         replace: false,
         require: 'leaflet',
 
-        link: function(scope, element, attrs, controller) {
-            var leafletScope  = controller.getLeafletScope(),
+        link: function link(scope, element, attrs, controller) {
+            var leafletScope = controller.getLeafletScope(),
                 isValidBounds = leafletBoundsHelpers.isValidBounds,
                 isNumber = leafletHelpers.isNumber;
 
-
-            controller.getMap().then(function(map) {
+            controller.getMap().then(function (map) {
                 leafletScope.$watch("maxbounds", function (maxbounds) {
                     if (!isValidBounds(maxbounds)) {
                         // Unset any previous maxbounds
@@ -59429,8 +59327,8 @@ angular.module('ui-leaflet').directive('maxbounds', ["leafletLogger", "leafletMa
                     }
 
                     var leafletBounds = leafletBoundsHelpers.createLeafletBounds(maxbounds);
-                    if(isNumber(maxbounds.pad)) {
-                      leafletBounds = leafletBounds.pad(maxbounds.pad);
+                    if (isNumber(maxbounds.pad)) {
+                        leafletBounds = leafletBounds.pad(maxbounds.pad);
                     }
 
                     map.setMaxBounds(leafletBounds);
@@ -59443,7 +59341,9 @@ angular.module('ui-leaflet').directive('maxbounds', ["leafletLogger", "leafletMa
     };
 }]);
 
-angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leafletData", "leafletMapDefaults", "leafletHelpers", "leafletPathsHelpers", "leafletPathEvents", function (leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents) {
+'use strict';
+
+angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leafletData", "leafletMapDefaults", "leafletHelpers", "leafletPathsHelpers", "leafletPathEvents", "leafletWatchHelpers", function (leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents, leafletWatchHelpers) {
     var $log = leafletLogger;
     return {
         restrict: "A",
@@ -59451,17 +59351,18 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
         replace: false,
         require: ['leaflet', '?layers'],
 
-        link: function(scope, element, attrs, controller) {
+        link: function link(scope, element, attrs, controller) {
             var mapController = controller[0],
                 isDefined = leafletHelpers.isDefined,
                 isString = leafletHelpers.isString,
-                leafletScope  = mapController.getLeafletScope(),
-                paths     = leafletScope.paths,
+                leafletScope = mapController.getLeafletScope(),
+                paths = leafletScope.paths,
                 createPath = leafletPathsHelpers.createPath,
                 bindPathEvents = leafletPathEvents.bindPathEvents,
-                setPathOptions = leafletPathsHelpers.setPathOptions;
+                setPathOptions = leafletPathsHelpers.setPathOptions,
+                maybeWatch = leafletWatchHelpers.maybeWatch;
 
-            mapController.getMap().then(function(map) {
+            mapController.getMap().then(function (map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id),
                     getLayers;
 
@@ -59469,7 +59370,7 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
                 if (isDefined(controller[1])) {
                     getLayers = controller[1].getLayers;
                 } else {
-                    getLayers = function() {
+                    getLayers = function getLayers() {
                         var deferred = $q.defer();
                         deferred.resolve();
                         return deferred.promise;
@@ -59480,17 +59381,31 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
                     return;
                 }
 
-                getLayers().then(function(layers) {
+                //legacy behaviour does a watch collection on the paths
+                var _legacyWatchOptions = {
+                    type: 'watchCollection',
+                    individual: {
+                        type: 'watchDeep'
+                    }
+                };
+
+                var watchOptions;
+                if (leafletScope.watchOptions && leafletScope.watchOptions.paths) {
+                    watchOptions = leafletScope.watchOptions.paths;
+                } else {
+                    watchOptions = _legacyWatchOptions;
+                }
+
+                getLayers().then(function (layers) {
 
                     var leafletPaths = {};
                     leafletData.setPaths(leafletPaths, attrs.id);
 
-                    // Should we watch for every specific marker on the map?
-                    var shouldWatch = (!isDefined(attrs.watchPaths) || attrs.watchPaths === 'true');
-
                     // Function for listening every single path once created
-                    var watchPathFn = function(leafletPath, name) {
-                        var clearWatch = leafletScope.$watch("paths[\""+name+"\"]", function(pathData, old) {
+                    var watchPathFn = function watchPathFn(leafletPath, name, watchOptions) {
+                        var pathWatchPath = "paths[\"" + name + "\"]";
+
+                        maybeWatch(leafletScope, pathWatchPath, watchOptions, function (pathData, old, clearWatch) {
                             if (!isDefined(pathData)) {
                                 if (isDefined(old.layer)) {
                                     for (var i in layers.overlays) {
@@ -59503,11 +59418,10 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
                                 return;
                             }
                             setPathOptions(leafletPath, pathData.type, pathData);
-                        }, true);
+                        });
                     };
 
-                    leafletScope.$watchCollection("paths", function (newPaths) {
-
+                    var _clean = function _clean(newPaths) {
                         // Delete paths (by name) from the array
                         for (var name in leafletPaths) {
                             if (!isDefined(newPaths[name])) {
@@ -59515,7 +59429,10 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
                                 delete leafletPaths[name];
                             }
                         }
+                    };
 
+                    var _create = function _create(newPaths) {
+                        _clean(newPaths);
                         // Create the new paths
                         for (var newName in newPaths) {
                             if (newName.search('\\$') === 0) {
@@ -59567,8 +59484,8 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
                                     // The path goes to a correct layer group, so first of all we add it
                                     layerGroup.addLayer(newPath);
 
-                                    if (shouldWatch) {
-                                        watchPathFn(newPath, newName);
+                                    if (watchOptions.individual.type !== null) {
+                                        watchPathFn(newPath, newName, watchOptions.individual);
                                     } else {
                                         setPathOptions(newPath, pathData.type, pathData);
                                     }
@@ -59577,8 +59494,8 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
                                     leafletPaths[newName] = newPath;
                                     map.addLayer(newPath);
 
-                                    if (shouldWatch) {
-                                        watchPathFn(newPath, newName);
+                                    if (watchOptions.individual.type !== null) {
+                                        watchPathFn(newPath, newName, watchOptions.individual);
                                     } else {
                                         setPathOptions(newPath, pathData.type, pathData);
                                     }
@@ -59587,12 +59504,18 @@ angular.module('ui-leaflet').directive('paths', ["leafletLogger", "$q", "leaflet
                                 bindPathEvents(attrs.id, newPath, newName, pathData, leafletScope);
                             }
                         }
+                    };
+
+                    maybeWatch(leafletScope, 'paths', watchOptions, function (newPaths) {
+                        _create(newPaths);
                     });
                 });
             });
         }
     };
 }]);
+
+'use strict';
 
 angular.module('ui-leaflet').directive('tiles', ["leafletLogger", "leafletData", "leafletMapDefaults", "leafletHelpers", function (leafletLogger, leafletData, leafletMapDefaults, leafletHelpers) {
     var $log = leafletLogger;
@@ -59602,20 +59525,20 @@ angular.module('ui-leaflet').directive('tiles', ["leafletLogger", "leafletData",
         replace: false,
         require: 'leaflet',
 
-        link: function(scope, element, attrs, controller) {
+        link: function link(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                leafletScope  = controller.getLeafletScope(),
+                leafletScope = controller.getLeafletScope(),
                 tiles = leafletScope.tiles;
 
-            if (!isDefined(tiles) ||  !isDefined(tiles.url)) {
+            if (!isDefined(tiles) || !isDefined(tiles.url)) {
                 $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
                 return;
             }
 
-            controller.getMap().then(function(map) {
+            controller.getMap().then(function (map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
                 var tileLayerObj;
-                leafletScope.$watch("tiles", function(tiles) {
+                leafletScope.$watch("tiles", function (tiles) {
                     var tileLayerOptions = defaults.tileLayerOptions;
                     var tileLayerUrl = defaults.tileLayer;
 
@@ -59663,238 +59586,232 @@ angular.module('ui-leaflet').directive('tiles', ["leafletLogger", "leafletData",
     };
 }]);
 
-/*
-    Create multiple similar directives for watchOptions to support directiveControl
-    instead. (when watches are disabled)
-    NgAnnotate does not work here due to the functional creation
-*/
-['markers', 'geojson'].forEach(function(name){
-    angular.module('ui-leaflet').directive(name + 'WatchOptions', [
-        '$log', '$rootScope', '$q', 'leafletData', 'leafletHelpers',
-        function (leafletLogger, $rootScope, $q, leafletData, leafletHelpers) {
+'use strict';
 
-            var isDefined = leafletHelpers.isDefined,
-                errorHeader = leafletHelpers.errorHeader,
-                isObject = leafletHelpers.isObject,
-                _watchOptions = leafletHelpers.watchOptions,
-                $log = leafletLogger;
+angular.module('ui-leaflet').directive('watchOptions', ['$log', '$rootScope', '$q', 'leafletData', 'leafletHelpers', function (leafletLogger, $rootScope, $q, leafletData, leafletHelpers) {
 
-            return {
-                restrict: "A",
-                scope: false,
-                replace: false,
-                require: ['leaflet'],
+    var isDefined = leafletHelpers.isDefined,
+        errorHeader = leafletHelpers.errorHeader,
+        isObject = leafletHelpers.isObject,
+        $log = leafletLogger;
 
-                link: function (scope, element, attrs, controller) {
-                    var mapController = controller[0],
-                        leafletScope = mapController.getLeafletScope();
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        require: ['leaflet'],
 
-                    mapController.getMap().then(function () {
-                        if (isDefined(scope[name + 'WatchOptions'])) {
-                            if (isObject(scope[name + 'WatchOptions']))
-                                angular.extend(_watchOptions, scope[name + 'WatchOptions']);
-                            else
-                                $log.error(errorHeader + '[' + name + 'WatchOptions] is not an object');
-                            leafletScope[name + 'WatchOptions'] = _watchOptions;
+        link: function link(scope, element, attrs, controller) {
+            var mapController = controller[0],
+                leafletScope = mapController.getLeafletScope();
+
+            var _isValidWatchType = function _isValidWatchType(type) {
+                return type === 'watch' || type === 'watchCollection' || type === 'watchDeep' || type === null;
+            };
+
+            if (isDefined(leafletScope.watchOptions) && isObject(leafletScope.watchOptions)) {
+                angular.forEach(['markers', 'geojson', 'paths'], function (name) {
+                    if (isDefined(leafletScope.watchOptions[name])) {
+                        if (!_isValidWatchType(leafletScope.watchOptions[name].type)) {
+                            $log.error(errorHeader + ' watchOptions.' + name + '.type is not a valid type.');
                         }
-                    });
-                }
-            };
-    }]);
-});
-
-angular.module('ui-leaflet')
-.factory('leafletEventsHelpersFactory', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", function ($rootScope, $q, leafletLogger, leafletHelpers) {
-        var safeApply = leafletHelpers.safeApply,
-            isDefined = leafletHelpers.isDefined,
-            isObject = leafletHelpers.isObject,
-            isArray = leafletHelpers.isArray,
-            errorHeader = leafletHelpers.errorHeader,
-            $log = leafletLogger;
-
-        var EventsHelper = function(rootBroadcastName, lObjectType){
-            this.rootBroadcastName = rootBroadcastName;
-            $log.debug("leafletEventsHelpersFactory: lObjectType: " + lObjectType + "rootBroadcastName: " + rootBroadcastName);
-            //used to path/key out certain properties based on the type , "markers", "geojson"
-            this.lObjectType = lObjectType;
-        };
-
-        EventsHelper.prototype.getAvailableEvents = function(){return [];};
-
-        /*
-         argument: name: Note this can be a single string or dot notation
-         Example:
-         markerModel : {
-         m1: { lat:_, lon: _}
-         }
-         //would yield name of
-         name = "m1"
-
-         If nested:
-         markerModel : {
-         cars: {
-         m1: { lat:_, lon: _}
-         }
-         }
-         //would yield name of
-         name = "cars.m1"
-         */
-        EventsHelper.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
-            var _this = this;
-
-            maybeMapId = maybeMapId || '';
-            if (maybeMapId)
-              maybeMapId = '.' + maybeMapId;
-
-            return function (e) {
-                var broadcastName = _this.rootBroadcastName + maybeMapId + '.' + eventName;
-                $log.debug(broadcastName);
-                _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName, extra);
-            };
-        };
-
-        EventsHelper.prototype.fire = function(scope, broadcastName, logic, event, lObject, model, modelName, layerName, extra){
-            // Safely broadcast the event
-            safeApply(scope, function(){
-                var toSend = {
-                    leafletEvent: event,
-                    leafletObject: lObject,
-                    modelName: modelName,
-                    model: model
-                };
-                if (isDefined(layerName))
-                    angular.extend(toSend, {layerName: layerName});
-
-                if (logic === "emit") {
-                  scope.$emit(broadcastName, toSend);
-                } else {
-                    $rootScope.$broadcast(broadcastName, toSend);
-                }
-            });
-        };
-
-        EventsHelper.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName, extra) {
-            var events = [];
-            var logic = 'emit';
-            var _this = this;
-
-            if (!isDefined(leafletScope.eventBroadcast)) {
-                // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
-                events = this.getAvailableEvents();
-            } else if (!isObject(leafletScope.eventBroadcast)) {
-                // Not a valid object
-                $log.error(errorHeader + "event-broadcast must be an object check your model.");
-            } else {
-                // We have a possible valid object
-                if (!isDefined(leafletScope.eventBroadcast[_this.lObjectType])) {
-                    // We do not have events enable/disable do we do nothing (all enabled by default)
-                    events = this.getAvailableEvents();
-                } else if (!isObject(leafletScope.eventBroadcast[_this.lObjectType])) {
-                    // Not a valid object
-                    $log.warn(errorHeader + 'event-broadcast.' + [_this.lObjectType]  + ' must be an object check your model.');
-                } else {
-                    // We have a possible valid map object
-                    // Event propadation logic
-                    if (isDefined(leafletScope.eventBroadcast[this.lObjectType].logic)) {
-                        // We take care of possible propagation logic
-                        if (leafletScope.eventBroadcast[_this.lObjectType].logic !== "emit" &&
-                            leafletScope.eventBroadcast[_this.lObjectType].logic !== "broadcast")
-                                $log.warn(errorHeader + "Available event propagation logic are: 'emit' or 'broadcast'.");
-                    }
-                    // Enable / Disable
-                    var eventsEnable = false, eventsDisable = false;
-                    if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].enable) &&
-                        isArray(leafletScope.eventBroadcast[_this.lObjectType].enable))
-                            eventsEnable = true;
-                    if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].disable) &&
-                        isArray(leafletScope.eventBroadcast[_this.lObjectType].disable))
-                            eventsDisable = true;
-
-                    if (eventsEnable && eventsDisable) {
-                        // Both are active, this is an error
-                        $log.warn(errorHeader + "can not enable and disable events at the same time");
-                    } else if (!eventsEnable && !eventsDisable) {
-                        // Both are inactive, this is an error
-                        $log.warn(errorHeader + "must enable or disable events");
-                    } else {
-                        // At this point the object is OK, lets enable or disable events
-                        if (eventsEnable) {
-                            // Enable events
-                            leafletScope.eventBroadcast[this.lObjectType].enable.forEach(function(eventName){
-                                // Do we have already the event enabled?
-                                if (events.indexOf(eventName) !== -1) {
-                                    // Repeated event, this is an error
-                                    $log.warn(errorHeader + "This event " + eventName + " is already enabled");
-                                } else {
-                                    // Does the event exists?
-                                    if (_this.getAvailableEvents().indexOf(eventName) === -1) {
-                                        // The event does not exists, this is an error
-                                        $log.warn(errorHeader + "This event " + eventName + " does not exist");
-                                    } else {
-                                        // All ok enable the event
-                                        events.push(eventName);
-                                    }
-                                }
-                            });
+                        if (isDefined(leafletScope.watchOptions[name].individual)) {
+                            if (!_isValidWatchType(leafletScope.watchOptions[name].individual.type)) {
+                                $log.error(errorHeader + ' watchOptions.' + name + '.individual.type is not a valid type.');
+                            }
                         } else {
-                            // Disable events
-                            events = this.getAvailableEvents();
-                            leafletScope.eventBroadcast[_this.lObjectType].disable.forEach(function(eventName) {
-                                var index = events.indexOf(eventName);
-                                if (index === -1) {
-                                    // The event does not exist
-                                    $log.warn(errorHeader + "This event " + eventName + " does not exist or has been already disabled");
-
-                                } else {
-                                    events.splice(index, 1);
-                                }
-                            });
+                            $log.error(errorHeader + ' watchOptions.' + name + '.type.individual must be defined.');
                         }
+                    }
+                });
+            }
+        }
+    };
+}]);
+
+'use strict';
+
+angular.module('ui-leaflet').factory('leafletEventsHelpersFactory', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", function ($rootScope, $q, leafletLogger, leafletHelpers) {
+    var safeApply = leafletHelpers.safeApply,
+        isDefined = leafletHelpers.isDefined,
+        isObject = leafletHelpers.isObject,
+        isArray = leafletHelpers.isArray,
+        errorHeader = leafletHelpers.errorHeader,
+        $log = leafletLogger;
+
+    var EventsHelper = function EventsHelper(rootBroadcastName, lObjectType) {
+        this.rootBroadcastName = rootBroadcastName;
+        $log.debug("leafletEventsHelpersFactory: lObjectType: " + lObjectType + "rootBroadcastName: " + rootBroadcastName);
+        //used to path/key out certain properties based on the type , "markers", "geojson"
+        this.lObjectType = lObjectType;
+    };
+
+    EventsHelper.prototype.getAvailableEvents = function () {
+        return [];
+    };
+
+    /*
+     argument: name: Note this can be a single string or dot notation
+     Example:
+     markerModel : {
+     m1: { lat:_, lon: _}
+     }
+     //would yield name of
+     name = "m1"
+      If nested:
+     markerModel : {
+     cars: {
+     m1: { lat:_, lon: _}
+     }
+     }
+     //would yield name of
+     name = "cars.m1"
+     */
+    EventsHelper.prototype.genDispatchEvent = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
+        var _this = this;
+
+        maybeMapId = maybeMapId || '';
+        if (maybeMapId) maybeMapId = '.' + maybeMapId;
+
+        return function (e) {
+            var broadcastName = _this.rootBroadcastName + maybeMapId + '.' + eventName;
+            $log.debug(broadcastName);
+            _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName, extra);
+        };
+    };
+
+    EventsHelper.prototype.fire = function (scope, broadcastName, logic, event, lObject, model, modelName, layerName, extra) {
+        // Safely broadcast the event
+        safeApply(scope, function () {
+            var toSend = {
+                leafletEvent: event,
+                leafletObject: lObject,
+                modelName: modelName,
+                model: model
+            };
+            if (isDefined(layerName)) angular.extend(toSend, { layerName: layerName });
+
+            if (logic === "emit") {
+                scope.$emit(broadcastName, toSend);
+            } else {
+                $rootScope.$broadcast(broadcastName, toSend);
+            }
+        });
+    };
+
+    EventsHelper.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName, extra) {
+        var events = [];
+        var logic = 'emit';
+        var _this = this;
+
+        if (!isDefined(leafletScope.eventBroadcast)) {
+            // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
+            events = this.getAvailableEvents();
+        } else if (!isObject(leafletScope.eventBroadcast)) {
+            // Not a valid object
+            $log.error(errorHeader + "event-broadcast must be an object check your model.");
+        } else {
+            // We have a possible valid object
+            if (!isDefined(leafletScope.eventBroadcast[_this.lObjectType])) {
+                // We do not have events enable/disable do we do nothing (all enabled by default)
+                events = this.getAvailableEvents();
+            } else if (!isObject(leafletScope.eventBroadcast[_this.lObjectType])) {
+                // Not a valid object
+                $log.warn(errorHeader + 'event-broadcast.' + [_this.lObjectType] + ' must be an object check your model.');
+            } else {
+                // We have a possible valid map object
+                // Event propadation logic
+                if (isDefined(leafletScope.eventBroadcast[this.lObjectType].logic)) {
+                    // We take care of possible propagation logic
+                    if (leafletScope.eventBroadcast[_this.lObjectType].logic !== "emit" && leafletScope.eventBroadcast[_this.lObjectType].logic !== "broadcast") $log.warn(errorHeader + "Available event propagation logic are: 'emit' or 'broadcast'.");
+                }
+                // Enable / Disable
+                var eventsEnable = false,
+                    eventsDisable = false;
+                if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].enable) && isArray(leafletScope.eventBroadcast[_this.lObjectType].enable)) eventsEnable = true;
+                if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].disable) && isArray(leafletScope.eventBroadcast[_this.lObjectType].disable)) eventsDisable = true;
+
+                if (eventsEnable && eventsDisable) {
+                    // Both are active, this is an error
+                    $log.warn(errorHeader + "can not enable and disable events at the same time");
+                } else if (!eventsEnable && !eventsDisable) {
+                    // Both are inactive, this is an error
+                    $log.warn(errorHeader + "must enable or disable events");
+                } else {
+                    // At this point the object is OK, lets enable or disable events
+                    if (eventsEnable) {
+                        // Enable events
+                        leafletScope.eventBroadcast[this.lObjectType].enable.forEach(function (eventName) {
+                            // Do we have already the event enabled?
+                            if (events.indexOf(eventName) !== -1) {
+                                // Repeated event, this is an error
+                                $log.warn(errorHeader + "This event " + eventName + " is already enabled");
+                            } else {
+                                // Does the event exists?
+                                if (_this.getAvailableEvents().indexOf(eventName) === -1) {
+                                    // The event does not exists, this is an error
+                                    $log.warn(errorHeader + "This event " + eventName + " does not exist");
+                                } else {
+                                    // All ok enable the event
+                                    events.push(eventName);
+                                }
+                            }
+                        });
+                    } else {
+                        // Disable events
+                        events = this.getAvailableEvents();
+                        leafletScope.eventBroadcast[_this.lObjectType].disable.forEach(function (eventName) {
+                            var index = events.indexOf(eventName);
+                            if (index === -1) {
+                                // The event does not exist
+                                $log.warn(errorHeader + "This event " + eventName + " does not exist or has been already disabled");
+                            } else {
+                                events.splice(index, 1);
+                            }
+                        });
                     }
                 }
             }
+        }
 
-            events.forEach(function(eventName){
-                lObject.on(eventName,_this.genDispatchEvent(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra));
-            });
-          return logic;
-        };
+        events.forEach(function (eventName) {
+            lObject.on(eventName, _this.genDispatchEvent(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra));
+        });
+        return logic;
+    };
 
-        return EventsHelper;
-}])
-.service('leafletEventsHelpers', ["leafletEventsHelpersFactory", function(leafletEventsHelpersFactory){
+    return EventsHelper;
+}]).service('leafletEventsHelpers', ["leafletEventsHelpersFactory", function (leafletEventsHelpersFactory) {
     return new leafletEventsHelpersFactory();
 }]);
 
-angular.module('ui-leaflet')
-.factory('leafletGeoJsonEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpersFactory", "leafletData", function ($rootScope, $q, leafletLogger, leafletHelpers,
-  leafletEventsHelpersFactory, leafletData) {
+'use strict';
+
+angular.module('ui-leaflet').factory('leafletGeoJsonEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpersFactory", "leafletData", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpersFactory, leafletData) {
     var safeApply = leafletHelpers.safeApply,
         EventsHelper = leafletEventsHelpersFactory;
-        // $log = leafletLogger;
+    // $log = leafletLogger;
 
-    var GeoJsonEvents = function(){
-      EventsHelper.call(this,'leafletDirectiveGeoJson', 'geojson');
+    var GeoJsonEvents = function GeoJsonEvents() {
+        EventsHelper.call(this, 'leafletDirectiveGeoJson', 'geojson');
     };
 
-    GeoJsonEvents.prototype =  new EventsHelper();
+    GeoJsonEvents.prototype = new EventsHelper();
 
-    GeoJsonEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
+    GeoJsonEvents.prototype.genDispatchEvent = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
         var base = EventsHelper.prototype.genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName),
-        _this = this;
+            _this = this;
 
-        return function(e){
+        return function (e) {
             if (eventName === 'mouseout') {
                 if (extra.resetStyleOnMouseout) {
-                    leafletData.getGeoJSON(extra.mapId)
-                    .then(function(leafletGeoJSON){
+                    leafletData.getGeoJSON(extra.mapId).then(function (leafletGeoJSON) {
                         //this is broken on nested needs to traverse or user layerName (nested)
-                        var lobj = layerName? leafletGeoJSON[layerName]: leafletGeoJSON;
+                        var lobj = layerName ? leafletGeoJSON[layerName] : leafletGeoJSON;
                         lobj.resetStyle(e.target);
                     });
-
                 }
-                safeApply(leafletScope, function() {
+                safeApply(leafletScope, function () {
                     $rootScope.$broadcast(_this.rootBroadcastName + '.mouseout', e);
                 });
             }
@@ -59902,118 +59819,61 @@ angular.module('ui-leaflet')
         };
     };
 
-    GeoJsonEvents.prototype.getAvailableEvents = function(){ return [
-        'click',
-        'dblclick',
-        'mouseover',
-        'mouseout',
-        ];
+    GeoJsonEvents.prototype.getAvailableEvents = function () {
+        return ['click', 'dblclick', 'mouseover', 'mouseout'];
     };
 
     return new GeoJsonEvents();
 }]);
 
-angular.module('ui-leaflet')
-.factory('leafletLabelEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpersFactory", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpersFactory) {
+'use strict';
+
+angular.module('ui-leaflet').factory('leafletLabelEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpersFactory", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpersFactory) {
     var Helpers = leafletHelpers,
         EventsHelper = leafletEventsHelpersFactory;
-        //$log = leafletLogger;
+    //$log = leafletLogger;
 
-        var LabelEvents = function(){
-          EventsHelper.call(this,'leafletDirectiveLabel', 'markers');
-        };
-        LabelEvents.prototype =  new EventsHelper();
+    var LabelEvents = function LabelEvents() {
+        EventsHelper.call(this, 'leafletDirectiveLabel', 'markers');
+    };
+    LabelEvents.prototype = new EventsHelper();
 
-        LabelEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
-            var markerName = name.replace('markers.', '');
-            return EventsHelper.prototype
-                .genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, markerName, model, layerName);
-        };
+    LabelEvents.prototype.genDispatchEvent = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
+        var markerName = name.replace('markers.', '');
+        return EventsHelper.prototype.genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, markerName, model, layerName);
+    };
 
-        LabelEvents.prototype.getAvailableEvents = function(){
-            return [
-                'click',
-                'dblclick',
-                'mousedown',
-                'mouseover',
-                'mouseout',
-                'contextmenu'
-            ];
-        };
+    LabelEvents.prototype.getAvailableEvents = function () {
+        return ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu'];
+    };
 
-        LabelEvents.prototype.genEvents = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
-            var _this = this;
-            var labelEvents = this.getAvailableEvents();
-            var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
-            labelEvents.forEach(function(eventName) {
-                lObject.label.on(eventName, _this.genDispatchEvent(
-                    maybeMapId, eventName, logic, leafletScope, lObject.label, scopeWatchName, model, layerName));
-            });
-        };
+    LabelEvents.prototype.genEvents = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
+        var _this = this;
+        var labelEvents = this.getAvailableEvents();
+        var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
+        labelEvents.forEach(function (eventName) {
+            lObject.label.on(eventName, _this.genDispatchEvent(maybeMapId, eventName, logic, leafletScope, lObject.label, scopeWatchName, model, layerName));
+        });
+    };
 
-        LabelEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {};
+    LabelEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {};
 
-        return new LabelEvents();
+    return new LabelEvents();
 }]);
 
-angular.module('ui-leaflet')
-.factory('leafletMapEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpers", "leafletIterators", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers, leafletIterators) {
+'use strict';
+
+angular.module('ui-leaflet').factory('leafletMapEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpers", "leafletIterators", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers, leafletIterators) {
     var isDefined = leafletHelpers.isDefined,
         fire = leafletEventsHelpers.fire;
 
-    var _getAvailableMapEvents = function() {
-        return [
-            'click',
-            'dblclick',
-            'mousedown',
-            'mouseup',
-            'mouseover',
-            'mouseout',
-            'mousemove',
-            'contextmenu',
-            'focus',
-            'blur',
-            'preclick',
-            'load',
-            'unload',
-            'viewreset',
-            'movestart',
-            'move',
-            'moveend',
-            'dragstart',
-            'drag',
-            'dragend',
-            'zoomstart',
-            'zoomanim',
-            'zoomend',
-            'zoomlevelschange',
-            'resize',
-            'autopanstart',
-            'layeradd',
-            'layerremove',
-            'baselayerchange',
-            'overlayadd',
-            'overlayremove',
-            'locationfound',
-            'locationerror',
-            'popupopen',
-            'popupclose',
-            'draw:created',
-            'draw:edited',
-            'draw:deleted',
-            'draw:drawstart',
-            'draw:drawstop',
-            'draw:editstart',
-            'draw:editstop',
-            'draw:deletestart',
-            'draw:deletestop'
-        ];
+    var _getAvailableMapEvents = function _getAvailableMapEvents() {
+        return ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'mousemove', 'contextmenu', 'focus', 'blur', 'preclick', 'load', 'unload', 'viewreset', 'movestart', 'move', 'moveend', 'dragstart', 'drag', 'dragend', 'zoomstart', 'zoomanim', 'zoomend', 'zoomlevelschange', 'resize', 'autopanstart', 'layeradd', 'layerremove', 'baselayerchange', 'overlayadd', 'overlayremove', 'locationfound', 'locationerror', 'popupopen', 'popupclose', 'draw:created', 'draw:edited', 'draw:deleted', 'draw:drawstart', 'draw:drawstop', 'draw:editstart', 'draw:editstop', 'draw:deletestart', 'draw:deletestop'];
     };
 
-    var _genDispatchMapEvent = function(scope, eventName, logic, maybeMapId) {
-        if (maybeMapId)
-          maybeMapId = maybeMapId + '.';
-        return function(e) {
+    var _genDispatchMapEvent = function _genDispatchMapEvent(scope, eventName, logic, maybeMapId) {
+        if (maybeMapId) maybeMapId = maybeMapId + '.';
+        return function (e) {
             // Put together broadcast name
             var broadcastName = 'leafletDirectiveMap.' + maybeMapId + eventName;
             leafletLogger.debug(broadcastName);
@@ -60022,24 +59882,24 @@ angular.module('ui-leaflet')
         };
     };
 
-    var _notifyCenterChangedToBounds = function(scope) {
+    var _notifyCenterChangedToBounds = function _notifyCenterChangedToBounds(scope) {
         scope.$broadcast("boundsChanged");
     };
 
-    var _notifyCenterUrlHashChanged = function(scope, map, attrs, search) {
+    var _notifyCenterUrlHashChanged = function _notifyCenterUrlHashChanged(scope, map, attrs, search) {
         if (!isDefined(attrs.urlHashCenter)) {
             return;
         }
         var center = map.getCenter();
-        var centerUrlHash = (center.lat).toFixed(4) + ":" + (center.lng).toFixed(4) + ":" + map.getZoom();
+        var centerUrlHash = center.lat.toFixed(4) + ":" + center.lng.toFixed(4) + ":" + map.getZoom();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
             //$log.debug("notified new center...");
             scope.$emit("centerUrlHash", centerUrlHash);
         }
     };
 
-    var _addEvents =  function(map, mapEvents, contextName, scope, logic){
-        leafletIterators.each(mapEvents, function(eventName) {
+    var _addEvents = function _addEvents(map, mapEvents, contextName, scope, logic) {
+        leafletIterators.each(mapEvents, function (eventName) {
             var context = {};
             context[contextName] = eventName;
             map.on(eventName, _genDispatchMapEvent(scope, eventName, logic, map._container.id || ''), context);
@@ -60055,8 +59915,9 @@ angular.module('ui-leaflet')
     };
 }]);
 
-angular.module('ui-leaflet')
-.factory('leafletMarkerEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpersFactory", "leafletLabelEvents", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
+'use strict';
+
+angular.module('ui-leaflet').factory('leafletMarkerEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletEventsHelpersFactory", "leafletLabelEvents", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         Helpers = leafletHelpers,
@@ -60064,16 +59925,15 @@ angular.module('ui-leaflet')
         EventsHelper = leafletEventsHelpersFactory,
         $log = leafletLogger;
 
-    var MarkerEvents = function(){
-      EventsHelper.call(this,'leafletDirectiveMarker', 'markers');
+    var MarkerEvents = function MarkerEvents() {
+        EventsHelper.call(this, 'leafletDirectiveMarker', 'markers');
     };
 
     MarkerEvents.prototype = new EventsHelper();
 
-    MarkerEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
-        var handle = EventsHelper.prototype
-            .genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName);
-        return function(e){
+    MarkerEvents.prototype.genDispatchEvent = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
+        var handle = EventsHelper.prototype.genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName);
+        return function (e) {
             // Broadcast old marker click name for backwards compatibility
             if (eventName === "click") {
                 safeApply(leafletScope, function () {
@@ -60092,41 +59952,26 @@ angular.module('ui-leaflet')
         };
     };
 
-    MarkerEvents.prototype.getAvailableEvents = function(){ return [
-        'click',
-        'dblclick',
-        'mousedown',
-        'mouseover',
-        'mouseout',
-        'contextmenu',
-        'dragstart',
-        'drag',
-        'dragend',
-        'move',
-        'remove',
-        'popupopen',
-        'popupclose',
-        'touchend',
-        'touchstart',
-        'touchmove',
-        'touchcancel',
-        'touchleave'
-        ];
+    MarkerEvents.prototype.getAvailableEvents = function () {
+        return ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu', 'dragstart', 'drag', 'dragend', 'move', 'remove', 'popupopen', 'popupclose', 'touchend', 'touchstart', 'touchmove', 'touchcancel', 'touchleave'];
     };
 
     MarkerEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {
-      var logic = EventsHelper.prototype.bindEvents.call(this, maybeMapId, lObject, name, model, leafletScope, layerName);
+        var logic = EventsHelper.prototype.bindEvents.call(this, maybeMapId, lObject, name, model, leafletScope, layerName);
 
-      if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-          lblHelp.genEvents(maybeMapId, name, logic, leafletScope, lObject, model, layerName);
-      }
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
+            lblHelp.genEvents(maybeMapId, name, logic, leafletScope, lObject, model, layerName);
+        }
     };
 
     return new MarkerEvents();
 }]);
 
-angular.module('ui-leaflet')
-.factory('leafletPathEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletLabelEvents", "leafletEventsHelpers", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+angular.module('ui-leaflet').factory('leafletPathEvents', ["$rootScope", "$q", "leafletLogger", "leafletHelpers", "leafletLabelEvents", "leafletEventsHelpers", function ($rootScope, $q, leafletLogger, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
     var isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
@@ -60139,11 +59984,10 @@ angular.module('ui-leaflet')
     TODO (nmccready) This EventsHelper needs to be derrived from leafletEventsHelpers to elminate copy and paste code.
     */
 
-    var _genDispatchPathEvent = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
+    var _genDispatchPathEvent = function _genDispatchPathEvent(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
         maybeMapId = maybeMapId || '';
 
-        if (maybeMapId)
-          maybeMapId = '.' + maybeMapId;
+        if (maybeMapId) maybeMapId = '.' + maybeMapId;
 
         return function (e) {
             var broadcastName = 'leafletDirectivePath' + maybeMapId + '.' + eventName;
@@ -60152,7 +59996,7 @@ angular.module('ui-leaflet')
         };
     };
 
-    var _bindPathEvents = function (maybeMapId, lObject, name, model, leafletScope) {
+    var _bindPathEvents = function _bindPathEvents(maybeMapId, lObject, name, model, leafletScope) {
         var pathEvents = [],
             i,
             eventName,
@@ -60185,14 +60029,15 @@ angular.module('ui-leaflet')
                     }
                 }
                 // Enable / Disable
-                var pathEventsEnable = false, pathEventsDisable = false;
+                var pathEventsEnable = false,
+                    pathEventsDisable = false;
                 if (leafletScope.eventBroadcast.path.enable !== undefined && leafletScope.eventBroadcast.path.enable !== null) {
-                    if (typeof leafletScope.eventBroadcast.path.enable === 'object') {
+                    if (_typeof(leafletScope.eventBroadcast.path.enable) === 'object') {
                         pathEventsEnable = true;
                     }
                 }
                 if (leafletScope.eventBroadcast.path.disable !== undefined && leafletScope.eventBroadcast.path.disable !== null) {
-                    if (typeof leafletScope.eventBroadcast.path.disable === 'object') {
+                    if (_typeof(leafletScope.eventBroadcast.path.disable) === 'object') {
                         pathEventsDisable = true;
                     }
                 }
@@ -60232,7 +60077,6 @@ angular.module('ui-leaflet')
                             if (index === -1) {
                                 // The event does not exist
                                 $log.warn(errorHeader + "This event " + eventName + " does not exist or has been already disabled");
-
                             } else {
                                 pathEvents.splice(index, 1);
                             }
@@ -60252,19 +60096,8 @@ angular.module('ui-leaflet')
         }
     };
 
-    var _getAvailablePathEvents = function () {
-        return [
-            'click',
-            'dblclick',
-            'mousedown',
-            'mouseover',
-            'mouseout',
-            'contextmenu',
-            'add',
-            'remove',
-            'popupopen',
-            'popupclose'
-        ];
+    var _getAvailablePathEvents = function _getAvailablePathEvents() {
+        return ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu', 'add', 'remove', 'popupopen', 'popupclose'];
     };
 
     return {
@@ -63439,11 +63272,6 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 
 //# sourceMappingURL=xslt.js.map
 
-!function(){function n(n){return n&&(n.ownerDocument||n.document||n).documentElement}function t(n){return n&&(n.ownerDocument&&n.ownerDocument.defaultView||n.document&&n||n.defaultView)}function e(n,t){return t>n?-1:n>t?1:n>=t?0:NaN}function r(n){return null===n?NaN:+n}function i(n){return!isNaN(n)}function u(n){return{left:function(t,e,r,i){for(arguments.length<3&&(r=0),arguments.length<4&&(i=t.length);i>r;){var u=r+i>>>1;n(t[u],e)<0?r=u+1:i=u}return r},right:function(t,e,r,i){for(arguments.length<3&&(r=0),arguments.length<4&&(i=t.length);i>r;){var u=r+i>>>1;n(t[u],e)>0?i=u:r=u+1}return r}}}function o(n){return n.length}function a(n){for(var t=1;n*t%1;)t*=10;return t}function l(n,t){for(var e in t)Object.defineProperty(n.prototype,e,{value:t[e],enumerable:!1})}function c(){this._=Object.create(null)}function f(n){return(n+="")===bo||n[0]===_o?_o+n:n}function s(n){return(n+="")[0]===_o?n.slice(1):n}function h(n){return f(n)in this._}function p(n){return(n=f(n))in this._&&delete this._[n]}function g(){var n=[];for(var t in this._)n.push(s(t));return n}function v(){var n=0;for(var t in this._)++n;return n}function d(){for(var n in this._)return!1;return!0}function y(){this._=Object.create(null)}function m(n){return n}function M(n,t,e){return function(){var r=e.apply(t,arguments);return r===t?n:r}}function x(n,t){if(t in n)return t;t=t.charAt(0).toUpperCase()+t.slice(1);for(var e=0,r=wo.length;r>e;++e){var i=wo[e]+t;if(i in n)return i}}function b(){}function _(){}function w(n){function t(){for(var t,r=e,i=-1,u=r.length;++i<u;)(t=r[i].on)&&t.apply(this,arguments);return n}var e=[],r=new c;return t.on=function(t,i){var u,o=r.get(t);return arguments.length<2?o&&o.on:(o&&(o.on=null,e=e.slice(0,u=e.indexOf(o)).concat(e.slice(u+1)),r.remove(t)),i&&e.push(r.set(t,{on:i})),n)},t}function S(){ao.event.preventDefault()}function k(){for(var n,t=ao.event;n=t.sourceEvent;)t=n;return t}function N(n){for(var t=new _,e=0,r=arguments.length;++e<r;)t[arguments[e]]=w(t);return t.of=function(e,r){return function(i){try{var u=i.sourceEvent=ao.event;i.target=n,ao.event=i,t[i.type].apply(e,r)}finally{ao.event=u}}},t}function E(n){return ko(n,Co),n}function A(n){return"function"==typeof n?n:function(){return No(n,this)}}function C(n){return"function"==typeof n?n:function(){return Eo(n,this)}}function z(n,t){function e(){this.removeAttribute(n)}function r(){this.removeAttributeNS(n.space,n.local)}function i(){this.setAttribute(n,t)}function u(){this.setAttributeNS(n.space,n.local,t)}function o(){var e=t.apply(this,arguments);null==e?this.removeAttribute(n):this.setAttribute(n,e)}function a(){var e=t.apply(this,arguments);null==e?this.removeAttributeNS(n.space,n.local):this.setAttributeNS(n.space,n.local,e)}return n=ao.ns.qualify(n),null==t?n.local?r:e:"function"==typeof t?n.local?a:o:n.local?u:i}function L(n){return n.trim().replace(/\s+/g," ")}function q(n){return new RegExp("(?:^|\\s+)"+ao.requote(n)+"(?:\\s+|$)","g")}function T(n){return(n+"").trim().split(/^|\s+/)}function R(n,t){function e(){for(var e=-1;++e<i;)n[e](this,t)}function r(){for(var e=-1,r=t.apply(this,arguments);++e<i;)n[e](this,r)}n=T(n).map(D);var i=n.length;return"function"==typeof t?r:e}function D(n){var t=q(n);return function(e,r){if(i=e.classList)return r?i.add(n):i.remove(n);var i=e.getAttribute("class")||"";r?(t.lastIndex=0,t.test(i)||e.setAttribute("class",L(i+" "+n))):e.setAttribute("class",L(i.replace(t," ")))}}function P(n,t,e){function r(){this.style.removeProperty(n)}function i(){this.style.setProperty(n,t,e)}function u(){var r=t.apply(this,arguments);null==r?this.style.removeProperty(n):this.style.setProperty(n,r,e)}return null==t?r:"function"==typeof t?u:i}function U(n,t){function e(){delete this[n]}function r(){this[n]=t}function i(){var e=t.apply(this,arguments);null==e?delete this[n]:this[n]=e}return null==t?e:"function"==typeof t?i:r}function j(n){function t(){var t=this.ownerDocument,e=this.namespaceURI;return e===zo&&t.documentElement.namespaceURI===zo?t.createElement(n):t.createElementNS(e,n)}function e(){return this.ownerDocument.createElementNS(n.space,n.local)}return"function"==typeof n?n:(n=ao.ns.qualify(n)).local?e:t}function F(){var n=this.parentNode;n&&n.removeChild(this)}function H(n){return{__data__:n}}function O(n){return function(){return Ao(this,n)}}function I(n){return arguments.length||(n=e),function(t,e){return t&&e?n(t.__data__,e.__data__):!t-!e}}function Y(n,t){for(var e=0,r=n.length;r>e;e++)for(var i,u=n[e],o=0,a=u.length;a>o;o++)(i=u[o])&&t(i,o,e);return n}function Z(n){return ko(n,qo),n}function V(n){var t,e;return function(r,i,u){var o,a=n[u].update,l=a.length;for(u!=e&&(e=u,t=0),i>=t&&(t=i+1);!(o=a[t])&&++t<l;);return o}}function X(n,t,e){function r(){var t=this[o];t&&(this.removeEventListener(n,t,t.$),delete this[o])}function i(){var i=l(t,co(arguments));r.call(this),this.addEventListener(n,this[o]=i,i.$=e),i._=t}function u(){var t,e=new RegExp("^__on([^.]+)"+ao.requote(n)+"$");for(var r in this)if(t=r.match(e)){var i=this[r];this.removeEventListener(t[1],i,i.$),delete this[r]}}var o="__on"+n,a=n.indexOf("."),l=$;a>0&&(n=n.slice(0,a));var c=To.get(n);return c&&(n=c,l=B),a?t?i:r:t?b:u}function $(n,t){return function(e){var r=ao.event;ao.event=e,t[0]=this.__data__;try{n.apply(this,t)}finally{ao.event=r}}}function B(n,t){var e=$(n,t);return function(n){var t=this,r=n.relatedTarget;r&&(r===t||8&r.compareDocumentPosition(t))||e.call(t,n)}}function W(e){var r=".dragsuppress-"+ ++Do,i="click"+r,u=ao.select(t(e)).on("touchmove"+r,S).on("dragstart"+r,S).on("selectstart"+r,S);if(null==Ro&&(Ro="onselectstart"in e?!1:x(e.style,"userSelect")),Ro){var o=n(e).style,a=o[Ro];o[Ro]="none"}return function(n){if(u.on(r,null),Ro&&(o[Ro]=a),n){var t=function(){u.on(i,null)};u.on(i,function(){S(),t()},!0),setTimeout(t,0)}}}function J(n,e){e.changedTouches&&(e=e.changedTouches[0]);var r=n.ownerSVGElement||n;if(r.createSVGPoint){var i=r.createSVGPoint();if(0>Po){var u=t(n);if(u.scrollX||u.scrollY){r=ao.select("body").append("svg").style({position:"absolute",top:0,left:0,margin:0,padding:0,border:"none"},"important");var o=r[0][0].getScreenCTM();Po=!(o.f||o.e),r.remove()}}return Po?(i.x=e.pageX,i.y=e.pageY):(i.x=e.clientX,i.y=e.clientY),i=i.matrixTransform(n.getScreenCTM().inverse()),[i.x,i.y]}var a=n.getBoundingClientRect();return[e.clientX-a.left-n.clientLeft,e.clientY-a.top-n.clientTop]}function G(){return ao.event.changedTouches[0].identifier}function K(n){return n>0?1:0>n?-1:0}function Q(n,t,e){return(t[0]-n[0])*(e[1]-n[1])-(t[1]-n[1])*(e[0]-n[0])}function nn(n){return n>1?0:-1>n?Fo:Math.acos(n)}function tn(n){return n>1?Io:-1>n?-Io:Math.asin(n)}function en(n){return((n=Math.exp(n))-1/n)/2}function rn(n){return((n=Math.exp(n))+1/n)/2}function un(n){return((n=Math.exp(2*n))-1)/(n+1)}function on(n){return(n=Math.sin(n/2))*n}function an(){}function ln(n,t,e){return this instanceof ln?(this.h=+n,this.s=+t,void(this.l=+e)):arguments.length<2?n instanceof ln?new ln(n.h,n.s,n.l):_n(""+n,wn,ln):new ln(n,t,e)}function cn(n,t,e){function r(n){return n>360?n-=360:0>n&&(n+=360),60>n?u+(o-u)*n/60:180>n?o:240>n?u+(o-u)*(240-n)/60:u}function i(n){return Math.round(255*r(n))}var u,o;return n=isNaN(n)?0:(n%=360)<0?n+360:n,t=isNaN(t)?0:0>t?0:t>1?1:t,e=0>e?0:e>1?1:e,o=.5>=e?e*(1+t):e+t-e*t,u=2*e-o,new mn(i(n+120),i(n),i(n-120))}function fn(n,t,e){return this instanceof fn?(this.h=+n,this.c=+t,void(this.l=+e)):arguments.length<2?n instanceof fn?new fn(n.h,n.c,n.l):n instanceof hn?gn(n.l,n.a,n.b):gn((n=Sn((n=ao.rgb(n)).r,n.g,n.b)).l,n.a,n.b):new fn(n,t,e)}function sn(n,t,e){return isNaN(n)&&(n=0),isNaN(t)&&(t=0),new hn(e,Math.cos(n*=Yo)*t,Math.sin(n)*t)}function hn(n,t,e){return this instanceof hn?(this.l=+n,this.a=+t,void(this.b=+e)):arguments.length<2?n instanceof hn?new hn(n.l,n.a,n.b):n instanceof fn?sn(n.h,n.c,n.l):Sn((n=mn(n)).r,n.g,n.b):new hn(n,t,e)}function pn(n,t,e){var r=(n+16)/116,i=r+t/500,u=r-e/200;return i=vn(i)*na,r=vn(r)*ta,u=vn(u)*ea,new mn(yn(3.2404542*i-1.5371385*r-.4985314*u),yn(-.969266*i+1.8760108*r+.041556*u),yn(.0556434*i-.2040259*r+1.0572252*u))}function gn(n,t,e){return n>0?new fn(Math.atan2(e,t)*Zo,Math.sqrt(t*t+e*e),n):new fn(NaN,NaN,n)}function vn(n){return n>.206893034?n*n*n:(n-4/29)/7.787037}function dn(n){return n>.008856?Math.pow(n,1/3):7.787037*n+4/29}function yn(n){return Math.round(255*(.00304>=n?12.92*n:1.055*Math.pow(n,1/2.4)-.055))}function mn(n,t,e){return this instanceof mn?(this.r=~~n,this.g=~~t,void(this.b=~~e)):arguments.length<2?n instanceof mn?new mn(n.r,n.g,n.b):_n(""+n,mn,cn):new mn(n,t,e)}function Mn(n){return new mn(n>>16,n>>8&255,255&n)}function xn(n){return Mn(n)+""}function bn(n){return 16>n?"0"+Math.max(0,n).toString(16):Math.min(255,n).toString(16)}function _n(n,t,e){var r,i,u,o=0,a=0,l=0;if(r=/([a-z]+)\((.*)\)/.exec(n=n.toLowerCase()))switch(i=r[2].split(","),r[1]){case"hsl":return e(parseFloat(i[0]),parseFloat(i[1])/100,parseFloat(i[2])/100);case"rgb":return t(Nn(i[0]),Nn(i[1]),Nn(i[2]))}return(u=ua.get(n))?t(u.r,u.g,u.b):(null==n||"#"!==n.charAt(0)||isNaN(u=parseInt(n.slice(1),16))||(4===n.length?(o=(3840&u)>>4,o=o>>4|o,a=240&u,a=a>>4|a,l=15&u,l=l<<4|l):7===n.length&&(o=(16711680&u)>>16,a=(65280&u)>>8,l=255&u)),t(o,a,l))}function wn(n,t,e){var r,i,u=Math.min(n/=255,t/=255,e/=255),o=Math.max(n,t,e),a=o-u,l=(o+u)/2;return a?(i=.5>l?a/(o+u):a/(2-o-u),r=n==o?(t-e)/a+(e>t?6:0):t==o?(e-n)/a+2:(n-t)/a+4,r*=60):(r=NaN,i=l>0&&1>l?0:r),new ln(r,i,l)}function Sn(n,t,e){n=kn(n),t=kn(t),e=kn(e);var r=dn((.4124564*n+.3575761*t+.1804375*e)/na),i=dn((.2126729*n+.7151522*t+.072175*e)/ta),u=dn((.0193339*n+.119192*t+.9503041*e)/ea);return hn(116*i-16,500*(r-i),200*(i-u))}function kn(n){return(n/=255)<=.04045?n/12.92:Math.pow((n+.055)/1.055,2.4)}function Nn(n){var t=parseFloat(n);return"%"===n.charAt(n.length-1)?Math.round(2.55*t):t}function En(n){return"function"==typeof n?n:function(){return n}}function An(n){return function(t,e,r){return 2===arguments.length&&"function"==typeof e&&(r=e,e=null),Cn(t,e,n,r)}}function Cn(n,t,e,r){function i(){var n,t=l.status;if(!t&&Ln(l)||t>=200&&300>t||304===t){try{n=e.call(u,l)}catch(r){return void o.error.call(u,r)}o.load.call(u,n)}else o.error.call(u,l)}var u={},o=ao.dispatch("beforesend","progress","load","error"),a={},l=new XMLHttpRequest,c=null;return!this.XDomainRequest||"withCredentials"in l||!/^(http(s)?:)?\/\//.test(n)||(l=new XDomainRequest),"onload"in l?l.onload=l.onerror=i:l.onreadystatechange=function(){l.readyState>3&&i()},l.onprogress=function(n){var t=ao.event;ao.event=n;try{o.progress.call(u,l)}finally{ao.event=t}},u.header=function(n,t){return n=(n+"").toLowerCase(),arguments.length<2?a[n]:(null==t?delete a[n]:a[n]=t+"",u)},u.mimeType=function(n){return arguments.length?(t=null==n?null:n+"",u):t},u.responseType=function(n){return arguments.length?(c=n,u):c},u.response=function(n){return e=n,u},["get","post"].forEach(function(n){u[n]=function(){return u.send.apply(u,[n].concat(co(arguments)))}}),u.send=function(e,r,i){if(2===arguments.length&&"function"==typeof r&&(i=r,r=null),l.open(e,n,!0),null==t||"accept"in a||(a.accept=t+",*/*"),l.setRequestHeader)for(var f in a)l.setRequestHeader(f,a[f]);return null!=t&&l.overrideMimeType&&l.overrideMimeType(t),null!=c&&(l.responseType=c),null!=i&&u.on("error",i).on("load",function(n){i(null,n)}),o.beforesend.call(u,l),l.send(null==r?null:r),u},u.abort=function(){return l.abort(),u},ao.rebind(u,o,"on"),null==r?u:u.get(zn(r))}function zn(n){return 1===n.length?function(t,e){n(null==t?e:null)}:n}function Ln(n){var t=n.responseType;return t&&"text"!==t?n.response:n.responseText}function qn(n,t,e){var r=arguments.length;2>r&&(t=0),3>r&&(e=Date.now());var i=e+t,u={c:n,t:i,n:null};return aa?aa.n=u:oa=u,aa=u,la||(ca=clearTimeout(ca),la=1,fa(Tn)),u}function Tn(){var n=Rn(),t=Dn()-n;t>24?(isFinite(t)&&(clearTimeout(ca),ca=setTimeout(Tn,t)),la=0):(la=1,fa(Tn))}function Rn(){for(var n=Date.now(),t=oa;t;)n>=t.t&&t.c(n-t.t)&&(t.c=null),t=t.n;return n}function Dn(){for(var n,t=oa,e=1/0;t;)t.c?(t.t<e&&(e=t.t),t=(n=t).n):t=n?n.n=t.n:oa=t.n;return aa=n,e}function Pn(n,t){return t-(n?Math.ceil(Math.log(n)/Math.LN10):1)}function Un(n,t){var e=Math.pow(10,3*xo(8-t));return{scale:t>8?function(n){return n/e}:function(n){return n*e},symbol:n}}function jn(n){var t=n.decimal,e=n.thousands,r=n.grouping,i=n.currency,u=r&&e?function(n,t){for(var i=n.length,u=[],o=0,a=r[0],l=0;i>0&&a>0&&(l+a+1>t&&(a=Math.max(1,t-l)),u.push(n.substring(i-=a,i+a)),!((l+=a+1)>t));)a=r[o=(o+1)%r.length];return u.reverse().join(e)}:m;return function(n){var e=ha.exec(n),r=e[1]||" ",o=e[2]||">",a=e[3]||"-",l=e[4]||"",c=e[5],f=+e[6],s=e[7],h=e[8],p=e[9],g=1,v="",d="",y=!1,m=!0;switch(h&&(h=+h.substring(1)),(c||"0"===r&&"="===o)&&(c=r="0",o="="),p){case"n":s=!0,p="g";break;case"%":g=100,d="%",p="f";break;case"p":g=100,d="%",p="r";break;case"b":case"o":case"x":case"X":"#"===l&&(v="0"+p.toLowerCase());case"c":m=!1;case"d":y=!0,h=0;break;case"s":g=-1,p="r"}"$"===l&&(v=i[0],d=i[1]),"r"!=p||h||(p="g"),null!=h&&("g"==p?h=Math.max(1,Math.min(21,h)):"e"!=p&&"f"!=p||(h=Math.max(0,Math.min(20,h)))),p=pa.get(p)||Fn;var M=c&&s;return function(n){var e=d;if(y&&n%1)return"";var i=0>n||0===n&&0>1/n?(n=-n,"-"):"-"===a?"":a;if(0>g){var l=ao.formatPrefix(n,h);n=l.scale(n),e=l.symbol+d}else n*=g;n=p(n,h);var x,b,_=n.lastIndexOf(".");if(0>_){var w=m?n.lastIndexOf("e"):-1;0>w?(x=n,b=""):(x=n.substring(0,w),b=n.substring(w))}else x=n.substring(0,_),b=t+n.substring(_+1);!c&&s&&(x=u(x,1/0));var S=v.length+x.length+b.length+(M?0:i.length),k=f>S?new Array(S=f-S+1).join(r):"";return M&&(x=u(k+x,k.length?f-b.length:1/0)),i+=v,n=x+b,("<"===o?i+n+k:">"===o?k+i+n:"^"===o?k.substring(0,S>>=1)+i+n+k.substring(S):i+(M?n:k+n))+e}}}function Fn(n){return n+""}function Hn(){this._=new Date(arguments.length>1?Date.UTC.apply(this,arguments):arguments[0])}function On(n,t,e){function r(t){var e=n(t),r=u(e,1);return r-t>t-e?e:r}function i(e){return t(e=n(new va(e-1)),1),e}function u(n,e){return t(n=new va(+n),e),n}function o(n,r,u){var o=i(n),a=[];if(u>1)for(;r>o;)e(o)%u||a.push(new Date(+o)),t(o,1);else for(;r>o;)a.push(new Date(+o)),t(o,1);return a}function a(n,t,e){try{va=Hn;var r=new Hn;return r._=n,o(r,t,e)}finally{va=Date}}n.floor=n,n.round=r,n.ceil=i,n.offset=u,n.range=o;var l=n.utc=In(n);return l.floor=l,l.round=In(r),l.ceil=In(i),l.offset=In(u),l.range=a,n}function In(n){return function(t,e){try{va=Hn;var r=new Hn;return r._=t,n(r,e)._}finally{va=Date}}}function Yn(n){function t(n){function t(t){for(var e,i,u,o=[],a=-1,l=0;++a<r;)37===n.charCodeAt(a)&&(o.push(n.slice(l,a)),null!=(i=ya[e=n.charAt(++a)])&&(e=n.charAt(++a)),(u=A[e])&&(e=u(t,null==i?"e"===e?" ":"0":i)),o.push(e),l=a+1);return o.push(n.slice(l,a)),o.join("")}var r=n.length;return t.parse=function(t){var r={y:1900,m:0,d:1,H:0,M:0,S:0,L:0,Z:null},i=e(r,n,t,0);if(i!=t.length)return null;"p"in r&&(r.H=r.H%12+12*r.p);var u=null!=r.Z&&va!==Hn,o=new(u?Hn:va);return"j"in r?o.setFullYear(r.y,0,r.j):"W"in r||"U"in r?("w"in r||(r.w="W"in r?1:0),o.setFullYear(r.y,0,1),o.setFullYear(r.y,0,"W"in r?(r.w+6)%7+7*r.W-(o.getDay()+5)%7:r.w+7*r.U-(o.getDay()+6)%7)):o.setFullYear(r.y,r.m,r.d),o.setHours(r.H+(r.Z/100|0),r.M+r.Z%100,r.S,r.L),u?o._:o},t.toString=function(){return n},t}function e(n,t,e,r){for(var i,u,o,a=0,l=t.length,c=e.length;l>a;){if(r>=c)return-1;if(i=t.charCodeAt(a++),37===i){if(o=t.charAt(a++),u=C[o in ya?t.charAt(a++):o],!u||(r=u(n,e,r))<0)return-1}else if(i!=e.charCodeAt(r++))return-1}return r}function r(n,t,e){_.lastIndex=0;var r=_.exec(t.slice(e));return r?(n.w=w.get(r[0].toLowerCase()),e+r[0].length):-1}function i(n,t,e){x.lastIndex=0;var r=x.exec(t.slice(e));return r?(n.w=b.get(r[0].toLowerCase()),e+r[0].length):-1}function u(n,t,e){N.lastIndex=0;var r=N.exec(t.slice(e));return r?(n.m=E.get(r[0].toLowerCase()),e+r[0].length):-1}function o(n,t,e){S.lastIndex=0;var r=S.exec(t.slice(e));return r?(n.m=k.get(r[0].toLowerCase()),e+r[0].length):-1}function a(n,t,r){return e(n,A.c.toString(),t,r)}function l(n,t,r){return e(n,A.x.toString(),t,r)}function c(n,t,r){return e(n,A.X.toString(),t,r)}function f(n,t,e){var r=M.get(t.slice(e,e+=2).toLowerCase());return null==r?-1:(n.p=r,e)}var s=n.dateTime,h=n.date,p=n.time,g=n.periods,v=n.days,d=n.shortDays,y=n.months,m=n.shortMonths;t.utc=function(n){function e(n){try{va=Hn;var t=new va;return t._=n,r(t)}finally{va=Date}}var r=t(n);return e.parse=function(n){try{va=Hn;var t=r.parse(n);return t&&t._}finally{va=Date}},e.toString=r.toString,e},t.multi=t.utc.multi=ct;var M=ao.map(),x=Vn(v),b=Xn(v),_=Vn(d),w=Xn(d),S=Vn(y),k=Xn(y),N=Vn(m),E=Xn(m);g.forEach(function(n,t){M.set(n.toLowerCase(),t)});var A={a:function(n){return d[n.getDay()]},A:function(n){return v[n.getDay()]},b:function(n){return m[n.getMonth()]},B:function(n){return y[n.getMonth()]},c:t(s),d:function(n,t){return Zn(n.getDate(),t,2)},e:function(n,t){return Zn(n.getDate(),t,2)},H:function(n,t){return Zn(n.getHours(),t,2)},I:function(n,t){return Zn(n.getHours()%12||12,t,2)},j:function(n,t){return Zn(1+ga.dayOfYear(n),t,3)},L:function(n,t){return Zn(n.getMilliseconds(),t,3)},m:function(n,t){return Zn(n.getMonth()+1,t,2)},M:function(n,t){return Zn(n.getMinutes(),t,2)},p:function(n){return g[+(n.getHours()>=12)]},S:function(n,t){return Zn(n.getSeconds(),t,2)},U:function(n,t){return Zn(ga.sundayOfYear(n),t,2)},w:function(n){return n.getDay()},W:function(n,t){return Zn(ga.mondayOfYear(n),t,2)},x:t(h),X:t(p),y:function(n,t){return Zn(n.getFullYear()%100,t,2)},Y:function(n,t){return Zn(n.getFullYear()%1e4,t,4)},Z:at,"%":function(){return"%"}},C={a:r,A:i,b:u,B:o,c:a,d:tt,e:tt,H:rt,I:rt,j:et,L:ot,m:nt,M:it,p:f,S:ut,U:Bn,w:$n,W:Wn,x:l,X:c,y:Gn,Y:Jn,Z:Kn,"%":lt};return t}function Zn(n,t,e){var r=0>n?"-":"",i=(r?-n:n)+"",u=i.length;return r+(e>u?new Array(e-u+1).join(t)+i:i)}function Vn(n){return new RegExp("^(?:"+n.map(ao.requote).join("|")+")","i")}function Xn(n){for(var t=new c,e=-1,r=n.length;++e<r;)t.set(n[e].toLowerCase(),e);return t}function $n(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+1));return r?(n.w=+r[0],e+r[0].length):-1}function Bn(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e));return r?(n.U=+r[0],e+r[0].length):-1}function Wn(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e));return r?(n.W=+r[0],e+r[0].length):-1}function Jn(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+4));return r?(n.y=+r[0],e+r[0].length):-1}function Gn(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+2));return r?(n.y=Qn(+r[0]),e+r[0].length):-1}function Kn(n,t,e){return/^[+-]\d{4}$/.test(t=t.slice(e,e+5))?(n.Z=-t,e+5):-1}function Qn(n){return n+(n>68?1900:2e3)}function nt(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+2));return r?(n.m=r[0]-1,e+r[0].length):-1}function tt(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+2));return r?(n.d=+r[0],e+r[0].length):-1}function et(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+3));return r?(n.j=+r[0],e+r[0].length):-1}function rt(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+2));return r?(n.H=+r[0],e+r[0].length):-1}function it(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+2));return r?(n.M=+r[0],e+r[0].length):-1}function ut(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+2));return r?(n.S=+r[0],e+r[0].length):-1}function ot(n,t,e){ma.lastIndex=0;var r=ma.exec(t.slice(e,e+3));return r?(n.L=+r[0],e+r[0].length):-1}function at(n){var t=n.getTimezoneOffset(),e=t>0?"-":"+",r=xo(t)/60|0,i=xo(t)%60;return e+Zn(r,"0",2)+Zn(i,"0",2)}function lt(n,t,e){Ma.lastIndex=0;var r=Ma.exec(t.slice(e,e+1));return r?e+r[0].length:-1}function ct(n){for(var t=n.length,e=-1;++e<t;)n[e][0]=this(n[e][0]);return function(t){for(var e=0,r=n[e];!r[1](t);)r=n[++e];return r[0](t)}}function ft(){}function st(n,t,e){var r=e.s=n+t,i=r-n,u=r-i;e.t=n-u+(t-i)}function ht(n,t){n&&wa.hasOwnProperty(n.type)&&wa[n.type](n,t)}function pt(n,t,e){var r,i=-1,u=n.length-e;for(t.lineStart();++i<u;)r=n[i],t.point(r[0],r[1],r[2]);t.lineEnd()}function gt(n,t){var e=-1,r=n.length;for(t.polygonStart();++e<r;)pt(n[e],t,1);t.polygonEnd()}function vt(){function n(n,t){n*=Yo,t=t*Yo/2+Fo/4;var e=n-r,o=e>=0?1:-1,a=o*e,l=Math.cos(t),c=Math.sin(t),f=u*c,s=i*l+f*Math.cos(a),h=f*o*Math.sin(a);ka.add(Math.atan2(h,s)),r=n,i=l,u=c}var t,e,r,i,u;Na.point=function(o,a){Na.point=n,r=(t=o)*Yo,i=Math.cos(a=(e=a)*Yo/2+Fo/4),u=Math.sin(a)},Na.lineEnd=function(){n(t,e)}}function dt(n){var t=n[0],e=n[1],r=Math.cos(e);return[r*Math.cos(t),r*Math.sin(t),Math.sin(e)]}function yt(n,t){return n[0]*t[0]+n[1]*t[1]+n[2]*t[2]}function mt(n,t){return[n[1]*t[2]-n[2]*t[1],n[2]*t[0]-n[0]*t[2],n[0]*t[1]-n[1]*t[0]]}function Mt(n,t){n[0]+=t[0],n[1]+=t[1],n[2]+=t[2]}function xt(n,t){return[n[0]*t,n[1]*t,n[2]*t]}function bt(n){var t=Math.sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]);n[0]/=t,n[1]/=t,n[2]/=t}function _t(n){return[Math.atan2(n[1],n[0]),tn(n[2])]}function wt(n,t){return xo(n[0]-t[0])<Uo&&xo(n[1]-t[1])<Uo}function St(n,t){n*=Yo;var e=Math.cos(t*=Yo);kt(e*Math.cos(n),e*Math.sin(n),Math.sin(t))}function kt(n,t,e){++Ea,Ca+=(n-Ca)/Ea,za+=(t-za)/Ea,La+=(e-La)/Ea}function Nt(){function n(n,i){n*=Yo;var u=Math.cos(i*=Yo),o=u*Math.cos(n),a=u*Math.sin(n),l=Math.sin(i),c=Math.atan2(Math.sqrt((c=e*l-r*a)*c+(c=r*o-t*l)*c+(c=t*a-e*o)*c),t*o+e*a+r*l);Aa+=c,qa+=c*(t+(t=o)),Ta+=c*(e+(e=a)),Ra+=c*(r+(r=l)),kt(t,e,r)}var t,e,r;ja.point=function(i,u){i*=Yo;var o=Math.cos(u*=Yo);t=o*Math.cos(i),e=o*Math.sin(i),r=Math.sin(u),ja.point=n,kt(t,e,r)}}function Et(){ja.point=St}function At(){function n(n,t){n*=Yo;var e=Math.cos(t*=Yo),o=e*Math.cos(n),a=e*Math.sin(n),l=Math.sin(t),c=i*l-u*a,f=u*o-r*l,s=r*a-i*o,h=Math.sqrt(c*c+f*f+s*s),p=r*o+i*a+u*l,g=h&&-nn(p)/h,v=Math.atan2(h,p);Da+=g*c,Pa+=g*f,Ua+=g*s,Aa+=v,qa+=v*(r+(r=o)),Ta+=v*(i+(i=a)),Ra+=v*(u+(u=l)),kt(r,i,u)}var t,e,r,i,u;ja.point=function(o,a){t=o,e=a,ja.point=n,o*=Yo;var l=Math.cos(a*=Yo);r=l*Math.cos(o),i=l*Math.sin(o),u=Math.sin(a),kt(r,i,u)},ja.lineEnd=function(){n(t,e),ja.lineEnd=Et,ja.point=St}}function Ct(n,t){function e(e,r){return e=n(e,r),t(e[0],e[1])}return n.invert&&t.invert&&(e.invert=function(e,r){return e=t.invert(e,r),e&&n.invert(e[0],e[1])}),e}function zt(){return!0}function Lt(n,t,e,r,i){var u=[],o=[];if(n.forEach(function(n){if(!((t=n.length-1)<=0)){var t,e=n[0],r=n[t];if(wt(e,r)){i.lineStart();for(var a=0;t>a;++a)i.point((e=n[a])[0],e[1]);return void i.lineEnd()}var l=new Tt(e,n,null,!0),c=new Tt(e,null,l,!1);l.o=c,u.push(l),o.push(c),l=new Tt(r,n,null,!1),c=new Tt(r,null,l,!0),l.o=c,u.push(l),o.push(c)}}),o.sort(t),qt(u),qt(o),u.length){for(var a=0,l=e,c=o.length;c>a;++a)o[a].e=l=!l;for(var f,s,h=u[0];;){for(var p=h,g=!0;p.v;)if((p=p.n)===h)return;f=p.z,i.lineStart();do{if(p.v=p.o.v=!0,p.e){if(g)for(var a=0,c=f.length;c>a;++a)i.point((s=f[a])[0],s[1]);else r(p.x,p.n.x,1,i);p=p.n}else{if(g){f=p.p.z;for(var a=f.length-1;a>=0;--a)i.point((s=f[a])[0],s[1])}else r(p.x,p.p.x,-1,i);p=p.p}p=p.o,f=p.z,g=!g}while(!p.v);i.lineEnd()}}}function qt(n){if(t=n.length){for(var t,e,r=0,i=n[0];++r<t;)i.n=e=n[r],e.p=i,i=e;i.n=e=n[0],e.p=i}}function Tt(n,t,e,r){this.x=n,this.z=t,this.o=e,this.e=r,this.v=!1,this.n=this.p=null}function Rt(n,t,e,r){return function(i,u){function o(t,e){var r=i(t,e);n(t=r[0],e=r[1])&&u.point(t,e)}function a(n,t){var e=i(n,t);d.point(e[0],e[1])}function l(){m.point=a,d.lineStart()}function c(){m.point=o,d.lineEnd()}function f(n,t){v.push([n,t]);var e=i(n,t);x.point(e[0],e[1])}function s(){x.lineStart(),v=[]}function h(){f(v[0][0],v[0][1]),x.lineEnd();var n,t=x.clean(),e=M.buffer(),r=e.length;if(v.pop(),g.push(v),v=null,r)if(1&t){n=e[0];var i,r=n.length-1,o=-1;if(r>0){for(b||(u.polygonStart(),b=!0),u.lineStart();++o<r;)u.point((i=n[o])[0],i[1]);u.lineEnd()}}else r>1&&2&t&&e.push(e.pop().concat(e.shift())),p.push(e.filter(Dt))}var p,g,v,d=t(u),y=i.invert(r[0],r[1]),m={point:o,lineStart:l,lineEnd:c,polygonStart:function(){m.point=f,m.lineStart=s,m.lineEnd=h,p=[],g=[]},polygonEnd:function(){m.point=o,m.lineStart=l,m.lineEnd=c,p=ao.merge(p);var n=Ot(y,g);p.length?(b||(u.polygonStart(),b=!0),Lt(p,Ut,n,e,u)):n&&(b||(u.polygonStart(),b=!0),u.lineStart(),e(null,null,1,u),u.lineEnd()),b&&(u.polygonEnd(),b=!1),p=g=null},sphere:function(){u.polygonStart(),u.lineStart(),e(null,null,1,u),u.lineEnd(),u.polygonEnd()}},M=Pt(),x=t(M),b=!1;return m}}function Dt(n){return n.length>1}function Pt(){var n,t=[];return{lineStart:function(){t.push(n=[])},point:function(t,e){n.push([t,e])},lineEnd:b,buffer:function(){var e=t;return t=[],n=null,e},rejoin:function(){t.length>1&&t.push(t.pop().concat(t.shift()))}}}function Ut(n,t){return((n=n.x)[0]<0?n[1]-Io-Uo:Io-n[1])-((t=t.x)[0]<0?t[1]-Io-Uo:Io-t[1])}function jt(n){var t,e=NaN,r=NaN,i=NaN;return{lineStart:function(){n.lineStart(),t=1},point:function(u,o){var a=u>0?Fo:-Fo,l=xo(u-e);xo(l-Fo)<Uo?(n.point(e,r=(r+o)/2>0?Io:-Io),n.point(i,r),n.lineEnd(),n.lineStart(),n.point(a,r),n.point(u,r),t=0):i!==a&&l>=Fo&&(xo(e-i)<Uo&&(e-=i*Uo),xo(u-a)<Uo&&(u-=a*Uo),r=Ft(e,r,u,o),n.point(i,r),n.lineEnd(),n.lineStart(),n.point(a,r),t=0),n.point(e=u,r=o),i=a},lineEnd:function(){n.lineEnd(),e=r=NaN},clean:function(){return 2-t}}}function Ft(n,t,e,r){var i,u,o=Math.sin(n-e);return xo(o)>Uo?Math.atan((Math.sin(t)*(u=Math.cos(r))*Math.sin(e)-Math.sin(r)*(i=Math.cos(t))*Math.sin(n))/(i*u*o)):(t+r)/2}function Ht(n,t,e,r){var i;if(null==n)i=e*Io,r.point(-Fo,i),r.point(0,i),r.point(Fo,i),r.point(Fo,0),r.point(Fo,-i),r.point(0,-i),r.point(-Fo,-i),r.point(-Fo,0),r.point(-Fo,i);else if(xo(n[0]-t[0])>Uo){var u=n[0]<t[0]?Fo:-Fo;i=e*u/2,r.point(-u,i),r.point(0,i),r.point(u,i)}else r.point(t[0],t[1])}function Ot(n,t){var e=n[0],r=n[1],i=[Math.sin(e),-Math.cos(e),0],u=0,o=0;ka.reset();for(var a=0,l=t.length;l>a;++a){var c=t[a],f=c.length;if(f)for(var s=c[0],h=s[0],p=s[1]/2+Fo/4,g=Math.sin(p),v=Math.cos(p),d=1;;){d===f&&(d=0),n=c[d];var y=n[0],m=n[1]/2+Fo/4,M=Math.sin(m),x=Math.cos(m),b=y-h,_=b>=0?1:-1,w=_*b,S=w>Fo,k=g*M;if(ka.add(Math.atan2(k*_*Math.sin(w),v*x+k*Math.cos(w))),u+=S?b+_*Ho:b,S^h>=e^y>=e){var N=mt(dt(s),dt(n));bt(N);var E=mt(i,N);bt(E);var A=(S^b>=0?-1:1)*tn(E[2]);(r>A||r===A&&(N[0]||N[1]))&&(o+=S^b>=0?1:-1)}if(!d++)break;h=y,g=M,v=x,s=n}}return(-Uo>u||Uo>u&&-Uo>ka)^1&o}function It(n){function t(n,t){return Math.cos(n)*Math.cos(t)>u}function e(n){var e,u,l,c,f;return{lineStart:function(){c=l=!1,f=1},point:function(s,h){var p,g=[s,h],v=t(s,h),d=o?v?0:i(s,h):v?i(s+(0>s?Fo:-Fo),h):0;if(!e&&(c=l=v)&&n.lineStart(),v!==l&&(p=r(e,g),(wt(e,p)||wt(g,p))&&(g[0]+=Uo,g[1]+=Uo,v=t(g[0],g[1]))),v!==l)f=0,v?(n.lineStart(),p=r(g,e),n.point(p[0],p[1])):(p=r(e,g),n.point(p[0],p[1]),n.lineEnd()),e=p;else if(a&&e&&o^v){var y;d&u||!(y=r(g,e,!0))||(f=0,o?(n.lineStart(),n.point(y[0][0],y[0][1]),n.point(y[1][0],y[1][1]),n.lineEnd()):(n.point(y[1][0],y[1][1]),n.lineEnd(),n.lineStart(),n.point(y[0][0],y[0][1])))}!v||e&&wt(e,g)||n.point(g[0],g[1]),e=g,l=v,u=d},lineEnd:function(){l&&n.lineEnd(),e=null},clean:function(){return f|(c&&l)<<1}}}function r(n,t,e){var r=dt(n),i=dt(t),o=[1,0,0],a=mt(r,i),l=yt(a,a),c=a[0],f=l-c*c;if(!f)return!e&&n;var s=u*l/f,h=-u*c/f,p=mt(o,a),g=xt(o,s),v=xt(a,h);Mt(g,v);var d=p,y=yt(g,d),m=yt(d,d),M=y*y-m*(yt(g,g)-1);if(!(0>M)){var x=Math.sqrt(M),b=xt(d,(-y-x)/m);if(Mt(b,g),b=_t(b),!e)return b;var _,w=n[0],S=t[0],k=n[1],N=t[1];w>S&&(_=w,w=S,S=_);var E=S-w,A=xo(E-Fo)<Uo,C=A||Uo>E;if(!A&&k>N&&(_=k,k=N,N=_),C?A?k+N>0^b[1]<(xo(b[0]-w)<Uo?k:N):k<=b[1]&&b[1]<=N:E>Fo^(w<=b[0]&&b[0]<=S)){var z=xt(d,(-y+x)/m);return Mt(z,g),[b,_t(z)]}}}function i(t,e){var r=o?n:Fo-n,i=0;return-r>t?i|=1:t>r&&(i|=2),-r>e?i|=4:e>r&&(i|=8),i}var u=Math.cos(n),o=u>0,a=xo(u)>Uo,l=ve(n,6*Yo);return Rt(t,e,l,o?[0,-n]:[-Fo,n-Fo])}function Yt(n,t,e,r){return function(i){var u,o=i.a,a=i.b,l=o.x,c=o.y,f=a.x,s=a.y,h=0,p=1,g=f-l,v=s-c;if(u=n-l,g||!(u>0)){if(u/=g,0>g){if(h>u)return;p>u&&(p=u)}else if(g>0){if(u>p)return;u>h&&(h=u)}if(u=e-l,g||!(0>u)){if(u/=g,0>g){if(u>p)return;u>h&&(h=u)}else if(g>0){if(h>u)return;p>u&&(p=u)}if(u=t-c,v||!(u>0)){if(u/=v,0>v){if(h>u)return;p>u&&(p=u)}else if(v>0){if(u>p)return;u>h&&(h=u)}if(u=r-c,v||!(0>u)){if(u/=v,0>v){if(u>p)return;u>h&&(h=u)}else if(v>0){if(h>u)return;p>u&&(p=u)}return h>0&&(i.a={x:l+h*g,y:c+h*v}),1>p&&(i.b={x:l+p*g,y:c+p*v}),i}}}}}}function Zt(n,t,e,r){function i(r,i){return xo(r[0]-n)<Uo?i>0?0:3:xo(r[0]-e)<Uo?i>0?2:1:xo(r[1]-t)<Uo?i>0?1:0:i>0?3:2}function u(n,t){return o(n.x,t.x)}function o(n,t){var e=i(n,1),r=i(t,1);return e!==r?e-r:0===e?t[1]-n[1]:1===e?n[0]-t[0]:2===e?n[1]-t[1]:t[0]-n[0]}return function(a){function l(n){for(var t=0,e=d.length,r=n[1],i=0;e>i;++i)for(var u,o=1,a=d[i],l=a.length,c=a[0];l>o;++o)u=a[o],c[1]<=r?u[1]>r&&Q(c,u,n)>0&&++t:u[1]<=r&&Q(c,u,n)<0&&--t,c=u;return 0!==t}function c(u,a,l,c){var f=0,s=0;if(null==u||(f=i(u,l))!==(s=i(a,l))||o(u,a)<0^l>0){do c.point(0===f||3===f?n:e,f>1?r:t);while((f=(f+l+4)%4)!==s)}else c.point(a[0],a[1])}function f(i,u){return i>=n&&e>=i&&u>=t&&r>=u}function s(n,t){f(n,t)&&a.point(n,t)}function h(){C.point=g,d&&d.push(y=[]),S=!0,w=!1,b=_=NaN}function p(){v&&(g(m,M),x&&w&&E.rejoin(),v.push(E.buffer())),C.point=s,w&&a.lineEnd()}function g(n,t){n=Math.max(-Ha,Math.min(Ha,n)),t=Math.max(-Ha,Math.min(Ha,t));var e=f(n,t);if(d&&y.push([n,t]),S)m=n,M=t,x=e,S=!1,e&&(a.lineStart(),a.point(n,t));else if(e&&w)a.point(n,t);else{var r={a:{x:b,y:_},b:{x:n,y:t}};A(r)?(w||(a.lineStart(),a.point(r.a.x,r.a.y)),a.point(r.b.x,r.b.y),e||a.lineEnd(),k=!1):e&&(a.lineStart(),a.point(n,t),k=!1)}b=n,_=t,w=e}var v,d,y,m,M,x,b,_,w,S,k,N=a,E=Pt(),A=Yt(n,t,e,r),C={point:s,lineStart:h,lineEnd:p,polygonStart:function(){a=E,v=[],d=[],k=!0},polygonEnd:function(){a=N,v=ao.merge(v);var t=l([n,r]),e=k&&t,i=v.length;(e||i)&&(a.polygonStart(),e&&(a.lineStart(),c(null,null,1,a),a.lineEnd()),i&&Lt(v,u,t,c,a),a.polygonEnd()),v=d=y=null}};return C}}function Vt(n){var t=0,e=Fo/3,r=ae(n),i=r(t,e);return i.parallels=function(n){return arguments.length?r(t=n[0]*Fo/180,e=n[1]*Fo/180):[t/Fo*180,e/Fo*180]},i}function Xt(n,t){function e(n,t){var e=Math.sqrt(u-2*i*Math.sin(t))/i;return[e*Math.sin(n*=i),o-e*Math.cos(n)]}var r=Math.sin(n),i=(r+Math.sin(t))/2,u=1+r*(2*i-r),o=Math.sqrt(u)/i;return e.invert=function(n,t){var e=o-t;return[Math.atan2(n,e)/i,tn((u-(n*n+e*e)*i*i)/(2*i))]},e}function $t(){function n(n,t){Ia+=i*n-r*t,r=n,i=t}var t,e,r,i;$a.point=function(u,o){$a.point=n,t=r=u,e=i=o},$a.lineEnd=function(){n(t,e)}}function Bt(n,t){Ya>n&&(Ya=n),n>Va&&(Va=n),Za>t&&(Za=t),t>Xa&&(Xa=t)}function Wt(){function n(n,t){o.push("M",n,",",t,u)}function t(n,t){o.push("M",n,",",t),a.point=e}function e(n,t){o.push("L",n,",",t)}function r(){a.point=n}function i(){o.push("Z")}var u=Jt(4.5),o=[],a={point:n,lineStart:function(){a.point=t},lineEnd:r,polygonStart:function(){a.lineEnd=i},polygonEnd:function(){a.lineEnd=r,a.point=n},pointRadius:function(n){return u=Jt(n),a},result:function(){if(o.length){var n=o.join("");return o=[],n}}};return a}function Jt(n){return"m0,"+n+"a"+n+","+n+" 0 1,1 0,"+-2*n+"a"+n+","+n+" 0 1,1 0,"+2*n+"z"}function Gt(n,t){Ca+=n,za+=t,++La}function Kt(){function n(n,r){var i=n-t,u=r-e,o=Math.sqrt(i*i+u*u);qa+=o*(t+n)/2,Ta+=o*(e+r)/2,Ra+=o,Gt(t=n,e=r)}var t,e;Wa.point=function(r,i){Wa.point=n,Gt(t=r,e=i)}}function Qt(){Wa.point=Gt}function ne(){function n(n,t){var e=n-r,u=t-i,o=Math.sqrt(e*e+u*u);qa+=o*(r+n)/2,Ta+=o*(i+t)/2,Ra+=o,o=i*n-r*t,Da+=o*(r+n),Pa+=o*(i+t),Ua+=3*o,Gt(r=n,i=t)}var t,e,r,i;Wa.point=function(u,o){Wa.point=n,Gt(t=r=u,e=i=o)},Wa.lineEnd=function(){n(t,e)}}function te(n){function t(t,e){n.moveTo(t+o,e),n.arc(t,e,o,0,Ho)}function e(t,e){n.moveTo(t,e),a.point=r}function r(t,e){n.lineTo(t,e)}function i(){a.point=t}function u(){n.closePath()}var o=4.5,a={point:t,lineStart:function(){a.point=e},lineEnd:i,polygonStart:function(){a.lineEnd=u},polygonEnd:function(){a.lineEnd=i,a.point=t},pointRadius:function(n){return o=n,a},result:b};return a}function ee(n){function t(n){return(a?r:e)(n)}function e(t){return ue(t,function(e,r){e=n(e,r),t.point(e[0],e[1])})}function r(t){function e(e,r){e=n(e,r),t.point(e[0],e[1])}function r(){M=NaN,S.point=u,t.lineStart()}function u(e,r){var u=dt([e,r]),o=n(e,r);i(M,x,m,b,_,w,M=o[0],x=o[1],m=e,b=u[0],_=u[1],w=u[2],a,t),t.point(M,x)}function o(){S.point=e,t.lineEnd()}function l(){
-r(),S.point=c,S.lineEnd=f}function c(n,t){u(s=n,h=t),p=M,g=x,v=b,d=_,y=w,S.point=u}function f(){i(M,x,m,b,_,w,p,g,s,v,d,y,a,t),S.lineEnd=o,o()}var s,h,p,g,v,d,y,m,M,x,b,_,w,S={point:e,lineStart:r,lineEnd:o,polygonStart:function(){t.polygonStart(),S.lineStart=l},polygonEnd:function(){t.polygonEnd(),S.lineStart=r}};return S}function i(t,e,r,a,l,c,f,s,h,p,g,v,d,y){var m=f-t,M=s-e,x=m*m+M*M;if(x>4*u&&d--){var b=a+p,_=l+g,w=c+v,S=Math.sqrt(b*b+_*_+w*w),k=Math.asin(w/=S),N=xo(xo(w)-1)<Uo||xo(r-h)<Uo?(r+h)/2:Math.atan2(_,b),E=n(N,k),A=E[0],C=E[1],z=A-t,L=C-e,q=M*z-m*L;(q*q/x>u||xo((m*z+M*L)/x-.5)>.3||o>a*p+l*g+c*v)&&(i(t,e,r,a,l,c,A,C,N,b/=S,_/=S,w,d,y),y.point(A,C),i(A,C,N,b,_,w,f,s,h,p,g,v,d,y))}}var u=.5,o=Math.cos(30*Yo),a=16;return t.precision=function(n){return arguments.length?(a=(u=n*n)>0&&16,t):Math.sqrt(u)},t}function re(n){var t=ee(function(t,e){return n([t*Zo,e*Zo])});return function(n){return le(t(n))}}function ie(n){this.stream=n}function ue(n,t){return{point:t,sphere:function(){n.sphere()},lineStart:function(){n.lineStart()},lineEnd:function(){n.lineEnd()},polygonStart:function(){n.polygonStart()},polygonEnd:function(){n.polygonEnd()}}}function oe(n){return ae(function(){return n})()}function ae(n){function t(n){return n=a(n[0]*Yo,n[1]*Yo),[n[0]*h+l,c-n[1]*h]}function e(n){return n=a.invert((n[0]-l)/h,(c-n[1])/h),n&&[n[0]*Zo,n[1]*Zo]}function r(){a=Ct(o=se(y,M,x),u);var n=u(v,d);return l=p-n[0]*h,c=g+n[1]*h,i()}function i(){return f&&(f.valid=!1,f=null),t}var u,o,a,l,c,f,s=ee(function(n,t){return n=u(n,t),[n[0]*h+l,c-n[1]*h]}),h=150,p=480,g=250,v=0,d=0,y=0,M=0,x=0,b=Fa,_=m,w=null,S=null;return t.stream=function(n){return f&&(f.valid=!1),f=le(b(o,s(_(n)))),f.valid=!0,f},t.clipAngle=function(n){return arguments.length?(b=null==n?(w=n,Fa):It((w=+n)*Yo),i()):w},t.clipExtent=function(n){return arguments.length?(S=n,_=n?Zt(n[0][0],n[0][1],n[1][0],n[1][1]):m,i()):S},t.scale=function(n){return arguments.length?(h=+n,r()):h},t.translate=function(n){return arguments.length?(p=+n[0],g=+n[1],r()):[p,g]},t.center=function(n){return arguments.length?(v=n[0]%360*Yo,d=n[1]%360*Yo,r()):[v*Zo,d*Zo]},t.rotate=function(n){return arguments.length?(y=n[0]%360*Yo,M=n[1]%360*Yo,x=n.length>2?n[2]%360*Yo:0,r()):[y*Zo,M*Zo,x*Zo]},ao.rebind(t,s,"precision"),function(){return u=n.apply(this,arguments),t.invert=u.invert&&e,r()}}function le(n){return ue(n,function(t,e){n.point(t*Yo,e*Yo)})}function ce(n,t){return[n,t]}function fe(n,t){return[n>Fo?n-Ho:-Fo>n?n+Ho:n,t]}function se(n,t,e){return n?t||e?Ct(pe(n),ge(t,e)):pe(n):t||e?ge(t,e):fe}function he(n){return function(t,e){return t+=n,[t>Fo?t-Ho:-Fo>t?t+Ho:t,e]}}function pe(n){var t=he(n);return t.invert=he(-n),t}function ge(n,t){function e(n,t){var e=Math.cos(t),a=Math.cos(n)*e,l=Math.sin(n)*e,c=Math.sin(t),f=c*r+a*i;return[Math.atan2(l*u-f*o,a*r-c*i),tn(f*u+l*o)]}var r=Math.cos(n),i=Math.sin(n),u=Math.cos(t),o=Math.sin(t);return e.invert=function(n,t){var e=Math.cos(t),a=Math.cos(n)*e,l=Math.sin(n)*e,c=Math.sin(t),f=c*u-l*o;return[Math.atan2(l*u+c*o,a*r+f*i),tn(f*r-a*i)]},e}function ve(n,t){var e=Math.cos(n),r=Math.sin(n);return function(i,u,o,a){var l=o*t;null!=i?(i=de(e,i),u=de(e,u),(o>0?u>i:i>u)&&(i+=o*Ho)):(i=n+o*Ho,u=n-.5*l);for(var c,f=i;o>0?f>u:u>f;f-=l)a.point((c=_t([e,-r*Math.cos(f),-r*Math.sin(f)]))[0],c[1])}}function de(n,t){var e=dt(t);e[0]-=n,bt(e);var r=nn(-e[1]);return((-e[2]<0?-r:r)+2*Math.PI-Uo)%(2*Math.PI)}function ye(n,t,e){var r=ao.range(n,t-Uo,e).concat(t);return function(n){return r.map(function(t){return[n,t]})}}function me(n,t,e){var r=ao.range(n,t-Uo,e).concat(t);return function(n){return r.map(function(t){return[t,n]})}}function Me(n){return n.source}function xe(n){return n.target}function be(n,t,e,r){var i=Math.cos(t),u=Math.sin(t),o=Math.cos(r),a=Math.sin(r),l=i*Math.cos(n),c=i*Math.sin(n),f=o*Math.cos(e),s=o*Math.sin(e),h=2*Math.asin(Math.sqrt(on(r-t)+i*o*on(e-n))),p=1/Math.sin(h),g=h?function(n){var t=Math.sin(n*=h)*p,e=Math.sin(h-n)*p,r=e*l+t*f,i=e*c+t*s,o=e*u+t*a;return[Math.atan2(i,r)*Zo,Math.atan2(o,Math.sqrt(r*r+i*i))*Zo]}:function(){return[n*Zo,t*Zo]};return g.distance=h,g}function _e(){function n(n,i){var u=Math.sin(i*=Yo),o=Math.cos(i),a=xo((n*=Yo)-t),l=Math.cos(a);Ja+=Math.atan2(Math.sqrt((a=o*Math.sin(a))*a+(a=r*u-e*o*l)*a),e*u+r*o*l),t=n,e=u,r=o}var t,e,r;Ga.point=function(i,u){t=i*Yo,e=Math.sin(u*=Yo),r=Math.cos(u),Ga.point=n},Ga.lineEnd=function(){Ga.point=Ga.lineEnd=b}}function we(n,t){function e(t,e){var r=Math.cos(t),i=Math.cos(e),u=n(r*i);return[u*i*Math.sin(t),u*Math.sin(e)]}return e.invert=function(n,e){var r=Math.sqrt(n*n+e*e),i=t(r),u=Math.sin(i),o=Math.cos(i);return[Math.atan2(n*u,r*o),Math.asin(r&&e*u/r)]},e}function Se(n,t){function e(n,t){o>0?-Io+Uo>t&&(t=-Io+Uo):t>Io-Uo&&(t=Io-Uo);var e=o/Math.pow(i(t),u);return[e*Math.sin(u*n),o-e*Math.cos(u*n)]}var r=Math.cos(n),i=function(n){return Math.tan(Fo/4+n/2)},u=n===t?Math.sin(n):Math.log(r/Math.cos(t))/Math.log(i(t)/i(n)),o=r*Math.pow(i(n),u)/u;return u?(e.invert=function(n,t){var e=o-t,r=K(u)*Math.sqrt(n*n+e*e);return[Math.atan2(n,e)/u,2*Math.atan(Math.pow(o/r,1/u))-Io]},e):Ne}function ke(n,t){function e(n,t){var e=u-t;return[e*Math.sin(i*n),u-e*Math.cos(i*n)]}var r=Math.cos(n),i=n===t?Math.sin(n):(r-Math.cos(t))/(t-n),u=r/i+n;return xo(i)<Uo?ce:(e.invert=function(n,t){var e=u-t;return[Math.atan2(n,e)/i,u-K(i)*Math.sqrt(n*n+e*e)]},e)}function Ne(n,t){return[n,Math.log(Math.tan(Fo/4+t/2))]}function Ee(n){var t,e=oe(n),r=e.scale,i=e.translate,u=e.clipExtent;return e.scale=function(){var n=r.apply(e,arguments);return n===e?t?e.clipExtent(null):e:n},e.translate=function(){var n=i.apply(e,arguments);return n===e?t?e.clipExtent(null):e:n},e.clipExtent=function(n){var o=u.apply(e,arguments);if(o===e){if(t=null==n){var a=Fo*r(),l=i();u([[l[0]-a,l[1]-a],[l[0]+a,l[1]+a]])}}else t&&(o=null);return o},e.clipExtent(null)}function Ae(n,t){return[Math.log(Math.tan(Fo/4+t/2)),-n]}function Ce(n){return n[0]}function ze(n){return n[1]}function Le(n){for(var t=n.length,e=[0,1],r=2,i=2;t>i;i++){for(;r>1&&Q(n[e[r-2]],n[e[r-1]],n[i])<=0;)--r;e[r++]=i}return e.slice(0,r)}function qe(n,t){return n[0]-t[0]||n[1]-t[1]}function Te(n,t,e){return(e[0]-t[0])*(n[1]-t[1])<(e[1]-t[1])*(n[0]-t[0])}function Re(n,t,e,r){var i=n[0],u=e[0],o=t[0]-i,a=r[0]-u,l=n[1],c=e[1],f=t[1]-l,s=r[1]-c,h=(a*(l-c)-s*(i-u))/(s*o-a*f);return[i+h*o,l+h*f]}function De(n){var t=n[0],e=n[n.length-1];return!(t[0]-e[0]||t[1]-e[1])}function Pe(){rr(this),this.edge=this.site=this.circle=null}function Ue(n){var t=cl.pop()||new Pe;return t.site=n,t}function je(n){Be(n),ol.remove(n),cl.push(n),rr(n)}function Fe(n){var t=n.circle,e=t.x,r=t.cy,i={x:e,y:r},u=n.P,o=n.N,a=[n];je(n);for(var l=u;l.circle&&xo(e-l.circle.x)<Uo&&xo(r-l.circle.cy)<Uo;)u=l.P,a.unshift(l),je(l),l=u;a.unshift(l),Be(l);for(var c=o;c.circle&&xo(e-c.circle.x)<Uo&&xo(r-c.circle.cy)<Uo;)o=c.N,a.push(c),je(c),c=o;a.push(c),Be(c);var f,s=a.length;for(f=1;s>f;++f)c=a[f],l=a[f-1],nr(c.edge,l.site,c.site,i);l=a[0],c=a[s-1],c.edge=Ke(l.site,c.site,null,i),$e(l),$e(c)}function He(n){for(var t,e,r,i,u=n.x,o=n.y,a=ol._;a;)if(r=Oe(a,o)-u,r>Uo)a=a.L;else{if(i=u-Ie(a,o),!(i>Uo)){r>-Uo?(t=a.P,e=a):i>-Uo?(t=a,e=a.N):t=e=a;break}if(!a.R){t=a;break}a=a.R}var l=Ue(n);if(ol.insert(t,l),t||e){if(t===e)return Be(t),e=Ue(t.site),ol.insert(l,e),l.edge=e.edge=Ke(t.site,l.site),$e(t),void $e(e);if(!e)return void(l.edge=Ke(t.site,l.site));Be(t),Be(e);var c=t.site,f=c.x,s=c.y,h=n.x-f,p=n.y-s,g=e.site,v=g.x-f,d=g.y-s,y=2*(h*d-p*v),m=h*h+p*p,M=v*v+d*d,x={x:(d*m-p*M)/y+f,y:(h*M-v*m)/y+s};nr(e.edge,c,g,x),l.edge=Ke(c,n,null,x),e.edge=Ke(n,g,null,x),$e(t),$e(e)}}function Oe(n,t){var e=n.site,r=e.x,i=e.y,u=i-t;if(!u)return r;var o=n.P;if(!o)return-(1/0);e=o.site;var a=e.x,l=e.y,c=l-t;if(!c)return a;var f=a-r,s=1/u-1/c,h=f/c;return s?(-h+Math.sqrt(h*h-2*s*(f*f/(-2*c)-l+c/2+i-u/2)))/s+r:(r+a)/2}function Ie(n,t){var e=n.N;if(e)return Oe(e,t);var r=n.site;return r.y===t?r.x:1/0}function Ye(n){this.site=n,this.edges=[]}function Ze(n){for(var t,e,r,i,u,o,a,l,c,f,s=n[0][0],h=n[1][0],p=n[0][1],g=n[1][1],v=ul,d=v.length;d--;)if(u=v[d],u&&u.prepare())for(a=u.edges,l=a.length,o=0;l>o;)f=a[o].end(),r=f.x,i=f.y,c=a[++o%l].start(),t=c.x,e=c.y,(xo(r-t)>Uo||xo(i-e)>Uo)&&(a.splice(o,0,new tr(Qe(u.site,f,xo(r-s)<Uo&&g-i>Uo?{x:s,y:xo(t-s)<Uo?e:g}:xo(i-g)<Uo&&h-r>Uo?{x:xo(e-g)<Uo?t:h,y:g}:xo(r-h)<Uo&&i-p>Uo?{x:h,y:xo(t-h)<Uo?e:p}:xo(i-p)<Uo&&r-s>Uo?{x:xo(e-p)<Uo?t:s,y:p}:null),u.site,null)),++l)}function Ve(n,t){return t.angle-n.angle}function Xe(){rr(this),this.x=this.y=this.arc=this.site=this.cy=null}function $e(n){var t=n.P,e=n.N;if(t&&e){var r=t.site,i=n.site,u=e.site;if(r!==u){var o=i.x,a=i.y,l=r.x-o,c=r.y-a,f=u.x-o,s=u.y-a,h=2*(l*s-c*f);if(!(h>=-jo)){var p=l*l+c*c,g=f*f+s*s,v=(s*p-c*g)/h,d=(l*g-f*p)/h,s=d+a,y=fl.pop()||new Xe;y.arc=n,y.site=i,y.x=v+o,y.y=s+Math.sqrt(v*v+d*d),y.cy=s,n.circle=y;for(var m=null,M=ll._;M;)if(y.y<M.y||y.y===M.y&&y.x<=M.x){if(!M.L){m=M.P;break}M=M.L}else{if(!M.R){m=M;break}M=M.R}ll.insert(m,y),m||(al=y)}}}}function Be(n){var t=n.circle;t&&(t.P||(al=t.N),ll.remove(t),fl.push(t),rr(t),n.circle=null)}function We(n){for(var t,e=il,r=Yt(n[0][0],n[0][1],n[1][0],n[1][1]),i=e.length;i--;)t=e[i],(!Je(t,n)||!r(t)||xo(t.a.x-t.b.x)<Uo&&xo(t.a.y-t.b.y)<Uo)&&(t.a=t.b=null,e.splice(i,1))}function Je(n,t){var e=n.b;if(e)return!0;var r,i,u=n.a,o=t[0][0],a=t[1][0],l=t[0][1],c=t[1][1],f=n.l,s=n.r,h=f.x,p=f.y,g=s.x,v=s.y,d=(h+g)/2,y=(p+v)/2;if(v===p){if(o>d||d>=a)return;if(h>g){if(u){if(u.y>=c)return}else u={x:d,y:l};e={x:d,y:c}}else{if(u){if(u.y<l)return}else u={x:d,y:c};e={x:d,y:l}}}else if(r=(h-g)/(v-p),i=y-r*d,-1>r||r>1)if(h>g){if(u){if(u.y>=c)return}else u={x:(l-i)/r,y:l};e={x:(c-i)/r,y:c}}else{if(u){if(u.y<l)return}else u={x:(c-i)/r,y:c};e={x:(l-i)/r,y:l}}else if(v>p){if(u){if(u.x>=a)return}else u={x:o,y:r*o+i};e={x:a,y:r*a+i}}else{if(u){if(u.x<o)return}else u={x:a,y:r*a+i};e={x:o,y:r*o+i}}return n.a=u,n.b=e,!0}function Ge(n,t){this.l=n,this.r=t,this.a=this.b=null}function Ke(n,t,e,r){var i=new Ge(n,t);return il.push(i),e&&nr(i,n,t,e),r&&nr(i,t,n,r),ul[n.i].edges.push(new tr(i,n,t)),ul[t.i].edges.push(new tr(i,t,n)),i}function Qe(n,t,e){var r=new Ge(n,null);return r.a=t,r.b=e,il.push(r),r}function nr(n,t,e,r){n.a||n.b?n.l===e?n.b=r:n.a=r:(n.a=r,n.l=t,n.r=e)}function tr(n,t,e){var r=n.a,i=n.b;this.edge=n,this.site=t,this.angle=e?Math.atan2(e.y-t.y,e.x-t.x):n.l===t?Math.atan2(i.x-r.x,r.y-i.y):Math.atan2(r.x-i.x,i.y-r.y)}function er(){this._=null}function rr(n){n.U=n.C=n.L=n.R=n.P=n.N=null}function ir(n,t){var e=t,r=t.R,i=e.U;i?i.L===e?i.L=r:i.R=r:n._=r,r.U=i,e.U=r,e.R=r.L,e.R&&(e.R.U=e),r.L=e}function ur(n,t){var e=t,r=t.L,i=e.U;i?i.L===e?i.L=r:i.R=r:n._=r,r.U=i,e.U=r,e.L=r.R,e.L&&(e.L.U=e),r.R=e}function or(n){for(;n.L;)n=n.L;return n}function ar(n,t){var e,r,i,u=n.sort(lr).pop();for(il=[],ul=new Array(n.length),ol=new er,ll=new er;;)if(i=al,u&&(!i||u.y<i.y||u.y===i.y&&u.x<i.x))u.x===e&&u.y===r||(ul[u.i]=new Ye(u),He(u),e=u.x,r=u.y),u=n.pop();else{if(!i)break;Fe(i.arc)}t&&(We(t),Ze(t));var o={cells:ul,edges:il};return ol=ll=il=ul=null,o}function lr(n,t){return t.y-n.y||t.x-n.x}function cr(n,t,e){return(n.x-e.x)*(t.y-n.y)-(n.x-t.x)*(e.y-n.y)}function fr(n){return n.x}function sr(n){return n.y}function hr(){return{leaf:!0,nodes:[],point:null,x:null,y:null}}function pr(n,t,e,r,i,u){if(!n(t,e,r,i,u)){var o=.5*(e+i),a=.5*(r+u),l=t.nodes;l[0]&&pr(n,l[0],e,r,o,a),l[1]&&pr(n,l[1],o,r,i,a),l[2]&&pr(n,l[2],e,a,o,u),l[3]&&pr(n,l[3],o,a,i,u)}}function gr(n,t,e,r,i,u,o){var a,l=1/0;return function c(n,f,s,h,p){if(!(f>u||s>o||r>h||i>p)){if(g=n.point){var g,v=t-n.x,d=e-n.y,y=v*v+d*d;if(l>y){var m=Math.sqrt(l=y);r=t-m,i=e-m,u=t+m,o=e+m,a=g}}for(var M=n.nodes,x=.5*(f+h),b=.5*(s+p),_=t>=x,w=e>=b,S=w<<1|_,k=S+4;k>S;++S)if(n=M[3&S])switch(3&S){case 0:c(n,f,s,x,b);break;case 1:c(n,x,s,h,b);break;case 2:c(n,f,b,x,p);break;case 3:c(n,x,b,h,p)}}}(n,r,i,u,o),a}function vr(n,t){n=ao.rgb(n),t=ao.rgb(t);var e=n.r,r=n.g,i=n.b,u=t.r-e,o=t.g-r,a=t.b-i;return function(n){return"#"+bn(Math.round(e+u*n))+bn(Math.round(r+o*n))+bn(Math.round(i+a*n))}}function dr(n,t){var e,r={},i={};for(e in n)e in t?r[e]=Mr(n[e],t[e]):i[e]=n[e];for(e in t)e in n||(i[e]=t[e]);return function(n){for(e in r)i[e]=r[e](n);return i}}function yr(n,t){return n=+n,t=+t,function(e){return n*(1-e)+t*e}}function mr(n,t){var e,r,i,u=hl.lastIndex=pl.lastIndex=0,o=-1,a=[],l=[];for(n+="",t+="";(e=hl.exec(n))&&(r=pl.exec(t));)(i=r.index)>u&&(i=t.slice(u,i),a[o]?a[o]+=i:a[++o]=i),(e=e[0])===(r=r[0])?a[o]?a[o]+=r:a[++o]=r:(a[++o]=null,l.push({i:o,x:yr(e,r)})),u=pl.lastIndex;return u<t.length&&(i=t.slice(u),a[o]?a[o]+=i:a[++o]=i),a.length<2?l[0]?(t=l[0].x,function(n){return t(n)+""}):function(){return t}:(t=l.length,function(n){for(var e,r=0;t>r;++r)a[(e=l[r]).i]=e.x(n);return a.join("")})}function Mr(n,t){for(var e,r=ao.interpolators.length;--r>=0&&!(e=ao.interpolators[r](n,t)););return e}function xr(n,t){var e,r=[],i=[],u=n.length,o=t.length,a=Math.min(n.length,t.length);for(e=0;a>e;++e)r.push(Mr(n[e],t[e]));for(;u>e;++e)i[e]=n[e];for(;o>e;++e)i[e]=t[e];return function(n){for(e=0;a>e;++e)i[e]=r[e](n);return i}}function br(n){return function(t){return 0>=t?0:t>=1?1:n(t)}}function _r(n){return function(t){return 1-n(1-t)}}function wr(n){return function(t){return.5*(.5>t?n(2*t):2-n(2-2*t))}}function Sr(n){return n*n}function kr(n){return n*n*n}function Nr(n){if(0>=n)return 0;if(n>=1)return 1;var t=n*n,e=t*n;return 4*(.5>n?e:3*(n-t)+e-.75)}function Er(n){return function(t){return Math.pow(t,n)}}function Ar(n){return 1-Math.cos(n*Io)}function Cr(n){return Math.pow(2,10*(n-1))}function zr(n){return 1-Math.sqrt(1-n*n)}function Lr(n,t){var e;return arguments.length<2&&(t=.45),arguments.length?e=t/Ho*Math.asin(1/n):(n=1,e=t/4),function(r){return 1+n*Math.pow(2,-10*r)*Math.sin((r-e)*Ho/t)}}function qr(n){return n||(n=1.70158),function(t){return t*t*((n+1)*t-n)}}function Tr(n){return 1/2.75>n?7.5625*n*n:2/2.75>n?7.5625*(n-=1.5/2.75)*n+.75:2.5/2.75>n?7.5625*(n-=2.25/2.75)*n+.9375:7.5625*(n-=2.625/2.75)*n+.984375}function Rr(n,t){n=ao.hcl(n),t=ao.hcl(t);var e=n.h,r=n.c,i=n.l,u=t.h-e,o=t.c-r,a=t.l-i;return isNaN(o)&&(o=0,r=isNaN(r)?t.c:r),isNaN(u)?(u=0,e=isNaN(e)?t.h:e):u>180?u-=360:-180>u&&(u+=360),function(n){return sn(e+u*n,r+o*n,i+a*n)+""}}function Dr(n,t){n=ao.hsl(n),t=ao.hsl(t);var e=n.h,r=n.s,i=n.l,u=t.h-e,o=t.s-r,a=t.l-i;return isNaN(o)&&(o=0,r=isNaN(r)?t.s:r),isNaN(u)?(u=0,e=isNaN(e)?t.h:e):u>180?u-=360:-180>u&&(u+=360),function(n){return cn(e+u*n,r+o*n,i+a*n)+""}}function Pr(n,t){n=ao.lab(n),t=ao.lab(t);var e=n.l,r=n.a,i=n.b,u=t.l-e,o=t.a-r,a=t.b-i;return function(n){return pn(e+u*n,r+o*n,i+a*n)+""}}function Ur(n,t){return t-=n,function(e){return Math.round(n+t*e)}}function jr(n){var t=[n.a,n.b],e=[n.c,n.d],r=Hr(t),i=Fr(t,e),u=Hr(Or(e,t,-i))||0;t[0]*e[1]<e[0]*t[1]&&(t[0]*=-1,t[1]*=-1,r*=-1,i*=-1),this.rotate=(r?Math.atan2(t[1],t[0]):Math.atan2(-e[0],e[1]))*Zo,this.translate=[n.e,n.f],this.scale=[r,u],this.skew=u?Math.atan2(i,u)*Zo:0}function Fr(n,t){return n[0]*t[0]+n[1]*t[1]}function Hr(n){var t=Math.sqrt(Fr(n,n));return t&&(n[0]/=t,n[1]/=t),t}function Or(n,t,e){return n[0]+=e*t[0],n[1]+=e*t[1],n}function Ir(n){return n.length?n.pop()+",":""}function Yr(n,t,e,r){if(n[0]!==t[0]||n[1]!==t[1]){var i=e.push("translate(",null,",",null,")");r.push({i:i-4,x:yr(n[0],t[0])},{i:i-2,x:yr(n[1],t[1])})}else(t[0]||t[1])&&e.push("translate("+t+")")}function Zr(n,t,e,r){n!==t?(n-t>180?t+=360:t-n>180&&(n+=360),r.push({i:e.push(Ir(e)+"rotate(",null,")")-2,x:yr(n,t)})):t&&e.push(Ir(e)+"rotate("+t+")")}function Vr(n,t,e,r){n!==t?r.push({i:e.push(Ir(e)+"skewX(",null,")")-2,x:yr(n,t)}):t&&e.push(Ir(e)+"skewX("+t+")")}function Xr(n,t,e,r){if(n[0]!==t[0]||n[1]!==t[1]){var i=e.push(Ir(e)+"scale(",null,",",null,")");r.push({i:i-4,x:yr(n[0],t[0])},{i:i-2,x:yr(n[1],t[1])})}else 1===t[0]&&1===t[1]||e.push(Ir(e)+"scale("+t+")")}function $r(n,t){var e=[],r=[];return n=ao.transform(n),t=ao.transform(t),Yr(n.translate,t.translate,e,r),Zr(n.rotate,t.rotate,e,r),Vr(n.skew,t.skew,e,r),Xr(n.scale,t.scale,e,r),n=t=null,function(n){for(var t,i=-1,u=r.length;++i<u;)e[(t=r[i]).i]=t.x(n);return e.join("")}}function Br(n,t){return t=(t-=n=+n)||1/t,function(e){return(e-n)/t}}function Wr(n,t){return t=(t-=n=+n)||1/t,function(e){return Math.max(0,Math.min(1,(e-n)/t))}}function Jr(n){for(var t=n.source,e=n.target,r=Kr(t,e),i=[t];t!==r;)t=t.parent,i.push(t);for(var u=i.length;e!==r;)i.splice(u,0,e),e=e.parent;return i}function Gr(n){for(var t=[],e=n.parent;null!=e;)t.push(n),n=e,e=e.parent;return t.push(n),t}function Kr(n,t){if(n===t)return n;for(var e=Gr(n),r=Gr(t),i=e.pop(),u=r.pop(),o=null;i===u;)o=i,i=e.pop(),u=r.pop();return o}function Qr(n){n.fixed|=2}function ni(n){n.fixed&=-7}function ti(n){n.fixed|=4,n.px=n.x,n.py=n.y}function ei(n){n.fixed&=-5}function ri(n,t,e){var r=0,i=0;if(n.charge=0,!n.leaf)for(var u,o=n.nodes,a=o.length,l=-1;++l<a;)u=o[l],null!=u&&(ri(u,t,e),n.charge+=u.charge,r+=u.charge*u.cx,i+=u.charge*u.cy);if(n.point){n.leaf||(n.point.x+=Math.random()-.5,n.point.y+=Math.random()-.5);var c=t*e[n.point.index];n.charge+=n.pointCharge=c,r+=c*n.point.x,i+=c*n.point.y}n.cx=r/n.charge,n.cy=i/n.charge}function ii(n,t){return ao.rebind(n,t,"sort","children","value"),n.nodes=n,n.links=fi,n}function ui(n,t){for(var e=[n];null!=(n=e.pop());)if(t(n),(i=n.children)&&(r=i.length))for(var r,i;--r>=0;)e.push(i[r])}function oi(n,t){for(var e=[n],r=[];null!=(n=e.pop());)if(r.push(n),(u=n.children)&&(i=u.length))for(var i,u,o=-1;++o<i;)e.push(u[o]);for(;null!=(n=r.pop());)t(n)}function ai(n){return n.children}function li(n){return n.value}function ci(n,t){return t.value-n.value}function fi(n){return ao.merge(n.map(function(n){return(n.children||[]).map(function(t){return{source:n,target:t}})}))}function si(n){return n.x}function hi(n){return n.y}function pi(n,t,e){n.y0=t,n.y=e}function gi(n){return ao.range(n.length)}function vi(n){for(var t=-1,e=n[0].length,r=[];++t<e;)r[t]=0;return r}function di(n){for(var t,e=1,r=0,i=n[0][1],u=n.length;u>e;++e)(t=n[e][1])>i&&(r=e,i=t);return r}function yi(n){return n.reduce(mi,0)}function mi(n,t){return n+t[1]}function Mi(n,t){return xi(n,Math.ceil(Math.log(t.length)/Math.LN2+1))}function xi(n,t){for(var e=-1,r=+n[0],i=(n[1]-r)/t,u=[];++e<=t;)u[e]=i*e+r;return u}function bi(n){return[ao.min(n),ao.max(n)]}function _i(n,t){return n.value-t.value}function wi(n,t){var e=n._pack_next;n._pack_next=t,t._pack_prev=n,t._pack_next=e,e._pack_prev=t}function Si(n,t){n._pack_next=t,t._pack_prev=n}function ki(n,t){var e=t.x-n.x,r=t.y-n.y,i=n.r+t.r;return.999*i*i>e*e+r*r}function Ni(n){function t(n){f=Math.min(n.x-n.r,f),s=Math.max(n.x+n.r,s),h=Math.min(n.y-n.r,h),p=Math.max(n.y+n.r,p)}if((e=n.children)&&(c=e.length)){var e,r,i,u,o,a,l,c,f=1/0,s=-(1/0),h=1/0,p=-(1/0);if(e.forEach(Ei),r=e[0],r.x=-r.r,r.y=0,t(r),c>1&&(i=e[1],i.x=i.r,i.y=0,t(i),c>2))for(u=e[2],zi(r,i,u),t(u),wi(r,u),r._pack_prev=u,wi(u,i),i=r._pack_next,o=3;c>o;o++){zi(r,i,u=e[o]);var g=0,v=1,d=1;for(a=i._pack_next;a!==i;a=a._pack_next,v++)if(ki(a,u)){g=1;break}if(1==g)for(l=r._pack_prev;l!==a._pack_prev&&!ki(l,u);l=l._pack_prev,d++);g?(d>v||v==d&&i.r<r.r?Si(r,i=a):Si(r=l,i),o--):(wi(r,u),i=u,t(u))}var y=(f+s)/2,m=(h+p)/2,M=0;for(o=0;c>o;o++)u=e[o],u.x-=y,u.y-=m,M=Math.max(M,u.r+Math.sqrt(u.x*u.x+u.y*u.y));n.r=M,e.forEach(Ai)}}function Ei(n){n._pack_next=n._pack_prev=n}function Ai(n){delete n._pack_next,delete n._pack_prev}function Ci(n,t,e,r){var i=n.children;if(n.x=t+=r*n.x,n.y=e+=r*n.y,n.r*=r,i)for(var u=-1,o=i.length;++u<o;)Ci(i[u],t,e,r)}function zi(n,t,e){var r=n.r+e.r,i=t.x-n.x,u=t.y-n.y;if(r&&(i||u)){var o=t.r+e.r,a=i*i+u*u;o*=o,r*=r;var l=.5+(r-o)/(2*a),c=Math.sqrt(Math.max(0,2*o*(r+a)-(r-=a)*r-o*o))/(2*a);e.x=n.x+l*i+c*u,e.y=n.y+l*u-c*i}else e.x=n.x+r,e.y=n.y}function Li(n,t){return n.parent==t.parent?1:2}function qi(n){var t=n.children;return t.length?t[0]:n.t}function Ti(n){var t,e=n.children;return(t=e.length)?e[t-1]:n.t}function Ri(n,t,e){var r=e/(t.i-n.i);t.c-=r,t.s+=e,n.c+=r,t.z+=e,t.m+=e}function Di(n){for(var t,e=0,r=0,i=n.children,u=i.length;--u>=0;)t=i[u],t.z+=e,t.m+=e,e+=t.s+(r+=t.c)}function Pi(n,t,e){return n.a.parent===t.parent?n.a:e}function Ui(n){return 1+ao.max(n,function(n){return n.y})}function ji(n){return n.reduce(function(n,t){return n+t.x},0)/n.length}function Fi(n){var t=n.children;return t&&t.length?Fi(t[0]):n}function Hi(n){var t,e=n.children;return e&&(t=e.length)?Hi(e[t-1]):n}function Oi(n){return{x:n.x,y:n.y,dx:n.dx,dy:n.dy}}function Ii(n,t){var e=n.x+t[3],r=n.y+t[0],i=n.dx-t[1]-t[3],u=n.dy-t[0]-t[2];return 0>i&&(e+=i/2,i=0),0>u&&(r+=u/2,u=0),{x:e,y:r,dx:i,dy:u}}function Yi(n){var t=n[0],e=n[n.length-1];return e>t?[t,e]:[e,t]}function Zi(n){return n.rangeExtent?n.rangeExtent():Yi(n.range())}function Vi(n,t,e,r){var i=e(n[0],n[1]),u=r(t[0],t[1]);return function(n){return u(i(n))}}function Xi(n,t){var e,r=0,i=n.length-1,u=n[r],o=n[i];return u>o&&(e=r,r=i,i=e,e=u,u=o,o=e),n[r]=t.floor(u),n[i]=t.ceil(o),n}function $i(n){return n?{floor:function(t){return Math.floor(t/n)*n},ceil:function(t){return Math.ceil(t/n)*n}}:Sl}function Bi(n,t,e,r){var i=[],u=[],o=0,a=Math.min(n.length,t.length)-1;for(n[a]<n[0]&&(n=n.slice().reverse(),t=t.slice().reverse());++o<=a;)i.push(e(n[o-1],n[o])),u.push(r(t[o-1],t[o]));return function(t){var e=ao.bisect(n,t,1,a)-1;return u[e](i[e](t))}}function Wi(n,t,e,r){function i(){var i=Math.min(n.length,t.length)>2?Bi:Vi,l=r?Wr:Br;return o=i(n,t,l,e),a=i(t,n,l,Mr),u}function u(n){return o(n)}var o,a;return u.invert=function(n){return a(n)},u.domain=function(t){return arguments.length?(n=t.map(Number),i()):n},u.range=function(n){return arguments.length?(t=n,i()):t},u.rangeRound=function(n){return u.range(n).interpolate(Ur)},u.clamp=function(n){return arguments.length?(r=n,i()):r},u.interpolate=function(n){return arguments.length?(e=n,i()):e},u.ticks=function(t){return Qi(n,t)},u.tickFormat=function(t,e){return nu(n,t,e)},u.nice=function(t){return Gi(n,t),i()},u.copy=function(){return Wi(n,t,e,r)},i()}function Ji(n,t){return ao.rebind(n,t,"range","rangeRound","interpolate","clamp")}function Gi(n,t){return Xi(n,$i(Ki(n,t)[2])),Xi(n,$i(Ki(n,t)[2])),n}function Ki(n,t){null==t&&(t=10);var e=Yi(n),r=e[1]-e[0],i=Math.pow(10,Math.floor(Math.log(r/t)/Math.LN10)),u=t/r*i;return.15>=u?i*=10:.35>=u?i*=5:.75>=u&&(i*=2),e[0]=Math.ceil(e[0]/i)*i,e[1]=Math.floor(e[1]/i)*i+.5*i,e[2]=i,e}function Qi(n,t){return ao.range.apply(ao,Ki(n,t))}function nu(n,t,e){var r=Ki(n,t);if(e){var i=ha.exec(e);if(i.shift(),"s"===i[8]){var u=ao.formatPrefix(Math.max(xo(r[0]),xo(r[1])));return i[7]||(i[7]="."+tu(u.scale(r[2]))),i[8]="f",e=ao.format(i.join("")),function(n){return e(u.scale(n))+u.symbol}}i[7]||(i[7]="."+eu(i[8],r)),e=i.join("")}else e=",."+tu(r[2])+"f";return ao.format(e)}function tu(n){return-Math.floor(Math.log(n)/Math.LN10+.01)}function eu(n,t){var e=tu(t[2]);return n in kl?Math.abs(e-tu(Math.max(xo(t[0]),xo(t[1]))))+ +("e"!==n):e-2*("%"===n)}function ru(n,t,e,r){function i(n){return(e?Math.log(0>n?0:n):-Math.log(n>0?0:-n))/Math.log(t)}function u(n){return e?Math.pow(t,n):-Math.pow(t,-n)}function o(t){return n(i(t))}return o.invert=function(t){return u(n.invert(t))},o.domain=function(t){return arguments.length?(e=t[0]>=0,n.domain((r=t.map(Number)).map(i)),o):r},o.base=function(e){return arguments.length?(t=+e,n.domain(r.map(i)),o):t},o.nice=function(){var t=Xi(r.map(i),e?Math:El);return n.domain(t),r=t.map(u),o},o.ticks=function(){var n=Yi(r),o=[],a=n[0],l=n[1],c=Math.floor(i(a)),f=Math.ceil(i(l)),s=t%1?2:t;if(isFinite(f-c)){if(e){for(;f>c;c++)for(var h=1;s>h;h++)o.push(u(c)*h);o.push(u(c))}else for(o.push(u(c));c++<f;)for(var h=s-1;h>0;h--)o.push(u(c)*h);for(c=0;o[c]<a;c++);for(f=o.length;o[f-1]>l;f--);o=o.slice(c,f)}return o},o.tickFormat=function(n,e){if(!arguments.length)return Nl;arguments.length<2?e=Nl:"function"!=typeof e&&(e=ao.format(e));var r=Math.max(1,t*n/o.ticks().length);return function(n){var o=n/u(Math.round(i(n)));return t-.5>o*t&&(o*=t),r>=o?e(n):""}},o.copy=function(){return ru(n.copy(),t,e,r)},Ji(o,n)}function iu(n,t,e){function r(t){return n(i(t))}var i=uu(t),u=uu(1/t);return r.invert=function(t){return u(n.invert(t))},r.domain=function(t){return arguments.length?(n.domain((e=t.map(Number)).map(i)),r):e},r.ticks=function(n){return Qi(e,n)},r.tickFormat=function(n,t){return nu(e,n,t)},r.nice=function(n){return r.domain(Gi(e,n))},r.exponent=function(o){return arguments.length?(i=uu(t=o),u=uu(1/t),n.domain(e.map(i)),r):t},r.copy=function(){return iu(n.copy(),t,e)},Ji(r,n)}function uu(n){return function(t){return 0>t?-Math.pow(-t,n):Math.pow(t,n)}}function ou(n,t){function e(e){return u[((i.get(e)||("range"===t.t?i.set(e,n.push(e)):NaN))-1)%u.length]}function r(t,e){return ao.range(n.length).map(function(n){return t+e*n})}var i,u,o;return e.domain=function(r){if(!arguments.length)return n;n=[],i=new c;for(var u,o=-1,a=r.length;++o<a;)i.has(u=r[o])||i.set(u,n.push(u));return e[t.t].apply(e,t.a)},e.range=function(n){return arguments.length?(u=n,o=0,t={t:"range",a:arguments},e):u},e.rangePoints=function(i,a){arguments.length<2&&(a=0);var l=i[0],c=i[1],f=n.length<2?(l=(l+c)/2,0):(c-l)/(n.length-1+a);return u=r(l+f*a/2,f),o=0,t={t:"rangePoints",a:arguments},e},e.rangeRoundPoints=function(i,a){arguments.length<2&&(a=0);var l=i[0],c=i[1],f=n.length<2?(l=c=Math.round((l+c)/2),0):(c-l)/(n.length-1+a)|0;return u=r(l+Math.round(f*a/2+(c-l-(n.length-1+a)*f)/2),f),o=0,t={t:"rangeRoundPoints",a:arguments},e},e.rangeBands=function(i,a,l){arguments.length<2&&(a=0),arguments.length<3&&(l=a);var c=i[1]<i[0],f=i[c-0],s=i[1-c],h=(s-f)/(n.length-a+2*l);return u=r(f+h*l,h),c&&u.reverse(),o=h*(1-a),t={t:"rangeBands",a:arguments},e},e.rangeRoundBands=function(i,a,l){arguments.length<2&&(a=0),arguments.length<3&&(l=a);var c=i[1]<i[0],f=i[c-0],s=i[1-c],h=Math.floor((s-f)/(n.length-a+2*l));return u=r(f+Math.round((s-f-(n.length-a)*h)/2),h),c&&u.reverse(),o=Math.round(h*(1-a)),t={t:"rangeRoundBands",a:arguments},e},e.rangeBand=function(){return o},e.rangeExtent=function(){return Yi(t.a[0])},e.copy=function(){return ou(n,t)},e.domain(n)}function au(n,t){function u(){var e=0,r=t.length;for(a=[];++e<r;)a[e-1]=ao.quantile(n,e/r);return o}function o(n){return isNaN(n=+n)?void 0:t[ao.bisect(a,n)]}var a;return o.domain=function(t){return arguments.length?(n=t.map(r).filter(i).sort(e),u()):n},o.range=function(n){return arguments.length?(t=n,u()):t},o.quantiles=function(){return a},o.invertExtent=function(e){return e=t.indexOf(e),0>e?[NaN,NaN]:[e>0?a[e-1]:n[0],e<a.length?a[e]:n[n.length-1]]},o.copy=function(){return au(n,t)},u()}function lu(n,t,e){function r(t){return e[Math.max(0,Math.min(o,Math.floor(u*(t-n))))]}function i(){return u=e.length/(t-n),o=e.length-1,r}var u,o;return r.domain=function(e){return arguments.length?(n=+e[0],t=+e[e.length-1],i()):[n,t]},r.range=function(n){return arguments.length?(e=n,i()):e},r.invertExtent=function(t){return t=e.indexOf(t),t=0>t?NaN:t/u+n,[t,t+1/u]},r.copy=function(){return lu(n,t,e)},i()}function cu(n,t){function e(e){return e>=e?t[ao.bisect(n,e)]:void 0}return e.domain=function(t){return arguments.length?(n=t,e):n},e.range=function(n){return arguments.length?(t=n,e):t},e.invertExtent=function(e){return e=t.indexOf(e),[n[e-1],n[e]]},e.copy=function(){return cu(n,t)},e}function fu(n){function t(n){return+n}return t.invert=t,t.domain=t.range=function(e){return arguments.length?(n=e.map(t),t):n},t.ticks=function(t){return Qi(n,t)},t.tickFormat=function(t,e){return nu(n,t,e)},t.copy=function(){return fu(n)},t}function su(){return 0}function hu(n){return n.innerRadius}function pu(n){return n.outerRadius}function gu(n){return n.startAngle}function vu(n){return n.endAngle}function du(n){return n&&n.padAngle}function yu(n,t,e,r){return(n-e)*t-(t-r)*n>0?0:1}function mu(n,t,e,r,i){var u=n[0]-t[0],o=n[1]-t[1],a=(i?r:-r)/Math.sqrt(u*u+o*o),l=a*o,c=-a*u,f=n[0]+l,s=n[1]+c,h=t[0]+l,p=t[1]+c,g=(f+h)/2,v=(s+p)/2,d=h-f,y=p-s,m=d*d+y*y,M=e-r,x=f*p-h*s,b=(0>y?-1:1)*Math.sqrt(Math.max(0,M*M*m-x*x)),_=(x*y-d*b)/m,w=(-x*d-y*b)/m,S=(x*y+d*b)/m,k=(-x*d+y*b)/m,N=_-g,E=w-v,A=S-g,C=k-v;return N*N+E*E>A*A+C*C&&(_=S,w=k),[[_-l,w-c],[_*e/M,w*e/M]]}function Mu(n){function t(t){function o(){c.push("M",u(n(f),a))}for(var l,c=[],f=[],s=-1,h=t.length,p=En(e),g=En(r);++s<h;)i.call(this,l=t[s],s)?f.push([+p.call(this,l,s),+g.call(this,l,s)]):f.length&&(o(),f=[]);return f.length&&o(),c.length?c.join(""):null}var e=Ce,r=ze,i=zt,u=xu,o=u.key,a=.7;return t.x=function(n){return arguments.length?(e=n,t):e},t.y=function(n){return arguments.length?(r=n,t):r},t.defined=function(n){return arguments.length?(i=n,t):i},t.interpolate=function(n){return arguments.length?(o="function"==typeof n?u=n:(u=Tl.get(n)||xu).key,t):o},t.tension=function(n){return arguments.length?(a=n,t):a},t}function xu(n){return n.length>1?n.join("L"):n+"Z"}function bu(n){return n.join("L")+"Z"}function _u(n){for(var t=0,e=n.length,r=n[0],i=[r[0],",",r[1]];++t<e;)i.push("H",(r[0]+(r=n[t])[0])/2,"V",r[1]);return e>1&&i.push("H",r[0]),i.join("")}function wu(n){for(var t=0,e=n.length,r=n[0],i=[r[0],",",r[1]];++t<e;)i.push("V",(r=n[t])[1],"H",r[0]);return i.join("")}function Su(n){for(var t=0,e=n.length,r=n[0],i=[r[0],",",r[1]];++t<e;)i.push("H",(r=n[t])[0],"V",r[1]);return i.join("")}function ku(n,t){return n.length<4?xu(n):n[1]+Au(n.slice(1,-1),Cu(n,t))}function Nu(n,t){return n.length<3?bu(n):n[0]+Au((n.push(n[0]),n),Cu([n[n.length-2]].concat(n,[n[1]]),t))}function Eu(n,t){return n.length<3?xu(n):n[0]+Au(n,Cu(n,t))}function Au(n,t){if(t.length<1||n.length!=t.length&&n.length!=t.length+2)return xu(n);var e=n.length!=t.length,r="",i=n[0],u=n[1],o=t[0],a=o,l=1;if(e&&(r+="Q"+(u[0]-2*o[0]/3)+","+(u[1]-2*o[1]/3)+","+u[0]+","+u[1],i=n[1],l=2),t.length>1){a=t[1],u=n[l],l++,r+="C"+(i[0]+o[0])+","+(i[1]+o[1])+","+(u[0]-a[0])+","+(u[1]-a[1])+","+u[0]+","+u[1];for(var c=2;c<t.length;c++,l++)u=n[l],a=t[c],r+="S"+(u[0]-a[0])+","+(u[1]-a[1])+","+u[0]+","+u[1]}if(e){var f=n[l];r+="Q"+(u[0]+2*a[0]/3)+","+(u[1]+2*a[1]/3)+","+f[0]+","+f[1]}return r}function Cu(n,t){for(var e,r=[],i=(1-t)/2,u=n[0],o=n[1],a=1,l=n.length;++a<l;)e=u,u=o,o=n[a],r.push([i*(o[0]-e[0]),i*(o[1]-e[1])]);return r}function zu(n){if(n.length<3)return xu(n);var t=1,e=n.length,r=n[0],i=r[0],u=r[1],o=[i,i,i,(r=n[1])[0]],a=[u,u,u,r[1]],l=[i,",",u,"L",Ru(Pl,o),",",Ru(Pl,a)];for(n.push(n[e-1]);++t<=e;)r=n[t],o.shift(),o.push(r[0]),a.shift(),a.push(r[1]),Du(l,o,a);return n.pop(),l.push("L",r),l.join("")}function Lu(n){if(n.length<4)return xu(n);for(var t,e=[],r=-1,i=n.length,u=[0],o=[0];++r<3;)t=n[r],u.push(t[0]),o.push(t[1]);for(e.push(Ru(Pl,u)+","+Ru(Pl,o)),--r;++r<i;)t=n[r],u.shift(),u.push(t[0]),o.shift(),o.push(t[1]),Du(e,u,o);return e.join("")}function qu(n){for(var t,e,r=-1,i=n.length,u=i+4,o=[],a=[];++r<4;)e=n[r%i],o.push(e[0]),a.push(e[1]);for(t=[Ru(Pl,o),",",Ru(Pl,a)],--r;++r<u;)e=n[r%i],o.shift(),o.push(e[0]),a.shift(),a.push(e[1]),Du(t,o,a);return t.join("")}function Tu(n,t){var e=n.length-1;if(e)for(var r,i,u=n[0][0],o=n[0][1],a=n[e][0]-u,l=n[e][1]-o,c=-1;++c<=e;)r=n[c],i=c/e,r[0]=t*r[0]+(1-t)*(u+i*a),r[1]=t*r[1]+(1-t)*(o+i*l);return zu(n)}function Ru(n,t){return n[0]*t[0]+n[1]*t[1]+n[2]*t[2]+n[3]*t[3]}function Du(n,t,e){n.push("C",Ru(Rl,t),",",Ru(Rl,e),",",Ru(Dl,t),",",Ru(Dl,e),",",Ru(Pl,t),",",Ru(Pl,e))}function Pu(n,t){return(t[1]-n[1])/(t[0]-n[0])}function Uu(n){for(var t=0,e=n.length-1,r=[],i=n[0],u=n[1],o=r[0]=Pu(i,u);++t<e;)r[t]=(o+(o=Pu(i=u,u=n[t+1])))/2;return r[t]=o,r}function ju(n){for(var t,e,r,i,u=[],o=Uu(n),a=-1,l=n.length-1;++a<l;)t=Pu(n[a],n[a+1]),xo(t)<Uo?o[a]=o[a+1]=0:(e=o[a]/t,r=o[a+1]/t,i=e*e+r*r,i>9&&(i=3*t/Math.sqrt(i),o[a]=i*e,o[a+1]=i*r));for(a=-1;++a<=l;)i=(n[Math.min(l,a+1)][0]-n[Math.max(0,a-1)][0])/(6*(1+o[a]*o[a])),u.push([i||0,o[a]*i||0]);return u}function Fu(n){return n.length<3?xu(n):n[0]+Au(n,ju(n))}function Hu(n){for(var t,e,r,i=-1,u=n.length;++i<u;)t=n[i],e=t[0],r=t[1]-Io,t[0]=e*Math.cos(r),t[1]=e*Math.sin(r);return n}function Ou(n){function t(t){function l(){v.push("M",a(n(y),s),f,c(n(d.reverse()),s),"Z")}for(var h,p,g,v=[],d=[],y=[],m=-1,M=t.length,x=En(e),b=En(i),_=e===r?function(){
-return p}:En(r),w=i===u?function(){return g}:En(u);++m<M;)o.call(this,h=t[m],m)?(d.push([p=+x.call(this,h,m),g=+b.call(this,h,m)]),y.push([+_.call(this,h,m),+w.call(this,h,m)])):d.length&&(l(),d=[],y=[]);return d.length&&l(),v.length?v.join(""):null}var e=Ce,r=Ce,i=0,u=ze,o=zt,a=xu,l=a.key,c=a,f="L",s=.7;return t.x=function(n){return arguments.length?(e=r=n,t):r},t.x0=function(n){return arguments.length?(e=n,t):e},t.x1=function(n){return arguments.length?(r=n,t):r},t.y=function(n){return arguments.length?(i=u=n,t):u},t.y0=function(n){return arguments.length?(i=n,t):i},t.y1=function(n){return arguments.length?(u=n,t):u},t.defined=function(n){return arguments.length?(o=n,t):o},t.interpolate=function(n){return arguments.length?(l="function"==typeof n?a=n:(a=Tl.get(n)||xu).key,c=a.reverse||a,f=a.closed?"M":"L",t):l},t.tension=function(n){return arguments.length?(s=n,t):s},t}function Iu(n){return n.radius}function Yu(n){return[n.x,n.y]}function Zu(n){return function(){var t=n.apply(this,arguments),e=t[0],r=t[1]-Io;return[e*Math.cos(r),e*Math.sin(r)]}}function Vu(){return 64}function Xu(){return"circle"}function $u(n){var t=Math.sqrt(n/Fo);return"M0,"+t+"A"+t+","+t+" 0 1,1 0,"+-t+"A"+t+","+t+" 0 1,1 0,"+t+"Z"}function Bu(n){return function(){var t,e,r;(t=this[n])&&(r=t[e=t.active])&&(r.timer.c=null,r.timer.t=NaN,--t.count?delete t[e]:delete this[n],t.active+=.5,r.event&&r.event.interrupt.call(this,this.__data__,r.index))}}function Wu(n,t,e){return ko(n,Yl),n.namespace=t,n.id=e,n}function Ju(n,t,e,r){var i=n.id,u=n.namespace;return Y(n,"function"==typeof e?function(n,o,a){n[u][i].tween.set(t,r(e.call(n,n.__data__,o,a)))}:(e=r(e),function(n){n[u][i].tween.set(t,e)}))}function Gu(n){return null==n&&(n=""),function(){this.textContent=n}}function Ku(n){return null==n?"__transition__":"__transition_"+n+"__"}function Qu(n,t,e,r,i){function u(n){var t=v.delay;return f.t=t+l,n>=t?o(n-t):void(f.c=o)}function o(e){var i=g.active,u=g[i];u&&(u.timer.c=null,u.timer.t=NaN,--g.count,delete g[i],u.event&&u.event.interrupt.call(n,n.__data__,u.index));for(var o in g)if(r>+o){var c=g[o];c.timer.c=null,c.timer.t=NaN,--g.count,delete g[o]}f.c=a,qn(function(){return f.c&&a(e||1)&&(f.c=null,f.t=NaN),1},0,l),g.active=r,v.event&&v.event.start.call(n,n.__data__,t),p=[],v.tween.forEach(function(e,r){(r=r.call(n,n.__data__,t))&&p.push(r)}),h=v.ease,s=v.duration}function a(i){for(var u=i/s,o=h(u),a=p.length;a>0;)p[--a].call(n,o);return u>=1?(v.event&&v.event.end.call(n,n.__data__,t),--g.count?delete g[r]:delete n[e],1):void 0}var l,f,s,h,p,g=n[e]||(n[e]={active:0,count:0}),v=g[r];v||(l=i.time,f=qn(u,0,l),v=g[r]={tween:new c,time:l,timer:f,delay:i.delay,duration:i.duration,ease:i.ease,index:t},i=null,++g.count)}function no(n,t,e){n.attr("transform",function(n){var r=t(n);return"translate("+(isFinite(r)?r:e(n))+",0)"})}function to(n,t,e){n.attr("transform",function(n){var r=t(n);return"translate(0,"+(isFinite(r)?r:e(n))+")"})}function eo(n){return n.toISOString()}function ro(n,t,e){function r(t){return n(t)}function i(n,e){var r=n[1]-n[0],i=r/e,u=ao.bisect(Kl,i);return u==Kl.length?[t.year,Ki(n.map(function(n){return n/31536e6}),e)[2]]:u?t[i/Kl[u-1]<Kl[u]/i?u-1:u]:[tc,Ki(n,e)[2]]}return r.invert=function(t){return io(n.invert(t))},r.domain=function(t){return arguments.length?(n.domain(t),r):n.domain().map(io)},r.nice=function(n,t){function e(e){return!isNaN(e)&&!n.range(e,io(+e+1),t).length}var u=r.domain(),o=Yi(u),a=null==n?i(o,10):"number"==typeof n&&i(o,n);return a&&(n=a[0],t=a[1]),r.domain(Xi(u,t>1?{floor:function(t){for(;e(t=n.floor(t));)t=io(t-1);return t},ceil:function(t){for(;e(t=n.ceil(t));)t=io(+t+1);return t}}:n))},r.ticks=function(n,t){var e=Yi(r.domain()),u=null==n?i(e,10):"number"==typeof n?i(e,n):!n.range&&[{range:n},t];return u&&(n=u[0],t=u[1]),n.range(e[0],io(+e[1]+1),1>t?1:t)},r.tickFormat=function(){return e},r.copy=function(){return ro(n.copy(),t,e)},Ji(r,n)}function io(n){return new Date(n)}function uo(n){return JSON.parse(n.responseText)}function oo(n){var t=fo.createRange();return t.selectNode(fo.body),t.createContextualFragment(n.responseText)}var ao={version:"3.5.17"},lo=[].slice,co=function(n){return lo.call(n)},fo=this.document;if(fo)try{co(fo.documentElement.childNodes)[0].nodeType}catch(so){co=function(n){for(var t=n.length,e=new Array(t);t--;)e[t]=n[t];return e}}if(Date.now||(Date.now=function(){return+new Date}),fo)try{fo.createElement("DIV").style.setProperty("opacity",0,"")}catch(ho){var po=this.Element.prototype,go=po.setAttribute,vo=po.setAttributeNS,yo=this.CSSStyleDeclaration.prototype,mo=yo.setProperty;po.setAttribute=function(n,t){go.call(this,n,t+"")},po.setAttributeNS=function(n,t,e){vo.call(this,n,t,e+"")},yo.setProperty=function(n,t,e){mo.call(this,n,t+"",e)}}ao.ascending=e,ao.descending=function(n,t){return n>t?-1:t>n?1:t>=n?0:NaN},ao.min=function(n,t){var e,r,i=-1,u=n.length;if(1===arguments.length){for(;++i<u;)if(null!=(r=n[i])&&r>=r){e=r;break}for(;++i<u;)null!=(r=n[i])&&e>r&&(e=r)}else{for(;++i<u;)if(null!=(r=t.call(n,n[i],i))&&r>=r){e=r;break}for(;++i<u;)null!=(r=t.call(n,n[i],i))&&e>r&&(e=r)}return e},ao.max=function(n,t){var e,r,i=-1,u=n.length;if(1===arguments.length){for(;++i<u;)if(null!=(r=n[i])&&r>=r){e=r;break}for(;++i<u;)null!=(r=n[i])&&r>e&&(e=r)}else{for(;++i<u;)if(null!=(r=t.call(n,n[i],i))&&r>=r){e=r;break}for(;++i<u;)null!=(r=t.call(n,n[i],i))&&r>e&&(e=r)}return e},ao.extent=function(n,t){var e,r,i,u=-1,o=n.length;if(1===arguments.length){for(;++u<o;)if(null!=(r=n[u])&&r>=r){e=i=r;break}for(;++u<o;)null!=(r=n[u])&&(e>r&&(e=r),r>i&&(i=r))}else{for(;++u<o;)if(null!=(r=t.call(n,n[u],u))&&r>=r){e=i=r;break}for(;++u<o;)null!=(r=t.call(n,n[u],u))&&(e>r&&(e=r),r>i&&(i=r))}return[e,i]},ao.sum=function(n,t){var e,r=0,u=n.length,o=-1;if(1===arguments.length)for(;++o<u;)i(e=+n[o])&&(r+=e);else for(;++o<u;)i(e=+t.call(n,n[o],o))&&(r+=e);return r},ao.mean=function(n,t){var e,u=0,o=n.length,a=-1,l=o;if(1===arguments.length)for(;++a<o;)i(e=r(n[a]))?u+=e:--l;else for(;++a<o;)i(e=r(t.call(n,n[a],a)))?u+=e:--l;return l?u/l:void 0},ao.quantile=function(n,t){var e=(n.length-1)*t+1,r=Math.floor(e),i=+n[r-1],u=e-r;return u?i+u*(n[r]-i):i},ao.median=function(n,t){var u,o=[],a=n.length,l=-1;if(1===arguments.length)for(;++l<a;)i(u=r(n[l]))&&o.push(u);else for(;++l<a;)i(u=r(t.call(n,n[l],l)))&&o.push(u);return o.length?ao.quantile(o.sort(e),.5):void 0},ao.variance=function(n,t){var e,u,o=n.length,a=0,l=0,c=-1,f=0;if(1===arguments.length)for(;++c<o;)i(e=r(n[c]))&&(u=e-a,a+=u/++f,l+=u*(e-a));else for(;++c<o;)i(e=r(t.call(n,n[c],c)))&&(u=e-a,a+=u/++f,l+=u*(e-a));return f>1?l/(f-1):void 0},ao.deviation=function(){var n=ao.variance.apply(this,arguments);return n?Math.sqrt(n):n};var Mo=u(e);ao.bisectLeft=Mo.left,ao.bisect=ao.bisectRight=Mo.right,ao.bisector=function(n){return u(1===n.length?function(t,r){return e(n(t),r)}:n)},ao.shuffle=function(n,t,e){(u=arguments.length)<3&&(e=n.length,2>u&&(t=0));for(var r,i,u=e-t;u;)i=Math.random()*u--|0,r=n[u+t],n[u+t]=n[i+t],n[i+t]=r;return n},ao.permute=function(n,t){for(var e=t.length,r=new Array(e);e--;)r[e]=n[t[e]];return r},ao.pairs=function(n){for(var t,e=0,r=n.length-1,i=n[0],u=new Array(0>r?0:r);r>e;)u[e]=[t=i,i=n[++e]];return u},ao.transpose=function(n){if(!(i=n.length))return[];for(var t=-1,e=ao.min(n,o),r=new Array(e);++t<e;)for(var i,u=-1,a=r[t]=new Array(i);++u<i;)a[u]=n[u][t];return r},ao.zip=function(){return ao.transpose(arguments)},ao.keys=function(n){var t=[];for(var e in n)t.push(e);return t},ao.values=function(n){var t=[];for(var e in n)t.push(n[e]);return t},ao.entries=function(n){var t=[];for(var e in n)t.push({key:e,value:n[e]});return t},ao.merge=function(n){for(var t,e,r,i=n.length,u=-1,o=0;++u<i;)o+=n[u].length;for(e=new Array(o);--i>=0;)for(r=n[i],t=r.length;--t>=0;)e[--o]=r[t];return e};var xo=Math.abs;ao.range=function(n,t,e){if(arguments.length<3&&(e=1,arguments.length<2&&(t=n,n=0)),(t-n)/e===1/0)throw new Error("infinite range");var r,i=[],u=a(xo(e)),o=-1;if(n*=u,t*=u,e*=u,0>e)for(;(r=n+e*++o)>t;)i.push(r/u);else for(;(r=n+e*++o)<t;)i.push(r/u);return i},ao.map=function(n,t){var e=new c;if(n instanceof c)n.forEach(function(n,t){e.set(n,t)});else if(Array.isArray(n)){var r,i=-1,u=n.length;if(1===arguments.length)for(;++i<u;)e.set(i,n[i]);else for(;++i<u;)e.set(t.call(n,r=n[i],i),r)}else for(var o in n)e.set(o,n[o]);return e};var bo="__proto__",_o="\x00";l(c,{has:h,get:function(n){return this._[f(n)]},set:function(n,t){return this._[f(n)]=t},remove:p,keys:g,values:function(){var n=[];for(var t in this._)n.push(this._[t]);return n},entries:function(){var n=[];for(var t in this._)n.push({key:s(t),value:this._[t]});return n},size:v,empty:d,forEach:function(n){for(var t in this._)n.call(this,s(t),this._[t])}}),ao.nest=function(){function n(t,o,a){if(a>=u.length)return r?r.call(i,o):e?o.sort(e):o;for(var l,f,s,h,p=-1,g=o.length,v=u[a++],d=new c;++p<g;)(h=d.get(l=v(f=o[p])))?h.push(f):d.set(l,[f]);return t?(f=t(),s=function(e,r){f.set(e,n(t,r,a))}):(f={},s=function(e,r){f[e]=n(t,r,a)}),d.forEach(s),f}function t(n,e){if(e>=u.length)return n;var r=[],i=o[e++];return n.forEach(function(n,i){r.push({key:n,values:t(i,e)})}),i?r.sort(function(n,t){return i(n.key,t.key)}):r}var e,r,i={},u=[],o=[];return i.map=function(t,e){return n(e,t,0)},i.entries=function(e){return t(n(ao.map,e,0),0)},i.key=function(n){return u.push(n),i},i.sortKeys=function(n){return o[u.length-1]=n,i},i.sortValues=function(n){return e=n,i},i.rollup=function(n){return r=n,i},i},ao.set=function(n){var t=new y;if(n)for(var e=0,r=n.length;r>e;++e)t.add(n[e]);return t},l(y,{has:h,add:function(n){return this._[f(n+="")]=!0,n},remove:p,values:g,size:v,empty:d,forEach:function(n){for(var t in this._)n.call(this,s(t))}}),ao.behavior={},ao.rebind=function(n,t){for(var e,r=1,i=arguments.length;++r<i;)n[e=arguments[r]]=M(n,t,t[e]);return n};var wo=["webkit","ms","moz","Moz","o","O"];ao.dispatch=function(){for(var n=new _,t=-1,e=arguments.length;++t<e;)n[arguments[t]]=w(n);return n},_.prototype.on=function(n,t){var e=n.indexOf("."),r="";if(e>=0&&(r=n.slice(e+1),n=n.slice(0,e)),n)return arguments.length<2?this[n].on(r):this[n].on(r,t);if(2===arguments.length){if(null==t)for(n in this)this.hasOwnProperty(n)&&this[n].on(r,null);return this}},ao.event=null,ao.requote=function(n){return n.replace(So,"\\$&")};var So=/[\\\^\$\*\+\?\|\[\]\(\)\.\{\}]/g,ko={}.__proto__?function(n,t){n.__proto__=t}:function(n,t){for(var e in t)n[e]=t[e]},No=function(n,t){return t.querySelector(n)},Eo=function(n,t){return t.querySelectorAll(n)},Ao=function(n,t){var e=n.matches||n[x(n,"matchesSelector")];return(Ao=function(n,t){return e.call(n,t)})(n,t)};"function"==typeof Sizzle&&(No=function(n,t){return Sizzle(n,t)[0]||null},Eo=Sizzle,Ao=Sizzle.matchesSelector),ao.selection=function(){return ao.select(fo.documentElement)};var Co=ao.selection.prototype=[];Co.select=function(n){var t,e,r,i,u=[];n=A(n);for(var o=-1,a=this.length;++o<a;){u.push(t=[]),t.parentNode=(r=this[o]).parentNode;for(var l=-1,c=r.length;++l<c;)(i=r[l])?(t.push(e=n.call(i,i.__data__,l,o)),e&&"__data__"in i&&(e.__data__=i.__data__)):t.push(null)}return E(u)},Co.selectAll=function(n){var t,e,r=[];n=C(n);for(var i=-1,u=this.length;++i<u;)for(var o=this[i],a=-1,l=o.length;++a<l;)(e=o[a])&&(r.push(t=co(n.call(e,e.__data__,a,i))),t.parentNode=e);return E(r)};var zo="http://www.w3.org/1999/xhtml",Lo={svg:"http://www.w3.org/2000/svg",xhtml:zo,xlink:"http://www.w3.org/1999/xlink",xml:"http://www.w3.org/XML/1998/namespace",xmlns:"http://www.w3.org/2000/xmlns/"};ao.ns={prefix:Lo,qualify:function(n){var t=n.indexOf(":"),e=n;return t>=0&&"xmlns"!==(e=n.slice(0,t))&&(n=n.slice(t+1)),Lo.hasOwnProperty(e)?{space:Lo[e],local:n}:n}},Co.attr=function(n,t){if(arguments.length<2){if("string"==typeof n){var e=this.node();return n=ao.ns.qualify(n),n.local?e.getAttributeNS(n.space,n.local):e.getAttribute(n)}for(t in n)this.each(z(t,n[t]));return this}return this.each(z(n,t))},Co.classed=function(n,t){if(arguments.length<2){if("string"==typeof n){var e=this.node(),r=(n=T(n)).length,i=-1;if(t=e.classList){for(;++i<r;)if(!t.contains(n[i]))return!1}else for(t=e.getAttribute("class");++i<r;)if(!q(n[i]).test(t))return!1;return!0}for(t in n)this.each(R(t,n[t]));return this}return this.each(R(n,t))},Co.style=function(n,e,r){var i=arguments.length;if(3>i){if("string"!=typeof n){2>i&&(e="");for(r in n)this.each(P(r,n[r],e));return this}if(2>i){var u=this.node();return t(u).getComputedStyle(u,null).getPropertyValue(n)}r=""}return this.each(P(n,e,r))},Co.property=function(n,t){if(arguments.length<2){if("string"==typeof n)return this.node()[n];for(t in n)this.each(U(t,n[t]));return this}return this.each(U(n,t))},Co.text=function(n){return arguments.length?this.each("function"==typeof n?function(){var t=n.apply(this,arguments);this.textContent=null==t?"":t}:null==n?function(){this.textContent=""}:function(){this.textContent=n}):this.node().textContent},Co.html=function(n){return arguments.length?this.each("function"==typeof n?function(){var t=n.apply(this,arguments);this.innerHTML=null==t?"":t}:null==n?function(){this.innerHTML=""}:function(){this.innerHTML=n}):this.node().innerHTML},Co.append=function(n){return n=j(n),this.select(function(){return this.appendChild(n.apply(this,arguments))})},Co.insert=function(n,t){return n=j(n),t=A(t),this.select(function(){return this.insertBefore(n.apply(this,arguments),t.apply(this,arguments)||null)})},Co.remove=function(){return this.each(F)},Co.data=function(n,t){function e(n,e){var r,i,u,o=n.length,s=e.length,h=Math.min(o,s),p=new Array(s),g=new Array(s),v=new Array(o);if(t){var d,y=new c,m=new Array(o);for(r=-1;++r<o;)(i=n[r])&&(y.has(d=t.call(i,i.__data__,r))?v[r]=i:y.set(d,i),m[r]=d);for(r=-1;++r<s;)(i=y.get(d=t.call(e,u=e[r],r)))?i!==!0&&(p[r]=i,i.__data__=u):g[r]=H(u),y.set(d,!0);for(r=-1;++r<o;)r in m&&y.get(m[r])!==!0&&(v[r]=n[r])}else{for(r=-1;++r<h;)i=n[r],u=e[r],i?(i.__data__=u,p[r]=i):g[r]=H(u);for(;s>r;++r)g[r]=H(e[r]);for(;o>r;++r)v[r]=n[r]}g.update=p,g.parentNode=p.parentNode=v.parentNode=n.parentNode,a.push(g),l.push(p),f.push(v)}var r,i,u=-1,o=this.length;if(!arguments.length){for(n=new Array(o=(r=this[0]).length);++u<o;)(i=r[u])&&(n[u]=i.__data__);return n}var a=Z([]),l=E([]),f=E([]);if("function"==typeof n)for(;++u<o;)e(r=this[u],n.call(r,r.parentNode.__data__,u));else for(;++u<o;)e(r=this[u],n);return l.enter=function(){return a},l.exit=function(){return f},l},Co.datum=function(n){return arguments.length?this.property("__data__",n):this.property("__data__")},Co.filter=function(n){var t,e,r,i=[];"function"!=typeof n&&(n=O(n));for(var u=0,o=this.length;o>u;u++){i.push(t=[]),t.parentNode=(e=this[u]).parentNode;for(var a=0,l=e.length;l>a;a++)(r=e[a])&&n.call(r,r.__data__,a,u)&&t.push(r)}return E(i)},Co.order=function(){for(var n=-1,t=this.length;++n<t;)for(var e,r=this[n],i=r.length-1,u=r[i];--i>=0;)(e=r[i])&&(u&&u!==e.nextSibling&&u.parentNode.insertBefore(e,u),u=e);return this},Co.sort=function(n){n=I.apply(this,arguments);for(var t=-1,e=this.length;++t<e;)this[t].sort(n);return this.order()},Co.each=function(n){return Y(this,function(t,e,r){n.call(t,t.__data__,e,r)})},Co.call=function(n){var t=co(arguments);return n.apply(t[0]=this,t),this},Co.empty=function(){return!this.node()},Co.node=function(){for(var n=0,t=this.length;t>n;n++)for(var e=this[n],r=0,i=e.length;i>r;r++){var u=e[r];if(u)return u}return null},Co.size=function(){var n=0;return Y(this,function(){++n}),n};var qo=[];ao.selection.enter=Z,ao.selection.enter.prototype=qo,qo.append=Co.append,qo.empty=Co.empty,qo.node=Co.node,qo.call=Co.call,qo.size=Co.size,qo.select=function(n){for(var t,e,r,i,u,o=[],a=-1,l=this.length;++a<l;){r=(i=this[a]).update,o.push(t=[]),t.parentNode=i.parentNode;for(var c=-1,f=i.length;++c<f;)(u=i[c])?(t.push(r[c]=e=n.call(i.parentNode,u.__data__,c,a)),e.__data__=u.__data__):t.push(null)}return E(o)},qo.insert=function(n,t){return arguments.length<2&&(t=V(this)),Co.insert.call(this,n,t)},ao.select=function(t){var e;return"string"==typeof t?(e=[No(t,fo)],e.parentNode=fo.documentElement):(e=[t],e.parentNode=n(t)),E([e])},ao.selectAll=function(n){var t;return"string"==typeof n?(t=co(Eo(n,fo)),t.parentNode=fo.documentElement):(t=co(n),t.parentNode=null),E([t])},Co.on=function(n,t,e){var r=arguments.length;if(3>r){if("string"!=typeof n){2>r&&(t=!1);for(e in n)this.each(X(e,n[e],t));return this}if(2>r)return(r=this.node()["__on"+n])&&r._;e=!1}return this.each(X(n,t,e))};var To=ao.map({mouseenter:"mouseover",mouseleave:"mouseout"});fo&&To.forEach(function(n){"on"+n in fo&&To.remove(n)});var Ro,Do=0;ao.mouse=function(n){return J(n,k())};var Po=this.navigator&&/WebKit/.test(this.navigator.userAgent)?-1:0;ao.touch=function(n,t,e){if(arguments.length<3&&(e=t,t=k().changedTouches),t)for(var r,i=0,u=t.length;u>i;++i)if((r=t[i]).identifier===e)return J(n,r)},ao.behavior.drag=function(){function n(){this.on("mousedown.drag",u).on("touchstart.drag",o)}function e(n,t,e,u,o){return function(){function a(){var n,e,r=t(h,v);r&&(n=r[0]-M[0],e=r[1]-M[1],g|=n|e,M=r,p({type:"drag",x:r[0]+c[0],y:r[1]+c[1],dx:n,dy:e}))}function l(){t(h,v)&&(y.on(u+d,null).on(o+d,null),m(g),p({type:"dragend"}))}var c,f=this,s=ao.event.target.correspondingElement||ao.event.target,h=f.parentNode,p=r.of(f,arguments),g=0,v=n(),d=".drag"+(null==v?"":"-"+v),y=ao.select(e(s)).on(u+d,a).on(o+d,l),m=W(s),M=t(h,v);i?(c=i.apply(f,arguments),c=[c.x-M[0],c.y-M[1]]):c=[0,0],p({type:"dragstart"})}}var r=N(n,"drag","dragstart","dragend"),i=null,u=e(b,ao.mouse,t,"mousemove","mouseup"),o=e(G,ao.touch,m,"touchmove","touchend");return n.origin=function(t){return arguments.length?(i=t,n):i},ao.rebind(n,r,"on")},ao.touches=function(n,t){return arguments.length<2&&(t=k().touches),t?co(t).map(function(t){var e=J(n,t);return e.identifier=t.identifier,e}):[]};var Uo=1e-6,jo=Uo*Uo,Fo=Math.PI,Ho=2*Fo,Oo=Ho-Uo,Io=Fo/2,Yo=Fo/180,Zo=180/Fo,Vo=Math.SQRT2,Xo=2,$o=4;ao.interpolateZoom=function(n,t){var e,r,i=n[0],u=n[1],o=n[2],a=t[0],l=t[1],c=t[2],f=a-i,s=l-u,h=f*f+s*s;if(jo>h)r=Math.log(c/o)/Vo,e=function(n){return[i+n*f,u+n*s,o*Math.exp(Vo*n*r)]};else{var p=Math.sqrt(h),g=(c*c-o*o+$o*h)/(2*o*Xo*p),v=(c*c-o*o-$o*h)/(2*c*Xo*p),d=Math.log(Math.sqrt(g*g+1)-g),y=Math.log(Math.sqrt(v*v+1)-v);r=(y-d)/Vo,e=function(n){var t=n*r,e=rn(d),a=o/(Xo*p)*(e*un(Vo*t+d)-en(d));return[i+a*f,u+a*s,o*e/rn(Vo*t+d)]}}return e.duration=1e3*r,e},ao.behavior.zoom=function(){function n(n){n.on(L,s).on(Wo+".zoom",p).on("dblclick.zoom",g).on(R,h)}function e(n){return[(n[0]-k.x)/k.k,(n[1]-k.y)/k.k]}function r(n){return[n[0]*k.k+k.x,n[1]*k.k+k.y]}function i(n){k.k=Math.max(A[0],Math.min(A[1],n))}function u(n,t){t=r(t),k.x+=n[0]-t[0],k.y+=n[1]-t[1]}function o(t,e,r,o){t.__chart__={x:k.x,y:k.y,k:k.k},i(Math.pow(2,o)),u(d=e,r),t=ao.select(t),C>0&&(t=t.transition().duration(C)),t.call(n.event)}function a(){b&&b.domain(x.range().map(function(n){return(n-k.x)/k.k}).map(x.invert)),w&&w.domain(_.range().map(function(n){return(n-k.y)/k.k}).map(_.invert))}function l(n){z++||n({type:"zoomstart"})}function c(n){a(),n({type:"zoom",scale:k.k,translate:[k.x,k.y]})}function f(n){--z||(n({type:"zoomend"}),d=null)}function s(){function n(){a=1,u(ao.mouse(i),h),c(o)}function r(){s.on(q,null).on(T,null),p(a),f(o)}var i=this,o=D.of(i,arguments),a=0,s=ao.select(t(i)).on(q,n).on(T,r),h=e(ao.mouse(i)),p=W(i);Il.call(i),l(o)}function h(){function n(){var n=ao.touches(g);return p=k.k,n.forEach(function(n){n.identifier in d&&(d[n.identifier]=e(n))}),n}function t(){var t=ao.event.target;ao.select(t).on(x,r).on(b,a),_.push(t);for(var e=ao.event.changedTouches,i=0,u=e.length;u>i;++i)d[e[i].identifier]=null;var l=n(),c=Date.now();if(1===l.length){if(500>c-M){var f=l[0];o(g,f,d[f.identifier],Math.floor(Math.log(k.k)/Math.LN2)+1),S()}M=c}else if(l.length>1){var f=l[0],s=l[1],h=f[0]-s[0],p=f[1]-s[1];y=h*h+p*p}}function r(){var n,t,e,r,o=ao.touches(g);Il.call(g);for(var a=0,l=o.length;l>a;++a,r=null)if(e=o[a],r=d[e.identifier]){if(t)break;n=e,t=r}if(r){var f=(f=e[0]-n[0])*f+(f=e[1]-n[1])*f,s=y&&Math.sqrt(f/y);n=[(n[0]+e[0])/2,(n[1]+e[1])/2],t=[(t[0]+r[0])/2,(t[1]+r[1])/2],i(s*p)}M=null,u(n,t),c(v)}function a(){if(ao.event.touches.length){for(var t=ao.event.changedTouches,e=0,r=t.length;r>e;++e)delete d[t[e].identifier];for(var i in d)return void n()}ao.selectAll(_).on(m,null),w.on(L,s).on(R,h),N(),f(v)}var p,g=this,v=D.of(g,arguments),d={},y=0,m=".zoom-"+ao.event.changedTouches[0].identifier,x="touchmove"+m,b="touchend"+m,_=[],w=ao.select(g),N=W(g);t(),l(v),w.on(L,null).on(R,t)}function p(){var n=D.of(this,arguments);m?clearTimeout(m):(Il.call(this),v=e(d=y||ao.mouse(this)),l(n)),m=setTimeout(function(){m=null,f(n)},50),S(),i(Math.pow(2,.002*Bo())*k.k),u(d,v),c(n)}function g(){var n=ao.mouse(this),t=Math.log(k.k)/Math.LN2;o(this,n,e(n),ao.event.shiftKey?Math.ceil(t)-1:Math.floor(t)+1)}var v,d,y,m,M,x,b,_,w,k={x:0,y:0,k:1},E=[960,500],A=Jo,C=250,z=0,L="mousedown.zoom",q="mousemove.zoom",T="mouseup.zoom",R="touchstart.zoom",D=N(n,"zoomstart","zoom","zoomend");return Wo||(Wo="onwheel"in fo?(Bo=function(){return-ao.event.deltaY*(ao.event.deltaMode?120:1)},"wheel"):"onmousewheel"in fo?(Bo=function(){return ao.event.wheelDelta},"mousewheel"):(Bo=function(){return-ao.event.detail},"MozMousePixelScroll")),n.event=function(n){n.each(function(){var n=D.of(this,arguments),t=k;Hl?ao.select(this).transition().each("start.zoom",function(){k=this.__chart__||{x:0,y:0,k:1},l(n)}).tween("zoom:zoom",function(){var e=E[0],r=E[1],i=d?d[0]:e/2,u=d?d[1]:r/2,o=ao.interpolateZoom([(i-k.x)/k.k,(u-k.y)/k.k,e/k.k],[(i-t.x)/t.k,(u-t.y)/t.k,e/t.k]);return function(t){var r=o(t),a=e/r[2];this.__chart__=k={x:i-r[0]*a,y:u-r[1]*a,k:a},c(n)}}).each("interrupt.zoom",function(){f(n)}).each("end.zoom",function(){f(n)}):(this.__chart__=k,l(n),c(n),f(n))})},n.translate=function(t){return arguments.length?(k={x:+t[0],y:+t[1],k:k.k},a(),n):[k.x,k.y]},n.scale=function(t){return arguments.length?(k={x:k.x,y:k.y,k:null},i(+t),a(),n):k.k},n.scaleExtent=function(t){return arguments.length?(A=null==t?Jo:[+t[0],+t[1]],n):A},n.center=function(t){return arguments.length?(y=t&&[+t[0],+t[1]],n):y},n.size=function(t){return arguments.length?(E=t&&[+t[0],+t[1]],n):E},n.duration=function(t){return arguments.length?(C=+t,n):C},n.x=function(t){return arguments.length?(b=t,x=t.copy(),k={x:0,y:0,k:1},n):b},n.y=function(t){return arguments.length?(w=t,_=t.copy(),k={x:0,y:0,k:1},n):w},ao.rebind(n,D,"on")};var Bo,Wo,Jo=[0,1/0];ao.color=an,an.prototype.toString=function(){return this.rgb()+""},ao.hsl=ln;var Go=ln.prototype=new an;Go.brighter=function(n){return n=Math.pow(.7,arguments.length?n:1),new ln(this.h,this.s,this.l/n)},Go.darker=function(n){return n=Math.pow(.7,arguments.length?n:1),new ln(this.h,this.s,n*this.l)},Go.rgb=function(){return cn(this.h,this.s,this.l)},ao.hcl=fn;var Ko=fn.prototype=new an;Ko.brighter=function(n){return new fn(this.h,this.c,Math.min(100,this.l+Qo*(arguments.length?n:1)))},Ko.darker=function(n){return new fn(this.h,this.c,Math.max(0,this.l-Qo*(arguments.length?n:1)))},Ko.rgb=function(){return sn(this.h,this.c,this.l).rgb()},ao.lab=hn;var Qo=18,na=.95047,ta=1,ea=1.08883,ra=hn.prototype=new an;ra.brighter=function(n){return new hn(Math.min(100,this.l+Qo*(arguments.length?n:1)),this.a,this.b)},ra.darker=function(n){return new hn(Math.max(0,this.l-Qo*(arguments.length?n:1)),this.a,this.b)},ra.rgb=function(){return pn(this.l,this.a,this.b)},ao.rgb=mn;var ia=mn.prototype=new an;ia.brighter=function(n){n=Math.pow(.7,arguments.length?n:1);var t=this.r,e=this.g,r=this.b,i=30;return t||e||r?(t&&i>t&&(t=i),e&&i>e&&(e=i),r&&i>r&&(r=i),new mn(Math.min(255,t/n),Math.min(255,e/n),Math.min(255,r/n))):new mn(i,i,i)},ia.darker=function(n){return n=Math.pow(.7,arguments.length?n:1),new mn(n*this.r,n*this.g,n*this.b)},ia.hsl=function(){return wn(this.r,this.g,this.b)},ia.toString=function(){return"#"+bn(this.r)+bn(this.g)+bn(this.b)};var ua=ao.map({aliceblue:15792383,antiquewhite:16444375,aqua:65535,aquamarine:8388564,azure:15794175,beige:16119260,bisque:16770244,black:0,blanchedalmond:16772045,blue:255,blueviolet:9055202,brown:10824234,burlywood:14596231,cadetblue:6266528,chartreuse:8388352,chocolate:13789470,coral:16744272,cornflowerblue:6591981,cornsilk:16775388,crimson:14423100,cyan:65535,darkblue:139,darkcyan:35723,darkgoldenrod:12092939,darkgray:11119017,darkgreen:25600,darkgrey:11119017,darkkhaki:12433259,darkmagenta:9109643,darkolivegreen:5597999,darkorange:16747520,darkorchid:10040012,darkred:9109504,darksalmon:15308410,darkseagreen:9419919,darkslateblue:4734347,darkslategray:3100495,darkslategrey:3100495,darkturquoise:52945,darkviolet:9699539,deeppink:16716947,deepskyblue:49151,dimgray:6908265,dimgrey:6908265,dodgerblue:2003199,firebrick:11674146,floralwhite:16775920,forestgreen:2263842,fuchsia:16711935,gainsboro:14474460,ghostwhite:16316671,gold:16766720,goldenrod:14329120,gray:8421504,green:32768,greenyellow:11403055,grey:8421504,honeydew:15794160,hotpink:16738740,indianred:13458524,indigo:4915330,ivory:16777200,khaki:15787660,lavender:15132410,lavenderblush:16773365,lawngreen:8190976,lemonchiffon:16775885,lightblue:11393254,lightcoral:15761536,lightcyan:14745599,lightgoldenrodyellow:16448210,lightgray:13882323,lightgreen:9498256,lightgrey:13882323,lightpink:16758465,lightsalmon:16752762,lightseagreen:2142890,lightskyblue:8900346,lightslategray:7833753,lightslategrey:7833753,lightsteelblue:11584734,lightyellow:16777184,lime:65280,limegreen:3329330,linen:16445670,magenta:16711935,maroon:8388608,mediumaquamarine:6737322,mediumblue:205,mediumorchid:12211667,mediumpurple:9662683,mediumseagreen:3978097,mediumslateblue:8087790,mediumspringgreen:64154,mediumturquoise:4772300,mediumvioletred:13047173,midnightblue:1644912,mintcream:16121850,mistyrose:16770273,moccasin:16770229,navajowhite:16768685,navy:128,oldlace:16643558,olive:8421376,olivedrab:7048739,orange:16753920,orangered:16729344,orchid:14315734,palegoldenrod:15657130,palegreen:10025880,paleturquoise:11529966,palevioletred:14381203,papayawhip:16773077,peachpuff:16767673,peru:13468991,pink:16761035,plum:14524637,powderblue:11591910,purple:8388736,rebeccapurple:6697881,red:16711680,rosybrown:12357519,royalblue:4286945,saddlebrown:9127187,salmon:16416882,sandybrown:16032864,seagreen:3050327,seashell:16774638,sienna:10506797,silver:12632256,skyblue:8900331,slateblue:6970061,slategray:7372944,slategrey:7372944,snow:16775930,springgreen:65407,steelblue:4620980,tan:13808780,teal:32896,thistle:14204888,tomato:16737095,turquoise:4251856,violet:15631086,wheat:16113331,white:16777215,whitesmoke:16119285,yellow:16776960,yellowgreen:10145074});ua.forEach(function(n,t){ua.set(n,Mn(t))}),ao.functor=En,ao.xhr=An(m),ao.dsv=function(n,t){function e(n,e,u){arguments.length<3&&(u=e,e=null);var o=Cn(n,t,null==e?r:i(e),u);return o.row=function(n){return arguments.length?o.response(null==(e=n)?r:i(n)):e},o}function r(n){return e.parse(n.responseText)}function i(n){return function(t){return e.parse(t.responseText,n)}}function u(t){return t.map(o).join(n)}function o(n){return a.test(n)?'"'+n.replace(/\"/g,'""')+'"':n}var a=new RegExp('["'+n+"\n]"),l=n.charCodeAt(0);return e.parse=function(n,t){var r;return e.parseRows(n,function(n,e){if(r)return r(n,e-1);var i=new Function("d","return {"+n.map(function(n,t){return JSON.stringify(n)+": d["+t+"]"}).join(",")+"}");r=t?function(n,e){return t(i(n),e)}:i})},e.parseRows=function(n,t){function e(){if(f>=c)return o;if(i)return i=!1,u;var t=f;if(34===n.charCodeAt(t)){for(var e=t;e++<c;)if(34===n.charCodeAt(e)){if(34!==n.charCodeAt(e+1))break;++e}f=e+2;var r=n.charCodeAt(e+1);return 13===r?(i=!0,10===n.charCodeAt(e+2)&&++f):10===r&&(i=!0),n.slice(t+1,e).replace(/""/g,'"')}for(;c>f;){var r=n.charCodeAt(f++),a=1;if(10===r)i=!0;else if(13===r)i=!0,10===n.charCodeAt(f)&&(++f,++a);else if(r!==l)continue;return n.slice(t,f-a)}return n.slice(t)}for(var r,i,u={},o={},a=[],c=n.length,f=0,s=0;(r=e())!==o;){for(var h=[];r!==u&&r!==o;)h.push(r),r=e();t&&null==(h=t(h,s++))||a.push(h)}return a},e.format=function(t){if(Array.isArray(t[0]))return e.formatRows(t);var r=new y,i=[];return t.forEach(function(n){for(var t in n)r.has(t)||i.push(r.add(t))}),[i.map(o).join(n)].concat(t.map(function(t){return i.map(function(n){return o(t[n])}).join(n)})).join("\n")},e.formatRows=function(n){return n.map(u).join("\n")},e},ao.csv=ao.dsv(",","text/csv"),ao.tsv=ao.dsv("	","text/tab-separated-values");var oa,aa,la,ca,fa=this[x(this,"requestAnimationFrame")]||function(n){setTimeout(n,17)};ao.timer=function(){qn.apply(this,arguments)},ao.timer.flush=function(){Rn(),Dn()},ao.round=function(n,t){return t?Math.round(n*(t=Math.pow(10,t)))/t:Math.round(n)};var sa=["y","z","a","f","p","n","\xb5","m","","k","M","G","T","P","E","Z","Y"].map(Un);ao.formatPrefix=function(n,t){var e=0;return(n=+n)&&(0>n&&(n*=-1),t&&(n=ao.round(n,Pn(n,t))),e=1+Math.floor(1e-12+Math.log(n)/Math.LN10),e=Math.max(-24,Math.min(24,3*Math.floor((e-1)/3)))),sa[8+e/3]};var ha=/(?:([^{])?([<>=^]))?([+\- ])?([$#])?(0)?(\d+)?(,)?(\.-?\d+)?([a-z%])?/i,pa=ao.map({b:function(n){return n.toString(2)},c:function(n){return String.fromCharCode(n)},o:function(n){return n.toString(8)},x:function(n){return n.toString(16)},X:function(n){return n.toString(16).toUpperCase()},g:function(n,t){return n.toPrecision(t)},e:function(n,t){return n.toExponential(t)},f:function(n,t){return n.toFixed(t)},r:function(n,t){return(n=ao.round(n,Pn(n,t))).toFixed(Math.max(0,Math.min(20,Pn(n*(1+1e-15),t))))}}),ga=ao.time={},va=Date;Hn.prototype={getDate:function(){return this._.getUTCDate()},getDay:function(){return this._.getUTCDay()},getFullYear:function(){return this._.getUTCFullYear()},getHours:function(){return this._.getUTCHours()},getMilliseconds:function(){return this._.getUTCMilliseconds()},getMinutes:function(){return this._.getUTCMinutes()},getMonth:function(){return this._.getUTCMonth()},getSeconds:function(){return this._.getUTCSeconds()},getTime:function(){return this._.getTime()},getTimezoneOffset:function(){return 0},valueOf:function(){return this._.valueOf()},setDate:function(){da.setUTCDate.apply(this._,arguments)},setDay:function(){da.setUTCDay.apply(this._,arguments)},setFullYear:function(){da.setUTCFullYear.apply(this._,arguments)},setHours:function(){da.setUTCHours.apply(this._,arguments)},setMilliseconds:function(){da.setUTCMilliseconds.apply(this._,arguments)},setMinutes:function(){da.setUTCMinutes.apply(this._,arguments)},setMonth:function(){da.setUTCMonth.apply(this._,arguments)},setSeconds:function(){da.setUTCSeconds.apply(this._,arguments)},setTime:function(){da.setTime.apply(this._,arguments)}};var da=Date.prototype;ga.year=On(function(n){return n=ga.day(n),n.setMonth(0,1),n},function(n,t){n.setFullYear(n.getFullYear()+t)},function(n){return n.getFullYear()}),ga.years=ga.year.range,ga.years.utc=ga.year.utc.range,ga.day=On(function(n){var t=new va(2e3,0);return t.setFullYear(n.getFullYear(),n.getMonth(),n.getDate()),t},function(n,t){n.setDate(n.getDate()+t)},function(n){return n.getDate()-1}),ga.days=ga.day.range,ga.days.utc=ga.day.utc.range,ga.dayOfYear=function(n){var t=ga.year(n);return Math.floor((n-t-6e4*(n.getTimezoneOffset()-t.getTimezoneOffset()))/864e5)},["sunday","monday","tuesday","wednesday","thursday","friday","saturday"].forEach(function(n,t){t=7-t;var e=ga[n]=On(function(n){return(n=ga.day(n)).setDate(n.getDate()-(n.getDay()+t)%7),n},function(n,t){n.setDate(n.getDate()+7*Math.floor(t))},function(n){var e=ga.year(n).getDay();return Math.floor((ga.dayOfYear(n)+(e+t)%7)/7)-(e!==t)});ga[n+"s"]=e.range,ga[n+"s"].utc=e.utc.range,ga[n+"OfYear"]=function(n){var e=ga.year(n).getDay();return Math.floor((ga.dayOfYear(n)+(e+t)%7)/7)}}),ga.week=ga.sunday,ga.weeks=ga.sunday.range,ga.weeks.utc=ga.sunday.utc.range,ga.weekOfYear=ga.sundayOfYear;var ya={"-":"",_:" ",0:"0"},ma=/^\s*\d+/,Ma=/^%/;ao.locale=function(n){return{numberFormat:jn(n),timeFormat:Yn(n)}};var xa=ao.locale({decimal:".",thousands:",",grouping:[3],currency:["$",""],dateTime:"%a %b %e %X %Y",date:"%m/%d/%Y",time:"%H:%M:%S",periods:["AM","PM"],days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-shortDays:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],months:["January","February","March","April","May","June","July","August","September","October","November","December"],shortMonths:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]});ao.format=xa.numberFormat,ao.geo={},ft.prototype={s:0,t:0,add:function(n){st(n,this.t,ba),st(ba.s,this.s,this),this.s?this.t+=ba.t:this.s=ba.t},reset:function(){this.s=this.t=0},valueOf:function(){return this.s}};var ba=new ft;ao.geo.stream=function(n,t){n&&_a.hasOwnProperty(n.type)?_a[n.type](n,t):ht(n,t)};var _a={Feature:function(n,t){ht(n.geometry,t)},FeatureCollection:function(n,t){for(var e=n.features,r=-1,i=e.length;++r<i;)ht(e[r].geometry,t)}},wa={Sphere:function(n,t){t.sphere()},Point:function(n,t){n=n.coordinates,t.point(n[0],n[1],n[2])},MultiPoint:function(n,t){for(var e=n.coordinates,r=-1,i=e.length;++r<i;)n=e[r],t.point(n[0],n[1],n[2])},LineString:function(n,t){pt(n.coordinates,t,0)},MultiLineString:function(n,t){for(var e=n.coordinates,r=-1,i=e.length;++r<i;)pt(e[r],t,0)},Polygon:function(n,t){gt(n.coordinates,t)},MultiPolygon:function(n,t){for(var e=n.coordinates,r=-1,i=e.length;++r<i;)gt(e[r],t)},GeometryCollection:function(n,t){for(var e=n.geometries,r=-1,i=e.length;++r<i;)ht(e[r],t)}};ao.geo.area=function(n){return Sa=0,ao.geo.stream(n,Na),Sa};var Sa,ka=new ft,Na={sphere:function(){Sa+=4*Fo},point:b,lineStart:b,lineEnd:b,polygonStart:function(){ka.reset(),Na.lineStart=vt},polygonEnd:function(){var n=2*ka;Sa+=0>n?4*Fo+n:n,Na.lineStart=Na.lineEnd=Na.point=b}};ao.geo.bounds=function(){function n(n,t){M.push(x=[f=n,h=n]),s>t&&(s=t),t>p&&(p=t)}function t(t,e){var r=dt([t*Yo,e*Yo]);if(y){var i=mt(y,r),u=[i[1],-i[0],0],o=mt(u,i);bt(o),o=_t(o);var l=t-g,c=l>0?1:-1,v=o[0]*Zo*c,d=xo(l)>180;if(d^(v>c*g&&c*t>v)){var m=o[1]*Zo;m>p&&(p=m)}else if(v=(v+360)%360-180,d^(v>c*g&&c*t>v)){var m=-o[1]*Zo;s>m&&(s=m)}else s>e&&(s=e),e>p&&(p=e);d?g>t?a(f,t)>a(f,h)&&(h=t):a(t,h)>a(f,h)&&(f=t):h>=f?(f>t&&(f=t),t>h&&(h=t)):t>g?a(f,t)>a(f,h)&&(h=t):a(t,h)>a(f,h)&&(f=t)}else n(t,e);y=r,g=t}function e(){b.point=t}function r(){x[0]=f,x[1]=h,b.point=n,y=null}function i(n,e){if(y){var r=n-g;m+=xo(r)>180?r+(r>0?360:-360):r}else v=n,d=e;Na.point(n,e),t(n,e)}function u(){Na.lineStart()}function o(){i(v,d),Na.lineEnd(),xo(m)>Uo&&(f=-(h=180)),x[0]=f,x[1]=h,y=null}function a(n,t){return(t-=n)<0?t+360:t}function l(n,t){return n[0]-t[0]}function c(n,t){return t[0]<=t[1]?t[0]<=n&&n<=t[1]:n<t[0]||t[1]<n}var f,s,h,p,g,v,d,y,m,M,x,b={point:n,lineStart:e,lineEnd:r,polygonStart:function(){b.point=i,b.lineStart=u,b.lineEnd=o,m=0,Na.polygonStart()},polygonEnd:function(){Na.polygonEnd(),b.point=n,b.lineStart=e,b.lineEnd=r,0>ka?(f=-(h=180),s=-(p=90)):m>Uo?p=90:-Uo>m&&(s=-90),x[0]=f,x[1]=h}};return function(n){p=h=-(f=s=1/0),M=[],ao.geo.stream(n,b);var t=M.length;if(t){M.sort(l);for(var e,r=1,i=M[0],u=[i];t>r;++r)e=M[r],c(e[0],i)||c(e[1],i)?(a(i[0],e[1])>a(i[0],i[1])&&(i[1]=e[1]),a(e[0],i[1])>a(i[0],i[1])&&(i[0]=e[0])):u.push(i=e);for(var o,e,g=-(1/0),t=u.length-1,r=0,i=u[t];t>=r;i=e,++r)e=u[r],(o=a(i[1],e[0]))>g&&(g=o,f=e[0],h=i[1])}return M=x=null,f===1/0||s===1/0?[[NaN,NaN],[NaN,NaN]]:[[f,s],[h,p]]}}(),ao.geo.centroid=function(n){Ea=Aa=Ca=za=La=qa=Ta=Ra=Da=Pa=Ua=0,ao.geo.stream(n,ja);var t=Da,e=Pa,r=Ua,i=t*t+e*e+r*r;return jo>i&&(t=qa,e=Ta,r=Ra,Uo>Aa&&(t=Ca,e=za,r=La),i=t*t+e*e+r*r,jo>i)?[NaN,NaN]:[Math.atan2(e,t)*Zo,tn(r/Math.sqrt(i))*Zo]};var Ea,Aa,Ca,za,La,qa,Ta,Ra,Da,Pa,Ua,ja={sphere:b,point:St,lineStart:Nt,lineEnd:Et,polygonStart:function(){ja.lineStart=At},polygonEnd:function(){ja.lineStart=Nt}},Fa=Rt(zt,jt,Ht,[-Fo,-Fo/2]),Ha=1e9;ao.geo.clipExtent=function(){var n,t,e,r,i,u,o={stream:function(n){return i&&(i.valid=!1),i=u(n),i.valid=!0,i},extent:function(a){return arguments.length?(u=Zt(n=+a[0][0],t=+a[0][1],e=+a[1][0],r=+a[1][1]),i&&(i.valid=!1,i=null),o):[[n,t],[e,r]]}};return o.extent([[0,0],[960,500]])},(ao.geo.conicEqualArea=function(){return Vt(Xt)}).raw=Xt,ao.geo.albers=function(){return ao.geo.conicEqualArea().rotate([96,0]).center([-.6,38.7]).parallels([29.5,45.5]).scale(1070)},ao.geo.albersUsa=function(){function n(n){var u=n[0],o=n[1];return t=null,e(u,o),t||(r(u,o),t)||i(u,o),t}var t,e,r,i,u=ao.geo.albers(),o=ao.geo.conicEqualArea().rotate([154,0]).center([-2,58.5]).parallels([55,65]),a=ao.geo.conicEqualArea().rotate([157,0]).center([-3,19.9]).parallels([8,18]),l={point:function(n,e){t=[n,e]}};return n.invert=function(n){var t=u.scale(),e=u.translate(),r=(n[0]-e[0])/t,i=(n[1]-e[1])/t;return(i>=.12&&.234>i&&r>=-.425&&-.214>r?o:i>=.166&&.234>i&&r>=-.214&&-.115>r?a:u).invert(n)},n.stream=function(n){var t=u.stream(n),e=o.stream(n),r=a.stream(n);return{point:function(n,i){t.point(n,i),e.point(n,i),r.point(n,i)},sphere:function(){t.sphere(),e.sphere(),r.sphere()},lineStart:function(){t.lineStart(),e.lineStart(),r.lineStart()},lineEnd:function(){t.lineEnd(),e.lineEnd(),r.lineEnd()},polygonStart:function(){t.polygonStart(),e.polygonStart(),r.polygonStart()},polygonEnd:function(){t.polygonEnd(),e.polygonEnd(),r.polygonEnd()}}},n.precision=function(t){return arguments.length?(u.precision(t),o.precision(t),a.precision(t),n):u.precision()},n.scale=function(t){return arguments.length?(u.scale(t),o.scale(.35*t),a.scale(t),n.translate(u.translate())):u.scale()},n.translate=function(t){if(!arguments.length)return u.translate();var c=u.scale(),f=+t[0],s=+t[1];return e=u.translate(t).clipExtent([[f-.455*c,s-.238*c],[f+.455*c,s+.238*c]]).stream(l).point,r=o.translate([f-.307*c,s+.201*c]).clipExtent([[f-.425*c+Uo,s+.12*c+Uo],[f-.214*c-Uo,s+.234*c-Uo]]).stream(l).point,i=a.translate([f-.205*c,s+.212*c]).clipExtent([[f-.214*c+Uo,s+.166*c+Uo],[f-.115*c-Uo,s+.234*c-Uo]]).stream(l).point,n},n.scale(1070)};var Oa,Ia,Ya,Za,Va,Xa,$a={point:b,lineStart:b,lineEnd:b,polygonStart:function(){Ia=0,$a.lineStart=$t},polygonEnd:function(){$a.lineStart=$a.lineEnd=$a.point=b,Oa+=xo(Ia/2)}},Ba={point:Bt,lineStart:b,lineEnd:b,polygonStart:b,polygonEnd:b},Wa={point:Gt,lineStart:Kt,lineEnd:Qt,polygonStart:function(){Wa.lineStart=ne},polygonEnd:function(){Wa.point=Gt,Wa.lineStart=Kt,Wa.lineEnd=Qt}};ao.geo.path=function(){function n(n){return n&&("function"==typeof a&&u.pointRadius(+a.apply(this,arguments)),o&&o.valid||(o=i(u)),ao.geo.stream(n,o)),u.result()}function t(){return o=null,n}var e,r,i,u,o,a=4.5;return n.area=function(n){return Oa=0,ao.geo.stream(n,i($a)),Oa},n.centroid=function(n){return Ca=za=La=qa=Ta=Ra=Da=Pa=Ua=0,ao.geo.stream(n,i(Wa)),Ua?[Da/Ua,Pa/Ua]:Ra?[qa/Ra,Ta/Ra]:La?[Ca/La,za/La]:[NaN,NaN]},n.bounds=function(n){return Va=Xa=-(Ya=Za=1/0),ao.geo.stream(n,i(Ba)),[[Ya,Za],[Va,Xa]]},n.projection=function(n){return arguments.length?(i=(e=n)?n.stream||re(n):m,t()):e},n.context=function(n){return arguments.length?(u=null==(r=n)?new Wt:new te(n),"function"!=typeof a&&u.pointRadius(a),t()):r},n.pointRadius=function(t){return arguments.length?(a="function"==typeof t?t:(u.pointRadius(+t),+t),n):a},n.projection(ao.geo.albersUsa()).context(null)},ao.geo.transform=function(n){return{stream:function(t){var e=new ie(t);for(var r in n)e[r]=n[r];return e}}},ie.prototype={point:function(n,t){this.stream.point(n,t)},sphere:function(){this.stream.sphere()},lineStart:function(){this.stream.lineStart()},lineEnd:function(){this.stream.lineEnd()},polygonStart:function(){this.stream.polygonStart()},polygonEnd:function(){this.stream.polygonEnd()}},ao.geo.projection=oe,ao.geo.projectionMutator=ae,(ao.geo.equirectangular=function(){return oe(ce)}).raw=ce.invert=ce,ao.geo.rotation=function(n){function t(t){return t=n(t[0]*Yo,t[1]*Yo),t[0]*=Zo,t[1]*=Zo,t}return n=se(n[0]%360*Yo,n[1]*Yo,n.length>2?n[2]*Yo:0),t.invert=function(t){return t=n.invert(t[0]*Yo,t[1]*Yo),t[0]*=Zo,t[1]*=Zo,t},t},fe.invert=ce,ao.geo.circle=function(){function n(){var n="function"==typeof r?r.apply(this,arguments):r,t=se(-n[0]*Yo,-n[1]*Yo,0).invert,i=[];return e(null,null,1,{point:function(n,e){i.push(n=t(n,e)),n[0]*=Zo,n[1]*=Zo}}),{type:"Polygon",coordinates:[i]}}var t,e,r=[0,0],i=6;return n.origin=function(t){return arguments.length?(r=t,n):r},n.angle=function(r){return arguments.length?(e=ve((t=+r)*Yo,i*Yo),n):t},n.precision=function(r){return arguments.length?(e=ve(t*Yo,(i=+r)*Yo),n):i},n.angle(90)},ao.geo.distance=function(n,t){var e,r=(t[0]-n[0])*Yo,i=n[1]*Yo,u=t[1]*Yo,o=Math.sin(r),a=Math.cos(r),l=Math.sin(i),c=Math.cos(i),f=Math.sin(u),s=Math.cos(u);return Math.atan2(Math.sqrt((e=s*o)*e+(e=c*f-l*s*a)*e),l*f+c*s*a)},ao.geo.graticule=function(){function n(){return{type:"MultiLineString",coordinates:t()}}function t(){return ao.range(Math.ceil(u/d)*d,i,d).map(h).concat(ao.range(Math.ceil(c/y)*y,l,y).map(p)).concat(ao.range(Math.ceil(r/g)*g,e,g).filter(function(n){return xo(n%d)>Uo}).map(f)).concat(ao.range(Math.ceil(a/v)*v,o,v).filter(function(n){return xo(n%y)>Uo}).map(s))}var e,r,i,u,o,a,l,c,f,s,h,p,g=10,v=g,d=90,y=360,m=2.5;return n.lines=function(){return t().map(function(n){return{type:"LineString",coordinates:n}})},n.outline=function(){return{type:"Polygon",coordinates:[h(u).concat(p(l).slice(1),h(i).reverse().slice(1),p(c).reverse().slice(1))]}},n.extent=function(t){return arguments.length?n.majorExtent(t).minorExtent(t):n.minorExtent()},n.majorExtent=function(t){return arguments.length?(u=+t[0][0],i=+t[1][0],c=+t[0][1],l=+t[1][1],u>i&&(t=u,u=i,i=t),c>l&&(t=c,c=l,l=t),n.precision(m)):[[u,c],[i,l]]},n.minorExtent=function(t){return arguments.length?(r=+t[0][0],e=+t[1][0],a=+t[0][1],o=+t[1][1],r>e&&(t=r,r=e,e=t),a>o&&(t=a,a=o,o=t),n.precision(m)):[[r,a],[e,o]]},n.step=function(t){return arguments.length?n.majorStep(t).minorStep(t):n.minorStep()},n.majorStep=function(t){return arguments.length?(d=+t[0],y=+t[1],n):[d,y]},n.minorStep=function(t){return arguments.length?(g=+t[0],v=+t[1],n):[g,v]},n.precision=function(t){return arguments.length?(m=+t,f=ye(a,o,90),s=me(r,e,m),h=ye(c,l,90),p=me(u,i,m),n):m},n.majorExtent([[-180,-90+Uo],[180,90-Uo]]).minorExtent([[-180,-80-Uo],[180,80+Uo]])},ao.geo.greatArc=function(){function n(){return{type:"LineString",coordinates:[t||r.apply(this,arguments),e||i.apply(this,arguments)]}}var t,e,r=Me,i=xe;return n.distance=function(){return ao.geo.distance(t||r.apply(this,arguments),e||i.apply(this,arguments))},n.source=function(e){return arguments.length?(r=e,t="function"==typeof e?null:e,n):r},n.target=function(t){return arguments.length?(i=t,e="function"==typeof t?null:t,n):i},n.precision=function(){return arguments.length?n:0},n},ao.geo.interpolate=function(n,t){return be(n[0]*Yo,n[1]*Yo,t[0]*Yo,t[1]*Yo)},ao.geo.length=function(n){return Ja=0,ao.geo.stream(n,Ga),Ja};var Ja,Ga={sphere:b,point:b,lineStart:_e,lineEnd:b,polygonStart:b,polygonEnd:b},Ka=we(function(n){return Math.sqrt(2/(1+n))},function(n){return 2*Math.asin(n/2)});(ao.geo.azimuthalEqualArea=function(){return oe(Ka)}).raw=Ka;var Qa=we(function(n){var t=Math.acos(n);return t&&t/Math.sin(t)},m);(ao.geo.azimuthalEquidistant=function(){return oe(Qa)}).raw=Qa,(ao.geo.conicConformal=function(){return Vt(Se)}).raw=Se,(ao.geo.conicEquidistant=function(){return Vt(ke)}).raw=ke;var nl=we(function(n){return 1/n},Math.atan);(ao.geo.gnomonic=function(){return oe(nl)}).raw=nl,Ne.invert=function(n,t){return[n,2*Math.atan(Math.exp(t))-Io]},(ao.geo.mercator=function(){return Ee(Ne)}).raw=Ne;var tl=we(function(){return 1},Math.asin);(ao.geo.orthographic=function(){return oe(tl)}).raw=tl;var el=we(function(n){return 1/(1+n)},function(n){return 2*Math.atan(n)});(ao.geo.stereographic=function(){return oe(el)}).raw=el,Ae.invert=function(n,t){return[-t,2*Math.atan(Math.exp(n))-Io]},(ao.geo.transverseMercator=function(){var n=Ee(Ae),t=n.center,e=n.rotate;return n.center=function(n){return n?t([-n[1],n[0]]):(n=t(),[n[1],-n[0]])},n.rotate=function(n){return n?e([n[0],n[1],n.length>2?n[2]+90:90]):(n=e(),[n[0],n[1],n[2]-90])},e([0,0,90])}).raw=Ae,ao.geom={},ao.geom.hull=function(n){function t(n){if(n.length<3)return[];var t,i=En(e),u=En(r),o=n.length,a=[],l=[];for(t=0;o>t;t++)a.push([+i.call(this,n[t],t),+u.call(this,n[t],t),t]);for(a.sort(qe),t=0;o>t;t++)l.push([a[t][0],-a[t][1]]);var c=Le(a),f=Le(l),s=f[0]===c[0],h=f[f.length-1]===c[c.length-1],p=[];for(t=c.length-1;t>=0;--t)p.push(n[a[c[t]][2]]);for(t=+s;t<f.length-h;++t)p.push(n[a[f[t]][2]]);return p}var e=Ce,r=ze;return arguments.length?t(n):(t.x=function(n){return arguments.length?(e=n,t):e},t.y=function(n){return arguments.length?(r=n,t):r},t)},ao.geom.polygon=function(n){return ko(n,rl),n};var rl=ao.geom.polygon.prototype=[];rl.area=function(){for(var n,t=-1,e=this.length,r=this[e-1],i=0;++t<e;)n=r,r=this[t],i+=n[1]*r[0]-n[0]*r[1];return.5*i},rl.centroid=function(n){var t,e,r=-1,i=this.length,u=0,o=0,a=this[i-1];for(arguments.length||(n=-1/(6*this.area()));++r<i;)t=a,a=this[r],e=t[0]*a[1]-a[0]*t[1],u+=(t[0]+a[0])*e,o+=(t[1]+a[1])*e;return[u*n,o*n]},rl.clip=function(n){for(var t,e,r,i,u,o,a=De(n),l=-1,c=this.length-De(this),f=this[c-1];++l<c;){for(t=n.slice(),n.length=0,i=this[l],u=t[(r=t.length-a)-1],e=-1;++e<r;)o=t[e],Te(o,f,i)?(Te(u,f,i)||n.push(Re(u,o,f,i)),n.push(o)):Te(u,f,i)&&n.push(Re(u,o,f,i)),u=o;a&&n.push(n[0]),f=i}return n};var il,ul,ol,al,ll,cl=[],fl=[];Ye.prototype.prepare=function(){for(var n,t=this.edges,e=t.length;e--;)n=t[e].edge,n.b&&n.a||t.splice(e,1);return t.sort(Ve),t.length},tr.prototype={start:function(){return this.edge.l===this.site?this.edge.a:this.edge.b},end:function(){return this.edge.l===this.site?this.edge.b:this.edge.a}},er.prototype={insert:function(n,t){var e,r,i;if(n){if(t.P=n,t.N=n.N,n.N&&(n.N.P=t),n.N=t,n.R){for(n=n.R;n.L;)n=n.L;n.L=t}else n.R=t;e=n}else this._?(n=or(this._),t.P=null,t.N=n,n.P=n.L=t,e=n):(t.P=t.N=null,this._=t,e=null);for(t.L=t.R=null,t.U=e,t.C=!0,n=t;e&&e.C;)r=e.U,e===r.L?(i=r.R,i&&i.C?(e.C=i.C=!1,r.C=!0,n=r):(n===e.R&&(ir(this,e),n=e,e=n.U),e.C=!1,r.C=!0,ur(this,r))):(i=r.L,i&&i.C?(e.C=i.C=!1,r.C=!0,n=r):(n===e.L&&(ur(this,e),n=e,e=n.U),e.C=!1,r.C=!0,ir(this,r))),e=n.U;this._.C=!1},remove:function(n){n.N&&(n.N.P=n.P),n.P&&(n.P.N=n.N),n.N=n.P=null;var t,e,r,i=n.U,u=n.L,o=n.R;if(e=u?o?or(o):u:o,i?i.L===n?i.L=e:i.R=e:this._=e,u&&o?(r=e.C,e.C=n.C,e.L=u,u.U=e,e!==o?(i=e.U,e.U=n.U,n=e.R,i.L=n,e.R=o,o.U=e):(e.U=i,i=e,n=e.R)):(r=n.C,n=e),n&&(n.U=i),!r){if(n&&n.C)return void(n.C=!1);do{if(n===this._)break;if(n===i.L){if(t=i.R,t.C&&(t.C=!1,i.C=!0,ir(this,i),t=i.R),t.L&&t.L.C||t.R&&t.R.C){t.R&&t.R.C||(t.L.C=!1,t.C=!0,ur(this,t),t=i.R),t.C=i.C,i.C=t.R.C=!1,ir(this,i),n=this._;break}}else if(t=i.L,t.C&&(t.C=!1,i.C=!0,ur(this,i),t=i.L),t.L&&t.L.C||t.R&&t.R.C){t.L&&t.L.C||(t.R.C=!1,t.C=!0,ir(this,t),t=i.L),t.C=i.C,i.C=t.L.C=!1,ur(this,i),n=this._;break}t.C=!0,n=i,i=i.U}while(!n.C);n&&(n.C=!1)}}},ao.geom.voronoi=function(n){function t(n){var t=new Array(n.length),r=a[0][0],i=a[0][1],u=a[1][0],o=a[1][1];return ar(e(n),a).cells.forEach(function(e,a){var l=e.edges,c=e.site,f=t[a]=l.length?l.map(function(n){var t=n.start();return[t.x,t.y]}):c.x>=r&&c.x<=u&&c.y>=i&&c.y<=o?[[r,o],[u,o],[u,i],[r,i]]:[];f.point=n[a]}),t}function e(n){return n.map(function(n,t){return{x:Math.round(u(n,t)/Uo)*Uo,y:Math.round(o(n,t)/Uo)*Uo,i:t}})}var r=Ce,i=ze,u=r,o=i,a=sl;return n?t(n):(t.links=function(n){return ar(e(n)).edges.filter(function(n){return n.l&&n.r}).map(function(t){return{source:n[t.l.i],target:n[t.r.i]}})},t.triangles=function(n){var t=[];return ar(e(n)).cells.forEach(function(e,r){for(var i,u,o=e.site,a=e.edges.sort(Ve),l=-1,c=a.length,f=a[c-1].edge,s=f.l===o?f.r:f.l;++l<c;)i=f,u=s,f=a[l].edge,s=f.l===o?f.r:f.l,r<u.i&&r<s.i&&cr(o,u,s)<0&&t.push([n[r],n[u.i],n[s.i]])}),t},t.x=function(n){return arguments.length?(u=En(r=n),t):r},t.y=function(n){return arguments.length?(o=En(i=n),t):i},t.clipExtent=function(n){return arguments.length?(a=null==n?sl:n,t):a===sl?null:a},t.size=function(n){return arguments.length?t.clipExtent(n&&[[0,0],n]):a===sl?null:a&&a[1]},t)};var sl=[[-1e6,-1e6],[1e6,1e6]];ao.geom.delaunay=function(n){return ao.geom.voronoi().triangles(n)},ao.geom.quadtree=function(n,t,e,r,i){function u(n){function u(n,t,e,r,i,u,o,a){if(!isNaN(e)&&!isNaN(r))if(n.leaf){var l=n.x,f=n.y;if(null!=l)if(xo(l-e)+xo(f-r)<.01)c(n,t,e,r,i,u,o,a);else{var s=n.point;n.x=n.y=n.point=null,c(n,s,l,f,i,u,o,a),c(n,t,e,r,i,u,o,a)}else n.x=e,n.y=r,n.point=t}else c(n,t,e,r,i,u,o,a)}function c(n,t,e,r,i,o,a,l){var c=.5*(i+a),f=.5*(o+l),s=e>=c,h=r>=f,p=h<<1|s;n.leaf=!1,n=n.nodes[p]||(n.nodes[p]=hr()),s?i=c:a=c,h?o=f:l=f,u(n,t,e,r,i,o,a,l)}var f,s,h,p,g,v,d,y,m,M=En(a),x=En(l);if(null!=t)v=t,d=e,y=r,m=i;else if(y=m=-(v=d=1/0),s=[],h=[],g=n.length,o)for(p=0;g>p;++p)f=n[p],f.x<v&&(v=f.x),f.y<d&&(d=f.y),f.x>y&&(y=f.x),f.y>m&&(m=f.y),s.push(f.x),h.push(f.y);else for(p=0;g>p;++p){var b=+M(f=n[p],p),_=+x(f,p);v>b&&(v=b),d>_&&(d=_),b>y&&(y=b),_>m&&(m=_),s.push(b),h.push(_)}var w=y-v,S=m-d;w>S?m=d+w:y=v+S;var k=hr();if(k.add=function(n){u(k,n,+M(n,++p),+x(n,p),v,d,y,m)},k.visit=function(n){pr(n,k,v,d,y,m)},k.find=function(n){return gr(k,n[0],n[1],v,d,y,m)},p=-1,null==t){for(;++p<g;)u(k,n[p],s[p],h[p],v,d,y,m);--p}else n.forEach(k.add);return s=h=n=f=null,k}var o,a=Ce,l=ze;return(o=arguments.length)?(a=fr,l=sr,3===o&&(i=e,r=t,e=t=0),u(n)):(u.x=function(n){return arguments.length?(a=n,u):a},u.y=function(n){return arguments.length?(l=n,u):l},u.extent=function(n){return arguments.length?(null==n?t=e=r=i=null:(t=+n[0][0],e=+n[0][1],r=+n[1][0],i=+n[1][1]),u):null==t?null:[[t,e],[r,i]]},u.size=function(n){return arguments.length?(null==n?t=e=r=i=null:(t=e=0,r=+n[0],i=+n[1]),u):null==t?null:[r-t,i-e]},u)},ao.interpolateRgb=vr,ao.interpolateObject=dr,ao.interpolateNumber=yr,ao.interpolateString=mr;var hl=/[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g,pl=new RegExp(hl.source,"g");ao.interpolate=Mr,ao.interpolators=[function(n,t){var e=typeof t;return("string"===e?ua.has(t.toLowerCase())||/^(#|rgb\(|hsl\()/i.test(t)?vr:mr:t instanceof an?vr:Array.isArray(t)?xr:"object"===e&&isNaN(t)?dr:yr)(n,t)}],ao.interpolateArray=xr;var gl=function(){return m},vl=ao.map({linear:gl,poly:Er,quad:function(){return Sr},cubic:function(){return kr},sin:function(){return Ar},exp:function(){return Cr},circle:function(){return zr},elastic:Lr,back:qr,bounce:function(){return Tr}}),dl=ao.map({"in":m,out:_r,"in-out":wr,"out-in":function(n){return wr(_r(n))}});ao.ease=function(n){var t=n.indexOf("-"),e=t>=0?n.slice(0,t):n,r=t>=0?n.slice(t+1):"in";return e=vl.get(e)||gl,r=dl.get(r)||m,br(r(e.apply(null,lo.call(arguments,1))))},ao.interpolateHcl=Rr,ao.interpolateHsl=Dr,ao.interpolateLab=Pr,ao.interpolateRound=Ur,ao.transform=function(n){var t=fo.createElementNS(ao.ns.prefix.svg,"g");return(ao.transform=function(n){if(null!=n){t.setAttribute("transform",n);var e=t.transform.baseVal.consolidate()}return new jr(e?e.matrix:yl)})(n)},jr.prototype.toString=function(){return"translate("+this.translate+")rotate("+this.rotate+")skewX("+this.skew+")scale("+this.scale+")"};var yl={a:1,b:0,c:0,d:1,e:0,f:0};ao.interpolateTransform=$r,ao.layout={},ao.layout.bundle=function(){return function(n){for(var t=[],e=-1,r=n.length;++e<r;)t.push(Jr(n[e]));return t}},ao.layout.chord=function(){function n(){var n,c,s,h,p,g={},v=[],d=ao.range(u),y=[];for(e=[],r=[],n=0,h=-1;++h<u;){for(c=0,p=-1;++p<u;)c+=i[h][p];v.push(c),y.push(ao.range(u)),n+=c}for(o&&d.sort(function(n,t){return o(v[n],v[t])}),a&&y.forEach(function(n,t){n.sort(function(n,e){return a(i[t][n],i[t][e])})}),n=(Ho-f*u)/n,c=0,h=-1;++h<u;){for(s=c,p=-1;++p<u;){var m=d[h],M=y[m][p],x=i[m][M],b=c,_=c+=x*n;g[m+"-"+M]={index:m,subindex:M,startAngle:b,endAngle:_,value:x}}r[m]={index:m,startAngle:s,endAngle:c,value:v[m]},c+=f}for(h=-1;++h<u;)for(p=h-1;++p<u;){var w=g[h+"-"+p],S=g[p+"-"+h];(w.value||S.value)&&e.push(w.value<S.value?{source:S,target:w}:{source:w,target:S})}l&&t()}function t(){e.sort(function(n,t){return l((n.source.value+n.target.value)/2,(t.source.value+t.target.value)/2)})}var e,r,i,u,o,a,l,c={},f=0;return c.matrix=function(n){return arguments.length?(u=(i=n)&&i.length,e=r=null,c):i},c.padding=function(n){return arguments.length?(f=n,e=r=null,c):f},c.sortGroups=function(n){return arguments.length?(o=n,e=r=null,c):o},c.sortSubgroups=function(n){return arguments.length?(a=n,e=null,c):a},c.sortChords=function(n){return arguments.length?(l=n,e&&t(),c):l},c.chords=function(){return e||n(),e},c.groups=function(){return r||n(),r},c},ao.layout.force=function(){function n(n){return function(t,e,r,i){if(t.point!==n){var u=t.cx-n.x,o=t.cy-n.y,a=i-e,l=u*u+o*o;if(l>a*a/y){if(v>l){var c=t.charge/l;n.px-=u*c,n.py-=o*c}return!0}if(t.point&&l&&v>l){var c=t.pointCharge/l;n.px-=u*c,n.py-=o*c}}return!t.charge}}function t(n){n.px=ao.event.x,n.py=ao.event.y,l.resume()}var e,r,i,u,o,a,l={},c=ao.dispatch("start","tick","end"),f=[1,1],s=.9,h=ml,p=Ml,g=-30,v=xl,d=.1,y=.64,M=[],x=[];return l.tick=function(){if((i*=.99)<.005)return e=null,c.end({type:"end",alpha:i=0}),!0;var t,r,l,h,p,v,y,m,b,_=M.length,w=x.length;for(r=0;w>r;++r)l=x[r],h=l.source,p=l.target,m=p.x-h.x,b=p.y-h.y,(v=m*m+b*b)&&(v=i*o[r]*((v=Math.sqrt(v))-u[r])/v,m*=v,b*=v,p.x-=m*(y=h.weight+p.weight?h.weight/(h.weight+p.weight):.5),p.y-=b*y,h.x+=m*(y=1-y),h.y+=b*y);if((y=i*d)&&(m=f[0]/2,b=f[1]/2,r=-1,y))for(;++r<_;)l=M[r],l.x+=(m-l.x)*y,l.y+=(b-l.y)*y;if(g)for(ri(t=ao.geom.quadtree(M),i,a),r=-1;++r<_;)(l=M[r]).fixed||t.visit(n(l));for(r=-1;++r<_;)l=M[r],l.fixed?(l.x=l.px,l.y=l.py):(l.x-=(l.px-(l.px=l.x))*s,l.y-=(l.py-(l.py=l.y))*s);c.tick({type:"tick",alpha:i})},l.nodes=function(n){return arguments.length?(M=n,l):M},l.links=function(n){return arguments.length?(x=n,l):x},l.size=function(n){return arguments.length?(f=n,l):f},l.linkDistance=function(n){return arguments.length?(h="function"==typeof n?n:+n,l):h},l.distance=l.linkDistance,l.linkStrength=function(n){return arguments.length?(p="function"==typeof n?n:+n,l):p},l.friction=function(n){return arguments.length?(s=+n,l):s},l.charge=function(n){return arguments.length?(g="function"==typeof n?n:+n,l):g},l.chargeDistance=function(n){return arguments.length?(v=n*n,l):Math.sqrt(v)},l.gravity=function(n){return arguments.length?(d=+n,l):d},l.theta=function(n){return arguments.length?(y=n*n,l):Math.sqrt(y)},l.alpha=function(n){return arguments.length?(n=+n,i?n>0?i=n:(e.c=null,e.t=NaN,e=null,c.end({type:"end",alpha:i=0})):n>0&&(c.start({type:"start",alpha:i=n}),e=qn(l.tick)),l):i},l.start=function(){function n(n,r){if(!e){for(e=new Array(i),l=0;i>l;++l)e[l]=[];for(l=0;c>l;++l){var u=x[l];e[u.source.index].push(u.target),e[u.target.index].push(u.source)}}for(var o,a=e[t],l=-1,f=a.length;++l<f;)if(!isNaN(o=a[l][n]))return o;return Math.random()*r}var t,e,r,i=M.length,c=x.length,s=f[0],v=f[1];for(t=0;i>t;++t)(r=M[t]).index=t,r.weight=0;for(t=0;c>t;++t)r=x[t],"number"==typeof r.source&&(r.source=M[r.source]),"number"==typeof r.target&&(r.target=M[r.target]),++r.source.weight,++r.target.weight;for(t=0;i>t;++t)r=M[t],isNaN(r.x)&&(r.x=n("x",s)),isNaN(r.y)&&(r.y=n("y",v)),isNaN(r.px)&&(r.px=r.x),isNaN(r.py)&&(r.py=r.y);if(u=[],"function"==typeof h)for(t=0;c>t;++t)u[t]=+h.call(this,x[t],t);else for(t=0;c>t;++t)u[t]=h;if(o=[],"function"==typeof p)for(t=0;c>t;++t)o[t]=+p.call(this,x[t],t);else for(t=0;c>t;++t)o[t]=p;if(a=[],"function"==typeof g)for(t=0;i>t;++t)a[t]=+g.call(this,M[t],t);else for(t=0;i>t;++t)a[t]=g;return l.resume()},l.resume=function(){return l.alpha(.1)},l.stop=function(){return l.alpha(0)},l.drag=function(){return r||(r=ao.behavior.drag().origin(m).on("dragstart.force",Qr).on("drag.force",t).on("dragend.force",ni)),arguments.length?void this.on("mouseover.force",ti).on("mouseout.force",ei).call(r):r},ao.rebind(l,c,"on")};var ml=20,Ml=1,xl=1/0;ao.layout.hierarchy=function(){function n(i){var u,o=[i],a=[];for(i.depth=0;null!=(u=o.pop());)if(a.push(u),(c=e.call(n,u,u.depth))&&(l=c.length)){for(var l,c,f;--l>=0;)o.push(f=c[l]),f.parent=u,f.depth=u.depth+1;r&&(u.value=0),u.children=c}else r&&(u.value=+r.call(n,u,u.depth)||0),delete u.children;return oi(i,function(n){var e,i;t&&(e=n.children)&&e.sort(t),r&&(i=n.parent)&&(i.value+=n.value)}),a}var t=ci,e=ai,r=li;return n.sort=function(e){return arguments.length?(t=e,n):t},n.children=function(t){return arguments.length?(e=t,n):e},n.value=function(t){return arguments.length?(r=t,n):r},n.revalue=function(t){return r&&(ui(t,function(n){n.children&&(n.value=0)}),oi(t,function(t){var e;t.children||(t.value=+r.call(n,t,t.depth)||0),(e=t.parent)&&(e.value+=t.value)})),t},n},ao.layout.partition=function(){function n(t,e,r,i){var u=t.children;if(t.x=e,t.y=t.depth*i,t.dx=r,t.dy=i,u&&(o=u.length)){var o,a,l,c=-1;for(r=t.value?r/t.value:0;++c<o;)n(a=u[c],e,l=a.value*r,i),e+=l}}function t(n){var e=n.children,r=0;if(e&&(i=e.length))for(var i,u=-1;++u<i;)r=Math.max(r,t(e[u]));return 1+r}function e(e,u){var o=r.call(this,e,u);return n(o[0],0,i[0],i[1]/t(o[0])),o}var r=ao.layout.hierarchy(),i=[1,1];return e.size=function(n){return arguments.length?(i=n,e):i},ii(e,r)},ao.layout.pie=function(){function n(o){var a,l=o.length,c=o.map(function(e,r){return+t.call(n,e,r)}),f=+("function"==typeof r?r.apply(this,arguments):r),s=("function"==typeof i?i.apply(this,arguments):i)-f,h=Math.min(Math.abs(s)/l,+("function"==typeof u?u.apply(this,arguments):u)),p=h*(0>s?-1:1),g=ao.sum(c),v=g?(s-l*p)/g:0,d=ao.range(l),y=[];return null!=e&&d.sort(e===bl?function(n,t){return c[t]-c[n]}:function(n,t){return e(o[n],o[t])}),d.forEach(function(n){y[n]={data:o[n],value:a=c[n],startAngle:f,endAngle:f+=a*v+p,padAngle:h}}),y}var t=Number,e=bl,r=0,i=Ho,u=0;return n.value=function(e){return arguments.length?(t=e,n):t},n.sort=function(t){return arguments.length?(e=t,n):e},n.startAngle=function(t){return arguments.length?(r=t,n):r},n.endAngle=function(t){return arguments.length?(i=t,n):i},n.padAngle=function(t){return arguments.length?(u=t,n):u},n};var bl={};ao.layout.stack=function(){function n(a,l){if(!(h=a.length))return a;var c=a.map(function(e,r){return t.call(n,e,r)}),f=c.map(function(t){return t.map(function(t,e){return[u.call(n,t,e),o.call(n,t,e)]})}),s=e.call(n,f,l);c=ao.permute(c,s),f=ao.permute(f,s);var h,p,g,v,d=r.call(n,f,l),y=c[0].length;for(g=0;y>g;++g)for(i.call(n,c[0][g],v=d[g],f[0][g][1]),p=1;h>p;++p)i.call(n,c[p][g],v+=f[p-1][g][1],f[p][g][1]);return a}var t=m,e=gi,r=vi,i=pi,u=si,o=hi;return n.values=function(e){return arguments.length?(t=e,n):t},n.order=function(t){return arguments.length?(e="function"==typeof t?t:_l.get(t)||gi,n):e},n.offset=function(t){return arguments.length?(r="function"==typeof t?t:wl.get(t)||vi,n):r},n.x=function(t){return arguments.length?(u=t,n):u},n.y=function(t){return arguments.length?(o=t,n):o},n.out=function(t){return arguments.length?(i=t,n):i},n};var _l=ao.map({"inside-out":function(n){var t,e,r=n.length,i=n.map(di),u=n.map(yi),o=ao.range(r).sort(function(n,t){return i[n]-i[t]}),a=0,l=0,c=[],f=[];for(t=0;r>t;++t)e=o[t],l>a?(a+=u[e],c.push(e)):(l+=u[e],f.push(e));return f.reverse().concat(c)},reverse:function(n){return ao.range(n.length).reverse()},"default":gi}),wl=ao.map({silhouette:function(n){var t,e,r,i=n.length,u=n[0].length,o=[],a=0,l=[];for(e=0;u>e;++e){for(t=0,r=0;i>t;t++)r+=n[t][e][1];r>a&&(a=r),o.push(r)}for(e=0;u>e;++e)l[e]=(a-o[e])/2;return l},wiggle:function(n){var t,e,r,i,u,o,a,l,c,f=n.length,s=n[0],h=s.length,p=[];for(p[0]=l=c=0,e=1;h>e;++e){for(t=0,i=0;f>t;++t)i+=n[t][e][1];for(t=0,u=0,a=s[e][0]-s[e-1][0];f>t;++t){for(r=0,o=(n[t][e][1]-n[t][e-1][1])/(2*a);t>r;++r)o+=(n[r][e][1]-n[r][e-1][1])/a;u+=o*n[t][e][1]}p[e]=l-=i?u/i*a:0,c>l&&(c=l)}for(e=0;h>e;++e)p[e]-=c;return p},expand:function(n){var t,e,r,i=n.length,u=n[0].length,o=1/i,a=[];for(e=0;u>e;++e){for(t=0,r=0;i>t;t++)r+=n[t][e][1];if(r)for(t=0;i>t;t++)n[t][e][1]/=r;else for(t=0;i>t;t++)n[t][e][1]=o}for(e=0;u>e;++e)a[e]=0;return a},zero:vi});ao.layout.histogram=function(){function n(n,u){for(var o,a,l=[],c=n.map(e,this),f=r.call(this,c,u),s=i.call(this,f,c,u),u=-1,h=c.length,p=s.length-1,g=t?1:1/h;++u<p;)o=l[u]=[],o.dx=s[u+1]-(o.x=s[u]),o.y=0;if(p>0)for(u=-1;++u<h;)a=c[u],a>=f[0]&&a<=f[1]&&(o=l[ao.bisect(s,a,1,p)-1],o.y+=g,o.push(n[u]));return l}var t=!0,e=Number,r=bi,i=Mi;return n.value=function(t){return arguments.length?(e=t,n):e},n.range=function(t){return arguments.length?(r=En(t),n):r},n.bins=function(t){return arguments.length?(i="number"==typeof t?function(n){return xi(n,t)}:En(t),n):i},n.frequency=function(e){return arguments.length?(t=!!e,n):t},n},ao.layout.pack=function(){function n(n,u){var o=e.call(this,n,u),a=o[0],l=i[0],c=i[1],f=null==t?Math.sqrt:"function"==typeof t?t:function(){return t};if(a.x=a.y=0,oi(a,function(n){n.r=+f(n.value)}),oi(a,Ni),r){var s=r*(t?1:Math.max(2*a.r/l,2*a.r/c))/2;oi(a,function(n){n.r+=s}),oi(a,Ni),oi(a,function(n){n.r-=s})}return Ci(a,l/2,c/2,t?1:1/Math.max(2*a.r/l,2*a.r/c)),o}var t,e=ao.layout.hierarchy().sort(_i),r=0,i=[1,1];return n.size=function(t){return arguments.length?(i=t,n):i},n.radius=function(e){return arguments.length?(t=null==e||"function"==typeof e?e:+e,n):t},n.padding=function(t){return arguments.length?(r=+t,n):r},ii(n,e)},ao.layout.tree=function(){function n(n,i){var f=o.call(this,n,i),s=f[0],h=t(s);if(oi(h,e),h.parent.m=-h.z,ui(h,r),c)ui(s,u);else{var p=s,g=s,v=s;ui(s,function(n){n.x<p.x&&(p=n),n.x>g.x&&(g=n),n.depth>v.depth&&(v=n)});var d=a(p,g)/2-p.x,y=l[0]/(g.x+a(g,p)/2+d),m=l[1]/(v.depth||1);ui(s,function(n){n.x=(n.x+d)*y,n.y=n.depth*m})}return f}function t(n){for(var t,e={A:null,children:[n]},r=[e];null!=(t=r.pop());)for(var i,u=t.children,o=0,a=u.length;a>o;++o)r.push((u[o]=i={_:u[o],parent:t,children:(i=u[o].children)&&i.slice()||[],A:null,a:null,z:0,m:0,c:0,s:0,t:null,i:o}).a=i);return e.children[0]}function e(n){var t=n.children,e=n.parent.children,r=n.i?e[n.i-1]:null;if(t.length){Di(n);var u=(t[0].z+t[t.length-1].z)/2;r?(n.z=r.z+a(n._,r._),n.m=n.z-u):n.z=u}else r&&(n.z=r.z+a(n._,r._));n.parent.A=i(n,r,n.parent.A||e[0])}function r(n){n._.x=n.z+n.parent.m,n.m+=n.parent.m}function i(n,t,e){if(t){for(var r,i=n,u=n,o=t,l=i.parent.children[0],c=i.m,f=u.m,s=o.m,h=l.m;o=Ti(o),i=qi(i),o&&i;)l=qi(l),u=Ti(u),u.a=n,r=o.z+s-i.z-c+a(o._,i._),r>0&&(Ri(Pi(o,n,e),n,r),c+=r,f+=r),s+=o.m,c+=i.m,h+=l.m,f+=u.m;o&&!Ti(u)&&(u.t=o,u.m+=s-f),i&&!qi(l)&&(l.t=i,l.m+=c-h,e=n)}return e}function u(n){n.x*=l[0],n.y=n.depth*l[1]}var o=ao.layout.hierarchy().sort(null).value(null),a=Li,l=[1,1],c=null;return n.separation=function(t){return arguments.length?(a=t,n):a},n.size=function(t){return arguments.length?(c=null==(l=t)?u:null,n):c?null:l},n.nodeSize=function(t){return arguments.length?(c=null==(l=t)?null:u,n):c?l:null},ii(n,o)},ao.layout.cluster=function(){function n(n,u){var o,a=t.call(this,n,u),l=a[0],c=0;oi(l,function(n){var t=n.children;t&&t.length?(n.x=ji(t),n.y=Ui(t)):(n.x=o?c+=e(n,o):0,n.y=0,o=n)});var f=Fi(l),s=Hi(l),h=f.x-e(f,s)/2,p=s.x+e(s,f)/2;return oi(l,i?function(n){n.x=(n.x-l.x)*r[0],n.y=(l.y-n.y)*r[1]}:function(n){n.x=(n.x-h)/(p-h)*r[0],n.y=(1-(l.y?n.y/l.y:1))*r[1]}),a}var t=ao.layout.hierarchy().sort(null).value(null),e=Li,r=[1,1],i=!1;return n.separation=function(t){return arguments.length?(e=t,n):e},n.size=function(t){return arguments.length?(i=null==(r=t),n):i?null:r},n.nodeSize=function(t){return arguments.length?(i=null!=(r=t),n):i?r:null},ii(n,t)},ao.layout.treemap=function(){function n(n,t){for(var e,r,i=-1,u=n.length;++i<u;)r=(e=n[i]).value*(0>t?0:t),e.area=isNaN(r)||0>=r?0:r}function t(e){var u=e.children;if(u&&u.length){var o,a,l,c=s(e),f=[],h=u.slice(),g=1/0,v="slice"===p?c.dx:"dice"===p?c.dy:"slice-dice"===p?1&e.depth?c.dy:c.dx:Math.min(c.dx,c.dy);for(n(h,c.dx*c.dy/e.value),f.area=0;(l=h.length)>0;)f.push(o=h[l-1]),f.area+=o.area,"squarify"!==p||(a=r(f,v))<=g?(h.pop(),g=a):(f.area-=f.pop().area,i(f,v,c,!1),v=Math.min(c.dx,c.dy),f.length=f.area=0,g=1/0);f.length&&(i(f,v,c,!0),f.length=f.area=0),u.forEach(t)}}function e(t){var r=t.children;if(r&&r.length){var u,o=s(t),a=r.slice(),l=[];for(n(a,o.dx*o.dy/t.value),l.area=0;u=a.pop();)l.push(u),l.area+=u.area,null!=u.z&&(i(l,u.z?o.dx:o.dy,o,!a.length),l.length=l.area=0);r.forEach(e)}}function r(n,t){for(var e,r=n.area,i=0,u=1/0,o=-1,a=n.length;++o<a;)(e=n[o].area)&&(u>e&&(u=e),e>i&&(i=e));return r*=r,t*=t,r?Math.max(t*i*g/r,r/(t*u*g)):1/0}function i(n,t,e,r){var i,u=-1,o=n.length,a=e.x,c=e.y,f=t?l(n.area/t):0;
-if(t==e.dx){for((r||f>e.dy)&&(f=e.dy);++u<o;)i=n[u],i.x=a,i.y=c,i.dy=f,a+=i.dx=Math.min(e.x+e.dx-a,f?l(i.area/f):0);i.z=!0,i.dx+=e.x+e.dx-a,e.y+=f,e.dy-=f}else{for((r||f>e.dx)&&(f=e.dx);++u<o;)i=n[u],i.x=a,i.y=c,i.dx=f,c+=i.dy=Math.min(e.y+e.dy-c,f?l(i.area/f):0);i.z=!1,i.dy+=e.y+e.dy-c,e.x+=f,e.dx-=f}}function u(r){var i=o||a(r),u=i[0];return u.x=u.y=0,u.value?(u.dx=c[0],u.dy=c[1]):u.dx=u.dy=0,o&&a.revalue(u),n([u],u.dx*u.dy/u.value),(o?e:t)(u),h&&(o=i),i}var o,a=ao.layout.hierarchy(),l=Math.round,c=[1,1],f=null,s=Oi,h=!1,p="squarify",g=.5*(1+Math.sqrt(5));return u.size=function(n){return arguments.length?(c=n,u):c},u.padding=function(n){function t(t){var e=n.call(u,t,t.depth);return null==e?Oi(t):Ii(t,"number"==typeof e?[e,e,e,e]:e)}function e(t){return Ii(t,n)}if(!arguments.length)return f;var r;return s=null==(f=n)?Oi:"function"==(r=typeof n)?t:"number"===r?(n=[n,n,n,n],e):e,u},u.round=function(n){return arguments.length?(l=n?Math.round:Number,u):l!=Number},u.sticky=function(n){return arguments.length?(h=n,o=null,u):h},u.ratio=function(n){return arguments.length?(g=n,u):g},u.mode=function(n){return arguments.length?(p=n+"",u):p},ii(u,a)},ao.random={normal:function(n,t){var e=arguments.length;return 2>e&&(t=1),1>e&&(n=0),function(){var e,r,i;do e=2*Math.random()-1,r=2*Math.random()-1,i=e*e+r*r;while(!i||i>1);return n+t*e*Math.sqrt(-2*Math.log(i)/i)}},logNormal:function(){var n=ao.random.normal.apply(ao,arguments);return function(){return Math.exp(n())}},bates:function(n){var t=ao.random.irwinHall(n);return function(){return t()/n}},irwinHall:function(n){return function(){for(var t=0,e=0;n>e;e++)t+=Math.random();return t}}},ao.scale={};var Sl={floor:m,ceil:m};ao.scale.linear=function(){return Wi([0,1],[0,1],Mr,!1)};var kl={s:1,g:1,p:1,r:1,e:1};ao.scale.log=function(){return ru(ao.scale.linear().domain([0,1]),10,!0,[1,10])};var Nl=ao.format(".0e"),El={floor:function(n){return-Math.ceil(-n)},ceil:function(n){return-Math.floor(-n)}};ao.scale.pow=function(){return iu(ao.scale.linear(),1,[0,1])},ao.scale.sqrt=function(){return ao.scale.pow().exponent(.5)},ao.scale.ordinal=function(){return ou([],{t:"range",a:[[]]})},ao.scale.category10=function(){return ao.scale.ordinal().range(Al)},ao.scale.category20=function(){return ao.scale.ordinal().range(Cl)},ao.scale.category20b=function(){return ao.scale.ordinal().range(zl)},ao.scale.category20c=function(){return ao.scale.ordinal().range(Ll)};var Al=[2062260,16744206,2924588,14034728,9725885,9197131,14907330,8355711,12369186,1556175].map(xn),Cl=[2062260,11454440,16744206,16759672,2924588,10018698,14034728,16750742,9725885,12955861,9197131,12885140,14907330,16234194,8355711,13092807,12369186,14408589,1556175,10410725].map(xn),zl=[3750777,5395619,7040719,10264286,6519097,9216594,11915115,13556636,9202993,12426809,15186514,15190932,8666169,11356490,14049643,15177372,8077683,10834324,13528509,14589654].map(xn),Ll=[3244733,7057110,10406625,13032431,15095053,16616764,16625259,16634018,3253076,7652470,10607003,13101504,7695281,10394312,12369372,14342891,6513507,9868950,12434877,14277081].map(xn);ao.scale.quantile=function(){return au([],[])},ao.scale.quantize=function(){return lu(0,1,[0,1])},ao.scale.threshold=function(){return cu([.5],[0,1])},ao.scale.identity=function(){return fu([0,1])},ao.svg={},ao.svg.arc=function(){function n(){var n=Math.max(0,+e.apply(this,arguments)),c=Math.max(0,+r.apply(this,arguments)),f=o.apply(this,arguments)-Io,s=a.apply(this,arguments)-Io,h=Math.abs(s-f),p=f>s?0:1;if(n>c&&(g=c,c=n,n=g),h>=Oo)return t(c,p)+(n?t(n,1-p):"")+"Z";var g,v,d,y,m,M,x,b,_,w,S,k,N=0,E=0,A=[];if((y=(+l.apply(this,arguments)||0)/2)&&(d=u===ql?Math.sqrt(n*n+c*c):+u.apply(this,arguments),p||(E*=-1),c&&(E=tn(d/c*Math.sin(y))),n&&(N=tn(d/n*Math.sin(y)))),c){m=c*Math.cos(f+E),M=c*Math.sin(f+E),x=c*Math.cos(s-E),b=c*Math.sin(s-E);var C=Math.abs(s-f-2*E)<=Fo?0:1;if(E&&yu(m,M,x,b)===p^C){var z=(f+s)/2;m=c*Math.cos(z),M=c*Math.sin(z),x=b=null}}else m=M=0;if(n){_=n*Math.cos(s-N),w=n*Math.sin(s-N),S=n*Math.cos(f+N),k=n*Math.sin(f+N);var L=Math.abs(f-s+2*N)<=Fo?0:1;if(N&&yu(_,w,S,k)===1-p^L){var q=(f+s)/2;_=n*Math.cos(q),w=n*Math.sin(q),S=k=null}}else _=w=0;if(h>Uo&&(g=Math.min(Math.abs(c-n)/2,+i.apply(this,arguments)))>.001){v=c>n^p?0:1;var T=g,R=g;if(Fo>h){var D=null==S?[_,w]:null==x?[m,M]:Re([m,M],[S,k],[x,b],[_,w]),P=m-D[0],U=M-D[1],j=x-D[0],F=b-D[1],H=1/Math.sin(Math.acos((P*j+U*F)/(Math.sqrt(P*P+U*U)*Math.sqrt(j*j+F*F)))/2),O=Math.sqrt(D[0]*D[0]+D[1]*D[1]);R=Math.min(g,(n-O)/(H-1)),T=Math.min(g,(c-O)/(H+1))}if(null!=x){var I=mu(null==S?[_,w]:[S,k],[m,M],c,T,p),Y=mu([x,b],[_,w],c,T,p);g===T?A.push("M",I[0],"A",T,",",T," 0 0,",v," ",I[1],"A",c,",",c," 0 ",1-p^yu(I[1][0],I[1][1],Y[1][0],Y[1][1]),",",p," ",Y[1],"A",T,",",T," 0 0,",v," ",Y[0]):A.push("M",I[0],"A",T,",",T," 0 1,",v," ",Y[0])}else A.push("M",m,",",M);if(null!=S){var Z=mu([m,M],[S,k],n,-R,p),V=mu([_,w],null==x?[m,M]:[x,b],n,-R,p);g===R?A.push("L",V[0],"A",R,",",R," 0 0,",v," ",V[1],"A",n,",",n," 0 ",p^yu(V[1][0],V[1][1],Z[1][0],Z[1][1]),",",1-p," ",Z[1],"A",R,",",R," 0 0,",v," ",Z[0]):A.push("L",V[0],"A",R,",",R," 0 0,",v," ",Z[0])}else A.push("L",_,",",w)}else A.push("M",m,",",M),null!=x&&A.push("A",c,",",c," 0 ",C,",",p," ",x,",",b),A.push("L",_,",",w),null!=S&&A.push("A",n,",",n," 0 ",L,",",1-p," ",S,",",k);return A.push("Z"),A.join("")}function t(n,t){return"M0,"+n+"A"+n+","+n+" 0 1,"+t+" 0,"+-n+"A"+n+","+n+" 0 1,"+t+" 0,"+n}var e=hu,r=pu,i=su,u=ql,o=gu,a=vu,l=du;return n.innerRadius=function(t){return arguments.length?(e=En(t),n):e},n.outerRadius=function(t){return arguments.length?(r=En(t),n):r},n.cornerRadius=function(t){return arguments.length?(i=En(t),n):i},n.padRadius=function(t){return arguments.length?(u=t==ql?ql:En(t),n):u},n.startAngle=function(t){return arguments.length?(o=En(t),n):o},n.endAngle=function(t){return arguments.length?(a=En(t),n):a},n.padAngle=function(t){return arguments.length?(l=En(t),n):l},n.centroid=function(){var n=(+e.apply(this,arguments)+ +r.apply(this,arguments))/2,t=(+o.apply(this,arguments)+ +a.apply(this,arguments))/2-Io;return[Math.cos(t)*n,Math.sin(t)*n]},n};var ql="auto";ao.svg.line=function(){return Mu(m)};var Tl=ao.map({linear:xu,"linear-closed":bu,step:_u,"step-before":wu,"step-after":Su,basis:zu,"basis-open":Lu,"basis-closed":qu,bundle:Tu,cardinal:Eu,"cardinal-open":ku,"cardinal-closed":Nu,monotone:Fu});Tl.forEach(function(n,t){t.key=n,t.closed=/-closed$/.test(n)});var Rl=[0,2/3,1/3,0],Dl=[0,1/3,2/3,0],Pl=[0,1/6,2/3,1/6];ao.svg.line.radial=function(){var n=Mu(Hu);return n.radius=n.x,delete n.x,n.angle=n.y,delete n.y,n},wu.reverse=Su,Su.reverse=wu,ao.svg.area=function(){return Ou(m)},ao.svg.area.radial=function(){var n=Ou(Hu);return n.radius=n.x,delete n.x,n.innerRadius=n.x0,delete n.x0,n.outerRadius=n.x1,delete n.x1,n.angle=n.y,delete n.y,n.startAngle=n.y0,delete n.y0,n.endAngle=n.y1,delete n.y1,n},ao.svg.chord=function(){function n(n,a){var l=t(this,u,n,a),c=t(this,o,n,a);return"M"+l.p0+r(l.r,l.p1,l.a1-l.a0)+(e(l,c)?i(l.r,l.p1,l.r,l.p0):i(l.r,l.p1,c.r,c.p0)+r(c.r,c.p1,c.a1-c.a0)+i(c.r,c.p1,l.r,l.p0))+"Z"}function t(n,t,e,r){var i=t.call(n,e,r),u=a.call(n,i,r),o=l.call(n,i,r)-Io,f=c.call(n,i,r)-Io;return{r:u,a0:o,a1:f,p0:[u*Math.cos(o),u*Math.sin(o)],p1:[u*Math.cos(f),u*Math.sin(f)]}}function e(n,t){return n.a0==t.a0&&n.a1==t.a1}function r(n,t,e){return"A"+n+","+n+" 0 "+ +(e>Fo)+",1 "+t}function i(n,t,e,r){return"Q 0,0 "+r}var u=Me,o=xe,a=Iu,l=gu,c=vu;return n.radius=function(t){return arguments.length?(a=En(t),n):a},n.source=function(t){return arguments.length?(u=En(t),n):u},n.target=function(t){return arguments.length?(o=En(t),n):o},n.startAngle=function(t){return arguments.length?(l=En(t),n):l},n.endAngle=function(t){return arguments.length?(c=En(t),n):c},n},ao.svg.diagonal=function(){function n(n,i){var u=t.call(this,n,i),o=e.call(this,n,i),a=(u.y+o.y)/2,l=[u,{x:u.x,y:a},{x:o.x,y:a},o];return l=l.map(r),"M"+l[0]+"C"+l[1]+" "+l[2]+" "+l[3]}var t=Me,e=xe,r=Yu;return n.source=function(e){return arguments.length?(t=En(e),n):t},n.target=function(t){return arguments.length?(e=En(t),n):e},n.projection=function(t){return arguments.length?(r=t,n):r},n},ao.svg.diagonal.radial=function(){var n=ao.svg.diagonal(),t=Yu,e=n.projection;return n.projection=function(n){return arguments.length?e(Zu(t=n)):t},n},ao.svg.symbol=function(){function n(n,r){return(Ul.get(t.call(this,n,r))||$u)(e.call(this,n,r))}var t=Xu,e=Vu;return n.type=function(e){return arguments.length?(t=En(e),n):t},n.size=function(t){return arguments.length?(e=En(t),n):e},n};var Ul=ao.map({circle:$u,cross:function(n){var t=Math.sqrt(n/5)/2;return"M"+-3*t+","+-t+"H"+-t+"V"+-3*t+"H"+t+"V"+-t+"H"+3*t+"V"+t+"H"+t+"V"+3*t+"H"+-t+"V"+t+"H"+-3*t+"Z"},diamond:function(n){var t=Math.sqrt(n/(2*Fl)),e=t*Fl;return"M0,"+-t+"L"+e+",0 0,"+t+" "+-e+",0Z"},square:function(n){var t=Math.sqrt(n)/2;return"M"+-t+","+-t+"L"+t+","+-t+" "+t+","+t+" "+-t+","+t+"Z"},"triangle-down":function(n){var t=Math.sqrt(n/jl),e=t*jl/2;return"M0,"+e+"L"+t+","+-e+" "+-t+","+-e+"Z"},"triangle-up":function(n){var t=Math.sqrt(n/jl),e=t*jl/2;return"M0,"+-e+"L"+t+","+e+" "+-t+","+e+"Z"}});ao.svg.symbolTypes=Ul.keys();var jl=Math.sqrt(3),Fl=Math.tan(30*Yo);Co.transition=function(n){for(var t,e,r=Hl||++Zl,i=Ku(n),u=[],o=Ol||{time:Date.now(),ease:Nr,delay:0,duration:250},a=-1,l=this.length;++a<l;){u.push(t=[]);for(var c=this[a],f=-1,s=c.length;++f<s;)(e=c[f])&&Qu(e,f,i,r,o),t.push(e)}return Wu(u,i,r)},Co.interrupt=function(n){return this.each(null==n?Il:Bu(Ku(n)))};var Hl,Ol,Il=Bu(Ku()),Yl=[],Zl=0;Yl.call=Co.call,Yl.empty=Co.empty,Yl.node=Co.node,Yl.size=Co.size,ao.transition=function(n,t){return n&&n.transition?Hl?n.transition(t):n:ao.selection().transition(n)},ao.transition.prototype=Yl,Yl.select=function(n){var t,e,r,i=this.id,u=this.namespace,o=[];n=A(n);for(var a=-1,l=this.length;++a<l;){o.push(t=[]);for(var c=this[a],f=-1,s=c.length;++f<s;)(r=c[f])&&(e=n.call(r,r.__data__,f,a))?("__data__"in r&&(e.__data__=r.__data__),Qu(e,f,u,i,r[u][i]),t.push(e)):t.push(null)}return Wu(o,u,i)},Yl.selectAll=function(n){var t,e,r,i,u,o=this.id,a=this.namespace,l=[];n=C(n);for(var c=-1,f=this.length;++c<f;)for(var s=this[c],h=-1,p=s.length;++h<p;)if(r=s[h]){u=r[a][o],e=n.call(r,r.__data__,h,c),l.push(t=[]);for(var g=-1,v=e.length;++g<v;)(i=e[g])&&Qu(i,g,a,o,u),t.push(i)}return Wu(l,a,o)},Yl.filter=function(n){var t,e,r,i=[];"function"!=typeof n&&(n=O(n));for(var u=0,o=this.length;o>u;u++){i.push(t=[]);for(var e=this[u],a=0,l=e.length;l>a;a++)(r=e[a])&&n.call(r,r.__data__,a,u)&&t.push(r)}return Wu(i,this.namespace,this.id)},Yl.tween=function(n,t){var e=this.id,r=this.namespace;return arguments.length<2?this.node()[r][e].tween.get(n):Y(this,null==t?function(t){t[r][e].tween.remove(n)}:function(i){i[r][e].tween.set(n,t)})},Yl.attr=function(n,t){function e(){this.removeAttribute(a)}function r(){this.removeAttributeNS(a.space,a.local)}function i(n){return null==n?e:(n+="",function(){var t,e=this.getAttribute(a);return e!==n&&(t=o(e,n),function(n){this.setAttribute(a,t(n))})})}function u(n){return null==n?r:(n+="",function(){var t,e=this.getAttributeNS(a.space,a.local);return e!==n&&(t=o(e,n),function(n){this.setAttributeNS(a.space,a.local,t(n))})})}if(arguments.length<2){for(t in n)this.attr(t,n[t]);return this}var o="transform"==n?$r:Mr,a=ao.ns.qualify(n);return Ju(this,"attr."+n,t,a.local?u:i)},Yl.attrTween=function(n,t){function e(n,e){var r=t.call(this,n,e,this.getAttribute(i));return r&&function(n){this.setAttribute(i,r(n))}}function r(n,e){var r=t.call(this,n,e,this.getAttributeNS(i.space,i.local));return r&&function(n){this.setAttributeNS(i.space,i.local,r(n))}}var i=ao.ns.qualify(n);return this.tween("attr."+n,i.local?r:e)},Yl.style=function(n,e,r){function i(){this.style.removeProperty(n)}function u(e){return null==e?i:(e+="",function(){var i,u=t(this).getComputedStyle(this,null).getPropertyValue(n);return u!==e&&(i=Mr(u,e),function(t){this.style.setProperty(n,i(t),r)})})}var o=arguments.length;if(3>o){if("string"!=typeof n){2>o&&(e="");for(r in n)this.style(r,n[r],e);return this}r=""}return Ju(this,"style."+n,e,u)},Yl.styleTween=function(n,e,r){function i(i,u){var o=e.call(this,i,u,t(this).getComputedStyle(this,null).getPropertyValue(n));return o&&function(t){this.style.setProperty(n,o(t),r)}}return arguments.length<3&&(r=""),this.tween("style."+n,i)},Yl.text=function(n){return Ju(this,"text",n,Gu)},Yl.remove=function(){var n=this.namespace;return this.each("end.transition",function(){var t;this[n].count<2&&(t=this.parentNode)&&t.removeChild(this)})},Yl.ease=function(n){var t=this.id,e=this.namespace;return arguments.length<1?this.node()[e][t].ease:("function"!=typeof n&&(n=ao.ease.apply(ao,arguments)),Y(this,function(r){r[e][t].ease=n}))},Yl.delay=function(n){var t=this.id,e=this.namespace;return arguments.length<1?this.node()[e][t].delay:Y(this,"function"==typeof n?function(r,i,u){r[e][t].delay=+n.call(r,r.__data__,i,u)}:(n=+n,function(r){r[e][t].delay=n}))},Yl.duration=function(n){var t=this.id,e=this.namespace;return arguments.length<1?this.node()[e][t].duration:Y(this,"function"==typeof n?function(r,i,u){r[e][t].duration=Math.max(1,n.call(r,r.__data__,i,u))}:(n=Math.max(1,n),function(r){r[e][t].duration=n}))},Yl.each=function(n,t){var e=this.id,r=this.namespace;if(arguments.length<2){var i=Ol,u=Hl;try{Hl=e,Y(this,function(t,i,u){Ol=t[r][e],n.call(t,t.__data__,i,u)})}finally{Ol=i,Hl=u}}else Y(this,function(i){var u=i[r][e];(u.event||(u.event=ao.dispatch("start","end","interrupt"))).on(n,t)});return this},Yl.transition=function(){for(var n,t,e,r,i=this.id,u=++Zl,o=this.namespace,a=[],l=0,c=this.length;c>l;l++){a.push(n=[]);for(var t=this[l],f=0,s=t.length;s>f;f++)(e=t[f])&&(r=e[o][i],Qu(e,f,o,u,{time:r.time,ease:r.ease,delay:r.delay+r.duration,duration:r.duration})),n.push(e)}return Wu(a,o,u)},ao.svg.axis=function(){function n(n){n.each(function(){var n,c=ao.select(this),f=this.__chart__||e,s=this.__chart__=e.copy(),h=null==l?s.ticks?s.ticks.apply(s,a):s.domain():l,p=null==t?s.tickFormat?s.tickFormat.apply(s,a):m:t,g=c.selectAll(".tick").data(h,s),v=g.enter().insert("g",".domain").attr("class","tick").style("opacity",Uo),d=ao.transition(g.exit()).style("opacity",Uo).remove(),y=ao.transition(g.order()).style("opacity",1),M=Math.max(i,0)+o,x=Zi(s),b=c.selectAll(".domain").data([0]),_=(b.enter().append("path").attr("class","domain"),ao.transition(b));v.append("line"),v.append("text");var w,S,k,N,E=v.select("line"),A=y.select("line"),C=g.select("text").text(p),z=v.select("text"),L=y.select("text"),q="top"===r||"left"===r?-1:1;if("bottom"===r||"top"===r?(n=no,w="x",k="y",S="x2",N="y2",C.attr("dy",0>q?"0em":".71em").style("text-anchor","middle"),_.attr("d","M"+x[0]+","+q*u+"V0H"+x[1]+"V"+q*u)):(n=to,w="y",k="x",S="y2",N="x2",C.attr("dy",".32em").style("text-anchor",0>q?"end":"start"),_.attr("d","M"+q*u+","+x[0]+"H0V"+x[1]+"H"+q*u)),E.attr(N,q*i),z.attr(k,q*M),A.attr(S,0).attr(N,q*i),L.attr(w,0).attr(k,q*M),s.rangeBand){var T=s,R=T.rangeBand()/2;f=s=function(n){return T(n)+R}}else f.rangeBand?f=s:d.call(n,s,f);v.call(n,f,s),y.call(n,s,s)})}var t,e=ao.scale.linear(),r=Vl,i=6,u=6,o=3,a=[10],l=null;return n.scale=function(t){return arguments.length?(e=t,n):e},n.orient=function(t){return arguments.length?(r=t in Xl?t+"":Vl,n):r},n.ticks=function(){return arguments.length?(a=co(arguments),n):a},n.tickValues=function(t){return arguments.length?(l=t,n):l},n.tickFormat=function(e){return arguments.length?(t=e,n):t},n.tickSize=function(t){var e=arguments.length;return e?(i=+t,u=+arguments[e-1],n):i},n.innerTickSize=function(t){return arguments.length?(i=+t,n):i},n.outerTickSize=function(t){return arguments.length?(u=+t,n):u},n.tickPadding=function(t){return arguments.length?(o=+t,n):o},n.tickSubdivide=function(){return arguments.length&&n},n};var Vl="bottom",Xl={top:1,right:1,bottom:1,left:1};ao.svg.brush=function(){function n(t){t.each(function(){var t=ao.select(this).style("pointer-events","all").style("-webkit-tap-highlight-color","rgba(0,0,0,0)").on("mousedown.brush",u).on("touchstart.brush",u),o=t.selectAll(".background").data([0]);o.enter().append("rect").attr("class","background").style("visibility","hidden").style("cursor","crosshair"),t.selectAll(".extent").data([0]).enter().append("rect").attr("class","extent").style("cursor","move");var a=t.selectAll(".resize").data(v,m);a.exit().remove(),a.enter().append("g").attr("class",function(n){return"resize "+n}).style("cursor",function(n){return $l[n]}).append("rect").attr("x",function(n){return/[ew]$/.test(n)?-3:null}).attr("y",function(n){return/^[ns]/.test(n)?-3:null}).attr("width",6).attr("height",6).style("visibility","hidden"),a.style("display",n.empty()?"none":null);var l,s=ao.transition(t),h=ao.transition(o);c&&(l=Zi(c),h.attr("x",l[0]).attr("width",l[1]-l[0]),r(s)),f&&(l=Zi(f),h.attr("y",l[0]).attr("height",l[1]-l[0]),i(s)),e(s)})}function e(n){n.selectAll(".resize").attr("transform",function(n){return"translate("+s[+/e$/.test(n)]+","+h[+/^s/.test(n)]+")"})}function r(n){n.select(".extent").attr("x",s[0]),n.selectAll(".extent,.n>rect,.s>rect").attr("width",s[1]-s[0])}function i(n){n.select(".extent").attr("y",h[0]),n.selectAll(".extent,.e>rect,.w>rect").attr("height",h[1]-h[0])}function u(){function u(){32==ao.event.keyCode&&(C||(M=null,L[0]-=s[1],L[1]-=h[1],C=2),S())}function v(){32==ao.event.keyCode&&2==C&&(L[0]+=s[1],L[1]+=h[1],C=0,S())}function d(){var n=ao.mouse(b),t=!1;x&&(n[0]+=x[0],n[1]+=x[1]),C||(ao.event.altKey?(M||(M=[(s[0]+s[1])/2,(h[0]+h[1])/2]),L[0]=s[+(n[0]<M[0])],L[1]=h[+(n[1]<M[1])]):M=null),E&&y(n,c,0)&&(r(k),t=!0),A&&y(n,f,1)&&(i(k),t=!0),t&&(e(k),w({type:"brush",mode:C?"move":"resize"}))}function y(n,t,e){var r,i,u=Zi(t),l=u[0],c=u[1],f=L[e],v=e?h:s,d=v[1]-v[0];return C&&(l-=f,c-=d+f),r=(e?g:p)?Math.max(l,Math.min(c,n[e])):n[e],C?i=(r+=f)+d:(M&&(f=Math.max(l,Math.min(c,2*M[e]-r))),r>f?(i=r,r=f):i=f),v[0]!=r||v[1]!=i?(e?a=null:o=null,v[0]=r,v[1]=i,!0):void 0}function m(){d(),k.style("pointer-events","all").selectAll(".resize").style("display",n.empty()?"none":null),ao.select("body").style("cursor",null),q.on("mousemove.brush",null).on("mouseup.brush",null).on("touchmove.brush",null).on("touchend.brush",null).on("keydown.brush",null).on("keyup.brush",null),z(),w({type:"brushend"})}var M,x,b=this,_=ao.select(ao.event.target),w=l.of(b,arguments),k=ao.select(b),N=_.datum(),E=!/^(n|s)$/.test(N)&&c,A=!/^(e|w)$/.test(N)&&f,C=_.classed("extent"),z=W(b),L=ao.mouse(b),q=ao.select(t(b)).on("keydown.brush",u).on("keyup.brush",v);if(ao.event.changedTouches?q.on("touchmove.brush",d).on("touchend.brush",m):q.on("mousemove.brush",d).on("mouseup.brush",m),k.interrupt().selectAll("*").interrupt(),C)L[0]=s[0]-L[0],L[1]=h[0]-L[1];else if(N){var T=+/w$/.test(N),R=+/^n/.test(N);x=[s[1-T]-L[0],h[1-R]-L[1]],L[0]=s[T],L[1]=h[R]}else ao.event.altKey&&(M=L.slice());k.style("pointer-events","none").selectAll(".resize").style("display",null),ao.select("body").style("cursor",_.style("cursor")),w({type:"brushstart"}),d()}var o,a,l=N(n,"brushstart","brush","brushend"),c=null,f=null,s=[0,0],h=[0,0],p=!0,g=!0,v=Bl[0];return n.event=function(n){n.each(function(){var n=l.of(this,arguments),t={x:s,y:h,i:o,j:a},e=this.__chart__||t;this.__chart__=t,Hl?ao.select(this).transition().each("start.brush",function(){o=e.i,a=e.j,s=e.x,h=e.y,n({type:"brushstart"})}).tween("brush:brush",function(){var e=xr(s,t.x),r=xr(h,t.y);return o=a=null,function(i){s=t.x=e(i),h=t.y=r(i),n({type:"brush",mode:"resize"})}}).each("end.brush",function(){o=t.i,a=t.j,n({type:"brush",mode:"resize"}),n({type:"brushend"})}):(n({type:"brushstart"}),n({type:"brush",mode:"resize"}),n({type:"brushend"}))})},n.x=function(t){return arguments.length?(c=t,v=Bl[!c<<1|!f],n):c},n.y=function(t){return arguments.length?(f=t,v=Bl[!c<<1|!f],n):f},n.clamp=function(t){return arguments.length?(c&&f?(p=!!t[0],g=!!t[1]):c?p=!!t:f&&(g=!!t),n):c&&f?[p,g]:c?p:f?g:null},n.extent=function(t){var e,r,i,u,l;return arguments.length?(c&&(e=t[0],r=t[1],f&&(e=e[0],r=r[0]),o=[e,r],c.invert&&(e=c(e),r=c(r)),e>r&&(l=e,e=r,r=l),e==s[0]&&r==s[1]||(s=[e,r])),f&&(i=t[0],u=t[1],c&&(i=i[1],u=u[1]),a=[i,u],f.invert&&(i=f(i),u=f(u)),i>u&&(l=i,i=u,u=l),i==h[0]&&u==h[1]||(h=[i,u])),n):(c&&(o?(e=o[0],r=o[1]):(e=s[0],r=s[1],c.invert&&(e=c.invert(e),r=c.invert(r)),e>r&&(l=e,e=r,r=l))),f&&(a?(i=a[0],u=a[1]):(i=h[0],u=h[1],f.invert&&(i=f.invert(i),u=f.invert(u)),i>u&&(l=i,i=u,u=l))),c&&f?[[e,i],[r,u]]:c?[e,r]:f&&[i,u])},n.clear=function(){return n.empty()||(s=[0,0],h=[0,0],o=a=null),n},n.empty=function(){return!!c&&s[0]==s[1]||!!f&&h[0]==h[1]},ao.rebind(n,l,"on")};var $l={n:"ns-resize",e:"ew-resize",s:"ns-resize",w:"ew-resize",nw:"nwse-resize",ne:"nesw-resize",se:"nwse-resize",sw:"nesw-resize"},Bl=[["n","e","s","w","nw","ne","se","sw"],["e","w"],["n","s"],[]],Wl=ga.format=xa.timeFormat,Jl=Wl.utc,Gl=Jl("%Y-%m-%dT%H:%M:%S.%LZ");Wl.iso=Date.prototype.toISOString&&+new Date("2000-01-01T00:00:00.000Z")?eo:Gl,eo.parse=function(n){var t=new Date(n);return isNaN(t)?null:t},eo.toString=Gl.toString,ga.second=On(function(n){return new va(1e3*Math.floor(n/1e3))},function(n,t){n.setTime(n.getTime()+1e3*Math.floor(t))},function(n){return n.getSeconds()}),ga.seconds=ga.second.range,ga.seconds.utc=ga.second.utc.range,ga.minute=On(function(n){return new va(6e4*Math.floor(n/6e4))},function(n,t){n.setTime(n.getTime()+6e4*Math.floor(t))},function(n){return n.getMinutes()}),ga.minutes=ga.minute.range,ga.minutes.utc=ga.minute.utc.range,ga.hour=On(function(n){var t=n.getTimezoneOffset()/60;return new va(36e5*(Math.floor(n/36e5-t)+t))},function(n,t){n.setTime(n.getTime()+36e5*Math.floor(t))},function(n){return n.getHours()}),ga.hours=ga.hour.range,ga.hours.utc=ga.hour.utc.range,ga.month=On(function(n){return n=ga.day(n),n.setDate(1),n},function(n,t){n.setMonth(n.getMonth()+t)},function(n){return n.getMonth()}),ga.months=ga.month.range,ga.months.utc=ga.month.utc.range;var Kl=[1e3,5e3,15e3,3e4,6e4,3e5,9e5,18e5,36e5,108e5,216e5,432e5,864e5,1728e5,6048e5,2592e6,7776e6,31536e6],Ql=[[ga.second,1],[ga.second,5],[ga.second,15],[ga.second,30],[ga.minute,1],[ga.minute,5],[ga.minute,15],[ga.minute,30],[ga.hour,1],[ga.hour,3],[ga.hour,6],[ga.hour,12],[ga.day,1],[ga.day,2],[ga.week,1],[ga.month,1],[ga.month,3],[ga.year,1]],nc=Wl.multi([[".%L",function(n){return n.getMilliseconds()}],[":%S",function(n){return n.getSeconds()}],["%I:%M",function(n){return n.getMinutes()}],["%I %p",function(n){return n.getHours()}],["%a %d",function(n){return n.getDay()&&1!=n.getDate()}],["%b %d",function(n){return 1!=n.getDate()}],["%B",function(n){return n.getMonth()}],["%Y",zt]]),tc={range:function(n,t,e){return ao.range(Math.ceil(n/e)*e,+t,e).map(io)},floor:m,ceil:m};Ql.year=ga.year,ga.scale=function(){return ro(ao.scale.linear(),Ql,nc)};var ec=Ql.map(function(n){return[n[0].utc,n[1]]}),rc=Jl.multi([[".%L",function(n){return n.getUTCMilliseconds()}],[":%S",function(n){return n.getUTCSeconds()}],["%I:%M",function(n){return n.getUTCMinutes()}],["%I %p",function(n){return n.getUTCHours()}],["%a %d",function(n){return n.getUTCDay()&&1!=n.getUTCDate()}],["%b %d",function(n){return 1!=n.getUTCDate()}],["%B",function(n){return n.getUTCMonth()}],["%Y",zt]]);ec.year=ga.year.utc,ga.scale.utc=function(){return ro(ao.scale.linear(),ec,rc)},ao.text=An(function(n){return n.responseText}),ao.json=function(n,t){return Cn(n,"application/json",uo,t)},ao.html=function(n,t){return Cn(n,"text/html",oo,t)},ao.xml=An(function(n){return n.responseXML}),"function"==typeof define&&define.amd?(this.d3=ao,define(ao)):"object"==typeof module&&module.exports?module.exports=ao:this.d3=ao}();
 angular.module('n52.core.map', [])
         .factory('mapService', ['$rootScope', 'leafletBoundsHelpers', 'interfaceService', 'statusService', 'settingsService', 'servicesHelper', '$injector',
             function ($rootScope, leafletBoundsHelpers, interfaceService, statusService, settingsService, servicesHelper, $injector) {

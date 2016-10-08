@@ -15,6 +15,7 @@
         <module>gda</module>
         <module>do</module>
         <module>inspire</module>
+        <module>related-offering</module>
         <module>mqtt</module>
     </modules>
 </project>

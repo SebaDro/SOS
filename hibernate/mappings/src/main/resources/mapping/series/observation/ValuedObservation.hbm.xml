@@ -165,12 +165,36 @@
                 <comment>Sampling geometry describes exactly where the measurement has taken place. Used for OGC SOS 2.0 Spatial Filtering Profile. Optional</comment>
             </column>
         </property>
-        <set name="parameters" table="parameters" inverse="true"  cascade="delete-orphan">
+        <set name="parameters" table="parameters" inverse="true" fetch="join" cascade="delete-orphan">
             <key>
                 <column name="observationId" not-null="true" />
             </key>
-            <one-to-many class="org.n52.sos.ds.hibernate.entities.parameter.Parameter" />
+            <one-to-many class="org.n52.sos.ds.hibernate.entities.parameter.observation.Parameter" />
         </set>
+        <set name="relatedObservations" table="relatedobservations" fetch="join" access="field" cascade="all">
+	        <key>
+	            <column name="observationId" not-null="true" index="relatedObsObsIdx" />
+	        </key>
+	        <one-to-many class="org.n52.sos.ds.hibernate.entities.observation.RelatedObservation" />
+    	</set>
+        <!-- <set name="relatedObservations" 
+        	 table="relatedobservations" 
+			 inverse="false" 
+			 lazy="true"
+			 fetch="select">
+            <key>
+                <column name="observationId" 
+                        not-null="true" 
+                        index="relatedObsObsIdx"/>
+            </key>
+            <many-to-many entity-name="org.n52.sos.ds.hibernate.entities.observation.series.AbstractSeriesObservation"
+                          foreign-key="obsRelatedObsFk">
+                <column name="relatedObservation"
+                        not-null="true"
+                        index="relatedObsRelatedObsIdx">
+	            </column>
+            </many-to-many>
+        </set> -->
         <joined-subclass name="org.n52.sos.ds.hibernate.entities.observation.series.valued.BlobValuedSeriesObservation"
                          extends="org.n52.sos.ds.hibernate.entities.observation.series.AbstractValuedSeriesObservation"
                          table="blobValue">
@@ -217,6 +241,24 @@
                        type="string">
                  <column name="value">
                      <comment>Category observation value</comment>
+                 </column>
+             </property>
+             <property name="valueIdentifier" 
+                       type="string">
+                 <column name="identifier">
+                     <comment>SweCategory observation identifier</comment>
+                 </column>
+             </property>
+             <property name="valueName" 
+                       type="string">
+                 <column name="name">
+                     <comment>SweCategory observation name</comment>
+                 </column>
+             </property>
+             <property name="valueDescription" 
+                       type="string">
+                 <column name="description">
+                     <comment>SweCategory observation description</comment>
                  </column>
              </property>
         </joined-subclass>
@@ -283,6 +325,24 @@
                      <comment>Text observation value</comment>
                  </column>
              </property>
+             <property name="valueIdentifier" 
+                       type="string">
+                 <column name="identifier">
+                     <comment>SweText observation identifier</comment>
+                 </column>
+             </property>
+             <property name="valueName" 
+                       type="string">
+                 <column name="name">
+                     <comment>SweText observation name</comment>
+                 </column>
+             </property>
+             <property name="valueDescription" 
+                       type="string">
+                 <column name="description">
+                     <comment>SweText observation description</comment>
+                 </column>
+             </property>
         </joined-subclass>
         <joined-subclass name="org.n52.sos.ds.hibernate.entities.observation.series.valued.SweDataArrayValuedSeriesObservation"
                          extends="org.n52.sos.ds.hibernate.entities.observation.series.AbstractValuedSeriesObservation"
@@ -327,6 +387,57 @@
                     </column>
                 </many-to-many>
             </set>
-        </joined-subclass> 
+        </joined-subclass>
+        <joined-subclass name="org.n52.sos.ds.hibernate.entities.observation.series.valued.ProfileValuedSeriesObservation"
+                         extends="org.n52.sos.ds.hibernate.entities.observation.series.AbstractValuedSeriesObservation"
+                         table="profileValue">
+           <comment>Value table for profile observation</comment>
+        	<key foreign-key="observationProfileValueFk">
+	        	<column name="observationId" >
+	        		<comment>Foreign Key (FK) to the related observation from the observation table. Contains "observation".observationid</comment>
+	        	</column>
+        	</key>
+        	<property name="fromLevel" 
+        			  type="double">
+         		<column name="fromlevel"
+         				not-null="false">
+         			<comment>Value of fromLevel</comment>
+         		</column>
+         	</property>
+         	<property name="toLevel" 
+        			  type="double">
+         		<column name="tolevel"
+         				not-null="false">
+         			<comment>Value of toLevel</comment>
+         		</column>
+         	</property>
+         	<many-to-one name="levelUnit"
+                     class="org.n52.sos.ds.hibernate.entities.Unit"
+                     fetch="select"
+                     lazy="no-proxy"
+                     foreign-key="profileUnitFk">
+	            <column name="levelunitid"
+	                    not-null="false">
+	            	<comment>Foreign Key (FK) to the related unit of measure. Contains "unit".unitid. Optional</comment>
+	            </column>
+        	</many-to-one>
+            <set name="value"
+                 table="profileObservation"
+                 inverse="false"
+                 cascade="delete-orphan">
+                <comment>Relation table for complex parent/child observations</comment>
+                <key foreign-key="profileObsParentFK" >
+                     <column name="observationId" not-null="true">
+                         <comment>Foreign Key (FK) to the related parent complex observation. Contains "observation".observationid</comment>
+                    </column>
+                </key>
+                <many-to-many entity-name="org.n52.sos.ds.hibernate.entities.observation.series.AbstractSeriesObservation"
+                              foreign-key="profileObsChildFk">
+                    <column name="childObservationId" not-null="true">
+                        <comment>Foreign Key (FK) to the related child complex observation. Contains "observation".observationid</comment>
+                    </column>
+                </many-to-many>
+            </set>
+        </joined-subclass>
     </class>
 </hibernate-mapping>

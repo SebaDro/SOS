@@ -33,6 +33,7 @@ import org.n52.oxf.xml.NcNameResolver;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.observation.ContextualReferencedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.Observation;
+import org.n52.sos.ds.hibernate.entities.observation.ProfileGeneratorSplitter;
 import org.n52.sos.ds.hibernate.entities.observation.ValuedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.ValuedObservationVisitor;
 import org.n52.sos.ds.hibernate.entities.observation.valued.BlobValuedObservation;
@@ -42,6 +43,7 @@ import org.n52.sos.ds.hibernate.entities.observation.valued.ComplexValuedObserva
 import org.n52.sos.ds.hibernate.entities.observation.valued.CountValuedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.valued.GeometryValuedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.valued.NumericValuedObservation;
+import org.n52.sos.ds.hibernate.entities.observation.valued.ProfileValuedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.valued.SweDataArrayValuedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.valued.TextValuedObservation;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
@@ -140,6 +142,11 @@ public class SweAbstractDataComponentCreator
             throws OwsExceptionReport {
         XmlObject xml = XmlHelper.parseXmlString(o.getValue());
         return (SweDataArray) CodingHelper.decodeXmlElement(xml);
+    }
+
+    @Override
+    public SweAbstractDataComponent visit(ProfileValuedObservation o) throws OwsExceptionReport {
+        return ProfileGeneratorSplitter.createValue(o);
     }
 
     protected <T extends SweAbstractDataComponent> T setCommonValues(

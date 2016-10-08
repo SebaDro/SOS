@@ -45,21 +45,20 @@ import org.n52.sos.ds.FeatureQueryHandlerQueryObject;
 import org.n52.sos.ds.HibernateDatasourceConstants;
 import org.n52.sos.ds.hibernate.dao.DaoFactory;
 import org.n52.sos.ds.hibernate.dao.ObservationConstellationDAO;
-import org.n52.sos.ds.hibernate.dao.OfferingDAO;
 import org.n52.sos.ds.hibernate.dao.ResultTemplateDAO;
 import org.n52.sos.ds.hibernate.dao.observation.AbstractObservationDAO;
 import org.n52.sos.ds.hibernate.entities.Codespace;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
-import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.Procedure;
 import org.n52.sos.ds.hibernate.entities.ResultTemplate;
 import org.n52.sos.ds.hibernate.entities.Unit;
+import org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest;
 import org.n52.sos.ds.hibernate.util.ResultHandlingHelper;
 import org.n52.sos.ds.hibernate.util.observation.HibernateObservationUtilities;
 import org.n52.sos.exception.CodedException;
 import org.n52.sos.exception.ows.InvalidParameterValueException;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
+import org.n52.sos.ogc.UoM;
 import org.n52.sos.ogc.gml.AbstractFeature;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
 import org.n52.sos.ogc.om.AbstractPhenomenon;
@@ -135,8 +134,8 @@ public class InsertResultDAO extends AbstractInsertResultDAO implements Capabili
         Session session = null;
         Transaction transaction = null;
         
-        Map<String,Codespace> codespaceCache = Maps.newHashMap();
-        Map<String,Unit> unitCache = Maps.newHashMap();
+        Map<String, Codespace> codespaceCache = Maps.newHashMap();
+        Map<UoM, Unit> unitCache = Maps.newHashMap();
         
         try {
             session = sessionHolder.getSession();
@@ -228,7 +227,7 @@ public class InsertResultDAO extends AbstractInsertResultDAO implements Capabili
      * @throws OwsExceptionReport
      *             If an error occurs during requesting
      */
-    protected AbstractFeature getSosAbstractFeature(final FeatureOfInterest featureOfInterest, final String version,
+    protected AbstractFeature getSosAbstractFeature(final AbstractFeatureOfInterest featureOfInterest, final String version,
             final Session session) throws OwsExceptionReport {
         final FeatureQueryHandler featureQueryHandler = Configurator.getInstance().getFeatureQueryHandler();
         FeatureQueryHandlerQueryObject queryObject = new FeatureQueryHandlerQueryObject()

@@ -63,6 +63,8 @@ public class ServiceSettings implements SettingDefinitionProvider {
 
     public static final String EXPOSE_CHILD_OBSERVABLE_PROPERTIES = "service.exposeChildObservableProperties";
     
+    public static final String LIST_ONLY_PARENT_OFFERINGS = "service.capabilities.listOnlyParentOfferings";
+    
     public static final String UPDATE_FEATURE_GEOMETRY = "service.updateFeatureGeometry";
     
     public static final String CACHE_FILE_FOLDER = "service.cacheFileFolder";
@@ -136,6 +138,16 @@ public class ServiceSettings implements SettingDefinitionProvider {
                     .setDescription(
                             "Whether the SOS should expose the children of composite phenomenons (e.g. in complex observations) instead of their parents.");
      
+     public static final BooleanSettingDefinition LIST_ONLY_PARENT_OFFERINGS_DEFINITON =
+             new BooleanSettingDefinition()
+                     .setGroup(GROUP)
+                     .setOrder(ORDER_18)
+                     .setKey(LIST_ONLY_PARENT_OFFERINGS)
+                     .setDefaultValue(false)
+                     .setTitle("List only parent offerings in Capabilities")
+                     .setDescription(
+                             "Should the service list only parent offerings in Capabilities. Lower level offerings would be referenced in extension element of related ObservationOffering.");
+     
      public static final BooleanSettingDefinition UPDATE_FEATURE_GEOMETRY_DEFINITION =
              new BooleanSettingDefinition()
                      .setGroup(GROUP)
@@ -173,6 +185,7 @@ public class ServiceSettings implements SettingDefinitionProvider {
             VALIDATE_RESPONSE_DEFINITION,
             EXPOSE_CHILD_OBSERVABLE_PROPERTIES_DEFINITION,
             UPDATE_FEATURE_GEOMETRY_DEFINITION,
+            LIST_ONLY_PARENT_OFFERINGS_DEFINITON,
             CACHE_FILE_FOLDER_DEFILINION,
             CREATE_FOI_GEOM_FROM_SAMPLING_GEOMS_DEFINITION);
 

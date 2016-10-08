@@ -56,7 +56,7 @@ public class AbstractHibernateFullDBDatasourceTest extends TestCase {
     
     private static final int CHANGEABLE_COUNT = 10;
     
-    private static final int MAX_COUNT = 17;
+    private static final int MAX_COUNT = 19;
 
     @Override
     protected void setUp() throws Exception {
@@ -111,7 +111,9 @@ public class AbstractHibernateFullDBDatasourceTest extends TestCase {
     private void checkSettingKeys(final Collection<String> keys, final boolean changeable, final boolean settingsDefinitions, final boolean timeFormat) {
         boolean transactional = keys.contains(AbstractHibernateDatasource.TRANSACTIONAL_KEY);
         boolean concept = keys.contains(AbstractHibernateDatasource.DATABASE_CONCEPT_KEY);
+        boolean featureConcept = keys.contains(AbstractHibernateDatasource.FEATURE_CONCEPT_KEY);
         boolean multiLanguage = keys.contains(AbstractHibernateDatasource.MULTILINGUALISM_KEY);
+        boolean seriesMetadata = keys.contains(AbstractHibernateDatasource.SERIES_METADATA_KEY);
 
         assertTrue(keys.contains(AbstractHibernateDatasource.HOST_KEY));
         assertTrue(keys.contains(AbstractHibernateDatasource.PORT_KEY));
@@ -126,7 +128,9 @@ public class AbstractHibernateFullDBDatasourceTest extends TestCase {
         assertTrue(changeable || keys.contains(AbstractHibernateDatasource.PROVIDED_JDBC_DRIVER_KEY));
         assertTrue(!transactional || keys.contains(AbstractHibernateDatasource.TRANSACTIONAL_KEY));
         assertTrue(!concept || keys.contains(AbstractHibernateDatasource.DATABASE_CONCEPT_KEY));
+        assertTrue(!featureConcept || keys.contains(AbstractHibernateDatasource.FEATURE_CONCEPT_KEY));
         assertTrue(!multiLanguage || keys.contains(AbstractHibernateDatasource.MULTILINGUALISM_KEY));
+        assertTrue(!seriesMetadata || keys.contains(AbstractHibernateDatasource.SERIES_METADATA_KEY));
         assertTrue(!timeFormat || keys.contains(AbstractHibernateDatasource.TIMEZONE_KEY));
         assertTrue(!timeFormat || keys.contains(AbstractHibernateDatasource.TIME_STRING_FORMAT_KEY));
         assertTrue(!timeFormat || keys.contains(AbstractHibernateDatasource.TIME_STRING_Z_KEY));
@@ -137,7 +141,9 @@ public class AbstractHibernateFullDBDatasourceTest extends TestCase {
             int counter = MAX_COUNT;
             if (!transactional) { counter--; }
             if (!concept) { counter--; }
+            if (!featureConcept) { counter--; }
             if (!multiLanguage){ counter--; }
+            if (!seriesMetadata){ counter--; }
             if (settingsDefinitions){ counter--; }
             if (!timeFormat){ counter-= 3; }
             assertEquals(counter, keys.size());

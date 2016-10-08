@@ -72,7 +72,9 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
     private final SetMultiMap<String, String> allowedFeatureOfInterestTypeForOfferings = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> childFeaturesForFeatureOfInterest = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> childProceduresForProcedures = newSynchronizedSetMultiMap();
+    private final SetMultiMap<String, String> childOfferingsForOfferings = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> featuresOfInterestForOfferings = newSynchronizedSetMultiMap();
+    private final SetMultiMap<String, String> offeringsForFeaturesOfInterest = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> featuresOfInterestForResultTemplates = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> observablePropertiesForOfferings = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> observablePropertiesForProcedures = newSynchronizedSetMultiMap();
@@ -83,6 +85,7 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
     private final SetMultiMap<String, String> offeringsForProcedures = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> parentFeaturesForFeaturesOfInterest = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> parentProceduresForProcedures = newSynchronizedSetMultiMap();
+    private final SetMultiMap<String, String> parentOfferingsForOfferings = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> proceduresForFeaturesOfInterest = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> proceduresForObservableProperties = newSynchronizedSetMultiMap();
     private final SetMultiMap<String, String> proceduresForOfferings = newSynchronizedSetMultiMap();
@@ -122,6 +125,7 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
     private Map<TypeInstance, Set<String>> typeInstanceProcedures = newSynchronizedMap();
     private Map<ComponentAggregation, Set<String>> componentAggregationProcedures = newSynchronizedMap();
     private Map<String, Set<String>> typeOfProcedures = newSynchronizedMap();
+    private final SetMultiMap<String,String> procedureProcedureDescriptionFormats = newSynchronizedSetMultiMap();
 
     /**
      * @param envelope
@@ -161,7 +165,9 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
                                 allowedObservationTypeForOfferings,
                                 childFeaturesForFeatureOfInterest,
                                 childProceduresForProcedures,
+                                childOfferingsForOfferings,
                                 featuresOfInterestForOfferings,
+                                offeringsForFeaturesOfInterest,
                                 featuresOfInterestForResultTemplates,
                                 observablePropertiesForOfferings,
                                 observablePropertiesForProcedures,
@@ -171,6 +177,7 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
                                 offeringsForProcedures,
                                 parentFeaturesForFeaturesOfInterest,
                                 parentProceduresForProcedures,
+                                parentOfferingsForOfferings,
                                 proceduresForFeaturesOfInterest,
                                 proceduresForObservableProperties,
                                 proceduresForOfferings,
@@ -206,7 +213,8 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
                                 compositePhenomenonForObservableProperty,
                                 typeInstanceProcedures,
                                 componentAggregationProcedures,
-                                typeOfProcedures);
+                                typeOfProcedures,
+                                procedureProcedureDescriptionFormats);
     }
 
     @Override
@@ -224,7 +232,9 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
                     && Objects.equal(this.allowedObservationTypeForOfferings, other.allowedObservationTypeForOfferings)
                     && Objects.equal(this.childFeaturesForFeatureOfInterest, other.childFeaturesForFeatureOfInterest)
                     && Objects.equal(this.childProceduresForProcedures, other.childProceduresForProcedures)
+                    && Objects.equal(this.childOfferingsForOfferings, other.childOfferingsForOfferings)
                     && Objects.equal(this.featuresOfInterestForOfferings, other.featuresOfInterestForOfferings)
+                    && Objects.equal(this.offeringsForFeaturesOfInterest, other.offeringsForFeaturesOfInterest)
                     && Objects.equal(this.featuresOfInterestForResultTemplates, other.featuresOfInterestForResultTemplates)
                     && Objects.equal(this.observablePropertiesForOfferings, other.observablePropertiesForOfferings)
                     && Objects.equal(this.observablePropertiesForProcedures, other.observablePropertiesForProcedures)
@@ -233,6 +243,7 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
                     && Objects.equal(this.offeringsForProcedures, other.offeringsForProcedures)
                     && Objects.equal(this.parentFeaturesForFeaturesOfInterest, other.parentFeaturesForFeaturesOfInterest)
                     && Objects.equal(this.parentProceduresForProcedures, other.parentProceduresForProcedures)
+                    && Objects.equal(this.parentOfferingsForOfferings, other.parentOfferingsForOfferings)
                     && Objects.equal(this.proceduresForFeaturesOfInterest, other.proceduresForFeaturesOfInterest)
                     && Objects.equal(this.proceduresForObservableProperties, other.proceduresForObservableProperties)
                     && Objects.equal(this.proceduresForOfferings, other.proceduresForOfferings)
@@ -268,7 +279,8 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
                     && Objects.equal(this.compositePhenomenonForObservableProperty, other.compositePhenomenonForObservableProperty)
                     && Objects.equal(this.typeInstanceProcedures, other.typeInstanceProcedures)
                     && Objects.equal(this.componentAggregationProcedures, other.componentAggregationProcedures)
-                    && Objects.equal(this.typeOfProcedures, other.typeOfProcedures);
+                    && Objects.equal(this.typeOfProcedures, other.typeOfProcedures)
+                    && Objects.equal(this.procedureProcedureDescriptionFormats, other.procedureProcedureDescriptionFormats);
             }
         return false;
     }
@@ -462,10 +474,22 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
     public Set<String> getAllowedObservationTypesForOffering(final String offering) {
         return copyOf(this.allowedObservationTypeForOfferings.get(offering));
     }
+    
+    @Override
+    public Set<String> getAllObservationTypesForOffering(final String offering) {
+        Set<String> observationTypes  =Sets.newHashSet(copyOf(this.allowedObservationTypeForOfferings.get(offering)));
+        observationTypes.addAll(getObservationTypesForOffering(offering));
+        return observationTypes;
+    }
 
     @Override
     public Set<String> getFeaturesOfInterestForOffering(final String offering) {
         return copyOf(this.featuresOfInterestForOfferings.get(offering));
+    }
+    
+    @Override
+    public Set<String> getOfferingsForFeatureOfInterest(final String featureOfInterest) {
+        return copyOf(this.offeringsForFeaturesOfInterest.get(featureOfInterest));
     }
 
     @Override
@@ -500,10 +524,24 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
     }
 
     @Override
+    public Set<String> getParentProcedures(final Set<String> procedureIdentifiers, final boolean fullHierarchy,
+            final boolean includeSelves) {
+        return getHierarchy(this.parentProceduresForProcedures, procedureIdentifiers, fullHierarchy, includeSelves);
+    }
+
+    @Override
     public Set<String> getParentFeatures(final String featureIdentifier, final boolean fullHierarchy,
             final boolean includeSelf) {
         return getHierarchy(this.parentFeaturesForFeaturesOfInterest, featureIdentifier, fullHierarchy, includeSelf);
     }
+
+    @Override
+    public Set<String> getParentFeatures(final Set<String> featureIdentifiers, final boolean fullHierarchy,
+            final boolean includeSelves) {
+        return getHierarchy(this.parentFeaturesForFeaturesOfInterest, featureIdentifiers, fullHierarchy,
+                includeSelves);
+    }
+
 
     @Override
     public Set<String> getChildProcedures(final String procedureIdentifier, final boolean fullHierarchy,
@@ -516,24 +554,43 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
             final boolean includeSelves) {
         return getHierarchy(this.childProceduresForProcedures, procedureIdentifiers, fullHierarchy, includeSelves);
     }
+    
 
+    @Override
+    public Set<String> getParentOfferings(final String offeringIdentifier, final boolean fullHierarchy,
+            final boolean includeSelf) {
+        return getHierarchy(this.parentOfferingsForOfferings, offeringIdentifier, fullHierarchy, includeSelf);
+    }
+
+    @Override
+    public Set<String> getParentOfferings(final Set<String> offeringIdentifiers, final boolean fullHierarchy,
+            final boolean includeSelves) {
+        return getHierarchy(this.parentOfferingsForOfferings, offeringIdentifiers, fullHierarchy,
+                includeSelves);
+    }
+
+
+    @Override
+    public Set<String> getChildOfferings(final String offeringIdentifier, final boolean fullHierarchy,
+            final boolean includeSelf) {
+        return getHierarchy(this.childOfferingsForOfferings, offeringIdentifier, fullHierarchy, includeSelf);
+    }
+
+    @Override
+    public Set<String> getChildOfferings(final Set<String> offeringIdentifiers, final boolean fullHierarchy,
+            final boolean includeSelves) {
+        return getHierarchy(this.childOfferingsForOfferings, offeringIdentifiers, fullHierarchy, includeSelves);
+    }
+    
+    @Override
+    public boolean hasParentOfferings(String offering) {
+        return this.parentOfferingsForOfferings.containsKey(offering);
+    }
+    
     @Override
     public Set<String> getChildFeatures(final String featureIdentifier, final boolean fullHierarchy,
             final boolean includeSelf) {
         return getHierarchy(this.childFeaturesForFeatureOfInterest, featureIdentifier, fullHierarchy, includeSelf);
-    }
-
-    @Override
-    public Set<String> getParentProcedures(final Set<String> procedureIdentifiers, final boolean fullHierarchy,
-            final boolean includeSelves) {
-        return getHierarchy(this.parentProceduresForProcedures, procedureIdentifiers, fullHierarchy, includeSelves);
-    }
-
-    @Override
-    public Set<String> getParentFeatures(final Set<String> featureIdentifiers, final boolean fullHierarchy,
-            final boolean includeSelves) {
-        return getHierarchy(this.parentFeaturesForFeaturesOfInterest, featureIdentifiers, fullHierarchy,
-                includeSelves);
     }
 
     @Override
@@ -1088,6 +1145,11 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
     public Set<String> getFeaturesOfInterestWithOffering() {
         return CollectionHelper.unionOfListOfLists(this.featuresOfInterestForOfferings.values());
     }
+    
+    @Override
+    public Set<String> getOfferingWithFeaturesOfInterest() {
+        return CollectionHelper.unionOfListOfLists(this.offeringsForFeaturesOfInterest.values());
+    }
 
     @Override
     public void addAllowedObservationTypeForOffering(final String offering, final String allowedObservationType) {
@@ -1112,6 +1174,7 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
         notNullOrEmpty(FEATURE_OF_INTEREST, featureOfInterest);
         LOG.trace("Adding featureOfInterest {} to Offering {}", featureOfInterest, offering);
         this.featuresOfInterestForOfferings.add(offering, featureOfInterest);
+        this.offeringsForFeaturesOfInterest.add(featureOfInterest, offering);
     }
 
     @Override
@@ -1278,6 +1341,7 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
         notNullOrEmpty(FEATURE_OF_INTEREST, featureOfInterest);
         LOG.trace("Removing featureOfInterest {} from offering {}", featureOfInterest, offering);
         this.featuresOfInterestForOfferings.removeWithKey(offering, featureOfInterest);
+        this.offeringsForFeaturesOfInterest.removeWithKey(featureOfInterest, offering);
     }
 
     @Override
@@ -1292,6 +1356,9 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
     public void removeFeaturesOfInterestForOffering(final String offering) {
         notNullOrEmpty(OFFERING, offering);
         LOG.trace("Removing featuresOfInterest for offering {}", offering);
+        for (String featureOfInterest : featuresOfInterestForOfferings.get(offering)) {
+            this.offeringsForFeaturesOfInterest.removeWithKey(featureOfInterest, offering);
+        }
         this.featuresOfInterestForOfferings.remove(offering);
     }
 
@@ -1553,6 +1620,16 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
         LOG.trace("Setting featureOfInterest for offering {} to {}", offering, newValue);
         this.featuresOfInterestForOfferings.put(offering, newValue);
     }
+    
+    @Override
+    public void addOfferingForFeaturesOfInterest(final String offering, final Collection<String> featuresOfInterest) {
+        notNullOrEmpty(OFFERING, offering);
+        noNullOrEmptyValues(FEATURES_OF_INTEREST, featuresOfInterest);
+        LOG.trace("Adding offering {} to featureOfInterest {}", offering, featuresOfInterest);
+        for (final String featureOfInterest : featuresOfInterest) {
+            this.offeringsForFeaturesOfInterest.add(featureOfInterest, offering);
+        }
+    }
 
     @Override
     public void setGlobalEnvelope(final SosEnvelope globalEnvelope) {
@@ -1623,6 +1700,26 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
         this.parentProceduresForProcedures.addAll(procedure, parentProcedures);
         for (final String parentProcedure : parentProcedures) {
             this.childProceduresForProcedures.add(parentProcedure, procedure);
+        }
+    }
+    
+    @Override
+    public void addParentOffering(final String offering, final String parentOffering) {
+        notNullOrEmpty(OFFERING, offering);
+        notNullOrEmpty(PARENT_OFFERING, parentOffering);
+        LOG.trace("Adding parentOffering {} to offering {}", parentOffering, offering);
+        this.parentOfferingsForOfferings.add(offering, parentOffering);
+        this.childOfferingsForOfferings.add(parentOffering, offering);
+    }
+
+    @Override
+    public void addParentOfferings(final String offering, final Collection<String> parentOfferings) {
+        notNullOrEmpty(OFFERING, offering);
+        noNullOrEmptyValues(PARENT_OFFERINGS, parentOfferings);
+        LOG.trace("Adding parentOfferings {} to offering {}", parentOfferings, offering);
+        this.parentOfferingsForOfferings.addAll(offering, parentOfferings);
+        for (final String parentProcedure : parentOfferings) {
+            this.childOfferingsForOfferings.add(parentProcedure, offering);
         }
     }
 
@@ -1942,6 +2039,12 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
         LOG.trace("Clearing features of interest for offerings");
         this.featuresOfInterestForOfferings.clear();
     }
+    
+    @Override
+    public void clearOfferingsForFeaturesOfInterest() {
+        LOG.trace("Clearing offerings for features of interest");
+        this.offeringsForFeaturesOfInterest.clear();
+    }
 
     @Override
     public void clearMinPhenomenonTimeForOfferings() {
@@ -2157,65 +2260,60 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
         this.supportedLanguages.remove(language);
     }
 
-	@Override
-	public void addFeatureOfInterestIdentifierHumanReadableName(
-			String identifier, String humanReadableName) {
-		if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
-			if (!featureOfInterestIdentifierForHumanReadableName.containsKey(humanReadableName)) {
+    @Override
+    public void addFeatureOfInterestIdentifierHumanReadableName(String identifier, String humanReadableName) {
+        if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
+            if (!featureOfInterestIdentifierForHumanReadableName.containsKey(humanReadableName)) {
                 featureOfInterestIdentifierForHumanReadableName.put(humanReadableName, identifier);
-			}
-			if (!featureOfInterestHumanReadableNameForIdentifier.containsKey(identifier)) {
+            }
+            if (!featureOfInterestHumanReadableNameForIdentifier.containsKey(identifier)) {
                 featureOfInterestHumanReadableNameForIdentifier.put(identifier, humanReadableName);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	@Override
-	public void addObservablePropertyIdentifierHumanReadableName(
-			String identifier, String humanReadableName) {
-		if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
-			if (!observablePropertyIdentifierForHumanReadableName.containsKey(humanReadableName)) {
+    @Override
+    public void addObservablePropertyIdentifierHumanReadableName(String identifier, String humanReadableName) {
+        if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
+            if (!observablePropertyIdentifierForHumanReadableName.containsKey(humanReadableName)) {
                 observablePropertyIdentifierForHumanReadableName.put(humanReadableName, identifier);
-			}
-			if (!observablePropertyHumanReadableNameForIdentifier.containsKey(humanReadableName)) {
+            }
+            if (!observablePropertyHumanReadableNameForIdentifier.containsKey(humanReadableName)) {
                 observablePropertyHumanReadableNameForIdentifier.put(identifier, humanReadableName);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	@Override
-	public void addProcedureIdentifierHumanReadableName(String identifier,
-			String humanReadableName) {
-		if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
-			if (!procedureIdentifierForHumanReadableName.containsKey(humanReadableName)) {
+    @Override
+    public void addProcedureIdentifierHumanReadableName(String identifier, String humanReadableName) {
+        if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
+            if (!procedureIdentifierForHumanReadableName.containsKey(humanReadableName)) {
                 procedureIdentifierForHumanReadableName.put(humanReadableName, identifier);
-			}
-			if (!procedureHumanReadableNameForIdentifier.containsKey(humanReadableName)) {
+            }
+            if (!procedureHumanReadableNameForIdentifier.containsKey(humanReadableName)) {
                 procedureHumanReadableNameForIdentifier.put(identifier, humanReadableName);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	@Override
-	public void addOfferingIdentifierHumanReadableName(String identifier,
-			String humanReadableName) {
-		if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
-			if (!offeringIdentifierForHumanReadableName.containsKey(humanReadableName)) {
+    @Override
+    public void addOfferingIdentifierHumanReadableName(String identifier, String humanReadableName) {
+        if (StringHelper.isNotEmpty(identifier) && StringHelper.isNotEmpty(humanReadableName)) {
+            if (!offeringIdentifierForHumanReadableName.containsKey(humanReadableName)) {
                 offeringIdentifierForHumanReadableName.put(humanReadableName, identifier);
-			}
-			if (!offeringHumanReadableNameForIdentifier.containsKey(humanReadableName)) {
+            }
+            if (!offeringHumanReadableNameForIdentifier.containsKey(humanReadableName)) {
                 offeringHumanReadableNameForIdentifier.put(identifier, humanReadableName);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	@Override
-	public void removeFeatureOfInterestIdentifierForHumanReadableName(
-			String humanReadableName) {
-		notNullOrEmpty(FEATURE_OF_INTEREST_NAME, humanReadableName);
-	    LOG.trace("Removing featuresOfInterest identifier for humanReadableName {}", humanReadableName);
+    @Override
+    public void removeFeatureOfInterestIdentifierForHumanReadableName(String humanReadableName) {
+        notNullOrEmpty(FEATURE_OF_INTEREST_NAME, humanReadableName);
+        LOG.trace("Removing featuresOfInterest identifier for humanReadableName {}", humanReadableName);
         featureOfInterestIdentifierForHumanReadableName.remove(humanReadableName);
-	}
+    }
 
 	@Override
 	public void removeFeatureOfInterestHumanReadableNameForIdentifier(
@@ -2727,6 +2825,24 @@ public class InMemoryCacheImpl extends AbstractStaticContentCache implements Wri
      */
     protected void logClearing(String type) {
         LOG.trace("Clearing '{}'", type);
+    }
+
+
+    @Override
+    public void addProcedureDescriptionFormatsForProcedure(String procedure, Set<String> formats) {
+        procedureProcedureDescriptionFormats.addAll(procedure, formats);
+    }
+
+
+    @Override
+    public void removeProcedureDescriptionFormatsForProcedure(String procedure) {
+        procedureProcedureDescriptionFormats.remove(procedure);
+    }
+
+
+    @Override
+    public Set<String> getProcedureDescriptionFormatsForProcedure(String procedure) {
+        return procedureProcedureDescriptionFormats.get(procedure);
     }
 
 }

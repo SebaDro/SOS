@@ -30,20 +30,22 @@ package org.n52.sos.ds.hibernate.entities.observation.series;
 
 import java.util.Date;
 
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
+import org.n52.sos.ds.hibernate.entities.AbstractIdentifierNameDescriptionEntity;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasDeletedFlag;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasHiddenChildFlag;
+import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasOffering;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasPublishedFlag;
+import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasSeriesType;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasUnit;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasWriteableObservationContext;
-import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasSeriesType;
+import org.n52.sos.ds.hibernate.entities.ObservableProperty;
+import org.n52.sos.ds.hibernate.entities.Offering;
+import org.n52.sos.ds.hibernate.entities.Procedure;
+import org.n52.sos.ds.hibernate.entities.Unit;
+import org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest;
 import org.n52.sos.util.Constants;
 
 import com.google.common.base.Strings;
-
-import org.n52.sos.ds.hibernate.entities.ObservableProperty;
-import org.n52.sos.ds.hibernate.entities.Procedure;
-import org.n52.sos.ds.hibernate.entities.Unit;
 
 /**
  * Hibernate entity for series
@@ -51,11 +53,14 @@ import org.n52.sos.ds.hibernate.entities.Unit;
  * @since 4.0.0
  *
  */
-public class Series
+public class Series extends AbstractIdentifierNameDescriptionEntity
         implements HasWriteableObservationContext,
                    HasDeletedFlag,
                    HasHiddenChildFlag,
-                   HasUnit, HasPublishedFlag, HasSeriesType {
+                   HasUnit, 
+                   HasPublishedFlag, 
+                   HasSeriesType,
+                   HasOffering {
 
     private static final long serialVersionUID = 7838379468605356753L;
     
@@ -70,7 +75,7 @@ public class Series
     public static final String ALIAS_DOT = ALIAS + Constants.DOT_STRING;
 
     private long seriesId;
-    private FeatureOfInterest featureOfInterest;
+    private AbstractFeatureOfInterest featureOfInterest;
     private ObservableProperty observableProperty;
     private Procedure procedure;
     private Boolean deleted = false;
@@ -84,6 +89,7 @@ public class Series
     private Double lastNumericValue;
     private Unit unit;
     private boolean hiddenChild;
+    private Offering offering;
     private String seriesType;
 
     /**
@@ -106,12 +112,12 @@ public class Series
     }
 
     @Override
-    public FeatureOfInterest getFeatureOfInterest() {
+    public AbstractFeatureOfInterest getFeatureOfInterest() {
         return featureOfInterest;
     }
 
     @Override
-    public void setFeatureOfInterest(final FeatureOfInterest featureOfInterest) {
+    public void setFeatureOfInterest(final AbstractFeatureOfInterest featureOfInterest) {
         this.featureOfInterest = featureOfInterest;
     }
 
@@ -278,6 +284,21 @@ public class Series
     public boolean isSetFirstLastTime() {
         return isSetFirstTimeStamp() && isSetLastTimeStamp();
     }
+
+    @Override
+    public void setOffering(Offering offering) {
+        this.offering = offering;
+    }
+
+    @Override
+    public Offering getOffering() {
+        return offering;
+    }
+    
+    public boolean hasOffering() {
+        return getOffering() != null;
+    }
+
     
     public String getSeriesType() {
         return this.seriesType;

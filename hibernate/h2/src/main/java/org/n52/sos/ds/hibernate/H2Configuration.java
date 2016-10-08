@@ -106,6 +106,7 @@ public class H2Configuration {
 //            resources.add("/mapping/ereporting/ContextualReferencedObservation.hbm.xml");
 //            resources.add("/mapping/ereporting/EReportingAssessmentType.hbm.xml");
             resources.add("/mapping/core/Codespace.hbm.xml");
+            resources.add("/mapping/core/FeatureParameter.hbm.xml");
             resources.add("/mapping/core/FeatureOfInterest.hbm.xml");
             resources.add("/mapping/core/ProcedureDescriptionFormat.hbm.xml");
             resources.add("/mapping/core/ObservationConstellation.hbm.xml");
@@ -134,9 +135,12 @@ public class H2Configuration {
 //            resources.add("/mapping/old/observation/ContextualReferencedObservation.hbm.xml");
             resources.add("/mapping/series/observation/ValuedObservation.hbm.xml");
             resources.add("/mapping/series/observation/Series.hbm.xml");
+            resources.add("/mapping/series/observation/RelatedObservations.hbm.xml");
             resources.add("/mapping/series/observation/Observation.hbm.xml");
             resources.add("/mapping/series/observation/TemporalReferencedObservation.hbm.xml");
             resources.add("/mapping/series/observation/ContextualReferencedObservation.hbm.xml");
+            resources.add("/mapping/parameter/feature/FeatureParameterValues.hbm.xml");
+            resources.add("/mapping/parameter/observation/ParameterValues.hbm.xml");
             return resources;
         }
     };

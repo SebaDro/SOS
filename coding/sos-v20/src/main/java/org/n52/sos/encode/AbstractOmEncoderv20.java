@@ -35,13 +35,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.opengis.om.x20.NamedValueType;
-import net.opengis.om.x20.OMObservationDocument;
-import net.opengis.om.x20.OMObservationPropertyType;
-import net.opengis.om.x20.OMObservationType;
-import net.opengis.om.x20.OMProcessPropertyType;
-import net.opengis.om.x20.TimeObjectPropertyType;
-
 import org.apache.xmlbeans.XmlBoolean;
 import org.apache.xmlbeans.XmlInteger;
 import org.apache.xmlbeans.XmlObject;
@@ -49,9 +42,6 @@ import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlString;
 import org.isotc211.x2005.gmd.AbstractDQElementDocument;
 import org.isotc211.x2005.gmd.DQElementPropertyType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.n52.sos.convert.Converter;
 import org.n52.sos.convert.ConverterException;
 import org.n52.sos.convert.ConverterRepository;
@@ -59,10 +49,14 @@ import org.n52.sos.encode.streaming.StreamingEncoder;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
 import org.n52.sos.exception.ows.concrete.UnsupportedEncoderInputException;
 import org.n52.sos.ogc.gml.AbstractFeature;
+import org.n52.sos.ogc.gml.AbstractGML;
+import org.n52.sos.ogc.gml.AbstractMetaData;
+import org.n52.sos.ogc.gml.CodeType;
 import org.n52.sos.ogc.gml.GmlConstants;
 import org.n52.sos.ogc.gml.time.Time;
 import org.n52.sos.ogc.gml.time.TimeInstant;
 import org.n52.sos.ogc.gml.time.TimePeriod;
+import org.n52.sos.ogc.om.AbstractObservationValue;
 import org.n52.sos.ogc.om.AbstractPhenomenon;
 import org.n52.sos.ogc.om.NamedValue;
 import org.n52.sos.ogc.om.ObservationValue;
@@ -70,18 +64,24 @@ import org.n52.sos.ogc.om.OmCompositePhenomenon;
 import org.n52.sos.ogc.om.OmConstants;
 import org.n52.sos.ogc.om.OmObservableProperty;
 import org.n52.sos.ogc.om.OmObservation;
+import org.n52.sos.ogc.om.OmObservationContext;
 import org.n52.sos.ogc.om.SingleObservationValue;
 import org.n52.sos.ogc.om.quality.OmResultQuality;
 import org.n52.sos.ogc.om.values.BooleanValue;
 import org.n52.sos.ogc.om.values.CategoryValue;
 import org.n52.sos.ogc.om.values.ComplexValue;
 import org.n52.sos.ogc.om.values.CountValue;
+import org.n52.sos.ogc.om.values.CvDiscretePointCoverage;
 import org.n52.sos.ogc.om.values.GeometryValue;
 import org.n52.sos.ogc.om.values.HrefAttributeValue;
+import org.n52.sos.ogc.om.values.MultiPointCoverage;
 import org.n52.sos.ogc.om.values.NilTemplateValue;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.QuantityValue;
+import org.n52.sos.ogc.om.values.RectifiedGridCoverage;
 import org.n52.sos.ogc.om.values.ReferenceValue;
 import org.n52.sos.ogc.om.values.SweDataArrayValue;
+import org.n52.sos.ogc.om.values.TLVTValue;
 import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.om.values.UnknownValue;
@@ -103,9 +103,23 @@ import org.n52.sos.util.StringHelper;
 import org.n52.sos.util.XmlHelper;
 import org.n52.sos.util.XmlOptionsHelper;
 import org.n52.sos.w3c.W3CConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
+import net.opengis.om.x20.NamedValueDocument;
+import net.opengis.om.x20.NamedValuePropertyType;
+import net.opengis.om.x20.NamedValueType;
+import net.opengis.om.x20.OMObservationDocument;
+import net.opengis.om.x20.OMObservationPropertyType;
+import net.opengis.om.x20.OMObservationType;
+import net.opengis.om.x20.OMProcessPropertyType;
+import net.opengis.om.x20.ObservationContextPropertyType;
+import net.opengis.om.x20.ObservationContextType;
+import net.opengis.om.x20.TimeObjectPropertyType;
 
 
 public abstract class AbstractOmEncoderv20
@@ -158,6 +172,10 @@ public abstract class AbstractOmEncoderv20
      * @return Indicator
      */
     protected abstract boolean convertEncodedProcedure();
+    
+    protected abstract OMObservationType createOmObservationType(); 
+    
+    protected abstract void addAddtitionalInformation(OMObservationType omot, OmObservation observation) throws OwsExceptionReport;
 
     @Override
     public boolean forceStreaming() {
@@ -171,7 +189,18 @@ public abstract class AbstractOmEncoderv20
         if (element instanceof OmObservation) {
             encodedObject = encodeOmObservation((OmObservation) element, additionalValues);
         } else if (element instanceof NamedValue) {
-            encodedObject = createNamedValue((NamedValue<?>) element);
+            NamedValueType nvt = createNamedValue((NamedValue<?>) element);
+            if (additionalValues.containsKey(HelperValues.DOCUMENT)) {
+                NamedValueDocument nvd = NamedValueDocument.Factory.newInstance();
+                nvd.setNamedValue(nvt);
+                encodedObject = nvd;
+            } else if (additionalValues.containsKey(HelperValues.PROPERTY_TYPE)) {
+                NamedValuePropertyType nvpt = NamedValuePropertyType.Factory.newInstance();
+                nvpt.setNamedValue(nvt);
+                encodedObject = nvpt;
+            } else {
+                encodedObject = nvt;
+            }
         } else if (element instanceof AbstractFeature) {
             encodedObject = encodeFeatureOfInterest((AbstractFeature) element);
         } else if (element instanceof SosProcedureDescription) {
@@ -225,6 +254,7 @@ public abstract class AbstractOmEncoderv20
      * @throws OwsExceptionReport
      *             If an error occurs
      */
+    @SuppressWarnings("rawtypes")
     protected XmlObject encodeOmObservation(OmObservation sosObservation, Map<HelperValues, String> additionalValues)
             throws OwsExceptionReport {
         OMObservationType xbObservation = createOmObservationType();
@@ -241,11 +271,17 @@ public abstract class AbstractOmEncoderv20
         xbObservation.setId(generateObservationGMLId());
         if (!sosObservation.isSetObservationID()) {
             sosObservation.setObservationID(xbObservation.getId().replace("o_", ""));
+            if (sosObservation.getValue() instanceof AbstractObservationValue){
+                ((AbstractObservationValue)sosObservation.getValue()).setObservationID(sosObservation.getObservationID());
+            }
         }
-
+        
         setObservationIdentifier(sosObservation, xbObservation);
+        setObservationName(sosObservation, xbObservation);
         setDescription(sosObservation, xbObservation);
+        setMetaDataProperty(sosObservation, xbObservation);
         setObservationType(sosObservation, xbObservation);
+        setRelatedObservations(sosObservation, xbObservation);
         setPhenomenonTime(sosObservation, xbObservation);
         setResultTime(sosObservation, xbObservation);
         setValidTime(sosObservation, xbObservation);
@@ -255,7 +291,7 @@ public abstract class AbstractOmEncoderv20
         setFeatureOfInterest(sosObservation, xbObservation);
         setResultQualities(xbObservation, sosObservation);
         setResult(sosObservation, xbObservation);
-
+        addAddtitionalInformation(xbObservation, sosObservation);
         if (additionalValues.containsKey(HelperValues.PROPERTY_TYPE)) {
             return createObservationPropertyType(xbObservation);
         } else if (additionalValues.containsKey(HelperValues.DOCUMENT)) {
@@ -264,7 +300,7 @@ public abstract class AbstractOmEncoderv20
             return xbObservation;
         }
     }
-
+    
     private XmlObject createObservationDocument(OMObservationType xbObservation) {
         OMObservationDocument doc = createObservationDocument();
         doc.setOMObservation(xbObservation);
@@ -306,10 +342,44 @@ public abstract class AbstractOmEncoderv20
             xb.addNewIdentifier().set(xbId);
         }
     }
+    
+    private void setObservationName(OmObservation observation, OMObservationType xb) throws OwsExceptionReport {
+        // set observation identifier if available
+        if (observation.isSetIdentifier()) {
+            for (CodeType name : observation.getName()) {
+                XmlObject xbId = encodeGML(name);
+                xb.addNewName().set(xbId);
+            }
+        }
+    }
 
-    private void setObservationType(OmObservation observation, OMObservationType xb) {
+    private void setMetaDataProperty(OmObservation sosObservation, OMObservationType xbObservation) throws OwsExceptionReport {
+        if (sosObservation.isSetMetaDataProperty()) {
+            for (AbstractMetaData abstractMetaData : sosObservation.getMetaDataProperty()) {
+                XmlObject encodeObject = encodeGML32(abstractMetaData);
+                XmlObject substituteElement = XmlHelper.substituteElement(xbObservation.addNewMetaDataProperty().addNewAbstractMetaData(), encodeObject);
+                substituteElement.set(encodeObject);
+            }
+        }
+    }
+
+    protected void setObservationType(OmObservation observation, OMObservationType xb) {
         // add observationType if set
         addObservationType(xb, observation.getObservationConstellation().getObservationType());
+    }
+
+    private void setRelatedObservations(OmObservation sosObservation, OMObservationType omot) throws OwsExceptionReport {
+        if (sosObservation.isSetRelatedObservations()) {
+            for (OmObservationContext observationContext : sosObservation.getRelatedObservations()) {
+                addRelatedObservation(omot.addNewRelatedObservation(), observationContext);
+            }
+        }
+    }
+
+    private void addRelatedObservation(ObservationContextPropertyType ocpt, OmObservationContext observationContext) throws OwsExceptionReport {
+        ObservationContextType oct = ocpt.addNewObservationContext();
+        oct.addNewRole().set(encodeGML(observationContext.getRole()));
+        oct.addNewRelatedObservation().set(encodeGML(observationContext.getRelatedObservation()));
     }
 
     private void setPhenomenonTime(OmObservation observation, OMObservationType xb) throws OwsExceptionReport {
@@ -536,8 +606,10 @@ public abstract class AbstractOmEncoderv20
         if (StringHelper.isNotEmpty(activeProfile.getEncodingNamespaceForFeatureOfInterest())) {
             additionalValues.put(HelperValues.ENCODE_NAMESPACE,
                     activeProfile.getEncodingNamespaceForFeatureOfInterest());
-        } else {
+        } else if (!Strings.isNullOrEmpty(getDefaultFeatureEncodingNamespace())) {
             additionalValues.put(HelperValues.ENCODE_NAMESPACE, getDefaultFeatureEncodingNamespace());
+        } else {
+            additionalValues.put(HelperValues.ENCODE_NAMESPACE, feature.getDefaultElementEncoding());
         }
         return encodeGML(feature, additionalValues);
     }
@@ -607,10 +679,6 @@ public abstract class AbstractOmEncoderv20
 
     protected static XmlOptions getXmlOptions() {
         return XmlOptionsHelper.getInstance().getXmlOptions();
-    }
-
-    private static OMObservationType createOmObservationType() {
-        return OMObservationType.Factory.newInstance(getXmlOptions());
     }
 
     private static OMObservationPropertyType createObservationPropertyType() {
@@ -713,12 +781,37 @@ public abstract class AbstractOmEncoderv20
         public XmlObject visit(TVPValue value) {
             return defaultValue(value);
         }
+        
+        @Override
+        public XmlObject visit(TLVTValue value) {
+            return defaultValue(value);
+        }
 
         @Override
         public XmlObject visit(TextValue value) {
             XmlString xmlString = XmlString.Factory.newInstance();
             xmlString.setStringValue(value.getValue());
             return xmlString;
+        }
+
+        @Override
+        public XmlObject visit(CvDiscretePointCoverage value) throws OwsExceptionReport {
+            return defaultValue(value);
+        }
+
+        @Override
+        public XmlObject visit(MultiPointCoverage value) throws OwsExceptionReport {
+            return defaultValue(value);
+        }
+
+        @Override
+        public XmlObject visit(RectifiedGridCoverage value) throws OwsExceptionReport {
+            return defaultValue(value);
+        }
+
+        @Override
+        public XmlObject visit(ProfileValue value) throws OwsExceptionReport {
+            return defaultValue(value);
         }
 
         @Override
@@ -729,7 +822,17 @@ public abstract class AbstractOmEncoderv20
         private Map<HelperValues, String> createHelperValues(Value<?> value) {
             Map<SosConstants.HelperValues, String> helperValues = Maps.newHashMap();
             helperValues.put(HelperValues.PROPERTY_TYPE, null);
-            helperValues.put(HelperValues.GMLID, JavaHelper.generateID(value.toString()));
+            if (value instanceof AbstractGML) {
+                if (((AbstractGML) value).isSetGmlID()) {
+                    helperValues.put(HelperValues.GMLID, ((AbstractGML) value).getGmlId());
+                } else {
+                    String gmlId = JavaHelper.generateID(value.toString());
+                    ((AbstractGML) value).setGmlId(gmlId);
+                    helperValues.put(HelperValues.GMLID, gmlId);
+                }
+            } else {
+                helperValues.put(HelperValues.GMLID, JavaHelper.generateID(value.toString()));
+            }
             return helperValues;
         }
 

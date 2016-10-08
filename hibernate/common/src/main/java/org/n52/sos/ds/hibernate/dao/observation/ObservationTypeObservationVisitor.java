@@ -36,9 +36,12 @@ import org.n52.sos.ds.hibernate.entities.observation.full.ComplexObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.CountObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.GeometryObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.NumericObservation;
+import org.n52.sos.ds.hibernate.entities.observation.full.ProfileObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.SweDataArrayObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.TextObservation;
+import org.n52.sos.ogc.gwml.GWMLConstants;
 import org.n52.sos.ogc.om.OmConstants;
+import org.n52.sos.ogc.ows.OwsExceptionReport;
 
 /**
  * TODO JavaDoc
@@ -93,6 +96,11 @@ public class ObservationTypeObservationVisitor implements ObservationVisitor<Str
     @Override
     public String visit(SweDataArrayObservation o) {
         return OmConstants.OBS_TYPE_SWE_ARRAY_OBSERVATION;
+    }
+    
+    @Override
+    public String visit(ProfileObservation o) throws OwsExceptionReport {
+        return GWMLConstants.OBS_TYPE_GEOLOGY_LOG;
     }
 
     public static ObservationTypeObservationVisitor getInstance() {

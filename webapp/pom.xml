@@ -205,6 +205,22 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>coding-gml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>coding-gml-cov</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>coding-cv-gml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>coding-gwml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>coding-sos-v100</artifactId>
         </dependency>
         <dependency>
@@ -325,6 +341,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>gda-coding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>gda-hibernate</artifactId>
         </dependency>
 
@@ -355,6 +375,11 @@
             <artifactId>do-kvp</artifactId>
         </dependency>
 
+		<!-- Related offering encoding -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>coding-related-offering</artifactId>
+        </dependency>
 
         <!-- dependencies for integration test -->
         <dependency>
@@ -456,6 +481,18 @@
             <groupId>${project.groupId}</groupId>
         	<artifactId>inspire-code</artifactId>
         </dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>coding-inspire-omso</artifactId>
+		</dependency>
+        <dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>inspire-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>inspire-coding</artifactId>
+		</dependency>
         
         <!-- AQD eReporting -->
          <dependency>

@@ -112,8 +112,11 @@ public abstract class AbstractResponseEncoder<T extends AbstractServiceResponse>
             Class<T> responseType, boolean validationEnabled) {
         OperationKey key = new OperationKey(service, version, operation);
         this.encoderKeys =
-                Sets.newHashSet(new XmlEncoderKey(namespace, responseType), new OperationEncoderKey(key,
-                        MediaTypes.TEXT_XML), new OperationEncoderKey(key, MediaTypes.APPLICATION_XML));
+                Sets.newHashSet(new XmlEncoderKey(namespace, responseType), 
+                        new OperationEncoderKey(key, MediaTypes.TEXT_XML), 
+                        new OperationEncoderKey(key, MediaTypes.APPLICATION_XML),
+                        new ResponseContentTypeEncoderKey(responseType, MediaTypes.TEXT_XML), 
+                        new ResponseContentTypeEncoderKey(responseType, MediaTypes.APPLICATION_XML));
         LOGGER.debug("Encoder for the following keys initialized successfully: {}!", Joiner.on(", ").join(encoderKeys));
         this.namespace = namespace;
         this.prefix = prefix;
@@ -211,7 +214,8 @@ public abstract class AbstractResponseEncoder<T extends AbstractServiceResponse>
 
     private void setSchemaLocations(XmlObject document) {
         Map<String, SchemaLocation> schemaLocations = Maps.newHashMap();
-        for (String ns : N52XmlHelper.getNamespaces(document)) {
+        Set<String> namespaces = N52XmlHelper.getNamespaces(document);
+        for (String ns : namespaces) {
             for (SchemaLocation sl : CodingRepository.getInstance().getSchemaLocation(ns)) {
                 schemaLocations.put(sl.getNamespace(), sl);
             }
@@ -221,13 +225,11 @@ public abstract class AbstractResponseEncoder<T extends AbstractServiceResponse>
         }
         // override default schema location with concrete URL's
         for (SchemaLocation sl : getConcreteSchemaLocations()) {
-            schemaLocations.put(sl.getNamespace(), sl);
+            if (namespaces.contains(sl.getNamespace())) {
+                schemaLocations.put(sl.getNamespace(), sl);
+            }
         }
         N52XmlHelper.setSchemaLocationsToDocument(document, schemaLocations.values());
-    }
-
-    protected XmlOptions getXmlOptions() {
-        return XmlOptionsHelper.getInstance().getXmlOptions();
     }
 
     /**

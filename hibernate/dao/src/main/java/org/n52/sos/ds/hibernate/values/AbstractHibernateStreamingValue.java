@@ -47,6 +47,7 @@ import org.n52.sos.ds.hibernate.entities.observation.ValuedObservation;
 import org.n52.sos.ds.hibernate.entities.observation.legacy.AbstractValuedLegacyObservation;
 import org.n52.sos.ds.hibernate.entities.observation.legacy.valued.SweDataArrayValuedLegacyObservation;
 import org.n52.sos.ds.hibernate.util.observation.ObservationValueCreator;
+import org.n52.sos.ds.hibernate.util.observation.PhenomenonTimeCreator;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
 import org.n52.sos.ogc.gml.ReferenceType;
 import org.n52.sos.ogc.gml.time.Time;
@@ -61,7 +62,7 @@ import org.n52.sos.ogc.om.TimeValuePair;
 import org.n52.sos.ogc.om.values.Value;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.swes.SwesExtensions;
-import org.n52.sos.request.GetObservationRequest;
+import org.n52.sos.request.AbstractObservationRequest;
 import org.n52.sos.util.DateTimeHelper;
 import org.n52.sos.util.GeometryHandler;
 import org.n52.sos.util.GmlHelper;
@@ -89,13 +90,16 @@ public abstract class AbstractHibernateStreamingValue extends StreamingValue<Abs
 
     protected Session session;
 
-    protected final GetObservationRequest request;
+    protected final AbstractObservationRequest request;
 
     protected Criterion temporalFilterCriterion;
 
     @Override
     public Collection<OmObservation> mergeObservation() throws OwsExceptionReport {
-
+        return mergeObservation(false);
+    }
+    
+    public Collection<OmObservation> mergeObservation(boolean withIdentifierNameDesription) throws OwsExceptionReport {
         Map<String, OmObservation> observations = Maps.newHashMap();
         while (hasNextValue()) {
             AbstractValuedLegacyObservation<?> nextEntity = nextEntity();
@@ -104,7 +108,7 @@ public abstract class AbstractHibernateStreamingValue extends StreamingValue<Abs
             if (observations.containsKey(nextEntity.getDiscriminator()) && mergableObservationValue) {
                 observation = observations.get(nextEntity.getDiscriminator());
             } else {
-                observation = observationTemplate.cloneTemplate();
+                observation = observationTemplate.cloneTemplate(withIdentifierNameDesription);
                 addSpecificValuesToObservation(observation, nextEntity, request.getExtensions());
                 if (!mergableObservationValue && nextEntity.getDiscriminator() == null) {
                     observations.put(Long.toString(nextEntity.getObservationId()), observation);
@@ -144,9 +148,9 @@ public abstract class AbstractHibernateStreamingValue extends StreamingValue<Abs
      * constructor
      *
      * @param request
-     *            {@link GetObservationRequest}
+     *            {@link AbstractObservationRequest}
      */
-    public AbstractHibernateStreamingValue(GetObservationRequest request) {
+    public AbstractHibernateStreamingValue(AbstractObservationRequest request) {
         this.request = request;
     }
 
@@ -241,15 +245,7 @@ public abstract class AbstractHibernateStreamingValue extends StreamingValue<Abs
      * @return phenomenon time
      */
     protected Time createPhenomenonTime(TemporalReferencedObservation abstractValue) {
-        // create time element
-        final DateTime phenStartTime = new DateTime(abstractValue.getPhenomenonTimeStart(), DateTimeZone.UTC);
-        DateTime phenEndTime;
-        if (abstractValue.getPhenomenonTimeEnd() != null) {
-            phenEndTime = new DateTime(abstractValue.getPhenomenonTimeEnd(), DateTimeZone.UTC);
-        } else {
-            phenEndTime = phenStartTime;
-        }
-        return createTime(phenStartTime, phenEndTime);
+        return new PhenomenonTimeCreator(abstractValue).create();
     }
 
     /**
@@ -336,22 +332,6 @@ public abstract class AbstractHibernateStreamingValue extends StreamingValue<Abs
         return null;
     }
 
-    /**
-     * Create {@link Time} from {@link DateTime}s
-     *
-     * @param start
-     *            Start {@link DateTime}
-     * @param end
-     *            End {@link DateTime}
-     * @return Resulting {@link Time}
-     */
-    protected Time createTime(DateTime start, DateTime end) {
-        if (start.equals(end)) {
-            return new TimeInstant(start);
-        } else {
-            return new TimePeriod(start, end);
-        }
-    }
 
     /**
      * Get internal {@link Value} from {@link AbstractValuedLegacyObservation}

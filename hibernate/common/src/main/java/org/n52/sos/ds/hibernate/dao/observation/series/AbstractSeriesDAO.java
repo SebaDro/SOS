@@ -33,21 +33,29 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
+import org.n52.sos.ds.hibernate.dao.AbstractIdentifierNameDescriptionDAO;
 import org.n52.sos.ds.hibernate.dao.observation.ObservationContext;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
+import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.Procedure;
+import org.n52.sos.ds.hibernate.entities.feature.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.observation.Observation;
 import org.n52.sos.ds.hibernate.entities.observation.full.NumericObservation;
+import org.n52.sos.ds.hibernate.entities.observation.series.ContextualReferencedSeriesObservation;
 import org.n52.sos.ds.hibernate.entities.observation.series.Series;
 import org.n52.sos.ds.hibernate.entities.observation.series.SeriesObservation;
 import org.n52.sos.ds.hibernate.util.HibernateHelper;
 import org.n52.sos.ds.hibernate.util.TimeExtrema;
 import org.n52.sos.exception.CodedException;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
+import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.n52.sos.request.GetObservationByIdRequest;
 import org.n52.sos.request.GetObservationRequest;
 import org.n52.sos.service.ServiceConfiguration;
 import org.n52.sos.util.CollectionHelper;
@@ -58,7 +66,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
-public abstract class AbstractSeriesDAO {
+public abstract class AbstractSeriesDAO extends AbstractIdentifierNameDescriptionDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSeriesDAO.class);
 
@@ -77,7 +85,18 @@ public abstract class AbstractSeriesDAO {
      * @throws CodedException
      */
     public abstract List<Series> getSeries(GetObservationRequest request, Collection<String> features, Session session)
-            throws CodedException;
+            throws OwsExceptionReport;
+    
+    /**
+     * Get series for GetObservationByIdRequest request
+     * @param request GetObservationByIdRequest request to get series for
+     * @param session
+     *            Hibernate session
+     * @return Series that fit
+     * @throws CodedException
+     */
+    public abstract List<Series> getSeries(GetObservationByIdRequest request, Session session)
+            throws OwsExceptionReport;
 
     /**
      * Query series for observedProiperty and featuresOfInterest
@@ -103,11 +122,28 @@ public abstract class AbstractSeriesDAO {
      *            FeaturesOfInterest to get series for
      * @param session
      *            Hibernate session
-     * @return Series that fir
+     * @return Series that fit
      */
     public abstract List<Series> getSeries(Collection<String> procedures, Collection<String> observedProperties,
             Collection<String> features, Session session);
 
+    /**
+     * Create series for parameter
+     *
+     * @param procedures
+     *            Procedures to get series for
+     * @param observedProperties
+     *            ObservedProperties to get series for
+     * @param features
+     *            FeaturesOfInterest to get series for
+     * @param offerings
+     *            Offerings to get series for
+     * @param session
+     *            Hibernate session
+     * @return Series that fit
+     */
+    public abstract List<Series> getSeries(Collection<String> procedures, Collection<String> observedProperties, Collection<String> featuresOfInterest,
+            Collection<String> offerings, Session session) throws OwsExceptionReport;
     /**
      * Get series for procedure, observableProperty and featureOfInterest
      *
@@ -174,18 +210,39 @@ public abstract class AbstractSeriesDAO {
     }
 
     public Criteria getSeriesCriteria(GetObservationRequest request, Collection<String> features, Session session)
-            throws CodedException {
+            throws OwsExceptionReport {
         final Criteria c =
                 createCriteriaFor(request.getProcedures(), request.getObservedProperties(), features, session);
+        if (request.isSetOffering()) {
+            addOfferingToCriteria(c, request.getOfferings(), session);
+        }
         addSpecificRestrictions(c, request);
         LOGGER.debug("QUERY getSeries(request, features): {}", HibernateHelper.getSqlString(c));
+        return c;
+    }
+    
+    public Criteria  getSeriesCriteria(GetObservationByIdRequest request, Session session) {
+        final Criteria c = getDefaultSeriesCriteria(session);
+        c.add(Restrictions.in(Series.IDENTIFIER, request.getObservationIdentifier()));
+        LOGGER.debug("QUERY getSeriesCriteria(request): {}", HibernateHelper.getSqlString(c));
         return c;
     }
 
     public Criteria getSeriesCriteria(Collection<String> procedures, Collection<String> observedProperties,
             Collection<String> features, Session session) {
         final Criteria c = createCriteriaFor(procedures, observedProperties, features, session);
-        LOGGER.debug("QUERY getSeries(proceedures, observableProperteies, features): {}",
+        LOGGER.debug("QUERY getSeries(procedures, observableProperteies, features): {}",
+                HibernateHelper.getSqlString(c));
+        return c;
+    }
+    
+    public Criteria getSeriesCriteria(Collection<String> procedures, Collection<String> observedProperties,
+            Collection<String> features, Collection<String> offerings, Session session) throws OwsExceptionReport {
+        final Criteria c = createCriteriaFor(procedures, observedProperties, features, session);
+        if (CollectionHelper.isNotEmpty(offerings)) {
+            addOfferingToCriteria(c, offerings, session);
+        }
+        LOGGER.debug("QUERY getSeries(procedures, observableProperteies, features, offerings): {}",
                 HibernateHelper.getSqlString(c));
         return c;
     }
@@ -322,6 +379,34 @@ public abstract class AbstractSeriesDAO {
     public void addProcedureToCriteria(Criteria c, Collection<String> procedures) {
         c.createCriteria(Series.PROCEDURE).add(Restrictions.in(Procedure.IDENTIFIER, procedures));
 
+    }
+
+    /**
+     * Add offering restriction to Hibernate Criteria with LEFT-OUTER-JOIN
+     * 
+     * @param c
+     *            Hibernate Criteria to add restriction
+     * @param offerings
+     *            Offering identifiers to add
+     * @throws OwsExceptionReport 
+     */
+    public void addOfferingToCriteria(Criteria c, Collection<String> offerings, Session session) throws OwsExceptionReport {
+        c.createAlias(Series.OFFERING, "off", JoinType.LEFT_OUTER_JOIN);
+        c.add(Restrictions.or(Restrictions.isNull(Series.OFFERING),
+                Restrictions.in("off." + Offering.IDENTIFIER, offerings)));
+        
+        c.add(Subqueries.propertyIn(Series.ID,
+                getDetachedCriteriaSeriesForOfferings(offerings, session)));
+    }
+    
+    private DetachedCriteria getDetachedCriteriaSeriesForOfferings(Collection<String> offerings, Session session) throws OwsExceptionReport {
+        final DetachedCriteria detachedCriteria =
+                DetachedCriteria.forClass(ContextualReferencedSeriesObservation.class);
+        detachedCriteria.add(Restrictions.eq(ContextualReferencedSeriesObservation.DELETED, false));
+        detachedCriteria.createAlias(ContextualReferencedSeriesObservation.OFFERINGS, "obsoff", JoinType.LEFT_OUTER_JOIN);
+        detachedCriteria.add(Restrictions.in("obsoff." + Offering.IDENTIFIER, offerings));
+        detachedCriteria.setProjection(Projections.distinct(Projections.property(ContextualReferencedSeriesObservation.SERIES)));
+        return detachedCriteria;
     }
 
     /**

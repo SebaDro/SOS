@@ -50,7 +50,7 @@ public abstract class AbstractGML implements Serializable{
     private CodeWithAuthority humanReadableIdentifier;
     
     private CodeWithAuthority originalIdentifier;
-
+    
     /**
      * List of feature names
      */
@@ -382,7 +382,6 @@ public abstract class AbstractGML implements Serializable{
         this.metaDataProperty.add(metaDataProperty);
     }
     
-    
     public boolean isSetMetaDataProperty() {
         return CollectionHelper.isNotEmpty(getMetaDataProperty());
     }
@@ -412,7 +411,7 @@ public abstract class AbstractGML implements Serializable{
      * @return <code>true</code> if GML id is set
      */
     public boolean isSetGmlID() {
-        return StringHelper.isNotEmpty(getGmlId());
+        return StringHelper.isNotEmpty(gmlId);
     }
 
     /**

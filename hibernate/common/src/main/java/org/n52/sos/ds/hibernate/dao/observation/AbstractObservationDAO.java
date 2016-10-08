@@ -54,9 +54,6 @@ import org.hibernate.spatial.criterion.SpatialProjections;
 import org.hibernate.transform.ResultTransformer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.n52.sos.ds.hibernate.dao.AbstractIdentifierNameDescriptionDAO;
 import org.n52.sos.ds.hibernate.dao.CodespaceDAO;
 import org.n52.sos.ds.hibernate.dao.FeatureOfInterestDAO;
@@ -66,11 +63,12 @@ import org.n52.sos.ds.hibernate.dao.ObservationTypeDAO;
 import org.n52.sos.ds.hibernate.dao.ParameterDAO;
 import org.n52.sos.ds.hibernate.dao.UnitDAO;
 import org.n52.sos.ds.hibernate.entities.Codespace;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
 import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.Unit;
+import org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest;
+import org.n52.sos.ds.hibernate.entities.feature.FeatureOfInterest;
 import org.n52.sos.ds.hibernate.entities.observation.AbstractBaseObservation;
 import org.n52.sos.ds.hibernate.entities.observation.AbstractObservation;
 import org.n52.sos.ds.hibernate.entities.observation.ContextualReferencedObservation;
@@ -84,10 +82,11 @@ import org.n52.sos.ds.hibernate.entities.observation.full.ComplexObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.CountObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.GeometryObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.NumericObservation;
+import org.n52.sos.ds.hibernate.entities.observation.full.ProfileObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.SweDataArrayObservation;
 import org.n52.sos.ds.hibernate.entities.observation.full.TextObservation;
-import org.n52.sos.ds.hibernate.entities.parameter.Parameter;
-import org.n52.sos.ds.hibernate.entities.parameter.ParameterFactory;
+import org.n52.sos.ds.hibernate.entities.parameter.observation.Parameter;
+import org.n52.sos.ds.hibernate.entities.parameter.observation.ParameterFactory;
 import org.n52.sos.ds.hibernate.util.HibernateConstants;
 import org.n52.sos.ds.hibernate.util.HibernateHelper;
 import org.n52.sos.ds.hibernate.util.ScrollableIterable;
@@ -100,6 +99,7 @@ import org.n52.sos.exception.ows.InvalidParameterValueException;
 import org.n52.sos.exception.ows.MissingParameterValueException;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
 import org.n52.sos.exception.ows.OptionNotSupportedException;
+import org.n52.sos.ogc.UoM;
 import org.n52.sos.ogc.filter.FilterConstants.TimeOperator;
 import org.n52.sos.ogc.filter.TemporalFilter;
 import org.n52.sos.ogc.gml.time.Time;
@@ -113,12 +113,17 @@ import org.n52.sos.ogc.om.values.BooleanValue;
 import org.n52.sos.ogc.om.values.CategoryValue;
 import org.n52.sos.ogc.om.values.ComplexValue;
 import org.n52.sos.ogc.om.values.CountValue;
+import org.n52.sos.ogc.om.values.CvDiscretePointCoverage;
 import org.n52.sos.ogc.om.values.GeometryValue;
 import org.n52.sos.ogc.om.values.HrefAttributeValue;
+import org.n52.sos.ogc.om.values.MultiPointCoverage;
 import org.n52.sos.ogc.om.values.NilTemplateValue;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.QuantityValue;
+import org.n52.sos.ogc.om.values.RectifiedGridCoverage;
 import org.n52.sos.ogc.om.values.ReferenceValue;
 import org.n52.sos.ogc.om.values.SweDataArrayValue;
+import org.n52.sos.ogc.om.values.TLVTValue;
 import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.om.values.UnknownValue;
@@ -137,6 +142,8 @@ import org.n52.sos.util.CollectionHelper;
 import org.n52.sos.util.DateTimeHelper;
 import org.n52.sos.util.GeometryHandler;
 import org.n52.sos.util.JavaHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -508,8 +515,8 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
      *             If an error occurs
      */
     public void insertObservationMultiValue(Set<ObservationConstellation> observationConstellations,
-            FeatureOfInterest feature, OmObservation containerObservation, Map<String, Codespace> codespaceCache,
-            Map<String, Unit> unitCache, Session session) throws OwsExceptionReport {
+            AbstractFeatureOfInterest feature, OmObservation containerObservation, Map<String, Codespace> codespaceCache,
+            Map<UoM, Unit> unitCache, Session session) throws OwsExceptionReport {
         List<OmObservation> unfoldObservations = HibernateObservationUtilities.unfoldObservation(containerObservation);
         for (OmObservation sosObservation : unfoldObservations) {
             insertObservationSingleValue(observationConstellations, feature, sosObservation, codespaceCache, unitCache,
@@ -557,9 +564,9 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
      */
     @SuppressWarnings("rawtypes")
     public void insertObservationSingleValue(Set<ObservationConstellation> hObservationConstellations,
-            FeatureOfInterest hFeature, OmObservation sosObservation,
+            AbstractFeatureOfInterest hFeature, OmObservation sosObservation,
             Map<String, Codespace> codespaceCache,
-            Map<String, Unit> unitCache, Session session)
+            Map<UoM, Unit> unitCache, Session session)
             throws OwsExceptionReport {
         SingleObservationValue<?> value
                 = (SingleObservationValue) sosObservation.getValue();
@@ -617,7 +624,21 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
      * @param session
      * @return Unit
      */
-    protected Unit getUnit(String unit, Map<String, Unit> localCache, Session session) {
+    protected Unit getUnit(String unit, Map<UoM, Unit> localCache, Session session) {
+       return getUnit(new UoM(unit), localCache, session);
+    }
+    
+    /**
+     * If the local unit cache isn't null, use it when retrieving unit.
+     *
+     * @param unit
+     *            Unit
+     * @param localCache
+     *            Cache (possibly null)
+     * @param session
+     * @return Unit
+     */
+    protected Unit getUnit(UoM unit, Map<UoM, Unit> localCache, Session session) {
         if (localCache != null && localCache.containsKey(unit)) {
             return localCache.get(unit);
         } else {
@@ -1306,14 +1327,14 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
     }
 
     private void addParameterRestriction(Criteria c, NamedValue<?> hdp) throws OwsExceptionReport {
-        c.add(Subqueries.propertyIn(AbstractBaseObservation.ID, getParameterRestriction(c, hdp.getName().getHref(), hdp.getValue().getValue(), hdp.getValue().accept(getParameterFactory()).getClass())));
+        c.add(Subqueries.propertyIn(AbstractBaseObservation.OBS_ID, getParameterRestriction(c, hdp.getName().getHref(), hdp.getValue().getValue(), hdp.getValue().accept(getParameterFactory()).getClass())));
     }
 
     protected DetachedCriteria getParameterRestriction(Criteria c, String name, Object value, Class<?> clazz) {
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(clazz);
         addParameterNameRestriction(detachedCriteria, name);
         addParameterValueRestriction(detachedCriteria, value);
-        detachedCriteria.setProjection(Projections.distinct(Projections.property(Parameter.ID)));
+        detachedCriteria.setProjection(Projections.distinct(Projections.property(Parameter.OBS_ID)));
         return detachedCriteria;
     }
 
@@ -1361,7 +1382,7 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
             implements ValueVisitor<Observation<?>> {
         private static final ObservationVisitor<String> SERIES_TYPE_VISITOR = new SeriesTypeVisitor();
         private final Set<ObservationConstellation> observationConstellations;
-        private final FeatureOfInterest featureOfInterest;
+        private final AbstractFeatureOfInterest featureOfInterest;
         private final Caches caches;
         private final Session session;
         private final Geometry samplingGeometry;
@@ -1374,9 +1395,9 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
                 AbstractObservationDAO observationDao,
                 OmObservation sosObservation,
                 Set<ObservationConstellation> hObservationConstellations,
-                FeatureOfInterest hFeature,
+                AbstractFeatureOfInterest hFeature,
                 Map<String, Codespace> codespaceCache,
-                Map<String, Unit> unitCache,
+                Map<UoM, Unit> unitCache,
                 Session session)
                 throws OwsExceptionReport {
             this(new DAOs(observationDao),
@@ -1394,7 +1415,7 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
                 Caches caches,
                 OmObservation observation,
                 Set<ObservationConstellation> hObservationConstellations,
-                FeatureOfInterest hFeature,
+                AbstractFeatureOfInterest hFeature,
                 Geometry samplingGeometry,
                 Session session,
                 boolean childObservation)
@@ -1500,6 +1521,32 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
                 throws OwsExceptionReport {
             throw notSupported(value);
         }
+        
+        @Override
+        public Observation<?> visit(TLVTValue value)
+                throws OwsExceptionReport {
+            throw notSupported(value);
+        }
+
+        @Override
+        public Observation<?> visit(CvDiscretePointCoverage value) throws OwsExceptionReport {
+            throw notSupported(value);
+        }
+
+        @Override
+        public Observation<?> visit(MultiPointCoverage value) throws OwsExceptionReport {
+            throw notSupported(value);
+        }
+
+        @Override
+        public Observation<?> visit(RectifiedGridCoverage value) throws OwsExceptionReport {
+            throw notSupported(value);
+        }
+
+        @Override
+        public Observation<?> visit(ProfileValue value) throws OwsExceptionReport {
+            throw notSupported(value);
+        }
 
         @Override
         public Observation<?> visit(XmlValue value)
@@ -1558,7 +1605,7 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
         }
 
         private Unit getUnit(Value<?> value) {
-            return value.isSetUnit() ? daos.observation().getUnit(value.getUnit(), caches.units(), session) : null;
+            return value.isSetUnit() ? daos.observation().getUnit(value.getUnitObject(), caches.units(), session) : null;
         }
 
         private <V, T extends Observation<V>> T persist(T observation, V value) throws OwsExceptionReport {
@@ -1591,7 +1638,7 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
                     throw new InvalidParameterValueException()
                     .withMessage("The requested observationType (%s) is invalid for procedure = %s, observedProperty = %s and offering = %s! The valid observationType is '%s'!",
                                     observationType,
-                                    observation.getProcedure().getIdentifier(),
+                                    oc.getProcedure().getIdentifier(),
                                     oc.getObservableProperty().getIdentifier(),
                                     oc.getOffering().getIdentifier(),
                                     oc.getObservationType().getObservationType());
@@ -1643,9 +1690,9 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
 
         private static class Caches {
             private final Map<String, Codespace> codespaces;
-            private final Map<String, Unit> units;
+            private final Map<UoM, Unit> units;
 
-            Caches(Map<String, Codespace> codespaces, Map<String, Unit> units) {
+            Caches(Map<String, Codespace> codespaces, Map<UoM, Unit> units) {
                 this.codespaces = codespaces;
                 this.units = units;
             }
@@ -1654,7 +1701,7 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
                 return codespaces;
             }
 
-            public Map<String, Unit> units() {
+            public Map<UoM, Unit> units() {
                 return units;
             }
         }
@@ -1740,6 +1787,11 @@ public abstract class AbstractObservationDAO extends AbstractIdentifierNameDescr
             @Override
             public String visit(SweDataArrayObservation o) throws OwsExceptionReport {
                 return "swedataarray";
+            }
+
+            @Override
+            public String visit(ProfileObservation o) throws OwsExceptionReport {
+                return "profile";
             }
         }
     }

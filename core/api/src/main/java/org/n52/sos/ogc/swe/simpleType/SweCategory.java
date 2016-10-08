@@ -28,6 +28,7 @@
  */
 package org.n52.sos.ogc.swe.simpleType;
 
+import org.n52.sos.ogc.UoM;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.swe.SweConstants.SweDataComponentType;
 import org.n52.sos.w3c.xlink.Referenceable;
@@ -43,7 +44,20 @@ public class SweCategory extends SweAbstractUomType<String> implements SweQualit
 
     private String value;
     private Referenceable<SweAllowedTokens> constraint;
+    
+    public SweCategory() {
+    }
 
+    public SweCategory(String value, String uom) {
+        this.value = value;
+        setUom(uom);
+    }
+    
+    public SweCategory(String value, UoM uom) {
+        this.value = value;
+        setUom(uom);
+    }
+    
     @Override
     public String getValue() {
         return value;

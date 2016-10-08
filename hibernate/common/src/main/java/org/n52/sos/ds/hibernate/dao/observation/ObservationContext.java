@@ -30,14 +30,13 @@ package org.n52.sos.ds.hibernate.dao.observation;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.n52.sos.ds.hibernate.entities.FeatureOfInterest;
-import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasWriteableObservationContext;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasSeriesType;
-
-import com.google.common.base.Strings;
-
+import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasWriteableObservationContext;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.Procedure;
+import org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest;
+
+import com.google.common.base.Strings;
 
 /**
  * Class to carry observation identifiers (featureOfInterest,
@@ -48,7 +47,7 @@ import org.n52.sos.ds.hibernate.entities.Procedure;
  *
  */
 public class ObservationContext {
-    private FeatureOfInterest featureOfInterest;
+    private AbstractFeatureOfInterest featureOfInterest;
     private ObservableProperty observableProperty;
     private Procedure procedure;
     private String seriesType;
@@ -57,7 +56,7 @@ public class ObservationContext {
     /**
      * @return the featureOfInterest
      */
-    public FeatureOfInterest getFeatureOfInterest() {
+    public AbstractFeatureOfInterest getFeatureOfInterest() {
         return featureOfInterest;
     }
 
@@ -65,7 +64,7 @@ public class ObservationContext {
      * @param featureOfInterest
      *                          the featureOfInterest to set
      */
-    public void setFeatureOfInterest(FeatureOfInterest featureOfInterest) {
+    public void setFeatureOfInterest(AbstractFeatureOfInterest featureOfInterest) {
         this.featureOfInterest = featureOfInterest;
     }
 

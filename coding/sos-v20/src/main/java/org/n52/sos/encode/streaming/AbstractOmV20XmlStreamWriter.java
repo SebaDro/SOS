@@ -30,6 +30,7 @@ package org.n52.sos.encode.streaming;
 
 import java.io.OutputStream;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import org.n52.sos.encode.XmlStreamWriter;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
 import org.n52.sos.exception.ows.concrete.DateTimeFormatException;
 import org.n52.sos.exception.ows.concrete.UnsupportedEncoderInputException;
+import org.n52.sos.ogc.gml.AbstractMetaData;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
 import org.n52.sos.ogc.gml.GmlConstants;
 import org.n52.sos.ogc.gml.time.Time;
@@ -122,6 +124,8 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
     public void write(OmObservation response, OutputStream out) throws XMLStreamException, OwsExceptionReport {
         write(response, out, new EncodingValues());
     }
+    
+    protected abstract void writeAddtitionalNamespaces() throws XMLStreamException;
 
     @Override
     public void write(OmObservation observation, OutputStream out, EncodingValues encodingValues)
@@ -151,10 +155,11 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
      *             error occurs when creating elements to be written
      */
     protected void writeOmObservationDoc(EncodingValues encodingValues) throws XMLStreamException, OwsExceptionReport {
-        start(OmConstants.QN_OM_20_OBSERVATION);
+        start(getDocumentName());
         namespace(W3CConstants.NS_XLINK_PREFIX, W3CConstants.NS_XLINK);
         namespace(OmConstants.NS_OM_PREFIX, OmConstants.NS_OM_2);
         namespace(GmlConstants.NS_GML_PREFIX, GmlConstants.NS_GML_32);
+        writeAddtitionalNamespaces();
         String observationID = addGmlId(observation);
         writeNewLine();
         if (observation.isSetIdentifier()) {
@@ -167,6 +172,10 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
         }
         if (observation.getObservationConstellation().isSetObservationType()) {
             writeObservationType(observation.getObservationConstellation().getObservationType());
+            writeNewLine();
+        }
+        if (observation.isSetMetaDataProperty()) {
+            writeMetaDataProperty(observation.getMetaDataProperty());
             writeNewLine();
         }
         Time phenomenonTime = observation.getPhenomenonTime();
@@ -193,7 +202,7 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
         writeResult(observation, encodingValues);
         writeNewLine();
         indent--;
-        end(OmConstants.QN_OM_20_OBSERVATION);
+        end(getDocumentName());
         indent++;
     }
 
@@ -231,6 +240,25 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
         start(GmlConstants.QN_DESCRIPTION_32);
         chars(description);
         endInline(GmlConstants.QN_DESCRIPTION_32);
+    }
+
+    /**
+     * Write metaData as gml:metaDataProperty to stream
+     * @param metaDataProperty MetaData to write
+     * @throws XMLStreamException If an error occurs when writing to stream
+     * @throws OwsExceptionReport If an error occurs when creating elements to be written
+     */
+    protected void writeMetaDataProperty(List<AbstractMetaData> metaDataProperty) throws XMLStreamException, OwsExceptionReport {
+        for (AbstractMetaData abstractMetaData : metaDataProperty) {
+            start(GmlConstants.QN_OM_20_META_DATA_PROPERTY_32);
+            writeNewLine();
+            XmlObject xmlObject = CodingHelper.encodeObjectToXml(GmlConstants.NS_GML_32, abstractMetaData, getDocumentAdditionalHelperValues());
+            rawText(xmlObject.xmlText(XmlOptionsHelper.getInstance().getXmlOptions()));
+            writeNewLine();
+            indent--;
+            end(GmlConstants.QN_OM_20_META_DATA_PROPERTY_32);
+            indent++;
+        }
     }
 
     /**
@@ -389,19 +417,16 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
      */
     @SuppressWarnings("unchecked")
     protected void writeParameter(EncodingValues encodingValues) throws XMLStreamException, OwsExceptionReport {
-        if (encodingValues.isSetEncoder() && encodingValues.getEncoder() instanceof ObservationEncoder) {
-            for (NamedValue<?> namedValue : observation.getParameter()) {
-                start(OmConstants.QN_OM_20_PARAMETER);
-                writeNewLine();
-                XmlObject xmlObject =
-                        ((ObservationEncoder<XmlObject, Object>) encodingValues.getEncoder()).encode(namedValue);
-                writeXmlObject(xmlObject, OmConstants.QN_OM_20_NAMED_VALUE);
-                writeNewLine();
-                indent--;
-                end(OmConstants.QN_OM_20_PARAMETER);
-                writeNewLine();
-                indent++;
-            }
+        for (NamedValue<?> namedValue : observation.getParameter()) {
+            start(OmConstants.QN_OM_20_PARAMETER);
+            writeNewLine();
+            XmlObject xmlObject = CodingHelper.encodeObjectToXml(OmConstants.NS_OM_2, namedValue);
+            writeXmlObject(xmlObject, OmConstants.QN_OM_20_NAMED_VALUE);
+            writeNewLine();
+            indent--;
+            end(OmConstants.QN_OM_20_PARAMETER);
+            writeNewLine();
+            indent++;
         }
     }
 
@@ -443,13 +468,27 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
             if (StringHelper.isNotEmpty(activeProfile.getEncodingNamespaceForFeatureOfInterest())) {
                 additionalValues.put(HelperValues.ENCODE_NAMESPACE,
                         activeProfile.getEncodingNamespaceForFeatureOfInterest());
-            } else {
+            } else if (!Strings.isNullOrEmpty(encoder.getDefaultFeatureEncodingNamespace())) {
                 additionalValues.put(HelperValues.ENCODE_NAMESPACE, encoder.getDefaultFeatureEncodingNamespace());
+            } else {
+                additionalValues.put(HelperValues.ENCODE_NAMESPACE, observation.getObservationConstellation()
+                        .getFeatureOfInterest().getDefaultElementEncoding());
             }
+            additionalValues.put(HelperValues.PROPERTY_TYPE, "true");
             XmlObject xmlObject =
                     CodingHelper.encodeObjectToXml(GmlConstants.NS_GML_32, observation.getObservationConstellation()
                             .getFeatureOfInterest(), additionalValues);
-            writeXmlObject(xmlObject, OmConstants.QN_OM_20_FEATURE_OF_INTEREST);
+            if (xmlObject.xmlText().contains(XML_FRAGMENT)) {
+                writeXmlObject(xmlObject, OmConstants.QN_OM_20_FEATURE_OF_INTEREST);
+            } else {
+                start(OmConstants.QN_OM_20_FEATURE_OF_INTEREST);
+                writeNewLine();
+                writeXmlObject(xmlObject, OmConstants.QN_OM_20_FEATURE_OF_INTEREST);
+                writeNewLine();
+                indent--;
+                end(OmConstants.QN_OM_20_FEATURE_OF_INTEREST);
+                indent++;
+            }
         } else {
             empty(OmConstants.QN_OM_20_FEATURE_OF_INTEREST);
             addXlinkHrefAttr(observation.getObservationConstellation().getFeatureOfInterest().getIdentifier());
@@ -536,6 +575,10 @@ public abstract class AbstractOmV20XmlStreamWriter extends XmlStreamWriter<OmObs
     protected String getTimeString(Time time) throws DateTimeFormatException {
         DateTime dateTime = getTime(time);
         return DateTimeHelper.formatDateTime2String(dateTime, time.getTimeFormat());
+    }
+
+    protected QName getDocumentName() {
+        return OmConstants.QN_OM_20_OBSERVATION;
     }
 
     /**

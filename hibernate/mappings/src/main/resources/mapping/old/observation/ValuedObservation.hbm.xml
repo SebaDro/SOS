@@ -14,7 +14,7 @@
             </generator>
         </id>
         <many-to-one name="featureOfInterest"
-                     class="org.n52.sos.ds.hibernate.entities.FeatureOfInterest"
+                     class="org.n52.sos.ds.hibernate.entities.feature.AbstractFeatureOfInterest"
                      foreign-key="observationFeatureFk">
             <column index="obsFeatureIdx"
                     name="featureOfInterestId"
@@ -185,7 +185,7 @@
             <key>
                 <column name="observationId" not-null="true" />
             </key>
-            <one-to-many class="org.n52.sos.ds.hibernate.entities.parameter.Parameter" />
+            <one-to-many class="org.n52.sos.ds.hibernate.entities.parameter.observation.Parameter" />
         </set>
         <joined-subclass name="org.n52.sos.ds.hibernate.entities.observation.legacy.valued.BlobValuedLegacyObservation"
                          extends="org.n52.sos.ds.hibernate.entities.observation.legacy.AbstractValuedLegacyObservation"
@@ -233,6 +233,30 @@
                        type="string">
                  <column name="value">
                      <comment>Category observation value</comment>
+                 </column>
+             </property>
+             <property name="valueIdentifier" 
+                       type="string">
+                 <column name="identifier">
+                     <comment>SweCategory observation identifier</comment>
+                 </column>
+             </property>
+             <property name="valueName" 
+                       type="string">
+                 <column name="name">
+                     <comment>SweCategory observation name</comment>
+                 </column>
+             </property>
+             <property name="valueDefinition" 
+                       type="string">
+                 <column name="definition">
+                     <comment>SweCategory observation definition</comment>
+                 </column>
+             </property>
+             <property name="valueDescription" 
+                       type="string">
+                 <column name="description">
+                     <comment>SweCategory observation description</comment>
                  </column>
              </property>
         </joined-subclass>
@@ -297,6 +321,30 @@
                       type="org.hibernate.type.StringClobType">
                  <column name="value">
                      <comment>Text observation value</comment>
+                 </column>
+             </property>
+             <property name="valueIdentifier" 
+                       type="string">
+                 <column name="identifier">
+                     <comment>SweText observation identifier</comment>
+                 </column>
+             </property>
+             <property name="valueName" 
+                       type="string">
+                 <column name="name">
+                     <comment>SweText observation name</comment>
+                 </column>
+             </property>
+             <property name="valueDefinition" 
+                       type="string">
+                 <column name="definition">
+                     <comment>SweText observation definition</comment>
+                 </column>
+             </property>
+             <property name="valueDescription" 
+                       type="string">
+                 <column name="description">
+                     <comment>SweCategory observation description</comment>
                  </column>
              </property>
         </joined-subclass>

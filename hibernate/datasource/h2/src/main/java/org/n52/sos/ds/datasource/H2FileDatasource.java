@@ -90,8 +90,8 @@ public class H2FileDatasource extends AbstractH2Datasource {
 
     @Override
     public Set<SettingDefinition<?, ?>> getSettingDefinitions() {
-        return Sets.<SettingDefinition<?, ?>> newHashSet(h2Database, getDatabaseConceptDefinition(),
-                getTransactionalDefiniton(), getMulitLanguageDefiniton());
+        return Sets.<SettingDefinition<?, ?>> newHashSet(h2Database, getDatabaseConceptDefinition(), getFeatureConceptDefinition(),
+                getTransactionalDefiniton(), getMulitLanguageDefiniton(), getSeriesMetadataDefiniton());
     }
 
     @Override

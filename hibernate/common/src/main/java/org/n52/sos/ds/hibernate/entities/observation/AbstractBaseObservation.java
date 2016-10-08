@@ -54,6 +54,7 @@ public abstract class AbstractBaseObservation
     private boolean child;
     private boolean parent;
     private Set<Parameter> parameters = new HashSet<>(0);
+    private Set<RelatedObservation> relatedObservations = new HashSet<>(0);
 
     @Override
     public boolean getDeleted() {
@@ -208,6 +209,21 @@ public abstract class AbstractBaseObservation
     @Override
     public boolean hasParameters() {
         return CollectionHelper.isNotEmpty(getParameters());
+    }
+    
+    @Override
+    public Set<RelatedObservation> getRelatedObservations() {
+        return relatedObservations;
+    }
+
+    @Override
+    public void setRelatedObservations(Set<RelatedObservation> relatedObservations) {
+        this.relatedObservations = relatedObservations;
+    }
+    
+    @Override
+    public boolean hasRelatedObservations() {
+        return CollectionHelper.isNotEmpty(getRelatedObservations());
     }
 
 }

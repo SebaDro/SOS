@@ -74,6 +74,17 @@ public class DaoFactory {
                     .withMessage("Implemented series DAO is missing!");
         }
     }
+    
+    public boolean isSeriesDAO() {
+        if (HibernateHelper.isEntitySupported(AbstractEReportingObservation.class)) {
+            return true;
+        } else if (HibernateHelper.isEntitySupported(AbstractSeriesObservation.class)) {
+            return true;
+        } else {
+           return false;
+        }
+    }
+    
 
     /**
      * Get the currently supported Hibernate Observation data access
@@ -134,6 +145,10 @@ public class DaoFactory {
             throw new NoApplicableCodeException()
                     .withMessage("Implemented value time DAO is missing!");
         }
+    }
+    
+    public AbstractFeatureOfInterestDAO getFeatureDAO() throws CodedException {
+        return new FeatureOfInterestDAO();
     }
 
     private DaoFactory() {

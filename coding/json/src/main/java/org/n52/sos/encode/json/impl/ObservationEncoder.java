@@ -44,12 +44,17 @@ import org.n52.sos.ogc.om.values.BooleanValue;
 import org.n52.sos.ogc.om.values.CategoryValue;
 import org.n52.sos.ogc.om.values.ComplexValue;
 import org.n52.sos.ogc.om.values.CountValue;
+import org.n52.sos.ogc.om.values.CvDiscretePointCoverage;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.GeometryValue;
 import org.n52.sos.ogc.om.values.HrefAttributeValue;
+import org.n52.sos.ogc.om.values.MultiPointCoverage;
 import org.n52.sos.ogc.om.values.NilTemplateValue;
 import org.n52.sos.ogc.om.values.QuantityValue;
+import org.n52.sos.ogc.om.values.RectifiedGridCoverage;
 import org.n52.sos.ogc.om.values.ReferenceValue;
 import org.n52.sos.ogc.om.values.SweDataArrayValue;
+import org.n52.sos.ogc.om.values.TLVTValue;
 import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.om.values.UnknownValue;
@@ -94,7 +99,6 @@ public class ObservationEncoder extends JSONEncoder<OmObservation> {
         encodeObservationType(o, json);
         encodeIdentifier(o, json);
         encodeProcedure(o, json);
-        encodeOfferings(o, json);
         encodeParameter(o, json);
         encodeObservableProperty(o, json);
         encodeFeatureOfInterest(o, json);
@@ -144,20 +148,6 @@ public class ObservationEncoder extends JSONEncoder<OmObservation> {
 
     private void encodeObservationType(OmObservation o, ObjectNode json) throws OwsExceptionReport {
         json.put(JSONConstants.TYPE, getObservationType(o));
-    }
-
-    private void encodeOfferings(OmObservation o, ObjectNode json) {
-        OmObservationConstellation oc = o.getObservationConstellation();
-        if (oc.isSetOfferings()) {
-            if (oc.getOfferings().size() == 1) {
-                json.put(JSONConstants.OFFERING, oc.getOfferings().iterator().next());
-            } else {
-                ArrayNode offerings = json.putArray(JSONConstants.OFFERING);
-                for (String offering : oc.getOfferings()) {
-                    offerings.add(offering);
-                }
-            }
-        }
     }
 
     private void encodeFeatureOfInterest(OmObservation o, ObjectNode json) throws OwsExceptionReport {
@@ -275,6 +265,31 @@ public class ObservationEncoder extends JSONEncoder<OmObservation> {
             @Override
             public JsonNode visit(XmlValue value) {
                 return encodeXmlValue(value);
+            }
+
+            @Override
+            public JsonNode visit(TLVTValue value) throws OwsExceptionReport {
+                throw new UnsupportedEncoderInputException(ObservationEncoder.this, value);
+            }
+
+            @Override
+            public JsonNode visit(CvDiscretePointCoverage value) throws OwsExceptionReport {
+                throw new UnsupportedEncoderInputException(ObservationEncoder.this, value);
+            }
+
+            @Override
+            public JsonNode visit(MultiPointCoverage value) throws OwsExceptionReport {
+                throw new UnsupportedEncoderInputException(ObservationEncoder.this, value);
+            }
+
+            @Override
+            public JsonNode visit(RectifiedGridCoverage value) throws OwsExceptionReport {
+                throw new UnsupportedEncoderInputException(ObservationEncoder.this, value);
+            }
+
+            @Override
+            public JsonNode visit(ProfileValue value) throws OwsExceptionReport {
+                throw new UnsupportedEncoderInputException(ObservationEncoder.this, value);
             }
         });
     }

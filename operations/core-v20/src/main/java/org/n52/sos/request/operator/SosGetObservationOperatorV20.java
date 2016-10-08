@@ -32,9 +32,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.n52.sos.coding.CodingRepository;
 import org.n52.sos.config.annotation.Configurable;
 import org.n52.sos.config.annotation.Setting;
 import org.n52.sos.ds.AbstractGetObservationDAO;
+import org.n52.sos.exception.ows.InvalidParameterValueException;
+import org.n52.sos.exception.ows.MissingParameterValueException;
 import org.n52.sos.exception.ows.concrete.InvalidOfferingParameterException;
 import org.n52.sos.exception.ows.concrete.MissingOfferingParameterException;
 import org.n52.sos.exception.sos.ResponseExceedsSizeLimitException;
@@ -48,6 +51,9 @@ import org.n52.sos.ogc.sos.ConformanceClasses;
 import org.n52.sos.ogc.sos.Sos2Constants;
 import org.n52.sos.ogc.sos.SosConstants;
 import org.n52.sos.ogc.sos.SosConstants.SosIndeterminateTime;
+import org.n52.sos.ogc.swe.simpleType.SweBoolean;
+import org.n52.sos.ogc.swes.SwesExtensionImpl;
+import org.n52.sos.ogc.swes.SwesExtensions;
 import org.n52.sos.request.GetObservationRequest;
 import org.n52.sos.response.GetObservationResponse;
 import org.n52.sos.service.Configurator;
@@ -55,6 +61,8 @@ import org.n52.sos.util.CollectionHelper;
 import org.n52.sos.util.SosHelper;
 import org.n52.sos.wsdl.WSDLConstants;
 import org.n52.sos.wsdl.WSDLOperation;
+
+import com.google.common.base.Strings;
 
 /**
  * class and forwards requests to the GetObservationDAO; after query of
@@ -106,6 +114,10 @@ public class SosGetObservationOperatorV20 extends
 
         try {
             checkOfferingId(sosRequest.getOfferings());
+            // add child offerings to request
+            if (sosRequest.isSetOffering()) {
+                sosRequest.setOfferings(addChildOfferings(sosRequest.getOfferings()));
+            }
         } catch (OwsExceptionReport owse) {
             exceptions.add(owse);
         }
@@ -164,7 +176,39 @@ public class SosGetObservationOperatorV20 extends
         } catch (OwsExceptionReport owse) {
             exceptions.add(owse);
         }
+        
+        try {
+            if (sosRequest.isSetResultModel()) {
+                if (Strings.isNullOrEmpty(sosRequest.getResultModel())) {
+                    throw new MissingParameterValueException(SosConstants.GetObservationParams.resultType);
+                } else {
+                    if (!CodingRepository
+                            .getInstance().getResponseFormatsForObservationType(sosRequest.getResultModel(),
+                                    sosRequest.getService(), sosRequest.getVersion())
+                            .contains(sosRequest.getResponseFormat())) {
+                        throw new InvalidParameterValueException().withMessage(
+                                "The requested resultType {} is not valid for the responseFormat {}!",
+                                sosRequest.getResultModel(), sosRequest.getResponseFormat());
+                    }
+                }
+            }
+        } catch (OwsExceptionReport owse) {
+            exceptions.add(owse);
+        }
 
+        if (Configurator.getInstance().getProfileHandler().getActiveProfile().isMergeValues()) {
+            if (sosRequest.isSetExtensions() && !sosRequest.getExtensions()
+                    .containsExtension(Sos2Constants.Extensions.MergeObservationsIntoDataArray)) {
+                SwesExtensions extensions = new SwesExtensions();
+                extensions.addSwesExtension(new SwesExtensionImpl<SweBoolean>()
+                        .setDefinition(Sos2Constants.Extensions.MergeObservationsIntoDataArray.name())
+                        .setValue((SweBoolean) new SweBoolean()
+                                .setValue(Configurator.getInstance().getProfileHandler().getActiveProfile()
+                                        .isMergeValues())
+                                .setDefinition(Sos2Constants.Extensions.MergeObservationsIntoDataArray.name())));
+                sosRequest.setExtensions(extensions);
+            }
+        }
         checkExtensions(sosRequest, exceptions);
         exceptions.throwIfNotEmpty();
 

@@ -35,13 +35,14 @@ import java.util.Set;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasCoordinate;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasDeletedFlag;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasDisabledFlag;
-import org.n52.sos.util.Constants;
-
-import com.google.common.collect.Sets;
-
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasGeometry;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasParentChilds;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasProcedureDescriptionFormat;
+import org.n52.sos.util.CollectionHelper;
+import org.n52.sos.util.Constants;
+import org.n52.sos.util.StringHelper;
+
+import com.google.common.collect.Sets;
 
 /**
  * @since 4.0.0
@@ -125,6 +126,10 @@ public class Procedure extends SpatialEntity implements Serializable, HasDeleted
 
     public void setDescriptionFile(String descriptionFile) {
         this.descriptionFile = descriptionFile;
+    }
+    
+    public boolean isSetDescriptionFile() {
+        return StringHelper.isNotEmpty(descriptionFile);
     }
 
     @Override
@@ -306,5 +311,15 @@ public class Procedure extends SpatialEntity implements Serializable, HasDeleted
             this.childs = new HashSet<>();
         }
         this.childs.add(child);
+    }
+    
+    @Override
+    public boolean hasParents() {
+        return CollectionHelper.isNotEmpty(getParents());
+    }
+
+    @Override
+    public boolean hasChilds() {
+        return CollectionHelper.isNotEmpty(getChilds());
     }
 }

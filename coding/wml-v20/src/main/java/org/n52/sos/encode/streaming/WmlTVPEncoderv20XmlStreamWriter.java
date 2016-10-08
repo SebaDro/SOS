@@ -42,6 +42,7 @@ import org.n52.sos.ogc.om.SingleObservationValue;
 import org.n52.sos.ogc.om.StreamingValue;
 import org.n52.sos.ogc.om.TimeValuePair;
 import org.n52.sos.ogc.om.values.CountValue;
+import org.n52.sos.ogc.om.values.ProfileValue;
 import org.n52.sos.ogc.om.values.QuantityValue;
 import org.n52.sos.ogc.om.values.TVPValue;
 import org.n52.sos.ogc.om.values.TextValue;
@@ -121,6 +122,11 @@ public class WmlTVPEncoderv20XmlStreamWriter extends AbstractOmV20XmlStreamWrite
         } else {
             super.writeResult(observation, encodingValues);
         }
+    }
+
+    @Override
+    protected void writeAddtitionalNamespaces() throws XMLStreamException {
+        namespace(WaterMLConstants.NS_WML_20_PREFIX, WaterMLConstants.NS_WML_20);
     }
 
     /**
@@ -221,6 +227,11 @@ public class WmlTVPEncoderv20XmlStreamWriter extends AbstractOmV20XmlStreamWrite
         if (value instanceof QuantityValue) {
             QuantityValue quantityValue = (QuantityValue) value;
             return Double.toString(quantityValue.getValue().doubleValue());
+        } else if (value instanceof ProfileValue) {
+            ProfileValue gwglcValue = (ProfileValue)value;
+            if (gwglcValue.isSetValue()) {
+                return getValue(gwglcValue.getValue().iterator().next().getSimpleValue());
+            }       
         } else if (value instanceof CountValue) {
             CountValue countValue = (CountValue) value;
             return Integer.toString(countValue.getValue().intValue());
