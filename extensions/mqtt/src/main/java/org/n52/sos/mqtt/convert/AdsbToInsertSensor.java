@@ -63,6 +63,7 @@ import org.n52.sos.util.net.IPAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public class AdsbToInsertSensor {
@@ -89,7 +90,7 @@ public class AdsbToInsertSensor {
         system
                 .setInputs(createInputs())
                 .setOutputs(createOutputs())
-                .setIdentifications(createIdentificationList(procedureId))
+                .setIdentifications(createIdentificationList(procedureId, message))
                 .setClassifications(createClassificationList())
                 .addCapabilities(createCapabilities(sosOffering))
                 .addCapabilities(createMobileInsitu())
@@ -143,7 +144,7 @@ public class AdsbToInsertSensor {
                 .setIoName(phenomeon);
     }
 
-    private List<SmlIdentifier> createIdentificationList(String procedure) {
+    private List<SmlIdentifier> createIdentificationList(String procedure, AdsbMessage message) {
         List<SmlIdentifier> idents = new ArrayList<>();
         idents.add(new SmlIdentifier(
                 OGCConstants.UNIQUE_ID, 
@@ -154,6 +155,12 @@ public class AdsbToInsertSensor {
                 "longName",
                 "urn:ogc:def:identifier:OGC:1.0:longName",
                 procedure));
+        if (!Strings.isNullOrEmpty(message.getSquawk())) {
+            idents.add(new SmlIdentifier(
+                    "squawk",
+                    "squawk",
+                    message.getSquawk()));
+        }
         return idents;
     }
     

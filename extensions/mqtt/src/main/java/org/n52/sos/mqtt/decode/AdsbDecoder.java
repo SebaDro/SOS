@@ -67,7 +67,8 @@ public class AdsbDecoder {
                 .setLon(getDouble(json, AdsbMessage.LON))
                 .setTrack(getInteger(json, AdsbMessage.TRACK))
                 .setSpeed(getInteger(json, AdsbMessage.SPEED))
-                .setTime(getDateTime(json, AdsbMessage.TIME));
+                .setTime(getDateTime(json, AdsbMessage.TIME))
+                .setSquawk(getString(json, AdsbMessage.SQUAWK));
     }
 
     private String getString(JsonNode json, String name) {

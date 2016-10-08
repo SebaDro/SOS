@@ -40,6 +40,7 @@ public class AdsbMessage {
     public static final String TRACK = "track";
     public static final String SPEED = "speed";
     public static final String TIME = "timestamp";
+    public static final String SQUAWK = "squawk";
     
     public static final String ALTITUDE_UNIT = "ft";
     public static final String TRACK_UNIT = "°";
@@ -53,6 +54,7 @@ public class AdsbMessage {
     private int track;
     private int speed;
     private DateTime time;
+    private String squawk;
     
     /**
      * @return the hex
@@ -156,6 +158,19 @@ public class AdsbMessage {
      */
     public AdsbMessage setTime(DateTime time) {
         this.time = time;
+        return this;
+    }
+    /**
+     * @return the squawk
+     */
+    public String getSquawk() {
+        return squawk;
+    }
+    /**
+     * @param squawk the squawk to set
+     */
+    public AdsbMessage setSquawk(String squawk) {
+        this.squawk = squawk;
         return this;
     }
 
