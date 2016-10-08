@@ -96,7 +96,7 @@ public class AdsbDecoder {
     }
     
     private DateTime getDateTime(JsonNode json, String name){
-    	return new DateTime(getLong(json, name));
+    	return new DateTime(getLong(json, name)*1000);
     }
     
     private long getLong(JsonNode json, String name){
