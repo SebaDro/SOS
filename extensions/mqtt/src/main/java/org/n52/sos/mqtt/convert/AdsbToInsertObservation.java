@@ -131,10 +131,11 @@ public class AdsbToInsertObservation {
 
     private AbstractFeature createFeatureOfInterest(AdsbMessage message) {
         String identifier = message.getFlight();
-        if (Strings.isNullOrEmpty(identifier)) {
-            identifier = message.getHex();
+        SamplingFeature samplingFeature = new SamplingFeature(new CodeWithAuthority(identifier));
+        if (Strings.isNullOrEmpty(message.getFlight())) {
+            samplingFeature.addName(message.getFlight());
         }
-        return new SamplingFeature(new CodeWithAuthority(identifier));
+        return samplingFeature;
     }
 
     private NamedValue<?> createSpatialFilteringProfileParameter(AdsbMessage message) throws OwsExceptionReport {
