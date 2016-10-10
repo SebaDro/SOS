@@ -26,55 +26,43 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
  */
-package org.n52.sos.ogc.sensorML;
+package org.n52.sos.ogc.sensorML.elements;
 
-import org.n52.sos.ogc.sensorML.elements.SmlLocation;
-import org.n52.sos.ogc.sensorML.elements.SmlPosition;
-
-/**
- * @since 4.0.0
- * 
- */
-public class AbstractComponent extends AbstractProcess implements HasPosition<AbstractComponent> {
-
-    private static final long serialVersionUID = -7668360974212650356L;
-    private SmlPosition position;
-
-    private SmlLocation location;
-
-    public SmlPosition getPosition() {
-        return position;
-    }
-
-    public AbstractComponent setPosition(final SmlPosition position) {
-        this.position = position;
-        return this;
-    }
-
-    public boolean isSetPosition() {
-        return position != null;
-    }
-
-    public SmlLocation getLocation() {
-        return location;
-    }
-
-    public AbstractComponent setLocation(final SmlLocation location) {
-        this.location = location;
-        return this;
-    }
-
-    public boolean isSetLocation() {
-        return location != null;
-    }
+public class SmlLink {
     
-    @Override
-    public String getDescriptionFormat() {
-        return SensorMLConstants.NS_SML;
-    }
+    private String id;
     
-    @Override
-    public String getDefaultElementEncoding() {
-        return SensorMLConstants.NS_SML;
+    private String destination;
+    
+    private String source;
+    
+    public SmlLink(String destination, String source) {
+        this.destination = destination;
+        this.source = source;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
 }

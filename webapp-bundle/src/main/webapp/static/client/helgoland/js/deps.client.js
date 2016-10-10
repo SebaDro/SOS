@@ -9828,7 +9828,7 @@ return jQuery;
 }));
 
 /**
- * @license AngularJS v1.5.6
+ * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -9886,7 +9886,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.6/' +
+    message += '\nhttp://errors.angularjs.org/1.5.8/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -9955,7 +9955,6 @@ function minErr(module, ErrorConstructor) {
   includes: true,
   arrayRemove: true,
   copy: true,
-  shallowCopy: true,
   equals: true,
   csp: true,
   jq: true,
@@ -10651,7 +10650,13 @@ function arrayRemove(array, value) {
  * * If a destination is provided, all of its elements (for arrays) or properties (for objects)
  *   are deleted and then all elements/properties from the source are copied to it.
  * * If `source` is not an object or array (inc. `null` and `undefined`), `source` is returned.
- * * If `source` is identical to 'destination' an exception will be thrown.
+ * * If `source` is identical to `destination` an exception will be thrown.
+ *
+ * <br />
+ * <div class="alert alert-warning">
+ *   Only enumerable properties are taken into account. Non-enumerable properties (both on `source`
+ *   and on `destination`) will be ignored.
+ * </div>
  *
  * @param {*} source The source that will be used to make a copy.
  *                   Can be any type, including primitives, `null`, and `undefined`.
@@ -10660,41 +10665,42 @@ function arrayRemove(array, value) {
  * @returns {*} The copy or updated `destination`, if `destination` was specified.
  *
  * @example
- <example module="copyExample">
- <file name="index.html">
- <div ng-controller="ExampleController">
- <form novalidate class="simple-form">
- Name: <input type="text" ng-model="user.name" /><br />
- E-mail: <input type="email" ng-model="user.email" /><br />
- Gender: <input type="radio" ng-model="user.gender" value="male" />male
- <input type="radio" ng-model="user.gender" value="female" />female<br />
- <button ng-click="reset()">RESET</button>
- <button ng-click="update(user)">SAVE</button>
- </form>
- <pre>form = {{user | json}}</pre>
- <pre>master = {{master | json}}</pre>
- </div>
+  <example module="copyExample">
+    <file name="index.html">
+      <div ng-controller="ExampleController">
+        <form novalidate class="simple-form">
+          <label>Name: <input type="text" ng-model="user.name" /></label><br />
+          <label>Age:  <input type="number" ng-model="user.age" /></label><br />
+          Gender: <label><input type="radio" ng-model="user.gender" value="male" />male</label>
+                  <label><input type="radio" ng-model="user.gender" value="female" />female</label><br />
+          <button ng-click="reset()">RESET</button>
+          <button ng-click="update(user)">SAVE</button>
+        </form>
+        <pre>form = {{user | json}}</pre>
+        <pre>master = {{master | json}}</pre>
+      </div>
+    </file>
+    <file name="script.js">
+      // Module: copyExample
+      angular.
+        module('copyExample', []).
+        controller('ExampleController', ['$scope', function($scope) {
+          $scope.master = {};
 
- <script>
-  angular.module('copyExample', [])
-    .controller('ExampleController', ['$scope', function($scope) {
-      $scope.master= {};
+          $scope.reset = function() {
+            // Example with 1 argument
+            $scope.user = angular.copy($scope.master);
+          };
 
-      $scope.update = function(user) {
-        // Example with 1 argument
-        $scope.master= angular.copy(user);
-      };
+          $scope.update = function(user) {
+            // Example with 2 arguments
+            angular.copy(user, $scope.master);
+          };
 
-      $scope.reset = function() {
-        // Example with 2 arguments
-        angular.copy($scope.master, $scope.user);
-      };
-
-      $scope.reset();
-    }]);
- </script>
- </file>
- </example>
+          $scope.reset();
+        }]);
+    </file>
+  </example>
  */
 function copy(source, destination) {
   var stackSource = [];
@@ -10801,7 +10807,7 @@ function copy(source, destination) {
       case '[object Uint8ClampedArray]':
       case '[object Uint16Array]':
       case '[object Uint32Array]':
-        return new source.constructor(copyElement(source.buffer));
+        return new source.constructor(copyElement(source.buffer), source.byteOffset, source.length);
 
       case '[object ArrayBuffer]':
         //Support: IE10
@@ -10831,31 +10837,6 @@ function copy(source, destination) {
       return source.cloneNode(true);
     }
   }
-}
-
-/**
- * Creates a shallow copy of an object, an array or a primitive.
- *
- * Assumes that there are no proto properties for objects.
- */
-function shallowCopy(src, dst) {
-  if (isArray(src)) {
-    dst = dst || [];
-
-    for (var i = 0, ii = src.length; i < ii; i++) {
-      dst[i] = src[i];
-    }
-  } else if (isObject(src)) {
-    dst = dst || {};
-
-    for (var key in src) {
-      if (!(key.charAt(0) === '$' && key.charAt(1) === '$')) {
-        dst[key] = src[key];
-      }
-    }
-  }
-
-  return dst || src;
 }
 
 
@@ -12198,7 +12179,34 @@ function setupModuleLoader(window) {
 
 }
 
-/* global: toDebugString: true */
+/* global shallowCopy: true */
+
+/**
+ * Creates a shallow copy of an object, an array or a primitive.
+ *
+ * Assumes that there are no proto properties for objects.
+ */
+function shallowCopy(src, dst) {
+  if (isArray(src)) {
+    dst = dst || [];
+
+    for (var i = 0, ii = src.length; i < ii; i++) {
+      dst[i] = src[i];
+    }
+  } else if (isObject(src)) {
+    dst = dst || {};
+
+    for (var key in src) {
+      if (!(key.charAt(0) === '$' && key.charAt(1) === '$')) {
+        dst[key] = src[key];
+      }
+    }
+  }
+
+  return dst || src;
+}
+
+/* global toDebugString: true */
 
 function serializeObject(obj) {
   var seen = [];
@@ -12302,6 +12310,7 @@ function toDebugString(obj) {
   $HttpParamSerializerJQLikeProvider,
   $HttpBackendProvider,
   $xhrFactoryProvider,
+  $jsonpCallbacksProvider,
   $LocationProvider,
   $LogProvider,
   $ParseProvider,
@@ -12339,11 +12348,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.6',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.8',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
-  dot: 6,
-  codeName: 'arrow-stringification'
+  dot: 8,
+  codeName: 'arbitrary-fallbacks'
 };
 
 
@@ -12374,7 +12383,7 @@ function publishExternalAPI(angular) {
     'isDate': isDate,
     'lowercase': lowercase,
     'uppercase': uppercase,
-    'callbacks': {counter: 0},
+    'callbacks': {$$counter: 0},
     'getTestability': getTestability,
     '$$minErr': minErr,
     '$$csp': csp,
@@ -12463,6 +12472,7 @@ function publishExternalAPI(angular) {
         $httpParamSerializerJQLike: $HttpParamSerializerJQLikeProvider,
         $httpBackend: $HttpBackendProvider,
         $xhrFactory: $xhrFactoryProvider,
+        $jsonpCallbacks: $jsonpCallbacksProvider,
         $location: $LocationProvider,
         $log: $LogProvider,
         $parse: $ParseProvider,
@@ -12539,7 +12549,7 @@ function publishExternalAPI(angular) {
  * ## Angular's jqLite
  * jqLite provides only the following jQuery methods:
  *
- * - [`addClass()`](http://api.jquery.com/addClass/)
+ * - [`addClass()`](http://api.jquery.com/addClass/) - Does not support a function as first argument
  * - [`after()`](http://api.jquery.com/after/)
  * - [`append()`](http://api.jquery.com/append/)
  * - [`attr()`](http://api.jquery.com/attr/) - Does not support functions as parameters
@@ -12566,7 +12576,7 @@ function publishExternalAPI(angular) {
  * - [`ready()`](http://api.jquery.com/ready/)
  * - [`remove()`](http://api.jquery.com/remove/)
  * - [`removeAttr()`](http://api.jquery.com/removeAttr/)
- * - [`removeClass()`](http://api.jquery.com/removeClass/)
+ * - [`removeClass()`](http://api.jquery.com/removeClass/) - Does not support a function as first argument
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
  * - [`text()`](http://api.jquery.com/text/)
@@ -12701,7 +12711,7 @@ function jqLiteBuildFragment(html, context) {
     nodes.push(context.createTextNode(html));
   } else {
     // Convert html into DOM nodes
-    tmp = tmp || fragment.appendChild(context.createElement("div"));
+    tmp = fragment.appendChild(context.createElement("div"));
     tag = (TAG_NAME_REGEXP.exec(html) || ["", ""])[1].toLowerCase();
     wrap = wrapMap[tag] || wrapMap._default;
     tmp.innerHTML = wrap[1] + html.replace(XHTML_TAG_REGEXP, "<$1></$2>") + wrap[2];
@@ -14514,10 +14524,10 @@ function createInjector(modulesToLoad, strictDi) {
       if (msie <= 11) {
         return false;
       }
-      // Workaround for MS Edge.
-      // Check https://connect.microsoft.com/IE/Feedback/Details/2211653
+      // Support: Edge 12-13 only
+      // See: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/6156135/
       return typeof func === 'function'
-        && /^(?:class\s|constructor\()/.test(stringifyFn(func));
+        && /^(?:class\b|constructor\()/.test(stringifyFn(func));
     }
 
     function invoke(fn, self, locals, serviceName) {
@@ -15258,7 +15268,13 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {DOMElement} parent the parent element which will append the element as
        *   a child (so long as the after element is not present)
        * @param {DOMElement=} after the sibling element after which the element will be appended
-       * @param {object=} options an optional collection of options/styles that will be applied to the element
+       * @param {object=} options an optional collection of options/styles that will be applied to the element.
+       *   The object can have the following properties:
+       *
+       *   - **addClass** - `{string}` - space-separated CSS classes to add to element
+       *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
+       *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
+       *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
        * @return {Promise} the animation callback promise
        */
@@ -15284,7 +15300,13 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {DOMElement} parent the parent element which will append the element as
        *   a child (so long as the after element is not present)
        * @param {DOMElement=} after the sibling element after which the element will be appended
-       * @param {object=} options an optional collection of options/styles that will be applied to the element
+       * @param {object=} options an optional collection of options/styles that will be applied to the element.
+       *   The object can have the following properties:
+       *
+       *   - **addClass** - `{string}` - space-separated CSS classes to add to element
+       *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
+       *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
+       *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
        * @return {Promise} the animation callback promise
        */
@@ -15305,7 +15327,13 @@ var $AnimateProvider = ['$provide', function($provide) {
        * digest once the animation has completed.
        *
        * @param {DOMElement} element the element which will be removed from the DOM
-       * @param {object=} options an optional collection of options/styles that will be applied to the element
+       * @param {object=} options an optional collection of options/styles that will be applied to the element.
+       *   The object can have the following properties:
+       *
+       *   - **addClass** - `{string}` - space-separated CSS classes to add to element
+       *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
+       *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
+       *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
        * @return {Promise} the animation callback promise
        */
@@ -15329,7 +15357,13 @@ var $AnimateProvider = ['$provide', function($provide) {
        *
        * @param {DOMElement} element the element which the CSS classes will be applied to
        * @param {string} className the CSS class(es) that will be added (multiple classes are separated via spaces)
-       * @param {object=} options an optional collection of options/styles that will be applied to the element
+       * @param {object=} options an optional collection of options/styles that will be applied to the element.
+       *   The object can have the following properties:
+       *
+       *   - **addClass** - `{string}` - space-separated CSS classes to add to element
+       *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
+       *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
+       *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
        * @return {Promise} the animation callback promise
        */
@@ -15353,7 +15387,13 @@ var $AnimateProvider = ['$provide', function($provide) {
        *
        * @param {DOMElement} element the element which the CSS classes will be applied to
        * @param {string} className the CSS class(es) that will be removed (multiple classes are separated via spaces)
-       * @param {object=} options an optional collection of options/styles that will be applied to the element
+       * @param {object=} options an optional collection of options/styles that will be applied to the element.
+       *   The object can have the following properties:
+       *
+       *   - **addClass** - `{string}` - space-separated CSS classes to add to element
+       *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
+       *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
+       *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
        * @return {Promise} the animation callback promise
        */
@@ -15378,7 +15418,13 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {DOMElement} element the element which the CSS classes will be applied to
        * @param {string} add the CSS class(es) that will be added (multiple classes are separated via spaces)
        * @param {string} remove the CSS class(es) that will be removed (multiple classes are separated via spaces)
-       * @param {object=} options an optional collection of options/styles that will be applied to the element
+       * @param {object=} options an optional collection of options/styles that will be applied to the element.
+       *   The object can have the following properties:
+       *
+       *   - **addClass** - `{string}` - space-separated CSS classes to add to element
+       *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
+       *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
+       *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
        * @return {Promise} the animation callback promise
        */
@@ -15419,7 +15465,13 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {string=} className an optional CSS class that will be applied to the element for the duration of the animation. If
        *    this value is left as empty then a CSS class of `ng-inline-animate` will be applied to the element.
        *    (Note that if no animation is detected then this value will not be applied to the element.)
-       * @param {object=} options an optional collection of options/styles that will be applied to the element
+       * @param {object=} options an optional collection of options/styles that will be applied to the element.
+       *   The object can have the following properties:
+       *
+       *   - **addClass** - `{string}` - space-separated CSS classes to add to element
+       *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
+       *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
+       *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
        * @return {Promise} the animation callback promise
        */
@@ -16507,8 +16559,9 @@ function $TemplateCacheProvider() {
  * There are many different options for a directive.
  *
  * The difference resides in the return value of the factory function.
- * You can either return a "Directive Definition Object" (see below) that defines the directive properties,
- * or just the `postLink` function (all other properties will have the default values).
+ * You can either return a {@link $compile#directive-definition-object Directive Definition Object (see below)}
+ * that defines the directive properties, or just the `postLink` function (all other properties will have
+ * the default values).
  *
  * <div class="alert alert-success">
  * **Best Practice:** It's recommended to use the "directive definition object" form.
@@ -16572,6 +16625,125 @@ function $TemplateCacheProvider() {
  *   });
  * ```
  *
+ * ### Life-cycle hooks
+ * Directive controllers can provide the following methods that are called by Angular at points in the life-cycle of the
+ * directive:
+ * * `$onInit()` - Called on each controller after all the controllers on an element have been constructed and
+ *   had their bindings initialized (and before the pre &amp; post linking functions for the directives on
+ *   this element). This is a good place to put initialization code for your controller.
+ * * `$onChanges(changesObj)` - Called whenever one-way (`<`) or interpolation (`@`) bindings are updated. The
+ *   `changesObj` is a hash whose keys are the names of the bound properties that have changed, and the values are an
+ *   object of the form `{ currentValue, previousValue, isFirstChange() }`. Use this hook to trigger updates within a
+ *   component such as cloning the bound value to prevent accidental mutation of the outer value.
+ * * `$doCheck()` - Called on each turn of the digest cycle. Provides an opportunity to detect and act on
+ *   changes. Any actions that you wish to take in response to the changes that you detect must be
+ *   invoked from this hook; implementing this has no effect on when `$onChanges` is called. For example, this hook
+ *   could be useful if you wish to perform a deep equality check, or to check a Date object, changes to which would not
+ *   be detected by Angular's change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments;
+ *   if detecting changes, you must store the previous value(s) for comparison to the current values.
+ * * `$onDestroy()` - Called on a controller when its containing scope is destroyed. Use this hook for releasing
+ *   external resources, watches and event handlers. Note that components have their `$onDestroy()` hooks called in
+ *   the same order as the `$scope.$broadcast` events are triggered, which is top down. This means that parent
+ *   components will have their `$onDestroy()` hook called before child components.
+ * * `$postLink()` - Called after this controller's element and its children have been linked. Similar to the post-link
+ *   function this hook can be used to set up DOM event handlers and do direct DOM manipulation.
+ *   Note that child elements that contain `templateUrl` directives will not have been compiled and linked since
+ *   they are waiting for their template to load asynchronously and their own compilation and linking has been
+ *   suspended until that occurs.
+ *
+ * #### Comparison with Angular 2 life-cycle hooks
+ * Angular 2 also uses life-cycle hooks for its components. While the Angular 1 life-cycle hooks are similar there are
+ * some differences that you should be aware of, especially when it comes to moving your code from Angular 1 to Angular 2:
+ *
+ * * Angular 1 hooks are prefixed with `$`, such as `$onInit`. Angular 2 hooks are prefixed with `ng`, such as `ngOnInit`.
+ * * Angular 1 hooks can be defined on the controller prototype or added to the controller inside its constructor.
+ *   In Angular 2 you can only define hooks on the prototype of the Component class.
+ * * Due to the differences in change-detection, you may get many more calls to `$doCheck` in Angular 1 than you would to
+ *   `ngDoCheck` in Angular 2
+ * * Changes to the model inside `$doCheck` will trigger new turns of the digest loop, which will cause the changes to be
+ *   propagated throughout the application.
+ *   Angular 2 does not allow the `ngDoCheck` hook to trigger a change outside of the component. It will either throw an
+ *   error or do nothing depending upon the state of `enableProdMode()`.
+ *
+ * #### Life-cycle hook examples
+ *
+ * This example shows how you can check for mutations to a Date object even though the identity of the object
+ * has not changed.
+ *
+ * <example name="doCheckDateExample" module="do-check-module">
+ *   <file name="app.js">
+ *     angular.module('do-check-module', [])
+ *       .component('app', {
+ *         template:
+ *           'Month: <input ng-model="$ctrl.month" ng-change="$ctrl.updateDate()">' +
+ *           'Date: {{ $ctrl.date }}' +
+ *           '<test date="$ctrl.date"></test>',
+ *         controller: function() {
+ *           this.date = new Date();
+ *           this.month = this.date.getMonth();
+ *           this.updateDate = function() {
+ *             this.date.setMonth(this.month);
+ *           };
+ *         }
+ *       })
+ *       .component('test', {
+ *         bindings: { date: '<' },
+ *         template:
+ *           '<pre>{{ $ctrl.log | json }}</pre>',
+ *         controller: function() {
+ *           var previousValue;
+ *           this.log = [];
+ *           this.$doCheck = function() {
+ *             var currentValue = this.date && this.date.valueOf();
+ *             if (previousValue !== currentValue) {
+ *               this.log.push('doCheck: date mutated: ' + this.date);
+ *               previousValue = currentValue;
+ *             }
+ *           };
+ *         }
+ *       });
+ *   </file>
+ *   <file name="index.html">
+ *     <app></app>
+ *   </file>
+ * </example>
+ *
+ * This example show how you might use `$doCheck` to trigger changes in your component's inputs even if the
+ * actual identity of the component doesn't change. (Be aware that cloning and deep equality checks on large
+ * arrays or objects can have a negative impact on your application performance)
+ *
+ * <example name="doCheckArrayExample" module="do-check-module">
+ *   <file name="index.html">
+ *     <div ng-init="items = []">
+ *       <button ng-click="items.push(items.length)">Add Item</button>
+ *       <button ng-click="items = []">Reset Items</button>
+ *       <pre>{{ items }}</pre>
+ *       <test items="items"></test>
+ *     </div>
+ *   </file>
+ *   <file name="app.js">
+ *      angular.module('do-check-module', [])
+ *        .component('test', {
+ *          bindings: { items: '<' },
+ *          template:
+ *            '<pre>{{ $ctrl.log | json }}</pre>',
+ *          controller: function() {
+ *            this.log = [];
+ *
+ *            this.$doCheck = function() {
+ *              if (this.items_ref !== this.items) {
+ *                this.log.push('doCheck: items changed');
+ *                this.items_ref = this.items;
+ *              }
+ *              if (!angular.equals(this.items_clone, this.items)) {
+ *                this.log.push('doCheck: items mutated');
+ *                this.items_clone = angular.copy(this.items);
+ *              }
+ *            };
+ *          }
+ *        });
+ *   </file>
+ * </example>
  *
  *
  * ### Directive Definition Object
@@ -16746,25 +16918,6 @@ function $TemplateCacheProvider() {
  *      then the default translusion is provided.
  *    The `$transclude` function also has a method on it, `$transclude.isSlotFilled(slotName)`, which returns
  *    `true` if the specified slot contains content (i.e. one or more DOM nodes).
- *
- * The controller can provide the following methods that act as life-cycle hooks:
- * * `$onInit()` - Called on each controller after all the controllers on an element have been constructed and
- *   had their bindings initialized (and before the pre &amp; post linking functions for the directives on
- *   this element). This is a good place to put initialization code for your controller.
- * * `$onChanges(changesObj)` - Called whenever one-way (`<`) or interpolation (`@`) bindings are updated. The
- *   `changesObj` is a hash whose keys are the names of the bound properties that have changed, and the values are an
- *   object of the form `{ currentValue, previousValue, isFirstChange() }`. Use this hook to trigger updates within a
- *   component such as cloning the bound value to prevent accidental mutation of the outer value.
- * * `$onDestroy()` - Called on a controller when its containing scope is destroyed. Use this hook for releasing
- *   external resources, watches and event handlers. Note that components have their `$onDestroy()` hooks called in
- *   the same order as the `$scope.$broadcast` events are triggered, which is top down. This means that parent
- *   components will have their `$onDestroy()` hook called before child components.
- * * `$postLink()` - Called after this controller's element and its children have been linked. Similar to the post-link
- *   function this hook can be used to set up DOM event handlers and do direct DOM manipulation.
- *   Note that child elements that contain `templateUrl` directives will not have been compiled and linked since
- *   they are waiting for their template to load asynchronously and their own compilation and linking has been
- *   suspended until that occurs.
- *
  *
  * #### `require`
  * Require another directive and inject its controller as the fourth argument to the linking function. The
@@ -16963,8 +17116,8 @@ function $TemplateCacheProvider() {
  *     any other controller.
  *
  *   * `transcludeFn` - A transclude linking function pre-bound to the correct transclusion scope.
- *     This is the same as the `$transclude`
- *     parameter of directive controllers, see there for details.
+ *     This is the same as the `$transclude` parameter of directive controllers,
+ *     see {@link ng.$compile#-controller- the controller section for details}.
  *     `function([scope], cloneLinkingFn, futureParentElement)`.
  *
  * #### Pre-linking function
@@ -17766,11 +17919,19 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         }
         // We must run this hook in an apply since the $$postDigest runs outside apply
         $rootScope.$apply(function() {
+          var errors = [];
           for (var i = 0, ii = onChangesQueue.length; i < ii; ++i) {
-            onChangesQueue[i]();
+            try {
+              onChangesQueue[i]();
+            } catch (e) {
+              errors.push(e);
+            }
           }
           // Reset the queue to trigger a new schedule next time there is a change
           onChangesQueue = undefined;
+          if (errors.length) {
+            throw errors;
+          }
         });
       } finally {
         onChangesTtl++;
@@ -18411,24 +18572,30 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           addTextInterpolateDirective(directives, node.nodeValue);
           break;
         case NODE_TYPE_COMMENT: /* Comment */
-          try {
-            match = COMMENT_DIRECTIVE_REGEXP.exec(node.nodeValue);
-            if (match) {
-              nName = directiveNormalize(match[1]);
-              if (addDirective(directives, nName, 'M', maxPriority, ignoreDirective)) {
-                attrs[nName] = trim(match[2]);
-              }
-            }
-          } catch (e) {
-            // turns out that under some circumstances IE9 throws errors when one attempts to read
-            // comment's node value.
-            // Just ignore it and continue. (Can't seem to reproduce in test case.)
-          }
+          collectCommentDirectives(node, directives, attrs, maxPriority, ignoreDirective);
           break;
       }
 
       directives.sort(byPriority);
       return directives;
+    }
+
+    function collectCommentDirectives(node, directives, attrs, maxPriority, ignoreDirective) {
+      // function created because of performance, try/catch disables
+      // the optimization of the whole function #14848
+      try {
+        var match = COMMENT_DIRECTIVE_REGEXP.exec(node.nodeValue);
+        if (match) {
+          var nName = directiveNormalize(match[1]);
+          if (addDirective(directives, nName, 'M', maxPriority, ignoreDirective)) {
+            attrs[nName] = trim(match[2]);
+          }
+        }
+      } catch (e) {
+        // turns out that under some circumstances IE9 throws errors when one attempts to read
+        // comment's node value.
+        // Just ignore it and continue. (Can't seem to reproduce in test case.)
+      }
     }
 
     /**
@@ -18946,10 +19113,22 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         forEach(elementControllers, function(controller) {
           var controllerInstance = controller.instance;
           if (isFunction(controllerInstance.$onChanges)) {
-            controllerInstance.$onChanges(controller.bindingInfo.initialChanges);
+            try {
+              controllerInstance.$onChanges(controller.bindingInfo.initialChanges);
+            } catch (e) {
+              $exceptionHandler(e);
+            }
           }
           if (isFunction(controllerInstance.$onInit)) {
-            controllerInstance.$onInit();
+            try {
+              controllerInstance.$onInit();
+            } catch (e) {
+              $exceptionHandler(e);
+            }
+          }
+          if (isFunction(controllerInstance.$doCheck)) {
+            controllerScope.$watch(function() { controllerInstance.$doCheck(); });
+            controllerInstance.$doCheck();
           }
           if (isFunction(controllerInstance.$onDestroy)) {
             controllerScope.$on('$destroy', function callOnDestroyHook() {
@@ -19213,18 +19392,16 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       // copy the new attributes on the old attrs object
       forEach(src, function(value, key) {
-        if (key == 'class') {
-          safeAddClass($element, value);
-          dst['class'] = (dst['class'] ? dst['class'] + ' ' : '') + value;
-        } else if (key == 'style') {
-          $element.attr('style', $element.attr('style') + ';' + value);
-          dst['style'] = (dst['style'] ? dst['style'] + ';' : '') + value;
-          // `dst` will never contain hasOwnProperty as DOM parser won't let it.
-          // You will get an "InvalidCharacterError: DOM Exception 5" error if you
-          // have an attribute like "has-own-property" or "data-has-own-property", etc.
-        } else if (key.charAt(0) != '$' && !dst.hasOwnProperty(key)) {
+        // Check if we already set this attribute in the loop above.
+        // `dst` will never contain hasOwnProperty as DOM parser won't let it.
+        // You will get an "InvalidCharacterError: DOM Exception 5" error if you
+        // have an attribute like "has-own-property" or "data-has-own-property", etc.
+        if (!dst.hasOwnProperty(key) && key.charAt(0) !== '$') {
           dst[key] = value;
-          dstAttr[key] = srcAttr[key];
+
+          if (key !== 'class' && key !== 'style') {
+            dstAttr[key] = srcAttr[key];
+          }
         }
       });
     }
@@ -19599,7 +19776,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       forEach(bindings, function initializeBinding(definition, scopeName) {
         var attrName = definition.attrName,
         optional = definition.optional,
-        mode = definition.mode, // @, =, or &
+        mode = definition.mode, // @, =, <, or &
         lastValue,
         parentGet, parentSet, compare, removeWatch;
 
@@ -20085,17 +20262,20 @@ function $DocumentProvider() {
  *
  * ## Example:
  *
- * ```js
- *   angular.module('exceptionOverride', []).factory('$exceptionHandler', function() {
- *     return function(exception, cause) {
- *       exception.message += ' (caused by "' + cause + '")';
- *       throw exception;
- *     };
- *   });
- * ```
+ * The example below will overwrite the default `$exceptionHandler` in order to (a) log uncaught
+ * errors to the backend for later inspection by the developers and (b) to use `$log.warn()` instead
+ * of `$log.error()`.
  *
- * This example will override the normal action of `$exceptionHandler`, to make angular
- * exceptions fail hard when they happen, instead of just logging to the console.
+ * ```js
+ *   angular.
+ *     module('exceptionOverwrite', []).
+ *     factory('$exceptionHandler', ['$log', 'logErrorsToBackend', function($log, logErrorsToBackend) {
+ *       return function myExceptionHandler(exception, cause) {
+ *         logErrorsToBackend(exception, cause);
+ *         $log.warn(exception, cause);
+ *       };
+ *     }]);
+ * ```
  *
  * <hr />
  * Note, that code executed in event-listeners (even those registered using jqLite's `on`/`bind`
@@ -20106,7 +20286,7 @@ function $DocumentProvider() {
  * `try { ... } catch(e) { $exceptionHandler(e); }`
  *
  * @param {Error} exception Exception associated with the error.
- * @param {string=} cause optional information about the context in which
+ * @param {string=} cause Optional information about the context in which
  *       the error was thrown.
  *
  */
@@ -20176,7 +20356,7 @@ function $HttpParamSerializerProvider() {
    * * `{'foo': 'bar'}` results in `foo=bar`
    * * `{'foo': Date.now()}` results in `foo=2015-04-01T09%3A50%3A49.262Z` (`toISOString()` and encoded representation of a Date object)
    * * `{'foo': ['bar', 'baz']}` results in `foo=bar&foo=baz` (repeated key for each array element)
-   * * `{'foo': {'bar':'baz'}}` results in `foo=%7B%22bar%22%3A%22baz%22%7D"` (stringified and encoded representation of an object)
+   * * `{'foo': {'bar':'baz'}}` results in `foo=%7B%22bar%22%3A%22baz%22%7D` (stringified and encoded representation of an object)
    *
    * Note that serializer will sort the request parameters alphabetically.
    * */
@@ -20727,7 +20907,7 @@ function $HttpProvider() {
      *
      * ### Overriding the Default Transformations Per Request
      *
-     * If you wish override the request/response transformations only for a single request then provide
+     * If you wish to override the request/response transformations only for a single request then provide
      * `transformRequest` and/or `transformResponse` properties on the configuration object passed
      * into `$http`.
      *
@@ -20770,7 +20950,7 @@ function $HttpProvider() {
      *   * cache a specific response - set config.cache value to TRUE or to a cache object
      *
      * If caching is enabled, but neither the default cache nor config.cache are set to a cache object,
-     * then the default `$cacheFactory($http)` object is used.
+     * then the default `$cacheFactory("$http")` object is used.
      *
      * The default cache value can be set by updating the
      * {@link ng.$http#defaults `$http.defaults.cache`} property or the
@@ -21098,48 +21278,25 @@ function $HttpProvider() {
       config.headers = mergeHeaders(requestConfig);
       config.method = uppercase(config.method);
       config.paramSerializer = isString(config.paramSerializer) ?
-        $injector.get(config.paramSerializer) : config.paramSerializer;
+          $injector.get(config.paramSerializer) : config.paramSerializer;
 
-      var serverRequest = function(config) {
-        var headers = config.headers;
-        var reqData = transformData(config.data, headersGetter(headers), undefined, config.transformRequest);
-
-        // strip content-type if data is undefined
-        if (isUndefined(reqData)) {
-          forEach(headers, function(value, header) {
-            if (lowercase(header) === 'content-type') {
-                delete headers[header];
-            }
-          });
-        }
-
-        if (isUndefined(config.withCredentials) && !isUndefined(defaults.withCredentials)) {
-          config.withCredentials = defaults.withCredentials;
-        }
-
-        // send request
-        return sendReq(config, reqData).then(transformResponse, transformResponse);
-      };
-
-      var chain = [serverRequest, undefined];
+      var requestInterceptors = [];
+      var responseInterceptors = [];
       var promise = $q.when(config);
 
       // apply interceptors
       forEach(reversedInterceptors, function(interceptor) {
         if (interceptor.request || interceptor.requestError) {
-          chain.unshift(interceptor.request, interceptor.requestError);
+          requestInterceptors.unshift(interceptor.request, interceptor.requestError);
         }
         if (interceptor.response || interceptor.responseError) {
-          chain.push(interceptor.response, interceptor.responseError);
+          responseInterceptors.push(interceptor.response, interceptor.responseError);
         }
       });
 
-      while (chain.length) {
-        var thenFn = chain.shift();
-        var rejectFn = chain.shift();
-
-        promise = promise.then(thenFn, rejectFn);
-      }
+      promise = chainInterceptors(promise, requestInterceptors);
+      promise = promise.then(serverRequest);
+      promise = chainInterceptors(promise, responseInterceptors);
 
       if (useLegacyPromise) {
         promise.success = function(fn) {
@@ -21166,14 +21323,18 @@ function $HttpProvider() {
 
       return promise;
 
-      function transformResponse(response) {
-        // make a copy since the response must be cacheable
-        var resp = extend({}, response);
-        resp.data = transformData(response.data, response.headers, response.status,
-                                  config.transformResponse);
-        return (isSuccess(response.status))
-          ? resp
-          : $q.reject(resp);
+
+      function chainInterceptors(promise, interceptors) {
+        for (var i = 0, ii = interceptors.length; i < ii;) {
+          var thenFn = interceptors[i++];
+          var rejectFn = interceptors[i++];
+
+          promise = promise.then(thenFn, rejectFn);
+        }
+
+        interceptors.length = 0;
+
+        return promise;
       }
 
       function executeHeaderFns(headers, config) {
@@ -21216,6 +21377,37 @@ function $HttpProvider() {
 
         // execute if header value is a function for merged headers
         return executeHeaderFns(reqHeaders, shallowCopy(config));
+      }
+
+      function serverRequest(config) {
+        var headers = config.headers;
+        var reqData = transformData(config.data, headersGetter(headers), undefined, config.transformRequest);
+
+        // strip content-type if data is undefined
+        if (isUndefined(reqData)) {
+          forEach(headers, function(value, header) {
+            if (lowercase(header) === 'content-type') {
+              delete headers[header];
+            }
+          });
+        }
+
+        if (isUndefined(config.withCredentials) && !isUndefined(defaults.withCredentials)) {
+          config.withCredentials = defaults.withCredentials;
+        }
+
+        // send request
+        return sendReq(config, reqData).then(transformResponse, transformResponse);
+      }
+
+      function transformResponse(response) {
+        // make a copy since the response must be cacheable
+        var resp = extend({}, response);
+        resp.data = transformData(response.data, response.headers, response.status,
+                                  config.transformResponse);
+        return (isSuccess(response.status))
+          ? resp
+          : $q.reject(resp);
       }
     }
 
@@ -21263,6 +21455,8 @@ function $HttpProvider() {
      *
      * @description
      * Shortcut method to perform `JSONP` request.
+     * If you would like to customise where and how the callbacks are stored then try overriding
+     * or decorating the {@link $jsonpCallbacks} service.
      *
      * @param {string} url Relative or absolute URL specifying the destination of the request.
      *                     The name of the callback should be the string `JSON_CALLBACK`.
@@ -21536,7 +21730,7 @@ function $xhrFactoryProvider() {
 /**
  * @ngdoc service
  * @name $httpBackend
- * @requires $window
+ * @requires $jsonpCallbacks
  * @requires $document
  * @requires $xhrFactory
  *
@@ -21551,8 +21745,8 @@ function $xhrFactoryProvider() {
  * $httpBackend} which can be trained with responses.
  */
 function $HttpBackendProvider() {
-  this.$get = ['$browser', '$window', '$document', '$xhrFactory', function($browser, $window, $document, $xhrFactory) {
-    return createHttpBackend($browser, $xhrFactory, $browser.defer, $window.angular.callbacks, $document[0]);
+  this.$get = ['$browser', '$jsonpCallbacks', '$document', '$xhrFactory', function($browser, $jsonpCallbacks, $document, $xhrFactory) {
+    return createHttpBackend($browser, $xhrFactory, $browser.defer, $jsonpCallbacks, $document[0]);
   }];
 }
 
@@ -21562,17 +21756,13 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
     $browser.$$incOutstandingRequestCount();
     url = url || $browser.url();
 
-    if (lowercase(method) == 'jsonp') {
-      var callbackId = '_' + (callbacks.counter++).toString(36);
-      callbacks[callbackId] = function(data) {
-        callbacks[callbackId].data = data;
-        callbacks[callbackId].called = true;
-      };
-
-      var jsonpDone = jsonpReq(url.replace('JSON_CALLBACK', 'angular.callbacks.' + callbackId),
-          callbackId, function(status, text) {
-        completeRequest(callback, status, callbacks[callbackId].data, "", text);
-        callbacks[callbackId] = noop;
+    if (lowercase(method) === 'jsonp') {
+      var callbackPath = callbacks.createCallback(url);
+      var jsonpDone = jsonpReq(url, callbackPath, function(status, text) {
+        // jsonpReq only ever sets status to 200 (OK), 404 (ERROR) or -1 (WAITING)
+        var response = (status === 200) && callbacks.getResponse(callbackPath);
+        completeRequest(callback, status, response, "", text);
+        callbacks.removeCallback(callbackPath);
       });
     } else {
 
@@ -21674,7 +21864,8 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
     }
   };
 
-  function jsonpReq(url, callbackId, done) {
+  function jsonpReq(url, callbackPath, done) {
+    url = url.replace('JSON_CALLBACK', callbackPath);
     // we can't use jQuery/jqLite here because jQuery does crazy stuff with script elements, e.g.:
     // - fetches local scripts via XHR and evals them
     // - adds and immediately removes script elements from the document
@@ -21692,7 +21883,7 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
       var text = "unknown";
 
       if (event) {
-        if (event.type === "load" && !callbacks[callbackId].called) {
+        if (event.type === "load" && !callbacks.wasCalled(callbackPath)) {
           event = { type: "error" };
         }
         text = event.type;
@@ -21891,7 +22082,7 @@ function $InterpolateProvider() {
      *
      * `allOrNothing` is useful for interpolating URLs. `ngSrc` and `ngSrcset` use this behavior.
      *
-     * ####Escaped Interpolation
+     * #### Escaped Interpolation
      * $interpolate provides a mechanism for escaping interpolation markers. Start and end markers
      * can be escaped by preceding each of their characters with a REVERSE SOLIDUS U+005C (backslash).
      * It will be rendered as a regular start/end marker, and will not be interpreted as an expression
@@ -22316,6 +22507,87 @@ function $IntervalProvider() {
 
 /**
  * @ngdoc service
+ * @name $jsonpCallbacks
+ * @requires $window
+ * @description
+ * This service handles the lifecycle of callbacks to handle JSONP requests.
+ * Override this service if you wish to customise where the callbacks are stored and
+ * how they vary compared to the requested url.
+ */
+var $jsonpCallbacksProvider = function() {
+  this.$get = ['$window', function($window) {
+    var callbacks = $window.angular.callbacks;
+    var callbackMap = {};
+
+    function createCallback(callbackId) {
+      var callback = function(data) {
+        callback.data = data;
+        callback.called = true;
+      };
+      callback.id = callbackId;
+      return callback;
+    }
+
+    return {
+      /**
+       * @ngdoc method
+       * @name $jsonpCallbacks#createCallback
+       * @param {string} url the url of the JSONP request
+       * @returns {string} the callback path to send to the server as part of the JSONP request
+       * @description
+       * {@link $httpBackend} calls this method to create a callback and get hold of the path to the callback
+       * to pass to the server, which will be used to call the callback with its payload in the JSONP response.
+       */
+      createCallback: function(url) {
+        var callbackId = '_' + (callbacks.$$counter++).toString(36);
+        var callbackPath = 'angular.callbacks.' + callbackId;
+        var callback = createCallback(callbackId);
+        callbackMap[callbackPath] = callbacks[callbackId] = callback;
+        return callbackPath;
+      },
+      /**
+       * @ngdoc method
+       * @name $jsonpCallbacks#wasCalled
+       * @param {string} callbackPath the path to the callback that was sent in the JSONP request
+       * @returns {boolean} whether the callback has been called, as a result of the JSONP response
+       * @description
+       * {@link $httpBackend} calls this method to find out whether the JSONP response actually called the
+       * callback that was passed in the request.
+       */
+      wasCalled: function(callbackPath) {
+        return callbackMap[callbackPath].called;
+      },
+      /**
+       * @ngdoc method
+       * @name $jsonpCallbacks#getResponse
+       * @param {string} callbackPath the path to the callback that was sent in the JSONP request
+       * @returns {*} the data received from the response via the registered callback
+       * @description
+       * {@link $httpBackend} calls this method to get hold of the data that was provided to the callback
+       * in the JSONP response.
+       */
+      getResponse: function(callbackPath) {
+        return callbackMap[callbackPath].data;
+      },
+      /**
+       * @ngdoc method
+       * @name $jsonpCallbacks#removeCallback
+       * @param {string} callbackPath the path to the callback that was sent in the JSONP request
+       * @description
+       * {@link $httpBackend} calls this method to remove the callback after the JSONP request has
+       * completed or timed-out.
+       */
+      removeCallback: function(callbackPath) {
+        var callback = callbackMap[callbackPath];
+        delete callbacks[callback.id];
+        delete callbackMap[callbackPath];
+      }
+    };
+  }];
+};
+
+/**
+ * @ngdoc service
  * @name $locale
  *
  * @description
@@ -22652,6 +22924,12 @@ function LocationHashbangInHtml5Url(appBase, appBaseNoFile, hashPrefix) {
 
 
 var locationPrototype = {
+
+  /**
+   * Ensure absolute url is initialized.
+   * @private
+   */
+  $$absUrl:'',
 
   /**
    * Are we in html5 mode?
@@ -24026,7 +24304,7 @@ AST.prototype = {
     var args = [];
     if (this.peekToken().text !== ')') {
       do {
-        args.push(this.expression());
+        args.push(this.filterChain());
       } while (this.expect(','));
     }
     return args;
@@ -25753,7 +26031,7 @@ function $ParseProvider() {
  *
  * **Methods**
  *
- * - `then(successCallback, errorCallback, notifyCallback)` – regardless of when the promise was or
+ * - `then(successCallback, [errorCallback], [notifyCallback])` – regardless of when the promise was or
  *   will be resolved or rejected, `then` calls one of the success or error callbacks asynchronously
  *   as soon as the result is available. The callbacks are called with a single argument: the result
  *   or rejection reason. Additionally, the notify callback may be called zero or more times to
@@ -25764,7 +26042,8 @@ function $ParseProvider() {
  *   with the value which is resolved in that promise using
  *   [promise chaining](http://www.html5rocks.com/en/tutorials/es6/promises/#toc-promises-queues)).
  *   It also notifies via the return value of the `notifyCallback` method. The promise cannot be
- *   resolved or rejected from the notifyCallback method.
+ *   resolved or rejected from the notifyCallback method. The errorCallback and notifyCallback
+ *   arguments are optional.
  *
  * - `catch(errorCallback)` – shorthand for `promise.then(null, errorCallback)`
  *
@@ -26179,6 +26458,30 @@ function qFactory(nextTick, exceptionHandler) {
     return deferred.promise;
   }
 
+  /**
+   * @ngdoc method
+   * @name $q#race
+   * @kind function
+   *
+   * @description
+   * Returns a promise that resolves or rejects as soon as one of those promises
+   * resolves or rejects, with the value or reason from that promise.
+   *
+   * @param {Array.<Promise>|Object.<Promise>} promises An array or hash of promises.
+   * @returns {Promise} a promise that resolves or rejects as soon as one of the `promises`
+   * resolves or rejects, with the value or reason from that promise.
+   */
+
+  function race(promises) {
+    var deferred = defer();
+
+    forEach(promises, function(promise) {
+      when(promise).then(deferred.resolve, deferred.reject);
+    });
+
+    return deferred.promise;
+  }
+
   var $Q = function Q(resolver) {
     if (!isFunction(resolver)) {
       throw $qMinErr('norslvr', "Expected resolverFn, got '{0}'", resolver);
@@ -26208,6 +26511,7 @@ function qFactory(nextTick, exceptionHandler) {
   $Q.when = when;
   $Q.resolve = resolve;
   $Q.all = all;
+  $Q.race = race;
 
   return $Q;
 }
@@ -29559,10 +29863,11 @@ function $FilterProvider($provide) {
  *   - `Object`: A pattern object can be used to filter specific properties on objects contained
  *     by `array`. For example `{name:"M", phone:"1"}` predicate will return an array of items
  *     which have property `name` containing "M" and property `phone` containing "1". A special
- *     property name `$` can be used (as in `{$:"text"}`) to accept a match against any
- *     property of the object or its nested object properties. That's equivalent to the simple
- *     substring match with a `string` as described above. The predicate can be negated by prefixing
- *     the string with `!`.
+ *     property name (`$` by default) can be used (e.g. as in `{$: "text"}`) to accept a match
+ *     against any property of the object or its nested object properties. That's equivalent to the
+ *     simple substring match with a `string` as described above. The special property name can be
+ *     overwritten, using the `anyPropertyKey` parameter.
+ *     The predicate can be negated by prefixing the string with `!`.
  *     For example `{name: "!M"}` predicate will return an array of items which have property `name`
  *     not containing "M".
  *
@@ -29595,6 +29900,9 @@ function $FilterProvider($provide) {
  *
  *     Primitive values are converted to strings. Objects are not compared against primitives,
  *     unless they have a custom `toString` method (e.g. `Date` objects).
+ *
+ * @param {string=} anyPropertyKey The special property name that matches against any property.
+ *     By default `$`.
  *
  * @example
    <example>
@@ -29664,8 +29972,9 @@ function $FilterProvider($provide) {
      </file>
    </example>
  */
+
 function filterFilter() {
-  return function(array, expression, comparator) {
+  return function(array, expression, comparator, anyPropertyKey) {
     if (!isArrayLike(array)) {
       if (array == null) {
         return array;
@@ -29674,6 +29983,7 @@ function filterFilter() {
       }
     }
 
+    anyPropertyKey = anyPropertyKey || '$';
     var expressionType = getTypeForFilter(expression);
     var predicateFn;
     var matchAgainstAnyProp;
@@ -29690,7 +30000,7 @@ function filterFilter() {
         //jshint -W086
       case 'object':
         //jshint +W086
-        predicateFn = createPredicateFn(expression, comparator, matchAgainstAnyProp);
+        predicateFn = createPredicateFn(expression, comparator, anyPropertyKey, matchAgainstAnyProp);
         break;
       default:
         return array;
@@ -29701,8 +30011,8 @@ function filterFilter() {
 }
 
 // Helper functions for `filterFilter`
-function createPredicateFn(expression, comparator, matchAgainstAnyProp) {
-  var shouldMatchPrimitives = isObject(expression) && ('$' in expression);
+function createPredicateFn(expression, comparator, anyPropertyKey, matchAgainstAnyProp) {
+  var shouldMatchPrimitives = isObject(expression) && (anyPropertyKey in expression);
   var predicateFn;
 
   if (comparator === true) {
@@ -29730,25 +30040,25 @@ function createPredicateFn(expression, comparator, matchAgainstAnyProp) {
 
   predicateFn = function(item) {
     if (shouldMatchPrimitives && !isObject(item)) {
-      return deepCompare(item, expression.$, comparator, false);
+      return deepCompare(item, expression[anyPropertyKey], comparator, anyPropertyKey, false);
     }
-    return deepCompare(item, expression, comparator, matchAgainstAnyProp);
+    return deepCompare(item, expression, comparator, anyPropertyKey, matchAgainstAnyProp);
   };
 
   return predicateFn;
 }
 
-function deepCompare(actual, expected, comparator, matchAgainstAnyProp, dontMatchWholeObject) {
+function deepCompare(actual, expected, comparator, anyPropertyKey, matchAgainstAnyProp, dontMatchWholeObject) {
   var actualType = getTypeForFilter(actual);
   var expectedType = getTypeForFilter(expected);
 
   if ((expectedType === 'string') && (expected.charAt(0) === '!')) {
-    return !deepCompare(actual, expected.substring(1), comparator, matchAgainstAnyProp);
+    return !deepCompare(actual, expected.substring(1), comparator, anyPropertyKey, matchAgainstAnyProp);
   } else if (isArray(actual)) {
     // In case `actual` is an array, consider it a match
     // if ANY of it's items matches `expected`
     return actual.some(function(item) {
-      return deepCompare(item, expected, comparator, matchAgainstAnyProp);
+      return deepCompare(item, expected, comparator, anyPropertyKey, matchAgainstAnyProp);
     });
   }
 
@@ -29757,11 +30067,11 @@ function deepCompare(actual, expected, comparator, matchAgainstAnyProp, dontMatc
       var key;
       if (matchAgainstAnyProp) {
         for (key in actual) {
-          if ((key.charAt(0) !== '$') && deepCompare(actual[key], expected, comparator, true)) {
+          if ((key.charAt(0) !== '$') && deepCompare(actual[key], expected, comparator, anyPropertyKey, true)) {
             return true;
           }
         }
-        return dontMatchWholeObject ? false : deepCompare(actual, expected, comparator, false);
+        return dontMatchWholeObject ? false : deepCompare(actual, expected, comparator, anyPropertyKey, false);
       } else if (expectedType === 'object') {
         for (key in expected) {
           var expectedVal = expected[key];
@@ -29769,9 +30079,9 @@ function deepCompare(actual, expected, comparator, matchAgainstAnyProp, dontMatc
             continue;
           }
 
-          var matchAnyProperty = key === '$';
+          var matchAnyProperty = key === anyPropertyKey;
           var actualVal = matchAnyProperty ? actual : actual[key];
-          if (!deepCompare(actualVal, expectedVal, comparator, matchAnyProperty, matchAnyProperty)) {
+          if (!deepCompare(actualVal, expectedVal, comparator, anyPropertyKey, matchAnyProperty, matchAnyProperty)) {
             return false;
           }
         }
@@ -30509,21 +30819,22 @@ var uppercaseFilter = valueFn(uppercase);
  * @kind function
  *
  * @description
- * Creates a new array or string containing only a specified number of elements. The elements
- * are taken from either the beginning or the end of the source array, string or number, as specified by
- * the value and sign (positive or negative) of `limit`. If a number is used as input, it is
- * converted to a string.
+ * Creates a new array or string containing only a specified number of elements. The elements are
+ * taken from either the beginning or the end of the source array, string or number, as specified by
+ * the value and sign (positive or negative) of `limit`. Other array-like objects are also supported
+ * (e.g. array subclasses, NodeLists, jqLite/jQuery collections etc). If a number is used as input,
+ * it is converted to a string.
  *
- * @param {Array|string|number} input Source array, string or number to be limited.
- * @param {string|number} limit The length of the returned array or string. If the `limit` number
+ * @param {Array|ArrayLike|string|number} input - Array/array-like, string or number to be limited.
+ * @param {string|number} limit - The length of the returned array or string. If the `limit` number
  *     is positive, `limit` number of items from the beginning of the source array/string are copied.
  *     If the number is negative, `limit` number  of items from the end of the source array/string
  *     are copied. The `limit` will be trimmed if it exceeds `array.length`. If `limit` is undefined,
  *     the input will be returned unchanged.
- * @param {(string|number)=} begin Index at which to begin limitation. As a negative index, `begin`
- *     indicates an offset from the end of `input`. Defaults to `0`.
- * @returns {Array|string} A new sub-array or substring of length `limit` or less if input array
- *     had less than `limit` elements.
+ * @param {(string|number)=} begin - Index at which to begin limitation. As a negative index,
+ *     `begin` indicates an offset from the end of `input`. Defaults to `0`.
+ * @returns {Array|string} A new sub-array or substring of length `limit` or less if the input had
+ *     less than `limit` elements.
  *
  * @example
    <example module="limitToExample">
@@ -30611,21 +30922,27 @@ function limitToFilter() {
     if (isNaN(limit)) return input;
 
     if (isNumber(input)) input = input.toString();
-    if (!isArray(input) && !isString(input)) return input;
+    if (!isArrayLike(input)) return input;
 
     begin = (!begin || isNaN(begin)) ? 0 : toInt(begin);
     begin = (begin < 0) ? Math.max(0, input.length + begin) : begin;
 
     if (limit >= 0) {
-      return input.slice(begin, begin + limit);
+      return sliceFn(input, begin, begin + limit);
     } else {
       if (begin === 0) {
-        return input.slice(limit, input.length);
+        return sliceFn(input, limit, input.length);
       } else {
-        return input.slice(Math.max(0, begin + limit), begin);
+        return sliceFn(input, Math.max(0, begin + limit), begin);
       }
     }
   };
+}
+
+function sliceFn(input, begin, end) {
+  if (isString(input)) return input.slice(begin, end);
+
+  return slice.call(input, begin, end);
 }
 
 /**
@@ -30634,44 +30951,128 @@ function limitToFilter() {
  * @kind function
  *
  * @description
- * Orders a specified `array` by the `expression` predicate. It is ordered alphabetically
- * for strings and numerically for numbers. Note: if you notice numbers are not being sorted
- * as expected, make sure they are actually being saved as numbers and not strings.
- * Array-like values (e.g. NodeLists, jQuery objects, TypedArrays, Strings, etc) are also supported.
+ * Returns an array containing the items from the specified `collection`, ordered by a `comparator`
+ * function based on the values computed using the `expression` predicate.
  *
- * @param {Array} array The array (or array-like object) to sort.
- * @param {function(*)|string|Array.<(function(*)|string)>=} expression A predicate to be
- *    used by the comparator to determine the order of elements.
+ * For example, `[{id: 'foo'}, {id: 'bar'}] | orderBy:'id'` would result in
+ * `[{id: 'bar'}, {id: 'foo'}]`.
+ *
+ * The `collection` can be an Array or array-like object (e.g. NodeList, jQuery object, TypedArray,
+ * String, etc).
+ *
+ * The `expression` can be a single predicate, or a list of predicates each serving as a tie-breaker
+ * for the preceeding one. The `expression` is evaluated against each item and the output is used
+ * for comparing with other items.
+ *
+ * You can change the sorting order by setting `reverse` to `true`. By default, items are sorted in
+ * ascending order.
+ *
+ * The comparison is done using the `comparator` function. If none is specified, a default, built-in
+ * comparator is used (see below for details - in a nutshell, it compares numbers numerically and
+ * strings alphabetically).
+ *
+ * ### Under the hood
+ *
+ * Ordering the specified `collection` happens in two phases:
+ *
+ * 1. All items are passed through the predicate (or predicates), and the returned values are saved
+ *    along with their type (`string`, `number` etc). For example, an item `{label: 'foo'}`, passed
+ *    through a predicate that extracts the value of the `label` property, would be transformed to:
+ *    ```
+ *    {
+ *      value: 'foo',
+ *      type: 'string',
+ *      index: ...
+ *    }
+ *    ```
+ * 2. The comparator function is used to sort the items, based on the derived values, types and
+ *    indices.
+ *
+ * If you use a custom comparator, it will be called with pairs of objects of the form
+ * `{value: ..., type: '...', index: ...}` and is expected to return `0` if the objects are equal
+ * (as far as the comparator is concerned), `-1` if the 1st one should be ranked higher than the
+ * second, or `1` otherwise.
+ *
+ * In order to ensure that the sorting will be deterministic across platforms, if none of the
+ * specified predicates can distinguish between two items, `orderBy` will automatically introduce a
+ * dummy predicate that returns the item's index as `value`.
+ * (If you are using a custom comparator, make sure it can handle this predicate as well.)
+ *
+ * Finally, in an attempt to simplify things, if a predicate returns an object as the extracted
+ * value for an item, `orderBy` will try to convert that object to a primitive value, before passing
+ * it to the comparator. The following rules govern the conversion:
+ *
+ * 1. If the object has a `valueOf()` method that returns a primitive, its return value will be
+ *    used instead.<br />
+ *    (If the object has a `valueOf()` method that returns another object, then the returned object
+ *    will be used in subsequent steps.)
+ * 2. If the object has a custom `toString()` method (i.e. not the one inherited from `Object`) that
+ *    returns a primitive, its return value will be used instead.<br />
+ *    (If the object has a `toString()` method that returns another object, then the returned object
+ *    will be used in subsequent steps.)
+ * 3. No conversion; the object itself is used.
+ *
+ * ### The default comparator
+ *
+ * The default, built-in comparator should be sufficient for most usecases. In short, it compares
+ * numbers numerically, strings alphabetically (and case-insensitively), for objects falls back to
+ * using their index in the original collection, and sorts values of different types by type.
+ *
+ * More specifically, it follows these steps to determine the relative order of items:
+ *
+ * 1. If the compared values are of different types, compare the types themselves alphabetically.
+ * 2. If both values are of type `string`, compare them alphabetically in a case- and
+ *    locale-insensitive way.
+ * 3. If both values are objects, compare their indices instead.
+ * 4. Otherwise, return:
+ *    -  `0`, if the values are equal (by strict equality comparison, i.e. using `===`).
+ *    - `-1`, if the 1st value is "less than" the 2nd value (compared using the `<` operator).
+ *    -  `1`, otherwise.
+ *
+ * **Note:** If you notice numbers not being sorted as expected, make sure they are actually being
+ *           saved as numbers and not strings.
+ *
+ * @param {Array|ArrayLike} collection - The collection (array or array-like object) to sort.
+ * @param {(Function|string|Array.<Function|string>)=} expression - A predicate (or list of
+ *    predicates) to be used by the comparator to determine the order of elements.
  *
  *    Can be one of:
  *
- *    - `function`: Getter function. The result of this function will be sorted using the
- *      `<`, `===`, `>` operator.
- *    - `string`: An Angular expression. The result of this expression is used to compare elements
- *      (for example `name` to sort by a property called `name` or `name.substr(0, 3)` to sort by
- *      3 first characters of a property called `name`). The result of a constant expression
- *      is interpreted as a property name to be used in comparisons (for example `"special name"`
- *      to sort object by the value of their `special name` property). An expression can be
- *      optionally prefixed with `+` or `-` to control ascending or descending sort order
- *      (for example, `+name` or `-name`). If no property is provided, (e.g. `'+'`) then the array
- *      element itself is used to compare where sorting.
- *    - `Array`: An array of function or string predicates. The first predicate in the array
- *      is used for sorting, but when two items are equivalent, the next predicate is used.
+ *    - `Function`: A getter function. This function will be called with each item as argument and
+ *      the return value will be used for sorting.
+ *    - `string`: An Angular expression. This expression will be evaluated against each item and the
+ *      result will be used for sorting. For example, use `'label'` to sort by a property called
+ *      `label` or `'label.substring(0, 3)'` to sort by the first 3 characters of the `label`
+ *      property.<br />
+ *      (The result of a constant expression is interpreted as a property name to be used for
+ *      comparison. For example, use `'"special name"'` (note the extra pair of quotes) to sort by a
+ *      property called `special name`.)<br />
+ *      An expression can be optionally prefixed with `+` or `-` to control the sorting direction,
+ *      ascending or descending. For example, `'+label'` or `'-label'`. If no property is provided,
+ *      (e.g. `'+'` or `'-'`), the collection element itself is used in comparisons.
+ *    - `Array`: An array of function and/or string predicates. If a predicate cannot determine the
+ *      relative order of two items, the next predicate is used as a tie-breaker.
  *
- *    If the predicate is missing or empty then it defaults to `'+'`.
+ * **Note:** If the predicate is missing or empty then it defaults to `'+'`.
  *
- * @param {boolean=} reverse Reverse the order of the array.
- * @returns {Array} Sorted copy of the source array.
+ * @param {boolean=} reverse - If `true`, reverse the sorting order.
+ * @param {(Function)=} comparator - The comparator function used to determine the relative order of
+ *    value pairs. If omitted, the built-in comparator will be used.
+ *
+ * @returns {Array} - The sorted array.
  *
  *
  * @example
- * The example below demonstrates a simple ngRepeat, where the data is sorted
- * by age in descending order (predicate is set to `'-age'`).
- * `reverse` is not set, which means it defaults to `false`.
-   <example module="orderByExample">
+ * ### Ordering a table with `ngRepeat`
+ *
+ * The example below demonstrates a simple {@link ngRepeat ngRepeat}, where the data is sorted by
+ * age in descending order (expression is set to `'-age'`). The `comparator` is not set, which means
+ * it defaults to the built-in comparator.
+ *
+   <example name="orderBy-static" module="orderByExample1">
      <file name="index.html">
        <div ng-controller="ExampleController">
-         <table class="friend">
+         <table class="friends">
            <tr>
              <th>Name</th>
              <th>Phone Number</th>
@@ -30686,43 +31087,77 @@ function limitToFilter() {
        </div>
      </file>
      <file name="script.js">
-       angular.module('orderByExample', [])
+       angular.module('orderByExample1', [])
          .controller('ExampleController', ['$scope', function($scope) {
-           $scope.friends =
-               [{name:'John', phone:'555-1212', age:10},
-                {name:'Mary', phone:'555-9876', age:19},
-                {name:'Mike', phone:'555-4321', age:21},
-                {name:'Adam', phone:'555-5678', age:35},
-                {name:'Julie', phone:'555-8765', age:29}];
+           $scope.friends = [
+             {name: 'John',   phone: '555-1212',  age: 10},
+             {name: 'Mary',   phone: '555-9876',  age: 19},
+             {name: 'Mike',   phone: '555-4321',  age: 21},
+             {name: 'Adam',   phone: '555-5678',  age: 35},
+             {name: 'Julie',  phone: '555-8765',  age: 29}
+           ];
          }]);
      </file>
+     <file name="style.css">
+       .friends {
+         border-collapse: collapse;
+       }
+
+       .friends th {
+         border-bottom: 1px solid;
+       }
+       .friends td, .friends th {
+         border-left: 1px solid;
+         padding: 5px 10px;
+       }
+       .friends td:first-child, .friends th:first-child {
+         border-left: none;
+       }
+     </file>
+     <file name="protractor.js" type="protractor">
+       // Element locators
+       var names = element.all(by.repeater('friends').column('friend.name'));
+
+       it('should sort friends by age in reverse order', function() {
+         expect(names.get(0).getText()).toBe('Adam');
+         expect(names.get(1).getText()).toBe('Julie');
+         expect(names.get(2).getText()).toBe('Mike');
+         expect(names.get(3).getText()).toBe('Mary');
+         expect(names.get(4).getText()).toBe('John');
+       });
+     </file>
    </example>
+ * <hr />
  *
- * The predicate and reverse parameters can be controlled dynamically through scope properties,
- * as shown in the next example.
  * @example
-   <example module="orderByExample">
+ * ### Changing parameters dynamically
+ *
+ * All parameters can be changed dynamically. The next example shows how you can make the columns of
+ * a table sortable, by binding the `expression` and `reverse` parameters to scope properties.
+ *
+   <example name="orderBy-dynamic" module="orderByExample2">
      <file name="index.html">
        <div ng-controller="ExampleController">
-         <pre>Sorting predicate = {{predicate}}; reverse = {{reverse}}</pre>
+         <pre>Sort by = {{propertyName}}; reverse = {{reverse}}</pre>
          <hr/>
-         <button ng-click="predicate=''">Set to unsorted</button>
-         <table class="friend">
+         <button ng-click="propertyName = null; reverse = false">Set to unsorted</button>
+         <hr/>
+         <table class="friends">
            <tr>
-            <th>
-                <button ng-click="order('name')">Name</button>
-                <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
-            </th>
-            <th>
-                <button ng-click="order('phone')">Phone Number</button>
-                <span class="sortorder" ng-show="predicate === 'phone'" ng-class="{reverse:reverse}"></span>
-            </th>
-            <th>
-                <button ng-click="order('age')">Age</button>
-                <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
-            </th>
+             <th>
+               <button ng-click="sortBy('name')">Name</button>
+               <span class="sortorder" ng-show="propertyName === 'name'" ng-class="{reverse: reverse}"></span>
+             </th>
+             <th>
+               <button ng-click="sortBy('phone')">Phone Number</button>
+               <span class="sortorder" ng-show="propertyName === 'phone'" ng-class="{reverse: reverse}"></span>
+             </th>
+             <th>
+               <button ng-click="sortBy('age')">Age</button>
+               <span class="sortorder" ng-show="propertyName === 'age'" ng-class="{reverse: reverse}"></span>
+             </th>
            </tr>
-           <tr ng-repeat="friend in friends | orderBy:predicate:reverse">
+           <tr ng-repeat="friend in friends | orderBy:propertyName:reverse">
              <td>{{friend.name}}</td>
              <td>{{friend.phone}}</td>
              <td>{{friend.age}}</td>
@@ -30731,100 +31166,335 @@ function limitToFilter() {
        </div>
      </file>
      <file name="script.js">
-       angular.module('orderByExample', [])
+       angular.module('orderByExample2', [])
          .controller('ExampleController', ['$scope', function($scope) {
-           $scope.friends =
-               [{name:'John', phone:'555-1212', age:10},
-                {name:'Mary', phone:'555-9876', age:19},
-                {name:'Mike', phone:'555-4321', age:21},
-                {name:'Adam', phone:'555-5678', age:35},
-                {name:'Julie', phone:'555-8765', age:29}];
-           $scope.predicate = 'age';
+           var friends = [
+             {name: 'John',   phone: '555-1212',  age: 10},
+             {name: 'Mary',   phone: '555-9876',  age: 19},
+             {name: 'Mike',   phone: '555-4321',  age: 21},
+             {name: 'Adam',   phone: '555-5678',  age: 35},
+             {name: 'Julie',  phone: '555-8765',  age: 29}
+           ];
+
+           $scope.propertyName = 'age';
            $scope.reverse = true;
-           $scope.order = function(predicate) {
-             $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
-             $scope.predicate = predicate;
+           $scope.friends = friends;
+
+           $scope.sortBy = function(propertyName) {
+             $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+             $scope.propertyName = propertyName;
            };
          }]);
-      </file>
+     </file>
      <file name="style.css">
+       .friends {
+         border-collapse: collapse;
+       }
+
+       .friends th {
+         border-bottom: 1px solid;
+       }
+       .friends td, .friends th {
+         border-left: 1px solid;
+         padding: 5px 10px;
+       }
+       .friends td:first-child, .friends th:first-child {
+         border-left: none;
+       }
+
        .sortorder:after {
-         content: '\25b2';
+         content: '\25b2';   // BLACK UP-POINTING TRIANGLE
        }
        .sortorder.reverse:after {
-         content: '\25bc';
+         content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
        }
+     </file>
+     <file name="protractor.js" type="protractor">
+       // Element locators
+       var unsortButton = element(by.partialButtonText('unsorted'));
+       var nameHeader = element(by.partialButtonText('Name'));
+       var phoneHeader = element(by.partialButtonText('Phone'));
+       var ageHeader = element(by.partialButtonText('Age'));
+       var firstName = element(by.repeater('friends').column('friend.name').row(0));
+       var lastName = element(by.repeater('friends').column('friend.name').row(4));
+
+       it('should sort friends by some property, when clicking on the column header', function() {
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+
+         phoneHeader.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Mary');
+
+         nameHeader.click();
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('Mike');
+
+         ageHeader.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Adam');
+       });
+
+       it('should sort friends in reverse order, when clicking on the same column', function() {
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+
+         ageHeader.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Adam');
+
+         ageHeader.click();
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+       });
+
+       it('should restore the original order, when clicking "Set to unsorted"', function() {
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+
+         unsortButton.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Julie');
+       });
+     </file>
+   </example>
+ * <hr />
+ *
+ * @example
+ * ### Using `orderBy` inside a controller
+ *
+ * It is also possible to call the `orderBy` filter manually, by injecting `orderByFilter`, and
+ * calling it with the desired parameters. (Alternatively, you could inject the `$filter` factory
+ * and retrieve the `orderBy` filter with `$filter('orderBy')`.)
+ *
+   <example name="orderBy-call-manually" module="orderByExample3">
+     <file name="index.html">
+       <div ng-controller="ExampleController">
+         <pre>Sort by = {{propertyName}}; reverse = {{reverse}}</pre>
+         <hr/>
+         <button ng-click="sortBy(null)">Set to unsorted</button>
+         <hr/>
+         <table class="friends">
+           <tr>
+             <th>
+               <button ng-click="sortBy('name')">Name</button>
+               <span class="sortorder" ng-show="propertyName === 'name'" ng-class="{reverse: reverse}"></span>
+             </th>
+             <th>
+               <button ng-click="sortBy('phone')">Phone Number</button>
+               <span class="sortorder" ng-show="propertyName === 'phone'" ng-class="{reverse: reverse}"></span>
+             </th>
+             <th>
+               <button ng-click="sortBy('age')">Age</button>
+               <span class="sortorder" ng-show="propertyName === 'age'" ng-class="{reverse: reverse}"></span>
+             </th>
+           </tr>
+           <tr ng-repeat="friend in friends">
+             <td>{{friend.name}}</td>
+             <td>{{friend.phone}}</td>
+             <td>{{friend.age}}</td>
+           </tr>
+         </table>
+       </div>
+     </file>
+     <file name="script.js">
+       angular.module('orderByExample3', [])
+         .controller('ExampleController', ['$scope', 'orderByFilter', function($scope, orderBy) {
+           var friends = [
+             {name: 'John',   phone: '555-1212',  age: 10},
+             {name: 'Mary',   phone: '555-9876',  age: 19},
+             {name: 'Mike',   phone: '555-4321',  age: 21},
+             {name: 'Adam',   phone: '555-5678',  age: 35},
+             {name: 'Julie',  phone: '555-8765',  age: 29}
+           ];
+
+           $scope.propertyName = 'age';
+           $scope.reverse = true;
+           $scope.friends = orderBy(friends, $scope.propertyName, $scope.reverse);
+
+           $scope.sortBy = function(propertyName) {
+             $scope.reverse = (propertyName !== null && $scope.propertyName === propertyName)
+                 ? !$scope.reverse : false;
+             $scope.propertyName = propertyName;
+             $scope.friends = orderBy(friends, $scope.propertyName, $scope.reverse);
+           };
+         }]);
+     </file>
+     <file name="style.css">
+       .friends {
+         border-collapse: collapse;
+       }
+
+       .friends th {
+         border-bottom: 1px solid;
+       }
+       .friends td, .friends th {
+         border-left: 1px solid;
+         padding: 5px 10px;
+       }
+       .friends td:first-child, .friends th:first-child {
+         border-left: none;
+       }
+
+       .sortorder:after {
+         content: '\25b2';   // BLACK UP-POINTING TRIANGLE
+       }
+       .sortorder.reverse:after {
+         content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
+       }
+     </file>
+     <file name="protractor.js" type="protractor">
+       // Element locators
+       var unsortButton = element(by.partialButtonText('unsorted'));
+       var nameHeader = element(by.partialButtonText('Name'));
+       var phoneHeader = element(by.partialButtonText('Phone'));
+       var ageHeader = element(by.partialButtonText('Age'));
+       var firstName = element(by.repeater('friends').column('friend.name').row(0));
+       var lastName = element(by.repeater('friends').column('friend.name').row(4));
+
+       it('should sort friends by some property, when clicking on the column header', function() {
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+
+         phoneHeader.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Mary');
+
+         nameHeader.click();
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('Mike');
+
+         ageHeader.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Adam');
+       });
+
+       it('should sort friends in reverse order, when clicking on the same column', function() {
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+
+         ageHeader.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Adam');
+
+         ageHeader.click();
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+       });
+
+       it('should restore the original order, when clicking "Set to unsorted"', function() {
+         expect(firstName.getText()).toBe('Adam');
+         expect(lastName.getText()).toBe('John');
+
+         unsortButton.click();
+         expect(firstName.getText()).toBe('John');
+         expect(lastName.getText()).toBe('Julie');
+       });
+     </file>
+   </example>
+ * <hr />
+ *
+ * @example
+ * ### Using a custom comparator
+ *
+ * If you have very specific requirements about the way items are sorted, you can pass your own
+ * comparator function. For example, you might need to compare some strings in a locale-sensitive
+ * way. (When specifying a custom comparator, you also need to pass a value for the `reverse`
+ * argument - passing `false` retains the default sorting order, i.e. ascending.)
+ *
+   <example name="orderBy-custom-comparator" module="orderByExample4">
+     <file name="index.html">
+       <div ng-controller="ExampleController">
+         <div class="friends-container custom-comparator">
+           <h3>Locale-sensitive Comparator</h3>
+           <table class="friends">
+             <tr>
+               <th>Name</th>
+               <th>Favorite Letter</th>
+             </tr>
+             <tr ng-repeat="friend in friends | orderBy:'favoriteLetter':false:localeSensitiveComparator">
+               <td>{{friend.name}}</td>
+               <td>{{friend.favoriteLetter}}</td>
+             </tr>
+           </table>
+         </div>
+         <div class="friends-container default-comparator">
+           <h3>Default Comparator</h3>
+           <table class="friends">
+             <tr>
+               <th>Name</th>
+               <th>Favorite Letter</th>
+             </tr>
+             <tr ng-repeat="friend in friends | orderBy:'favoriteLetter'">
+               <td>{{friend.name}}</td>
+               <td>{{friend.favoriteLetter}}</td>
+             </tr>
+           </table>
+         </div>
+       </div>
+     </file>
+     <file name="script.js">
+       angular.module('orderByExample4', [])
+         .controller('ExampleController', ['$scope', function($scope) {
+           $scope.friends = [
+             {name: 'John',   favoriteLetter: 'Ä'},
+             {name: 'Mary',   favoriteLetter: 'Ü'},
+             {name: 'Mike',   favoriteLetter: 'Ö'},
+             {name: 'Adam',   favoriteLetter: 'H'},
+             {name: 'Julie',  favoriteLetter: 'Z'}
+           ];
+
+           $scope.localeSensitiveComparator = function(v1, v2) {
+             // If we don't get strings, just compare by index
+             if (v1.type !== 'string' || v2.type !== 'string') {
+               return (v1.index < v2.index) ? -1 : 1;
+             }
+
+             // Compare strings alphabetically, taking locale into account
+             return v1.value.localeCompare(v2.value);
+           };
+         }]);
+     </file>
+     <file name="style.css">
+       .friends-container {
+         display: inline-block;
+         margin: 0 30px;
+       }
+
+       .friends {
+         border-collapse: collapse;
+       }
+
+       .friends th {
+         border-bottom: 1px solid;
+       }
+       .friends td, .friends th {
+         border-left: 1px solid;
+         padding: 5px 10px;
+       }
+       .friends td:first-child, .friends th:first-child {
+         border-left: none;
+       }
+     </file>
+     <file name="protractor.js" type="protractor">
+       // Element locators
+       var container = element(by.css('.custom-comparator'));
+       var names = container.all(by.repeater('friends').column('friend.name'));
+
+       it('should sort friends by favorite letter (in correct alphabetical order)', function() {
+         expect(names.get(0).getText()).toBe('John');
+         expect(names.get(1).getText()).toBe('Adam');
+         expect(names.get(2).getText()).toBe('Mike');
+         expect(names.get(3).getText()).toBe('Mary');
+         expect(names.get(4).getText()).toBe('Julie');
+       });
      </file>
    </example>
  *
- * It's also possible to call the orderBy filter manually, by injecting `$filter`, retrieving the
- * filter routine with `$filter('orderBy')`, and calling the returned filter routine with the
- * desired parameters.
- *
- * Example:
- *
- * @example
-  <example module="orderByExample">
-    <file name="index.html">
-    <div ng-controller="ExampleController">
-      <pre>Sorting predicate = {{predicate}}; reverse = {{reverse}}</pre>
-      <table class="friend">
-        <tr>
-          <th>
-              <button ng-click="order('name')">Name</button>
-              <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
-          </th>
-          <th>
-              <button ng-click="order('phone')">Phone Number</button>
-              <span class="sortorder" ng-show="predicate === 'phone'" ng-class="{reverse:reverse}"></span>
-          </th>
-          <th>
-              <button ng-click="order('age')">Age</button>
-              <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
-          </th>
-        </tr>
-        <tr ng-repeat="friend in friends">
-          <td>{{friend.name}}</td>
-          <td>{{friend.phone}}</td>
-          <td>{{friend.age}}</td>
-        </tr>
-      </table>
-    </div>
-    </file>
-
-    <file name="script.js">
-      angular.module('orderByExample', [])
-        .controller('ExampleController', ['$scope', '$filter', function($scope, $filter) {
-          var orderBy = $filter('orderBy');
-          $scope.friends = [
-            { name: 'John',    phone: '555-1212',    age: 10 },
-            { name: 'Mary',    phone: '555-9876',    age: 19 },
-            { name: 'Mike',    phone: '555-4321',    age: 21 },
-            { name: 'Adam',    phone: '555-5678',    age: 35 },
-            { name: 'Julie',   phone: '555-8765',    age: 29 }
-          ];
-          $scope.order = function(predicate) {
-            $scope.predicate = predicate;
-            $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
-            $scope.friends = orderBy($scope.friends, predicate, $scope.reverse);
-          };
-          $scope.order('age', true);
-        }]);
-    </file>
-
-    <file name="style.css">
-       .sortorder:after {
-         content: '\25b2';
-       }
-       .sortorder.reverse:after {
-         content: '\25bc';
-       }
-    </file>
-</example>
  */
 orderByFilter.$inject = ['$parse'];
 function orderByFilter($parse) {
-  return function(array, sortPredicate, reverseOrder) {
+  return function(array, sortPredicate, reverseOrder, compareFn) {
 
     if (array == null) return array;
     if (!isArrayLike(array)) {
@@ -30834,11 +31504,12 @@ function orderByFilter($parse) {
     if (!isArray(sortPredicate)) { sortPredicate = [sortPredicate]; }
     if (sortPredicate.length === 0) { sortPredicate = ['+']; }
 
-    var predicates = processPredicates(sortPredicate, reverseOrder);
-    // Add a predicate at the end that evaluates to the element index. This makes the
-    // sort stable as it works as a tie-breaker when all the input predicates cannot
-    // distinguish between two elements.
-    predicates.push({ get: function() { return {}; }, descending: reverseOrder ? -1 : 1});
+    var predicates = processPredicates(sortPredicate);
+
+    var descending = reverseOrder ? -1 : 1;
+
+    // Define the `compare()` function. Use a default comparator if none is specified.
+    var compare = isFunction(compareFn) ? compareFn : defaultCompare;
 
     // The next three lines are a version of a Swartzian Transform idiom from Perl
     // (sometimes called the Decorate-Sort-Undecorate idiom)
@@ -30850,8 +31521,12 @@ function orderByFilter($parse) {
     return array;
 
     function getComparisonObject(value, index) {
+      // NOTE: We are adding an extra `tieBreaker` value based on the element's index.
+      // This will be used to keep the sort stable when none of the input predicates can
+      // distinguish between two elements.
       return {
         value: value,
+        tieBreaker: {value: index, type: 'number', index: index},
         predicateValues: predicates.map(function(predicate) {
           return getPredicateValue(predicate.get(value), index);
         })
@@ -30859,18 +31534,19 @@ function orderByFilter($parse) {
     }
 
     function doComparison(v1, v2) {
-      var result = 0;
-      for (var index=0, length = predicates.length; index < length; ++index) {
-        result = compare(v1.predicateValues[index], v2.predicateValues[index]) * predicates[index].descending;
-        if (result) break;
+      for (var i = 0, ii = predicates.length; i < ii; i++) {
+        var result = compare(v1.predicateValues[i], v2.predicateValues[i]);
+        if (result) {
+          return result * predicates[i].descending * descending;
+        }
       }
-      return result;
+
+      return compare(v1.tieBreaker, v2.tieBreaker) * descending;
     }
   };
 
-  function processPredicates(sortPredicate, reverseOrder) {
-    reverseOrder = reverseOrder ? -1 : 1;
-    return sortPredicate.map(function(predicate) {
+  function processPredicates(sortPredicates) {
+    return sortPredicates.map(function(predicate) {
       var descending = 1, get = identity;
 
       if (isFunction(predicate)) {
@@ -30888,7 +31564,7 @@ function orderByFilter($parse) {
           }
         }
       }
-      return { get: get, descending: descending * reverseOrder };
+      return {get: get, descending: descending};
     });
   }
 
@@ -30903,9 +31579,9 @@ function orderByFilter($parse) {
     }
   }
 
-  function objectValue(value, index) {
+  function objectValue(value) {
     // If `valueOf` is a valid function use that
-    if (typeof value.valueOf === 'function') {
+    if (isFunction(value.valueOf)) {
       value = value.valueOf();
       if (isPrimitive(value)) return value;
     }
@@ -30914,8 +31590,8 @@ function orderByFilter($parse) {
       value = value.toString();
       if (isPrimitive(value)) return value;
     }
-    // We have a basic object so we use the position of the object in the collection
-    return index;
+
+    return value;
   }
 
   function getPredicateValue(value, index) {
@@ -30923,23 +31599,39 @@ function orderByFilter($parse) {
     if (value === null) {
       type = 'string';
       value = 'null';
-    } else if (type === 'string') {
-      value = value.toLowerCase();
     } else if (type === 'object') {
-      value = objectValue(value, index);
+      value = objectValue(value);
     }
-    return { value: value, type: type };
+    return {value: value, type: type, index: index};
   }
 
-  function compare(v1, v2) {
+  function defaultCompare(v1, v2) {
     var result = 0;
-    if (v1.type === v2.type) {
-      if (v1.value !== v2.value) {
-        result = v1.value < v2.value ? -1 : 1;
+    var type1 = v1.type;
+    var type2 = v2.type;
+
+    if (type1 === type2) {
+      var value1 = v1.value;
+      var value2 = v2.value;
+
+      if (type1 === 'string') {
+        // Compare strings case-insensitively
+        value1 = value1.toLowerCase();
+        value2 = value2.toLowerCase();
+      } else if (type1 === 'object') {
+        // For basic objects, use the position of the object
+        // in the collection instead of the value
+        if (isObject(value1)) value1 = v1.index;
+        if (isObject(value2)) value2 = v2.index;
+      }
+
+      if (value1 !== value2) {
+        result = value1 < value2 ? -1 : 1;
       }
     } else {
-      result = v1.type < v2.type ? -1 : 1;
+      result = type1 < type2 ? -1 : 1;
     }
+
     return result;
   }
 }
@@ -31219,9 +31911,11 @@ var htmlAnchorDirective = valueFn({
  *
  * @description
  *
- * Sets the `readOnly` attribute on the element, if the expression inside `ngReadonly` is truthy.
+ * Sets the `readonly` attribute on the element, if the expression inside `ngReadonly` is truthy.
+ * Note that `readonly` applies only to `input` elements with specific types. [See the input docs on
+ * MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) for more information.
  *
- * A special directive is necessary because we cannot use interpolation inside the `readOnly`
+ * A special directive is necessary because we cannot use interpolation inside the `readonly`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  *
  * @example
@@ -31258,6 +31952,13 @@ var htmlAnchorDirective = valueFn({
  * A special directive is necessary because we cannot use interpolation inside the `selected`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  *
+ * <div class="alert alert-warning">
+ *   **Note:** `ngSelected` does not interact with the `select` and `ngModel` directives, it only
+ *   sets the `selected` attribute on the element. If you are using `ngModel` on the select, you
+ *   should not use `ngSelected` on the options, as `ngModel` will set the select value and
+ *   selected options.
+ * </div>
+ *
  * @example
     <example>
       <file name="index.html">
@@ -31293,6 +31994,11 @@ var htmlAnchorDirective = valueFn({
  *
  * A special directive is necessary because we cannot use interpolation inside the `open`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
+ *
+ * ## A note about browser compatibility
+ *
+ * Edge, Firefox, and Internet Explorer do not support the `details` element, it is
+ * recommended to use {@link ng.ngShow} and {@link ng.ngHide} instead.
  *
  * @example
      <example>
@@ -31984,7 +32690,9 @@ var ISO_DATE_REGEXP = /^\d{4,}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+(?:[+-
 //   9. Fragment
 //                 1111111111111111 222   333333    44444        555555555555555555555555    666     77777777     8888888     999
 var URL_REGEXP = /^[a-z][a-z\d.+-]*:\/*(?:[^:@]+(?::[^@]+)?@)?(?:[^\s:/?#]+|\[[a-f\d:]+\])(?::\d+)?(?:\/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$/i;
-var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
+/* jshint maxlen:220 */
+var EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+\/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+\/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+/* jshint maxlen:200 */
 var NUMBER_REGEXP = /^\s*(\-|\+)?(\d+|(\d*(\.\d*)))([eE][+-]?\d+)?\s*$/;
 var DATE_REGEXP = /^(\d{4,})-(\d{2})-(\d{2})$/;
 var DATETIMELOCAL_REGEXP = /^(\d{4,})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d)(\.\d{1,3})?)?$/;
@@ -33369,7 +34077,7 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser) {
 
     attr.$observe('min', function(val) {
       if (isDefined(val) && !isNumber(val)) {
-        val = parseFloat(val, 10);
+        val = parseFloat(val);
       }
       minVal = isNumber(val) && !isNaN(val) ? val : undefined;
       // TODO(matsko): implement validateLater to reduce number of validations
@@ -33385,7 +34093,7 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser) {
 
     attr.$observe('max', function(val) {
       if (isDefined(val) && !isNumber(val)) {
-        val = parseFloat(val, 10);
+        val = parseFloat(val);
       }
       maxVal = isNumber(val) && !isNaN(val) ? val : undefined;
       // TODO(matsko): implement validateLater to reduce number of validations
@@ -34191,6 +34899,11 @@ function classDirective(name, selector) {
  *
  * When the expression changes, the previously added classes are removed and only then are the
  * new classes added.
+ *
+ * @knownIssue
+ * You should not use {@link guide/interpolation interpolation} in the value of the `class`
+ * attribute, when using the `ngClass` directive on the same element.
+ * See {@link guide/interpolation#known-issues here} for more info.
  *
  * @animations
  * | Animation                        | Occurs                              |
@@ -38137,7 +38850,7 @@ var ngOptionsDirective = ['$compile', '$document', '$parse', function($compile, 
 
           for (var i = options.items.length - 1; i >= 0; i--) {
             var option = options.items[i];
-            if (option.group) {
+            if (isDefined(option.group)) {
               jqLiteRemove(option.element.parentNode);
             } else {
               jqLiteRemove(option.element);
@@ -38169,7 +38882,8 @@ var ngOptionsDirective = ['$compile', '$document', '$parse', function($compile, 
               listFragment.appendChild(groupElement);
 
               // Update the label on the group element
-              groupElement.label = option.group;
+              // "null" is special cased because of Safari
+              groupElement.label = option.group === null ? 'null' : option.group;
 
               // Store it for use later
               groupElementMap[option.group] = groupElement;
@@ -38505,7 +39219,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  *   it's a prefix used by Angular for public (`$`) and private (`$$`) properties.
  *
  * - The built-in filters {@link ng.orderBy orderBy} and {@link ng.filter filter} do not work with
- *   objects, and will throw if used with one.
+ *   objects, and will throw an error if used with one.
  *
  * If you are hitting any of these limitations, the recommended workaround is to convert your object into an array
  * that is sorted into the order that you prefer before providing it to `ngRepeat`. You could
@@ -39354,6 +40068,11 @@ var ngHideDirective = ['$animate', function($animate) {
  * @description
  * The `ngStyle` directive allows you to set CSS style on an HTML element conditionally.
  *
+ * @knownIssue
+ * You should not use {@link guide/interpolation interpolation} in the value of the `style`
+ * attribute, when using the `ngStyle` directive on the same element.
+ * See {@link guide/interpolation#known-issues here} for more info.
+ *
  * @element ANY
  * @param {expression} ngStyle
  *
@@ -39765,37 +40484,63 @@ var ngSwitchDefaultDirective = ngDirective({
  * </example>
  */
 var ngTranscludeMinErr = minErr('ngTransclude');
-var ngTranscludeDirective = ngDirective({
-  restrict: 'EAC',
-  link: function($scope, $element, $attrs, controller, $transclude) {
+var ngTranscludeDirective = ['$compile', function($compile) {
+  return {
+    restrict: 'EAC',
+    terminal: true,
+    compile: function ngTranscludeCompile(tElement) {
 
-    if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
-      // If the attribute is of the form: `ng-transclude="ng-transclude"`
-      // then treat it like the default
-      $attrs.ngTransclude = '';
+      // Remove and cache any original content to act as a fallback
+      var fallbackLinkFn = $compile(tElement.contents());
+      tElement.empty();
+
+      return function ngTranscludePostLink($scope, $element, $attrs, controller, $transclude) {
+
+        if (!$transclude) {
+          throw ngTranscludeMinErr('orphan',
+          'Illegal use of ngTransclude directive in the template! ' +
+          'No parent directive that requires a transclusion found. ' +
+          'Element: {0}',
+          startingTag($element));
+        }
+
+
+        // If the attribute is of the form: `ng-transclude="ng-transclude"` then treat it like the default
+        if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
+          $attrs.ngTransclude = '';
+        }
+        var slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
+
+        // If the slot is required and no transclusion content is provided then this call will throw an error
+        $transclude(ngTranscludeCloneAttachFn, null, slotName);
+
+        // If the slot is optional and no transclusion content is provided then use the fallback content
+        if (slotName && !$transclude.isSlotFilled(slotName)) {
+          useFallbackContent();
+        }
+
+        function ngTranscludeCloneAttachFn(clone, transcludedScope) {
+          if (clone.length) {
+            $element.append(clone);
+          } else {
+            useFallbackContent();
+            // There is nothing linked against the transcluded scope since no content was available,
+            // so it should be safe to clean up the generated scope.
+            transcludedScope.$destroy();
+          }
+        }
+
+        function useFallbackContent() {
+          // Since this is the fallback content rather than the transcluded content,
+          // we link against the scope of this directive rather than the transcluded scope
+          fallbackLinkFn($scope, function(clone) {
+            $element.append(clone);
+          });
+        }
+      };
     }
-
-    function ngTranscludeCloneAttachFn(clone) {
-      if (clone.length) {
-        $element.empty();
-        $element.append(clone);
-      }
-    }
-
-    if (!$transclude) {
-      throw ngTranscludeMinErr('orphan',
-       'Illegal use of ngTransclude directive in the template! ' +
-       'No parent directive that requires a transclusion found. ' +
-       'Element: {0}',
-       startingTag($element));
-    }
-
-    // If there is no slot name defined or the slot name is not optional
-    // then transclude the slot
-    var slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
-    $transclude(ngTranscludeCloneAttachFn, null, slotName);
-  }
-});
+  };
+}];
 
 /**
  * @ngdoc directive
@@ -40851,11 +41596,45 @@ $provide.value("$locale", {
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 /**
- * @license AngularJS v1.5.6
+ * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, angular) {'use strict';
+
+/* global shallowCopy: true */
+
+/**
+ * Creates a shallow copy of an object, an array or a primitive.
+ *
+ * Assumes that there are no proto properties for objects.
+ */
+function shallowCopy(src, dst) {
+  if (isArray(src)) {
+    dst = dst || [];
+
+    for (var i = 0, ii = src.length; i < ii; i++) {
+      dst[i] = src[i];
+    }
+  } else if (isObject(src)) {
+    dst = dst || {};
+
+    for (var key in src) {
+      if (!(key.charAt(0) === '$' && key.charAt(1) === '$')) {
+        dst[key] = src[key];
+      }
+    }
+  }
+
+  return dst || src;
+}
+
+/* global shallowCopy: false */
+
+// There are necessary for `shallowCopy()` (included via `src/shallowCopy.js`).
+// They are initialized inside the `$RouteProvider`, to ensure `window.angular` is available.
+var isArray;
+var isObject;
 
 /**
  * @ngdoc module
@@ -40892,6 +41671,9 @@ var ngRouteModule = angular.module('ngRoute', ['ng']).
  * Requires the {@link ngRoute `ngRoute`} module to be installed.
  */
 function $RouteProvider() {
+  isArray = angular.isArray;
+  isObject = angular.isObject;
+
   function inherit(parent, extra) {
     return angular.extend(Object.create(parent), extra);
   }
@@ -41011,7 +41793,7 @@ function $RouteProvider() {
    */
   this.when = function(path, route) {
     //copy original route object to preserve params inherited from proto chain
-    var routeCopy = angular.copy(route);
+    var routeCopy = shallowCopy(route);
     if (angular.isUndefined(routeCopy.reloadOnSearch)) {
       routeCopy.reloadOnSearch = true;
     }
@@ -41884,7 +42666,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.5.6
+ * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -41946,7 +42728,21 @@ function shallowClearAndCopy(src, dst) {
  *
  * <div doc-module-components="ngResource"></div>
  *
- * See {@link ngResource.$resource `$resource`} for usage.
+ * See {@link ngResource.$resourceProvider} and {@link ngResource.$resource} for usage.
+ */
+
+/**
+ * @ngdoc provider
+ * @name $resourceProvider
+ *
+ * @description
+ *
+ * Use `$resourceProvider` to change the default behavior of the {@link ngResource.$resource}
+ * service.
+ *
+ * ## Dependencies
+ * Requires the {@link ngResource } module to be installed.
+ *
  */
 
 /**
@@ -41990,8 +42786,9 @@ function shallowClearAndCopy(src, dst) {
  *   can escape it with `/\.`.
  *
  * @param {Object=} paramDefaults Default values for `url` parameters. These can be overridden in
- *   `actions` methods. If a parameter value is a function, it will be executed every time
- *   when a param value needs to be obtained for a request (unless the param was overridden).
+ *   `actions` methods. If a parameter value is a function, it will be called every time
+ *   a param value needs to be obtained for a request (unless the param was overridden). The function
+ *   will be passed the current data value as an argument.
  *
  *   Each key value in the parameter object is first bound to url template if present and then any
  *   excess keys are appended to the url search query after the `?`.
@@ -41999,10 +42796,13 @@ function shallowClearAndCopy(src, dst) {
  *   Given a template `/path/:verb` and parameter `{verb:'greet', salutation:'Hello'}` results in
  *   URL `/path/greet?salutation=Hello`.
  *
- *   If the parameter value is prefixed with `@` then the value for that parameter will be extracted
- *   from the corresponding property on the `data` object (provided when calling an action method).
+ *   If the parameter value is prefixed with `@`, then the value for that parameter will be
+ *   extracted from the corresponding property on the `data` object (provided when calling a
+ *   "non-GET" action method).
  *   For example, if the `defaultParam` object is `{someParam: '@someProp'}` then the value of
  *   `someParam` will be `data.someProp`.
+ *   Note that the parameter will be ignored, when calling a "GET" action method (i.e. an action
+ *   method that does not accept a request body)
  *
  * @param {Object.<Object>=} actions Hash with declaration of custom actions that should extend
  *   the default set of resource actions. The declaration should be created in the format of {@link
@@ -42019,8 +42819,9 @@ function shallowClearAndCopy(src, dst) {
  *   - **`method`** – {string} – Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`,
  *     `DELETE`, `JSONP`, etc).
  *   - **`params`** – {Object=} – Optional set of pre-bound parameters for this action. If any of
- *     the parameter value is a function, it will be executed every time when a param value needs to
- *     be obtained for a request (unless the param was overridden).
+ *     the parameter value is a function, it will be called every time when a param value needs to
+ *     be obtained for a request (unless the param was overridden). The function will be passed the
+ *     current data value as an argument.
  *   - **`url`** – {string} – action specific `url` override. The url templating is supported just
  *     like for the resource-level urls.
  *   - **`isArray`** – {boolean=} – If true then the returned object for this action is an array,
@@ -42140,6 +42941,14 @@ function shallowClearAndCopy(src, dst) {
  *
  *   - `$cancelRequest`: If there is a cancellable, pending request related to the instance or
  *      collection, calling this method will abort the request.
+ *
+ *   The Resource instances have these additional methods:
+ *
+ *   - `toJSON`: It returns a simple object without any of the extra properties added as part of
+ *     the Resource API. This object can be serialized through {@link angular.toJson} safely
+ *     without attaching Angular-specific fields. Notice that `JSON.stringify` (and
+ *     `angular.toJson`) automatically use this method when serializing a Resource instance
+ *     (see [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior)).
  *
  * @example
  *
@@ -42292,9 +43101,77 @@ angular.module('ngResource', ['ng']).
     var PROTOCOL_AND_DOMAIN_REGEX = /^https?:\/\/[^\/]*/;
     var provider = this;
 
+    /**
+     * @ngdoc property
+     * @name $resourceProvider#defaults
+     * @description
+     * Object containing default options used when creating `$resource` instances.
+     *
+     * The default values satisfy a wide range of usecases, but you may choose to overwrite any of
+     * them to further customize your instances. The available properties are:
+     *
+     * - **stripTrailingSlashes** – `{boolean}` – If true, then the trailing slashes from any
+     *   calculated URL will be stripped.<br />
+     *   (Defaults to true.)
+     * - **cancellable** – `{boolean}` – If true, the request made by a "non-instance" call will be
+     *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return
+     *   value. For more details, see {@link ngResource.$resource}. This can be overwritten per
+     *   resource class or action.<br />
+     *   (Defaults to false.)
+     * - **actions** - `{Object.<Object>}` - A hash with default actions declarations. Actions are
+     *   high-level methods corresponding to RESTful actions/methods on resources. An action may
+     *   specify what HTTP method to use, what URL to hit, if the return value will be a single
+     *   object or a collection (array) of objects etc. For more details, see
+     *   {@link ngResource.$resource}. The actions can also be enhanced or overwritten per resource
+     *   class.<br />
+     *   The default actions are:
+     *   ```js
+     *   {
+     *     get: {method: 'GET'},
+     *     save: {method: 'POST'},
+     *     query: {method: 'GET', isArray: true},
+     *     remove: {method: 'DELETE'},
+     *     delete: {method: 'DELETE'}
+     *   }
+     *   ```
+     *
+     * #### Example
+     *
+     * For example, you can specify a new `update` action that uses the `PUT` HTTP verb:
+     *
+     * ```js
+     *   angular.
+     *     module('myApp').
+     *     config(['resourceProvider', function ($resourceProvider) {
+     *       $resourceProvider.defaults.actions.update = {
+     *         method: 'PUT'
+     *       };
+     *     });
+     * ```
+     *
+     * Or you can even overwrite the whole `actions` list and specify your own:
+     *
+     * ```js
+     *   angular.
+     *     module('myApp').
+     *     config(['resourceProvider', function ($resourceProvider) {
+     *       $resourceProvider.defaults.actions = {
+     *         create: {method: 'POST'}
+     *         get:    {method: 'GET'},
+     *         getAll: {method: 'GET', isArray:true},
+     *         update: {method: 'PUT'},
+     *         delete: {method: 'DELETE'}
+     *       };
+     *     });
+     * ```
+     *
+     */
     this.defaults = {
       // Strip slashes by default
       stripTrailingSlashes: true,
+
+      // Make non-instance requests cancellable (via `$cancelRequest()`)
+      cancellable: false,
 
       // Default actions configuration
       actions: {
@@ -42441,7 +43318,7 @@ angular.module('ngResource', ['ng']).
           var ids = {};
           actionParams = extend({}, paramDefaults, actionParams);
           forEach(actionParams, function(value, key) {
-            if (isFunction(value)) { value = value(); }
+            if (isFunction(value)) { value = value(data); }
             ids[key] = value && value.charAt && value.charAt(0) == '@' ?
               lookupDottedPath(data, value.substr(1)) : value;
           });
@@ -47108,7 +47985,7 @@ function plural(ms, n, name) {
 },{}]},{},[1]);
 
 /**
- * @license AngularJS v1.5.6
+ * @license AngularJS v1.5.7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -47768,6 +48645,11 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
     if (text == null || text === '') return text;
     if (!isString(text)) throw linkyMinErr('notstring', 'Expected string but received: {0}', text);
 
+    var attributesFn =
+      angular.isFunction(attributes) ? attributes :
+      angular.isObject(attributes) ? function getAttributesObject() {return attributes;} :
+      function getEmptyAttributesObject() {return {};};
+
     var match;
     var raw = text;
     var html = [];
@@ -47796,19 +48678,14 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
     }
 
     function addLink(url, text) {
-      var key;
+      var key, linkAttributes = attributesFn(url);
       html.push('<a ');
-      if (angular.isFunction(attributes)) {
-        attributes = attributes(url);
+
+      for (key in linkAttributes) {
+        html.push(key + '="' + linkAttributes[key] + '" ');
       }
-      if (angular.isObject(attributes)) {
-        for (key in attributes) {
-          html.push(key + '="' + attributes[key] + '" ');
-        }
-      } else {
-        attributes = {};
-      }
-      if (angular.isDefined(target) && !('target' in attributes)) {
+
+      if (angular.isDefined(target) && !('target' in linkAttributes)) {
         html.push('target="',
                   target,
                   '" ');
@@ -54725,7 +55602,7 @@ jsqrencode | (c) 2010 tz@execpc.com | GPL v3 License
 !function(a){"use strict";function b(){return T?new r:a.document.createElement("canvas")}function c(){return T?new x:a.document.createElement("img")}function d(b,c,d){var e=c.mime||B;a.location.href=b.toDataURL(e).replace(e,C),"function"==typeof d&&d()}function e(a){return"string"==typeof a&&(a={value:a}),a||{}}function f(a){function b(b){a[b]=function(){throw new Error(b+" requires HTML5 canvas element support")}}var c,d=["canvas","image","save","saveSync","toDataURL"];for(c=0;c<d.length;c++)b(d[c])}function g(a,b,c){function d(){w.write(e,f,0,f.length,0,function(a){w.close(e),c(a)})}if("string"!=typeof b.path)return c(new TypeError("Invalid path type: "+typeof b.path));var e,f;a.toBuffer(function(a,b){return a?c(a):(f=b,void(e&&d()))}),w.open(b.path,"w",N,function(a,b){return a?c(a):(e=b,void(f&&d()))})}function h(a,b){if("string"!=typeof b.path)throw new TypeError("Invalid path type: "+typeof b.path);var c=a.toBuffer(),d=w.openSync(b.path,"w",N);try{w.writeSync(d,c,0,c.length,0)}finally{w.closeSync(d)}}function i(a,b){var c;a>b&&(c=a,a=b,b=c),c=b,c*=b,c+=b,c>>=1,c+=a,S[c]=1}function j(a,b){var c;for(R[a+z*b]=1,c=-2;2>c;c++)R[a+c+z*(b-2)]=1,R[a-2+z*(b+c+1)]=1,R[a+2+z*(b+c)]=1,R[a+c+1+z*(b+2)]=1;for(c=0;2>c;c++)i(a-1,b+c),i(a+1,b-c),i(a-c,b-1),i(a+c,b+1)}function k(a){for(;a>=255;)a-=255,a=(a>>8)+(255&a);return a}function l(a,b,c,d){var e,f,g;for(f=0;d>f;f++)W[c+f]=0;for(f=0;b>f;f++){if(e=H[W[a+f]^W[c]],255!==e)for(g=1;d>g;g++)W[c+g-1]=W[c+g]^G[k(e+U[d-g])];else for(g=c;c+d>g;g++)W[g]=W[g+1];W[c+d-1]=255===e?0:G[k(e+U[0])]}}function m(a,b){var c;return a>b&&(c=a,a=b,b=c),c=b,c+=b*b,c>>=1,c+=a,1===S[c]}function n(a){var b,c,d,e;switch(a){case 0:for(c=0;z>c;c++)for(b=0;z>b;b++)b+c&1||m(b,c)||(R[b+c*z]^=1);break;case 1:for(c=0;z>c;c++)for(b=0;z>b;b++)1&c||m(b,c)||(R[b+c*z]^=1);break;case 2:for(c=0;z>c;c++)for(d=0,b=0;z>b;b++,d++)3===d&&(d=0),d||m(b,c)||(R[b+c*z]^=1);break;case 3:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=e,b=0;z>b;b++,d++)3===d&&(d=0),d||m(b,c)||(R[b+c*z]^=1);break;case 4:for(c=0;z>c;c++)for(d=0,e=c>>1&1,b=0;z>b;b++,d++)3===d&&(d=0,e=!e),e||m(b,c)||(R[b+c*z]^=1);break;case 5:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=0,b=0;z>b;b++,d++)3===d&&(d=0),(b&c&1)+!(!d|!e)||m(b,c)||(R[b+c*z]^=1);break;case 6:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=0,b=0;z>b;b++,d++)3===d&&(d=0),(b&c&1)+(d&&d===e)&1||m(b,c)||(R[b+c*z]^=1);break;case 7:for(e=0,c=0;z>c;c++,e++)for(3===e&&(e=0),d=0,b=0;z>b;b++,d++)3===d&&(d=0),(d&&d===e)+(b+c&1)&1||m(b,c)||(R[b+c*z]^=1)}}function o(a){var b,c=0;for(b=0;a>=b;b++)O[b]>=5&&(c+=I+O[b]-5);for(b=3;a-1>b;b+=2)O[b-2]===O[b+2]&&O[b+2]===O[b-1]&&O[b-1]===O[b+1]&&3*O[b-1]===O[b]&&(0===O[b-3]||b+3>a||3*O[b-3]>=4*O[b]||3*O[b+3]>=4*O[b])&&(c+=K);return c}function p(){var a,b,c,d,e,f,g,h,i;for(c=e=f=0,i=0;z-1>i;i++)for(h=0;z-1>h;h++)(R[h+z*i]&&R[h+1+z*i]&&R[h+z*(i+1)]&&R[h+1+z*(i+1)]||!(R[h+z*i]||R[h+1+z*i]||R[h+z*(i+1)]||R[h+1+z*(i+1)]))&&(c+=J);for(i=0;z>i;i++){for(O[0]=0,g=a=h=0;z>h;h++)(b=R[h+z*i])===a?O[g]++:O[++g]=1,a=b,e+=a?1:-1;c+=o(g)}for(0>e&&(e=-e),d=e,d+=d<<2,d<<=1;d>z*z;)d-=z*z,f++;for(c+=f*L,h=0;z>h;h++){for(O[0]=0,g=a=i=0;z>i;i++)(b=R[h+z*i])===a?O[g]++:O[++g]=1,a=b;c+=o(g)}return c}function q(a){var b,c,d,e,f,g,h,o;f=a.length,y=0;do if(y++,d=4*(Q-1)+16*(y-1),u=D[d++],v=D[d++],s=D[d++],t=D[d],d=s*(u+v)+v-3+(9>=y),d>=f)break;while(40>y);for(z=17+4*y,g=s+(s+t)*(u+v)+v,f=0;g>f;f++)P[f]=0;for(W=a.slice(0),f=0;z*z>f;f++)R[f]=0;for(f=0;(z*(z+1)+1)/2>f;f++)S[f]=0;for(f=0;3>f;f++){for(d=o=0,1===f&&(d=z-7),2===f&&(o=z-7),R[o+3+z*(d+3)]=1,h=0;6>h;h++)R[o+h+z*d]=1,R[o+z*(d+h+1)]=1,R[o+6+z*(d+h)]=1,R[o+h+1+z*(d+6)]=1;for(h=1;5>h;h++)i(o+h,d+1),i(o+1,d+h+1),i(o+5,d+h),i(o+h+1,d+5);for(h=2;4>h;h++)R[o+h+z*(d+2)]=1,R[o+2+z*(d+h+1)]=1,R[o+4+z*(d+h)]=1,R[o+h+1+z*(d+4)]=1}if(y>1)for(f=A[y],o=z-7;;){for(h=z-7;h>f-3&&(j(h,o),!(f>h));)h-=f;if(f+9>=o)break;o-=f,j(6,o),j(o,6)}for(R[8+z*(z-8)]=1,o=0;7>o;o++)i(7,o),i(z-8,o),i(7,o+z-7);for(h=0;8>h;h++)i(h,7),i(h+z-8,7),i(h,z-8);for(h=0;9>h;h++)i(h,8);for(h=0;8>h;h++)i(h+z-8,8),i(8,h);for(o=0;7>o;o++)i(8,o+z-7);for(h=0;z-14>h;h++)1&h?(i(8+h,6),i(6,8+h)):(R[8+h+6*z]=1,R[6+z*(8+h)]=1);if(y>6)for(f=M[y-7],d=17,h=0;6>h;h++)for(o=0;3>o;o++,d--)1&(d>11?y>>d-12:f>>d)?(R[5-h+z*(2-o+z-11)]=1,R[2-o+z-11+z*(5-h)]=1):(i(5-h,2-o+z-11),i(2-o+z-11,5-h));for(o=0;z>o;o++)for(h=0;o>=h;h++)R[h+z*o]&&i(h,o);for(g=W.length,b=0;g>b;b++)P[b]=W.charCodeAt(b);if(W=P.slice(0),h=s*(u+v)+v,g>=h-2&&(g=h-2,y>9&&g--),b=g,y>9){for(W[b+2]=0,W[b+3]=0;b--;)f=W[b],W[b+3]|=255&f<<4,W[b+2]=f>>4;W[2]|=255&g<<4,W[1]=g>>4,W[0]=64|g>>12}else{for(W[b+1]=0,W[b+2]=0;b--;)f=W[b],W[b+2]|=255&f<<4,W[b+1]=f>>4;W[1]|=255&g<<4,W[0]=64|g>>4}for(b=g+3-(10>y);h>b;)W[b++]=236,W[b++]=17;for(U[0]=1,b=0;t>b;b++){for(U[b+1]=1,c=b;c>0;c--)U[c]=U[c]?U[c-1]^G[k(H[U[c]]+b)]:U[c-1];U[0]=G[k(H[U[0]]+b)]}for(b=0;t>=b;b++)U[b]=H[U[b]];for(d=h,o=0,b=0;u>b;b++)l(o,s,d,t),o+=s,d+=t;for(b=0;v>b;b++)l(o,s+1,d,t),o+=s+1,d+=t;for(o=0,b=0;s>b;b++){for(c=0;u>c;c++)P[o++]=W[b+c*s];for(c=0;v>c;c++)P[o++]=W[u*s+b+c*(s+1)]}for(c=0;v>c;c++)P[o++]=W[u*s+b+c*(s+1)];for(b=0;t>b;b++)for(c=0;u+v>c;c++)P[o++]=W[h+b+c*t];for(W=P,h=o=z-1,d=g=1,e=(s+t)*(u+v)+v,b=0;e>b;b++)for(f=W[b],c=0;8>c;c++,f<<=1){128&f&&(R[h+z*o]=1);do g?h--:(h++,d?0!==o?o--:(h-=2,d=!d,6===h&&(h--,o=9)):o!==z-1?o++:(h-=2,d=!d,6===h&&(h--,o-=8))),g=!g;while(m(h,o))}for(W=R.slice(0),f=0,o=3e4,d=0;8>d&&(n(d),h=p(),o>h&&(o=h,f=d),7!==f);d++)R=W.slice(0);for(f!==d&&n(f),o=F[f+(Q-1<<3)],d=0;8>d;d++,o>>=1)1&o&&(R[z-1-d+8*z]=1,6>d?R[8+z*d]=1:R[8+z*(d+1)]=1);for(d=0;7>d;d++,o>>=1)1&o&&(R[8+z*(z-7+d)]=1,d?R[6-d+8*z]=1:R[7+8*z]=1);return R}var r,s,t,u,v,w,x,y,z,A=[0,11,15,19,23,27,31,16,18,20,22,24,26,28,20,22,24,24,26,28,28,22,24,24,26,26,28,28,24,24,26,26,26,28,28,24,26,26,26,28,28],B="image/png",C="image/octet-stream",D=[1,0,19,7,1,0,16,10,1,0,13,13,1,0,9,17,1,0,34,10,1,0,28,16,1,0,22,22,1,0,16,28,1,0,55,15,1,0,44,26,2,0,17,18,2,0,13,22,1,0,80,20,2,0,32,18,2,0,24,26,4,0,9,16,1,0,108,26,2,0,43,24,2,2,15,18,2,2,11,22,2,0,68,18,4,0,27,16,4,0,19,24,4,0,15,28,2,0,78,20,4,0,31,18,2,4,14,18,4,1,13,26,2,0,97,24,2,2,38,22,4,2,18,22,4,2,14,26,2,0,116,30,3,2,36,22,4,4,16,20,4,4,12,24,2,2,68,18,4,1,43,26,6,2,19,24,6,2,15,28,4,0,81,20,1,4,50,30,4,4,22,28,3,8,12,24,2,2,92,24,6,2,36,22,4,6,20,26,7,4,14,28,4,0,107,26,8,1,37,22,8,4,20,24,12,4,11,22,3,1,115,30,4,5,40,24,11,5,16,20,11,5,12,24,5,1,87,22,5,5,41,24,5,7,24,30,11,7,12,24,5,1,98,24,7,3,45,28,15,2,19,24,3,13,15,30,1,5,107,28,10,1,46,28,1,15,22,28,2,17,14,28,5,1,120,30,9,4,43,26,17,1,22,28,2,19,14,28,3,4,113,28,3,11,44,26,17,4,21,26,9,16,13,26,3,5,107,28,3,13,41,26,15,5,24,30,15,10,15,28,4,4,116,28,17,0,42,26,17,6,22,28,19,6,16,30,2,7,111,28,17,0,46,28,7,16,24,30,34,0,13,24,4,5,121,30,4,14,47,28,11,14,24,30,16,14,15,30,6,4,117,30,6,14,45,28,11,16,24,30,30,2,16,30,8,4,106,26,8,13,47,28,7,22,24,30,22,13,15,30,10,2,114,28,19,4,46,28,28,6,22,28,33,4,16,30,8,4,122,30,22,3,45,28,8,26,23,30,12,28,15,30,3,10,117,30,3,23,45,28,4,31,24,30,11,31,15,30,7,7,116,30,21,7,45,28,1,37,23,30,19,26,15,30,5,10,115,30,19,10,47,28,15,25,24,30,23,25,15,30,13,3,115,30,2,29,46,28,42,1,24,30,23,28,15,30,17,0,115,30,10,23,46,28,10,35,24,30,19,35,15,30,17,1,115,30,14,21,46,28,29,19,24,30,11,46,15,30,13,6,115,30,14,23,46,28,44,7,24,30,59,1,16,30,12,7,121,30,12,26,47,28,39,14,24,30,22,41,15,30,6,14,121,30,6,34,47,28,46,10,24,30,2,64,15,30,17,4,122,30,29,14,46,28,49,10,24,30,24,46,15,30,4,18,122,30,13,32,46,28,48,14,24,30,42,32,15,30,20,4,117,30,40,7,47,28,43,22,24,30,10,67,15,30,19,6,118,30,18,31,47,28,34,34,24,30,20,61,15,30],E={L:1,M:2,Q:3,H:4},F=[30660,29427,32170,30877,26159,25368,27713,26998,21522,20773,24188,23371,17913,16590,20375,19104,13663,12392,16177,14854,9396,8579,11994,11245,5769,5054,7399,6608,1890,597,3340,2107],G=[1,2,4,8,16,32,64,128,29,58,116,232,205,135,19,38,76,152,45,90,180,117,234,201,143,3,6,12,24,48,96,192,157,39,78,156,37,74,148,53,106,212,181,119,238,193,159,35,70,140,5,10,20,40,80,160,93,186,105,210,185,111,222,161,95,190,97,194,153,47,94,188,101,202,137,15,30,60,120,240,253,231,211,187,107,214,177,127,254,225,223,163,91,182,113,226,217,175,67,134,17,34,68,136,13,26,52,104,208,189,103,206,129,31,62,124,248,237,199,147,59,118,236,197,151,51,102,204,133,23,46,92,184,109,218,169,79,158,33,66,132,21,42,84,168,77,154,41,82,164,85,170,73,146,57,114,228,213,183,115,230,209,191,99,198,145,63,126,252,229,215,179,123,246,241,255,227,219,171,75,150,49,98,196,149,55,110,220,165,87,174,65,130,25,50,100,200,141,7,14,28,56,112,224,221,167,83,166,81,162,89,178,121,242,249,239,195,155,43,86,172,69,138,9,18,36,72,144,61,122,244,245,247,243,251,235,203,139,11,22,44,88,176,125,250,233,207,131,27,54,108,216,173,71,142,0],H=[255,0,1,25,2,50,26,198,3,223,51,238,27,104,199,75,4,100,224,14,52,141,239,129,28,193,105,248,200,8,76,113,5,138,101,47,225,36,15,33,53,147,142,218,240,18,130,69,29,181,194,125,106,39,249,185,201,154,9,120,77,228,114,166,6,191,139,98,102,221,48,253,226,152,37,179,16,145,34,136,54,208,148,206,143,150,219,189,241,210,19,92,131,56,70,64,30,66,182,163,195,72,126,110,107,58,40,84,250,133,186,61,202,94,155,159,10,21,121,43,78,212,229,172,115,243,167,87,7,112,192,247,140,128,99,13,103,74,222,237,49,197,254,24,227,165,153,119,38,184,180,124,17,68,146,217,35,32,137,46,55,63,209,91,149,188,207,205,144,135,151,178,220,252,190,97,242,86,211,171,20,42,93,158,132,60,57,83,71,109,65,162,31,45,67,216,183,123,164,118,196,23,73,236,127,12,111,246,108,161,59,82,41,157,85,170,251,96,134,177,187,204,62,90,203,89,95,176,156,169,160,81,11,245,22,235,122,117,44,215,79,174,213,233,230,231,173,232,116,214,244,234,168,80,88,175],I=3,J=3,K=40,L=10,M=[3220,1468,2713,1235,3062,1890,2119,1549,2344,2936,1117,2583,1330,2470,1667,2249,2028,3780,481,4011,142,3098,831,3445,592,2517,1776,2234,1951,2827,1070,2660,1345,3177],N=parseInt("0666",8),O=[],P=[],Q=1,R=[],S=[],T=!1,U=[],V=a.qr,W=[],X={VERSION:"1.1.3",canvas:function(a){a=e(a);var c=a.size>=1&&a.size<=10?a.size:4;c*=25;var d=a.canvas||b(),f=d.getContext("2d");f.canvas.width=c,f.canvas.height=c,f.fillStyle=a.background||"#fff",f.fillRect(0,0,c,c),Q=E[a.level&&a.level.toUpperCase()||"L"];var g=q(a.value||"");f.lineWidth=1;var h=c;h/=z,h=Math.floor(h),f.clearRect(0,0,c,c),f.fillStyle=a.background||"#fff",f.fillRect(0,0,h*(z+8),h*(z+8)),f.fillStyle=a.foreground||"#000";var i,j;for(i=0;z>i;i++)for(j=0;z>j;j++)g[j*z+i]&&f.fillRect(h*i,h*j,h,h);return d},image:function(a){a=e(a);var b=this.canvas(a),d=a.image||c();return d.src=b.toDataURL(a.mime||B),d.height=b.height,d.width=b.width,d},save:function(a,b,c){function f(a){h||(h=!0,c(a))}switch(a=e(a),typeof b){case"function":c=b,b=null;break;case"string":a.path=b}if("function"!=typeof c)throw new TypeError("Invalid callback type: "+typeof c);var h=!1,i=this.canvas(a);T?g(i,a,f):d(i,a,f)},saveSync:function(a,b){a=e(a),"string"==typeof b&&(a.path=b);var c=this.canvas(a);T?h(c,a):d(c,a)},toDataURL:function(a){return a=e(a),this.canvas(a).toDataURL(a.mime||B)},noConflict:function(){return a.qr=V,this}};"undefined"!=typeof exports?(T=!0,"undefined"!=typeof module&&module.exports&&(exports=module.exports=X),exports.qr=X,r=require("canvas"),x=r.Image,w=require("fs")):"function"==typeof define&&define.amd?define(function(){return X}):(a.HTMLCanvasElement||f(X),a.qr=X)}(this);
 //# sourceMappingURL=qr.min.map
 /*!
-*  ui-leaflet 1.0.1 2016-06-08
+*  ui-leaflet 1.0.0 2015-10-29
 *  ui-leaflet - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/angular-ui/ui-leaflet
 */
@@ -55182,8 +56059,8 @@ angular.module('ui-leaflet').service('leafletData', ["leafletLogger", "$q", "lea
         _private[itemName] = {};
     });
 
-    this.unresolveMap = function (mapId) {
-        var id = leafletHelpers.obtainEffectiveMapId(_private.map, mapId);
+    this.unresolveMap = function (scopeId) {
+        var id = leafletHelpers.obtainEffectiveMapId(_private.map, scopeId);
         _privateItems.forEach(function (itemName) {
             _private[itemName][id] = undefined;
         });
@@ -55192,14 +56069,14 @@ angular.module('ui-leaflet').service('leafletData', ["leafletLogger", "$q", "lea
     //int repetitive stuff (get and sets)
     _privateItems.forEach(function (itemName) {
         var name = upperFirst(itemName);
-        self['set' + name] = function (lObject, mapId) {
-            var defer = getUnresolvedDefer(_private[itemName], mapId);
+        self['set' + name] = function (lObject, scopeId) {
+            var defer = getUnresolvedDefer(_private[itemName], scopeId);
             defer.resolve(lObject);
-            setResolvedDefer(_private[itemName], mapId);
+            setResolvedDefer(_private[itemName], scopeId);
         };
 
-        self['get' + name] = function (mapId) {
-            var defer = getDefer(_private[itemName], mapId);
+        self['get' + name] = function (scopeId) {
+            var defer = getDefer(_private[itemName], scopeId);
             return defer.promise;
         };
     });
@@ -55215,7 +56092,7 @@ angular.module('ui-leaflet')
 
     var _errorHeader = _mainErrorHeader + '[leafletDirectiveControlsHelpers';
 
-    var extend = function(id, thingToAddName, createFn, cleanFn){
+    var _extend = function(id, thingToAddName, createFn, cleanFn){
         var _fnHeader = _errorHeader + '.extend] ';
         var extender = {};
         if(!_isDefined(thingToAddName)){
@@ -55238,15 +56115,14 @@ angular.module('ui-leaflet')
         }
 
         //add external control to create / destroy markers without a watch
-        leafletData.getDirectiveControls(id)
-        .then(function(controls){
+        leafletData.getDirectiveControls().then(function(controls){
             angular.extend(controls, extender);
             leafletData.setDirectiveControls(controls, id);
         });
     };
 
     return {
-        extend: extend
+        extend: _extend
     };
 }]);
 
@@ -55329,7 +56205,7 @@ angular.module('ui-leaflet')
         };
     }]);
 
-angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($q, $log) {
+angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function ($q, $log) {
     var _errorHeader = '[AngularJS - Leaflet] ';
     var _copy = angular.copy;
     var _clone = _copy;
@@ -55348,7 +56224,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
      */
     var _getObjectValue = function(object, pathStr) {
         var obj;
-        if (!object || !angular.isObject(object))
+        if(!object || !angular.isObject(object))
             return;
         //if the key is not a sting then we already have the value
         if ((pathStr === null) || !angular.isString(pathStr)) {
@@ -55369,9 +56245,9 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
      returns:
      'bike["one"]["two"]'
      */
-    var _getObjectArrayPath = function(pathStr) {
+    var _getObjectArrayPath = function(pathStr){
         return pathStr.split('.').reduce(function(previous, current) {
-            return previous + '["' + current + '"]';
+            return previous + '["'+ current + '"]';
         });
     };
 
@@ -55380,28 +56256,25 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
      returns:
      "bike.one.two"
      */
-    var _getObjectDotPath = function(arrayOfStrings) {
+    var _getObjectDotPath = function(arrayOfStrings){
         return arrayOfStrings.reduce(function(previous, current) {
             return previous + '.' + current;
         });
     };
 
     function _obtainEffectiveMapId(d, mapId) {
-        var id,
-            keys = Object.keys(d);
-
+        var id, i;
         if (!angular.isDefined(mapId)) {
-            if (keys.length === 0 || (keys.length === 1 && keys[0] === 'main')) {
-                //default non id attribute map
-                // OR one key 'main'
-                /*
-                    Main Reason:
-                    Initally if we have only one map and no "id" then d will be undefined initially.
-                    On subsequent runs it will be just d.main so we need to return the last map.
-                */
-                id = "main";
-            } else {
-                throw new Error(_errorHeader + "- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call. Where one of the following mapIds " + Object.keys(d).join(',') + ' are available.');
+        if (Object.keys(d).length === 0) {
+            id = "main";
+        } else if (Object.keys(d).length >= 1) {
+            for (i in d) {
+                if (d.hasOwnProperty(i)) {
+                    id = i;
+                }
+            }
+        } else {
+                $log.error(_errorHeader + "- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
             id = mapId;
@@ -55430,7 +56303,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
     var _isDefined = function(value) {
         return angular.isDefined(value) && value !== null;
     };
-    var _isUndefined = function(value) {
+    var _isUndefined = function(value){
         return !_isDefined(value);
     };
 
@@ -55449,13 +56322,13 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
      */
 
     var camelCase = function(name) {
-        return name.replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
-            if (offset) {
-                return letter.toUpperCase();
-            } else {
-                return letter;
-            }
-        }).replace(MOZ_HACK_REGEXP, "Moz$1");
+      return name.replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+        if (offset) {
+          return letter.toUpperCase();
+        } else {
+          return letter;
+        }
+      }).replace(MOZ_HACK_REGEXP, "Moz$1");
     };
 
 
@@ -55464,8 +56337,8 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
     @param name Name to normalize
      */
 
-    var directiveNormalize = function(name) {
-        return camelCase(name.replace(PREFIX_REGEXP, ""));
+     var directiveNormalize = function(name) {
+      return camelCase(name.replace(PREFIX_REGEXP, ""));
     };
 
     // END AngularJS port
@@ -55473,17 +56346,17 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
     return {
         camelCase: camelCase,
         directiveNormalize: directiveNormalize,
-        copy: _copy,
-        clone: _clone,
+        copy:_copy,
+        clone:_clone,
         errorHeader: _errorHeader,
         getObjectValue: _getObjectValue,
-        getObjectArrayPath: _getObjectArrayPath,
+        getObjectArrayPath:_getObjectArrayPath,
         getObjectDotPath: _getObjectDotPath,
-        defaultTo: function(val, _default) {
+        defaultTo: function(val, _default){
             return _isDefined(val) ? val : _default;
         },
         //mainly for checking attributes of directives lets keep this minimal (on what we accept)
-        isTruthy: function(val) {
+        isTruthy: function(val){
             return val === 'true' || val === true;
         },
         //Determine if a reference is {}
@@ -55492,13 +56365,13 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         },
 
         //Determine if a reference is undefined or {}
-        isUndefinedOrEmpty: function(value) {
+        isUndefinedOrEmpty: function (value) {
             return (angular.isUndefined(value) || value === null) || Object.keys(value).length === 0;
         },
 
         // Determine if a reference is defined
         isDefined: _isDefined,
-        isUndefined: _isUndefined,
+        isUndefined:_isUndefined,
         isNumber: angular.isNumber,
         isString: angular.isString,
         isArray: angular.isArray,
@@ -55508,7 +56381,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
 
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
-                angular.isNumber(center.lng) && angular.isNumber(center.zoom);
+                   angular.isNumber(center.lng) && angular.isNumber(center.zoom);
         },
 
         isValidPoint: function(point) {
@@ -55528,7 +56401,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                 mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) &&
                 mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) &&
                 zoom === centerModel.zoom) {
-                return true;
+                    return true;
             }
             return false;
         },
@@ -55591,7 +56464,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function (iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55614,7 +56487,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function (iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55627,21 +56500,21 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
         },
 
         DomMarkersPlugin: {
-            isLoaded: function() {
+            isLoaded: function () {
                 if (angular.isDefined(L.DomMarkers) && angular.isDefined(L.DomMarkers.Icon)) {
                     return true;
                 } else {
                     return false;
                 }
             },
-            is: function(icon) {
+            is: function (icon) {
                 if (this.isLoaded()) {
                     return icon instanceof L.DomMarkers.Icon;
                 } else {
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function (iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55695,7 +56568,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function (iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55707,21 +56580,21 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         ExtraMarkersPlugin: {
-            isLoaded: function() {
+            isLoaded: function () {
                 if (angular.isDefined(L.ExtraMarkers) && angular.isDefined(L.ExtraMarkers.Icon)) {
                     return true;
                 } else {
                     return false;
                 }
             },
-            is: function(icon) {
+            is: function (icon) {
                 if (this.isLoaded()) {
                     return icon instanceof L.ExtraMarkers.Icon;
                 } else {
                     return false;
                 }
             },
-            equal: function(iconA, iconB) {
+            equal: function (iconA, iconB) {
                 if (!this.isLoaded()) {
                     return false;
                 }
@@ -55779,7 +56652,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
                     return false;
                 }
             }
-        },
+        },          
         ChinaLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.tileLayer.chinaProvider);
@@ -55823,7 +56696,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             isLoaded: function() {
                 return L.esri !== undefined && L.esri.basemapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function (layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.basemapLayer;
                 } else {
@@ -55847,7 +56720,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             isLoaded: function() {
                 return L.esri !== undefined && L.esri.featureLayer !== undefined;
             },
-            is: function(layer) {
+            is: function (layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.featureLayer;
                 } else {
@@ -55859,7 +56732,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             isLoaded: function() {
                 return L.esri !== undefined && L.esri.tiledMapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function (layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.tiledMapLayer;
                 } else {
@@ -55868,10 +56741,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSDynamicMapLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function () {
                 return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function (layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.dynamicMapLayer;
                 } else {
@@ -55880,10 +56753,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSImageMapLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function () {
                 return L.esri !== undefined && L.esri.imageMapLayer !== undefined;
             },
-            is: function(layer) {
+            is: function (layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.imageMapLayer;
                 } else {
@@ -55892,10 +56765,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSClusteredLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function () {
                 return L.esri !== undefined && L.esri.clusteredFeatureLayer !== undefined;
             },
-            is: function(layer) {
+            is: function (layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.clusteredFeatureLayer;
                 } else {
@@ -55904,10 +56777,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         AGSHeatmapLayerPlugin: {
-            isLoaded: function() {
+            isLoaded: function () {
                 return L.esri !== undefined && L.esri.heatmapFeatureLayer !== undefined;
             },
-            is: function(layer) {
+            is: function (layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.esri.heatmapFeatureLayer;
                 } else {
@@ -55928,7 +56801,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         GeoJSONPlugin: {
-            isLoaded: function() {
+            isLoaded: function(){
                 return angular.isDefined(L.TileLayer.GeoJSON);
             },
             is: function(layer) {
@@ -55940,7 +56813,7 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         UTFGridPlugin: {
-            isLoaded: function() {
+            isLoaded: function(){
                 return angular.isDefined(L.UtfGrid);
             },
             is: function(layer) {
@@ -55953,10 +56826,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
             }
         },
         CartoDB: {
-            isLoaded: function() {
+            isLoaded: function(){
                 return cartodb;
             },
-            is: function( /*layer*/ ) {
+            is: function(/*layer*/) {
                 return true;
                 /*
                 if (this.isLoaded()) {
@@ -56004,10 +56877,10 @@ angular.module('ui-leaflet').service('leafletHelpers', ["$q", "$log", function($
          */
         //legacy defaults
         watchOptions: {
-            doWatch: true,
+            doWatch:true,
             isDeep: true,
-            individual: {
-                doWatch: true,
+            individual:{
+                doWatch:true,
                 isDeep: true
             }
         }
@@ -56739,28 +57612,7 @@ angular.module('ui-leaflet')
     };
 }]);
 
-angular.module("ui-leaflet").factory('leafletLegendHelpers', ["$http", "$q", "$log", "leafletHelpers", function ($http, $q, $log, leafletHelpers) {
-	var requestQueue = {},
-		isDefined = leafletHelpers.isDefined;
-
-	var _execNext = function(mapId) {
-		var queue = requestQueue[mapId];
-		var task = queue[0];
-		$http(task.c).then(function(data) {
-			queue.shift();
-			task.d.resolve(data);
-			if (queue.length > 0) {
-				_execNext(mapId);
-			}
-		}, function(err) {
-			queue.shift();
-			task.d.reject(err);
-			if (queue.length > 0) {
-				_execNext(mapId);
-			}
-		});
-	};
-
+angular.module('ui-leaflet').factory('leafletLegendHelpers', function () {
 	var _updateLegend = function(div, legendData, type, url) {
 		div.innerHTML = '';
 		if(legendData.error) {
@@ -56820,20 +57672,9 @@ angular.module("ui-leaflet").factory('leafletLegendHelpers', ["$http", "$q", "$l
 	return {
 		getOnAddLegend: _getOnAddLegend,
 		getOnAddArrayLegend: _getOnAddArrayLegend,
-		updateLegend: _updateLegend,
-		addLegendURL: function(mapId, config) {
-			var d = $q.defer();
-			if(!isDefined(requestQueue[mapId])) {
-				requestQueue[mapId] = [];
-			}
-			requestQueue[mapId].push({c:config,d:d});
-			if (requestQueue[mapId].length === 1) {
-				_execNext(mapId);
-			}
-			return d.promise;
-		}
+		updateLegend: _updateLegend
 	};
-}]);
+});
 
 angular.module('ui-leaflet').factory('leafletMapDefaults', ["$q", "leafletHelpers", function ($q, leafletHelpers) {
     function _getDefaults() {
@@ -57027,6 +57868,7 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
         geoHlp = leafletGeoJsonHelpers,
         errorHeader = leafletHelpers.errorHeader,
         $log = leafletLogger;
+
 
     var _string = function (marker) {
         //this exists since JSON.stringify barfs on cyclic
@@ -57437,27 +58279,6 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
                 marker.setLatLng([markerData.lat, markerData.lng]);
             }
         };
-
-    var _getLayerModels = function (models, layerName){
-      if (!isDefined(models))
-        return;
-      if (layerName)
-        return models[layerName];
-      return models;
-    };
-
-    var _getModelFromModels = function (models, id, layerName){
-      if(!isDefined(models))
-        return;
-      if(!id){
-        $log.error(errorHeader + 'marker id missing in getMarker');
-        return;
-      }
-      if(layerName)
-        return models[layerName][id];
-
-      return models[id];
-    };
     return {
         resetMarkerGroup: _resetMarkerGroup,
 
@@ -57561,9 +58382,7 @@ angular.module('ui-leaflet').service('leafletMarkersHelpers', ["$rootScope", "$t
             } , isDeepWatch);
         },
         string: _string,
-        log: _log,
-        getModelFromModels : _getModelFromModels,
-        getLayerModels : _getLayerModels
+        log: _log
     };
 }]);
 
@@ -58990,20 +59809,17 @@ angular.module('ui-leaflet').directive('layers', ["leafletLogger", "$q", "leafle
     };
 }]);
 
-angular.module("ui-leaflet").directive('legend', ["leafletLogger", "$http", "$timeout", "leafletHelpers", "leafletLegendHelpers", function (leafletLogger, $http, $timeout, leafletHelpers, leafletLegendHelpers) {
-        var $log = leafletLogger,
-            errorHeader = leafletHelpers.errorHeader + ' [Legend] ';
+angular.module('ui-leaflet').directive('legend', ["leafletLogger", "$http", "leafletHelpers", "leafletLegendHelpers", function (leafletLogger, $http, leafletHelpers, leafletLegendHelpers) {
+        var $log = leafletLogger;
         return {
             restrict: "A",
             scope: false,
             replace: false,
             require: 'leaflet',
-            transclude: false,
 
             link: function (scope, element, attrs, controller) {
 
                 var isArray = leafletHelpers.isArray,
-                    isString = leafletHelpers.isString,
                     isDefined = leafletHelpers.isDefined,
                     isFunction = leafletHelpers.isFunction,
                     leafletScope = controller.getLeafletScope(),
@@ -59017,34 +59833,23 @@ angular.module("ui-leaflet").directive('legend', ["leafletLogger", "$http", "$ti
                 leafletScope.$watch('legend', function (newLegend) {
 
                     if (isDefined(newLegend)) {
+
                         legendClass = newLegend.legendClass ? newLegend.legendClass : "legend";
+
                         position = newLegend.position || 'bottomright';
+
                         // default to arcgis
                         type = newLegend.type || 'arcgis';
                     }
+
                 }, true);
 
-                var createLegend = function(map, legendData, newURL) {
-                    if(legendData && legendData.layers && legendData.layers.length > 0) {
-                        if (isDefined(leafletLegend)) {
-                            leafletLegendHelpers.updateLegend(leafletLegend.getContainer(), legendData, type, newURL);
-                        } else {
-                            leafletLegend = L.control({
-                                position: position
-                            });
-                            leafletLegend.onAdd = leafletLegendHelpers.getOnAddLegend(legendData, legendClass, type, newURL);
-                            leafletLegend.addTo(map);
-                        }
-
-                        if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
-                            legend.loadedData();
-                        }
-                    }
-                };
-
                 controller.getMap().then(function (map) {
+
                     leafletScope.$watch('legend', function (newLegend) {
+
                         if (!isDefined(newLegend)) {
+
                             if (isDefined(leafletLegend)) {
                                 leafletLegend.removeFrom(map);
                                 leafletLegend= null;
@@ -59054,12 +59859,16 @@ angular.module("ui-leaflet").directive('legend', ["leafletLogger", "$http", "$ti
                         }
 
                         if (!isDefined(newLegend.url) && (type === 'arcgis') && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
-                            $log.warn(errorHeader + " legend.colors and legend.labels must be set.");
+
+                            $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+
                             return;
                         }
 
                         if (isDefined(newLegend.url)) {
-                            $log.info(errorHeader + " loading legend service.");
+
+                            $log.info("[AngularJS - Leaflet] loading legend service.");
+
                             return;
                         }
 
@@ -59071,65 +59880,44 @@ angular.module("ui-leaflet").directive('legend', ["leafletLogger", "$http", "$ti
                         leafletLegend = L.control({
                             position: position
                         });
-
                         if (type === 'arcgis') {
                             leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(newLegend, legendClass);
                         }
                         leafletLegend.addTo(map);
+
                     });
 
                     leafletScope.$watch('legend.url', function (newURL) {
+
                         if (!isDefined(newURL)) {
                             return;
                         }
+                        $http.get(newURL)
+                            .success(function (legendData) {
 
-                        if(!isArray(newURL) && !isString(newURL)) {
-                            $log.warn(errorHeader + " legend.url must be an array or string.");
-                            return;
-                        }
+                                if (isDefined(leafletLegend)) {
 
-                        var urls = isString(newURL)? [newURL]:newURL;
+                                    leafletLegendHelpers.updateLegend(leafletLegend.getContainer(), legendData, type, newURL);
 
-                        var legendData;
-                        var onResult = function(idx, url) {
-                            return function(ld) {
-                                if(isDefined(ld.data.error)) {
-                                    $log.warn(errorHeader + 'Error loadin legend from: ' + url, ld.data.error.message);
                                 } else {
-                                    if(legendData && legendData.layers && legendData.layers.length > 0) {
-                                        legendData.layers = legendData.layers.concat(ld.data.layers);
-                                    } else {
-                                        legendData = ld.data;
-                                    }
+
+                                    leafletLegend = L.control({
+                                        position: position
+                                    });
+                                    leafletLegend.onAdd = leafletLegendHelpers.getOnAddLegend(legendData, legendClass, type, newURL);
+                                    leafletLegend.addTo(map);
                                 }
 
-                                if(idx === urls.length-1) {
-                                    createLegend(map, legendData, newURL);
+                                if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
+                                    legend.loadedData();
                                 }
-                            };
-                        };
-                        var onError = function(err) {
-                            $log.warn(errorHeader + ' legend.url not loaded.', err);
-                        };
-
-                        for(var i = 0; i < urls.length; i++) {
-                            leafletLegendHelpers.addLegendURL(attrs.id, {
-                                url: urls[i],
-                                method: 'GET'
-                            }).then(onResult(i)).catch(onError);
-                        }
+                            })
+                            .error(function () {
+                                $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
+                            });
                     });
 
-                    leafletScope.$watch('legend.legendData', function (legendData) {
-                        $log.debug('legendData', legendData);
-                        if(isDefined(leafletScope.legend.url) || !isDefined(legendData)) {
-                            return;
-                        }
-
-                        createLegend(map, legendData);
-                    }, true);
                 });
-
             }
         };
     }]);
@@ -59149,8 +59937,6 @@ angular.module('ui-leaflet').directive('markers',
         addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup,
         createMarker = leafletMarkersHelpers.createMarker,
         deleteMarker = leafletMarkersHelpers.deleteMarker,
-        getModelFromModels = leafletMarkersHelpers.getModelFromModels,
-        getLayerModels = leafletMarkersHelpers.getLayerModels,
         $it = leafletIterators,
         _markersWatchOptions = leafletHelpers.watchOptions,
         maybeWatch = leafletWatchHelpers.maybeWatch,
@@ -59278,7 +60064,7 @@ angular.module('ui-leaflet').directive('markers',
                 leafletMarkerEvents.bindEvents(mapId, marker, pathToMarker, model, leafletScope, layerName);
             }
             else {
-                var oldModel = getModelFromModels(oldModels, newName, maybeLayerName);
+                var oldModel = isDefined(oldModel)? oldModels[newName] : undefined;
                 updateMarker(model, oldModel, maybeLMarker, pathToMarker, leafletScope, layers, map);
             }
         }
@@ -59369,8 +60155,8 @@ angular.module('ui-leaflet').directive('markers',
                     var _clean = function(models, oldModels){
                         if(isNested) {
                             $it.each(models, function(markerToMaybeDel, layerName) {
-                              var oldLayerModels = getLayerModels(oldModels, layerName);
-                                _destroy(markerToMaybeDel, oldLayerModels, leafletMarkers[layerName], map, layers);
+                                var oldModel = isDefined(oldModel)? oldModels[layerName] : undefined;
+                                _destroy(markerToMaybeDel, oldModel, leafletMarkers[layerName], map, layers);
                             });
                             return;
                         }
@@ -59382,9 +60168,8 @@ angular.module('ui-leaflet').directive('markers',
                         var skips = null;
                         if(isNested) {
                             $it.each(models, function(markersToAdd, layerName) {
-                                var oldLayerModels = getLayerModels(oldModels, layerName);
-                                var newlayerModels = getLayerModels(models, layerName);
-                                skips = _getNewModelsToSkipp(newlayerModels, oldLayerModels, leafletMarkers[layerName]);
+                                var oldModel = isDefined(oldModel)? oldModels[layerName] : undefined;
+                                skips = _getNewModelsToSkipp(models[layerName], oldModel, leafletMarkers[layerName]);
                                 _addMarkers(attrs.id, markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
                                     watchOptions, layerName, skips);
                             });
@@ -63445,136 +64230,137 @@ return p}:En(r),w=i===u?function(){return g}:En(u);++m<M;)o.call(this,h=t[m],m)?
 shortDays:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],months:["January","February","March","April","May","June","July","August","September","October","November","December"],shortMonths:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]});ao.format=xa.numberFormat,ao.geo={},ft.prototype={s:0,t:0,add:function(n){st(n,this.t,ba),st(ba.s,this.s,this),this.s?this.t+=ba.t:this.s=ba.t},reset:function(){this.s=this.t=0},valueOf:function(){return this.s}};var ba=new ft;ao.geo.stream=function(n,t){n&&_a.hasOwnProperty(n.type)?_a[n.type](n,t):ht(n,t)};var _a={Feature:function(n,t){ht(n.geometry,t)},FeatureCollection:function(n,t){for(var e=n.features,r=-1,i=e.length;++r<i;)ht(e[r].geometry,t)}},wa={Sphere:function(n,t){t.sphere()},Point:function(n,t){n=n.coordinates,t.point(n[0],n[1],n[2])},MultiPoint:function(n,t){for(var e=n.coordinates,r=-1,i=e.length;++r<i;)n=e[r],t.point(n[0],n[1],n[2])},LineString:function(n,t){pt(n.coordinates,t,0)},MultiLineString:function(n,t){for(var e=n.coordinates,r=-1,i=e.length;++r<i;)pt(e[r],t,0)},Polygon:function(n,t){gt(n.coordinates,t)},MultiPolygon:function(n,t){for(var e=n.coordinates,r=-1,i=e.length;++r<i;)gt(e[r],t)},GeometryCollection:function(n,t){for(var e=n.geometries,r=-1,i=e.length;++r<i;)ht(e[r],t)}};ao.geo.area=function(n){return Sa=0,ao.geo.stream(n,Na),Sa};var Sa,ka=new ft,Na={sphere:function(){Sa+=4*Fo},point:b,lineStart:b,lineEnd:b,polygonStart:function(){ka.reset(),Na.lineStart=vt},polygonEnd:function(){var n=2*ka;Sa+=0>n?4*Fo+n:n,Na.lineStart=Na.lineEnd=Na.point=b}};ao.geo.bounds=function(){function n(n,t){M.push(x=[f=n,h=n]),s>t&&(s=t),t>p&&(p=t)}function t(t,e){var r=dt([t*Yo,e*Yo]);if(y){var i=mt(y,r),u=[i[1],-i[0],0],o=mt(u,i);bt(o),o=_t(o);var l=t-g,c=l>0?1:-1,v=o[0]*Zo*c,d=xo(l)>180;if(d^(v>c*g&&c*t>v)){var m=o[1]*Zo;m>p&&(p=m)}else if(v=(v+360)%360-180,d^(v>c*g&&c*t>v)){var m=-o[1]*Zo;s>m&&(s=m)}else s>e&&(s=e),e>p&&(p=e);d?g>t?a(f,t)>a(f,h)&&(h=t):a(t,h)>a(f,h)&&(f=t):h>=f?(f>t&&(f=t),t>h&&(h=t)):t>g?a(f,t)>a(f,h)&&(h=t):a(t,h)>a(f,h)&&(f=t)}else n(t,e);y=r,g=t}function e(){b.point=t}function r(){x[0]=f,x[1]=h,b.point=n,y=null}function i(n,e){if(y){var r=n-g;m+=xo(r)>180?r+(r>0?360:-360):r}else v=n,d=e;Na.point(n,e),t(n,e)}function u(){Na.lineStart()}function o(){i(v,d),Na.lineEnd(),xo(m)>Uo&&(f=-(h=180)),x[0]=f,x[1]=h,y=null}function a(n,t){return(t-=n)<0?t+360:t}function l(n,t){return n[0]-t[0]}function c(n,t){return t[0]<=t[1]?t[0]<=n&&n<=t[1]:n<t[0]||t[1]<n}var f,s,h,p,g,v,d,y,m,M,x,b={point:n,lineStart:e,lineEnd:r,polygonStart:function(){b.point=i,b.lineStart=u,b.lineEnd=o,m=0,Na.polygonStart()},polygonEnd:function(){Na.polygonEnd(),b.point=n,b.lineStart=e,b.lineEnd=r,0>ka?(f=-(h=180),s=-(p=90)):m>Uo?p=90:-Uo>m&&(s=-90),x[0]=f,x[1]=h}};return function(n){p=h=-(f=s=1/0),M=[],ao.geo.stream(n,b);var t=M.length;if(t){M.sort(l);for(var e,r=1,i=M[0],u=[i];t>r;++r)e=M[r],c(e[0],i)||c(e[1],i)?(a(i[0],e[1])>a(i[0],i[1])&&(i[1]=e[1]),a(e[0],i[1])>a(i[0],i[1])&&(i[0]=e[0])):u.push(i=e);for(var o,e,g=-(1/0),t=u.length-1,r=0,i=u[t];t>=r;i=e,++r)e=u[r],(o=a(i[1],e[0]))>g&&(g=o,f=e[0],h=i[1])}return M=x=null,f===1/0||s===1/0?[[NaN,NaN],[NaN,NaN]]:[[f,s],[h,p]]}}(),ao.geo.centroid=function(n){Ea=Aa=Ca=za=La=qa=Ta=Ra=Da=Pa=Ua=0,ao.geo.stream(n,ja);var t=Da,e=Pa,r=Ua,i=t*t+e*e+r*r;return jo>i&&(t=qa,e=Ta,r=Ra,Uo>Aa&&(t=Ca,e=za,r=La),i=t*t+e*e+r*r,jo>i)?[NaN,NaN]:[Math.atan2(e,t)*Zo,tn(r/Math.sqrt(i))*Zo]};var Ea,Aa,Ca,za,La,qa,Ta,Ra,Da,Pa,Ua,ja={sphere:b,point:St,lineStart:Nt,lineEnd:Et,polygonStart:function(){ja.lineStart=At},polygonEnd:function(){ja.lineStart=Nt}},Fa=Rt(zt,jt,Ht,[-Fo,-Fo/2]),Ha=1e9;ao.geo.clipExtent=function(){var n,t,e,r,i,u,o={stream:function(n){return i&&(i.valid=!1),i=u(n),i.valid=!0,i},extent:function(a){return arguments.length?(u=Zt(n=+a[0][0],t=+a[0][1],e=+a[1][0],r=+a[1][1]),i&&(i.valid=!1,i=null),o):[[n,t],[e,r]]}};return o.extent([[0,0],[960,500]])},(ao.geo.conicEqualArea=function(){return Vt(Xt)}).raw=Xt,ao.geo.albers=function(){return ao.geo.conicEqualArea().rotate([96,0]).center([-.6,38.7]).parallels([29.5,45.5]).scale(1070)},ao.geo.albersUsa=function(){function n(n){var u=n[0],o=n[1];return t=null,e(u,o),t||(r(u,o),t)||i(u,o),t}var t,e,r,i,u=ao.geo.albers(),o=ao.geo.conicEqualArea().rotate([154,0]).center([-2,58.5]).parallels([55,65]),a=ao.geo.conicEqualArea().rotate([157,0]).center([-3,19.9]).parallels([8,18]),l={point:function(n,e){t=[n,e]}};return n.invert=function(n){var t=u.scale(),e=u.translate(),r=(n[0]-e[0])/t,i=(n[1]-e[1])/t;return(i>=.12&&.234>i&&r>=-.425&&-.214>r?o:i>=.166&&.234>i&&r>=-.214&&-.115>r?a:u).invert(n)},n.stream=function(n){var t=u.stream(n),e=o.stream(n),r=a.stream(n);return{point:function(n,i){t.point(n,i),e.point(n,i),r.point(n,i)},sphere:function(){t.sphere(),e.sphere(),r.sphere()},lineStart:function(){t.lineStart(),e.lineStart(),r.lineStart()},lineEnd:function(){t.lineEnd(),e.lineEnd(),r.lineEnd()},polygonStart:function(){t.polygonStart(),e.polygonStart(),r.polygonStart()},polygonEnd:function(){t.polygonEnd(),e.polygonEnd(),r.polygonEnd()}}},n.precision=function(t){return arguments.length?(u.precision(t),o.precision(t),a.precision(t),n):u.precision()},n.scale=function(t){return arguments.length?(u.scale(t),o.scale(.35*t),a.scale(t),n.translate(u.translate())):u.scale()},n.translate=function(t){if(!arguments.length)return u.translate();var c=u.scale(),f=+t[0],s=+t[1];return e=u.translate(t).clipExtent([[f-.455*c,s-.238*c],[f+.455*c,s+.238*c]]).stream(l).point,r=o.translate([f-.307*c,s+.201*c]).clipExtent([[f-.425*c+Uo,s+.12*c+Uo],[f-.214*c-Uo,s+.234*c-Uo]]).stream(l).point,i=a.translate([f-.205*c,s+.212*c]).clipExtent([[f-.214*c+Uo,s+.166*c+Uo],[f-.115*c-Uo,s+.234*c-Uo]]).stream(l).point,n},n.scale(1070)};var Oa,Ia,Ya,Za,Va,Xa,$a={point:b,lineStart:b,lineEnd:b,polygonStart:function(){Ia=0,$a.lineStart=$t},polygonEnd:function(){$a.lineStart=$a.lineEnd=$a.point=b,Oa+=xo(Ia/2)}},Ba={point:Bt,lineStart:b,lineEnd:b,polygonStart:b,polygonEnd:b},Wa={point:Gt,lineStart:Kt,lineEnd:Qt,polygonStart:function(){Wa.lineStart=ne},polygonEnd:function(){Wa.point=Gt,Wa.lineStart=Kt,Wa.lineEnd=Qt}};ao.geo.path=function(){function n(n){return n&&("function"==typeof a&&u.pointRadius(+a.apply(this,arguments)),o&&o.valid||(o=i(u)),ao.geo.stream(n,o)),u.result()}function t(){return o=null,n}var e,r,i,u,o,a=4.5;return n.area=function(n){return Oa=0,ao.geo.stream(n,i($a)),Oa},n.centroid=function(n){return Ca=za=La=qa=Ta=Ra=Da=Pa=Ua=0,ao.geo.stream(n,i(Wa)),Ua?[Da/Ua,Pa/Ua]:Ra?[qa/Ra,Ta/Ra]:La?[Ca/La,za/La]:[NaN,NaN]},n.bounds=function(n){return Va=Xa=-(Ya=Za=1/0),ao.geo.stream(n,i(Ba)),[[Ya,Za],[Va,Xa]]},n.projection=function(n){return arguments.length?(i=(e=n)?n.stream||re(n):m,t()):e},n.context=function(n){return arguments.length?(u=null==(r=n)?new Wt:new te(n),"function"!=typeof a&&u.pointRadius(a),t()):r},n.pointRadius=function(t){return arguments.length?(a="function"==typeof t?t:(u.pointRadius(+t),+t),n):a},n.projection(ao.geo.albersUsa()).context(null)},ao.geo.transform=function(n){return{stream:function(t){var e=new ie(t);for(var r in n)e[r]=n[r];return e}}},ie.prototype={point:function(n,t){this.stream.point(n,t)},sphere:function(){this.stream.sphere()},lineStart:function(){this.stream.lineStart()},lineEnd:function(){this.stream.lineEnd()},polygonStart:function(){this.stream.polygonStart()},polygonEnd:function(){this.stream.polygonEnd()}},ao.geo.projection=oe,ao.geo.projectionMutator=ae,(ao.geo.equirectangular=function(){return oe(ce)}).raw=ce.invert=ce,ao.geo.rotation=function(n){function t(t){return t=n(t[0]*Yo,t[1]*Yo),t[0]*=Zo,t[1]*=Zo,t}return n=se(n[0]%360*Yo,n[1]*Yo,n.length>2?n[2]*Yo:0),t.invert=function(t){return t=n.invert(t[0]*Yo,t[1]*Yo),t[0]*=Zo,t[1]*=Zo,t},t},fe.invert=ce,ao.geo.circle=function(){function n(){var n="function"==typeof r?r.apply(this,arguments):r,t=se(-n[0]*Yo,-n[1]*Yo,0).invert,i=[];return e(null,null,1,{point:function(n,e){i.push(n=t(n,e)),n[0]*=Zo,n[1]*=Zo}}),{type:"Polygon",coordinates:[i]}}var t,e,r=[0,0],i=6;return n.origin=function(t){return arguments.length?(r=t,n):r},n.angle=function(r){return arguments.length?(e=ve((t=+r)*Yo,i*Yo),n):t},n.precision=function(r){return arguments.length?(e=ve(t*Yo,(i=+r)*Yo),n):i},n.angle(90)},ao.geo.distance=function(n,t){var e,r=(t[0]-n[0])*Yo,i=n[1]*Yo,u=t[1]*Yo,o=Math.sin(r),a=Math.cos(r),l=Math.sin(i),c=Math.cos(i),f=Math.sin(u),s=Math.cos(u);return Math.atan2(Math.sqrt((e=s*o)*e+(e=c*f-l*s*a)*e),l*f+c*s*a)},ao.geo.graticule=function(){function n(){return{type:"MultiLineString",coordinates:t()}}function t(){return ao.range(Math.ceil(u/d)*d,i,d).map(h).concat(ao.range(Math.ceil(c/y)*y,l,y).map(p)).concat(ao.range(Math.ceil(r/g)*g,e,g).filter(function(n){return xo(n%d)>Uo}).map(f)).concat(ao.range(Math.ceil(a/v)*v,o,v).filter(function(n){return xo(n%y)>Uo}).map(s))}var e,r,i,u,o,a,l,c,f,s,h,p,g=10,v=g,d=90,y=360,m=2.5;return n.lines=function(){return t().map(function(n){return{type:"LineString",coordinates:n}})},n.outline=function(){return{type:"Polygon",coordinates:[h(u).concat(p(l).slice(1),h(i).reverse().slice(1),p(c).reverse().slice(1))]}},n.extent=function(t){return arguments.length?n.majorExtent(t).minorExtent(t):n.minorExtent()},n.majorExtent=function(t){return arguments.length?(u=+t[0][0],i=+t[1][0],c=+t[0][1],l=+t[1][1],u>i&&(t=u,u=i,i=t),c>l&&(t=c,c=l,l=t),n.precision(m)):[[u,c],[i,l]]},n.minorExtent=function(t){return arguments.length?(r=+t[0][0],e=+t[1][0],a=+t[0][1],o=+t[1][1],r>e&&(t=r,r=e,e=t),a>o&&(t=a,a=o,o=t),n.precision(m)):[[r,a],[e,o]]},n.step=function(t){return arguments.length?n.majorStep(t).minorStep(t):n.minorStep()},n.majorStep=function(t){return arguments.length?(d=+t[0],y=+t[1],n):[d,y]},n.minorStep=function(t){return arguments.length?(g=+t[0],v=+t[1],n):[g,v]},n.precision=function(t){return arguments.length?(m=+t,f=ye(a,o,90),s=me(r,e,m),h=ye(c,l,90),p=me(u,i,m),n):m},n.majorExtent([[-180,-90+Uo],[180,90-Uo]]).minorExtent([[-180,-80-Uo],[180,80+Uo]])},ao.geo.greatArc=function(){function n(){return{type:"LineString",coordinates:[t||r.apply(this,arguments),e||i.apply(this,arguments)]}}var t,e,r=Me,i=xe;return n.distance=function(){return ao.geo.distance(t||r.apply(this,arguments),e||i.apply(this,arguments))},n.source=function(e){return arguments.length?(r=e,t="function"==typeof e?null:e,n):r},n.target=function(t){return arguments.length?(i=t,e="function"==typeof t?null:t,n):i},n.precision=function(){return arguments.length?n:0},n},ao.geo.interpolate=function(n,t){return be(n[0]*Yo,n[1]*Yo,t[0]*Yo,t[1]*Yo)},ao.geo.length=function(n){return Ja=0,ao.geo.stream(n,Ga),Ja};var Ja,Ga={sphere:b,point:b,lineStart:_e,lineEnd:b,polygonStart:b,polygonEnd:b},Ka=we(function(n){return Math.sqrt(2/(1+n))},function(n){return 2*Math.asin(n/2)});(ao.geo.azimuthalEqualArea=function(){return oe(Ka)}).raw=Ka;var Qa=we(function(n){var t=Math.acos(n);return t&&t/Math.sin(t)},m);(ao.geo.azimuthalEquidistant=function(){return oe(Qa)}).raw=Qa,(ao.geo.conicConformal=function(){return Vt(Se)}).raw=Se,(ao.geo.conicEquidistant=function(){return Vt(ke)}).raw=ke;var nl=we(function(n){return 1/n},Math.atan);(ao.geo.gnomonic=function(){return oe(nl)}).raw=nl,Ne.invert=function(n,t){return[n,2*Math.atan(Math.exp(t))-Io]},(ao.geo.mercator=function(){return Ee(Ne)}).raw=Ne;var tl=we(function(){return 1},Math.asin);(ao.geo.orthographic=function(){return oe(tl)}).raw=tl;var el=we(function(n){return 1/(1+n)},function(n){return 2*Math.atan(n)});(ao.geo.stereographic=function(){return oe(el)}).raw=el,Ae.invert=function(n,t){return[-t,2*Math.atan(Math.exp(n))-Io]},(ao.geo.transverseMercator=function(){var n=Ee(Ae),t=n.center,e=n.rotate;return n.center=function(n){return n?t([-n[1],n[0]]):(n=t(),[n[1],-n[0]])},n.rotate=function(n){return n?e([n[0],n[1],n.length>2?n[2]+90:90]):(n=e(),[n[0],n[1],n[2]-90])},e([0,0,90])}).raw=Ae,ao.geom={},ao.geom.hull=function(n){function t(n){if(n.length<3)return[];var t,i=En(e),u=En(r),o=n.length,a=[],l=[];for(t=0;o>t;t++)a.push([+i.call(this,n[t],t),+u.call(this,n[t],t),t]);for(a.sort(qe),t=0;o>t;t++)l.push([a[t][0],-a[t][1]]);var c=Le(a),f=Le(l),s=f[0]===c[0],h=f[f.length-1]===c[c.length-1],p=[];for(t=c.length-1;t>=0;--t)p.push(n[a[c[t]][2]]);for(t=+s;t<f.length-h;++t)p.push(n[a[f[t]][2]]);return p}var e=Ce,r=ze;return arguments.length?t(n):(t.x=function(n){return arguments.length?(e=n,t):e},t.y=function(n){return arguments.length?(r=n,t):r},t)},ao.geom.polygon=function(n){return ko(n,rl),n};var rl=ao.geom.polygon.prototype=[];rl.area=function(){for(var n,t=-1,e=this.length,r=this[e-1],i=0;++t<e;)n=r,r=this[t],i+=n[1]*r[0]-n[0]*r[1];return.5*i},rl.centroid=function(n){var t,e,r=-1,i=this.length,u=0,o=0,a=this[i-1];for(arguments.length||(n=-1/(6*this.area()));++r<i;)t=a,a=this[r],e=t[0]*a[1]-a[0]*t[1],u+=(t[0]+a[0])*e,o+=(t[1]+a[1])*e;return[u*n,o*n]},rl.clip=function(n){for(var t,e,r,i,u,o,a=De(n),l=-1,c=this.length-De(this),f=this[c-1];++l<c;){for(t=n.slice(),n.length=0,i=this[l],u=t[(r=t.length-a)-1],e=-1;++e<r;)o=t[e],Te(o,f,i)?(Te(u,f,i)||n.push(Re(u,o,f,i)),n.push(o)):Te(u,f,i)&&n.push(Re(u,o,f,i)),u=o;a&&n.push(n[0]),f=i}return n};var il,ul,ol,al,ll,cl=[],fl=[];Ye.prototype.prepare=function(){for(var n,t=this.edges,e=t.length;e--;)n=t[e].edge,n.b&&n.a||t.splice(e,1);return t.sort(Ve),t.length},tr.prototype={start:function(){return this.edge.l===this.site?this.edge.a:this.edge.b},end:function(){return this.edge.l===this.site?this.edge.b:this.edge.a}},er.prototype={insert:function(n,t){var e,r,i;if(n){if(t.P=n,t.N=n.N,n.N&&(n.N.P=t),n.N=t,n.R){for(n=n.R;n.L;)n=n.L;n.L=t}else n.R=t;e=n}else this._?(n=or(this._),t.P=null,t.N=n,n.P=n.L=t,e=n):(t.P=t.N=null,this._=t,e=null);for(t.L=t.R=null,t.U=e,t.C=!0,n=t;e&&e.C;)r=e.U,e===r.L?(i=r.R,i&&i.C?(e.C=i.C=!1,r.C=!0,n=r):(n===e.R&&(ir(this,e),n=e,e=n.U),e.C=!1,r.C=!0,ur(this,r))):(i=r.L,i&&i.C?(e.C=i.C=!1,r.C=!0,n=r):(n===e.L&&(ur(this,e),n=e,e=n.U),e.C=!1,r.C=!0,ir(this,r))),e=n.U;this._.C=!1},remove:function(n){n.N&&(n.N.P=n.P),n.P&&(n.P.N=n.N),n.N=n.P=null;var t,e,r,i=n.U,u=n.L,o=n.R;if(e=u?o?or(o):u:o,i?i.L===n?i.L=e:i.R=e:this._=e,u&&o?(r=e.C,e.C=n.C,e.L=u,u.U=e,e!==o?(i=e.U,e.U=n.U,n=e.R,i.L=n,e.R=o,o.U=e):(e.U=i,i=e,n=e.R)):(r=n.C,n=e),n&&(n.U=i),!r){if(n&&n.C)return void(n.C=!1);do{if(n===this._)break;if(n===i.L){if(t=i.R,t.C&&(t.C=!1,i.C=!0,ir(this,i),t=i.R),t.L&&t.L.C||t.R&&t.R.C){t.R&&t.R.C||(t.L.C=!1,t.C=!0,ur(this,t),t=i.R),t.C=i.C,i.C=t.R.C=!1,ir(this,i),n=this._;break}}else if(t=i.L,t.C&&(t.C=!1,i.C=!0,ur(this,i),t=i.L),t.L&&t.L.C||t.R&&t.R.C){t.L&&t.L.C||(t.R.C=!1,t.C=!0,ir(this,t),t=i.L),t.C=i.C,i.C=t.L.C=!1,ur(this,i),n=this._;break}t.C=!0,n=i,i=i.U}while(!n.C);n&&(n.C=!1)}}},ao.geom.voronoi=function(n){function t(n){var t=new Array(n.length),r=a[0][0],i=a[0][1],u=a[1][0],o=a[1][1];return ar(e(n),a).cells.forEach(function(e,a){var l=e.edges,c=e.site,f=t[a]=l.length?l.map(function(n){var t=n.start();return[t.x,t.y]}):c.x>=r&&c.x<=u&&c.y>=i&&c.y<=o?[[r,o],[u,o],[u,i],[r,i]]:[];f.point=n[a]}),t}function e(n){return n.map(function(n,t){return{x:Math.round(u(n,t)/Uo)*Uo,y:Math.round(o(n,t)/Uo)*Uo,i:t}})}var r=Ce,i=ze,u=r,o=i,a=sl;return n?t(n):(t.links=function(n){return ar(e(n)).edges.filter(function(n){return n.l&&n.r}).map(function(t){return{source:n[t.l.i],target:n[t.r.i]}})},t.triangles=function(n){var t=[];return ar(e(n)).cells.forEach(function(e,r){for(var i,u,o=e.site,a=e.edges.sort(Ve),l=-1,c=a.length,f=a[c-1].edge,s=f.l===o?f.r:f.l;++l<c;)i=f,u=s,f=a[l].edge,s=f.l===o?f.r:f.l,r<u.i&&r<s.i&&cr(o,u,s)<0&&t.push([n[r],n[u.i],n[s.i]])}),t},t.x=function(n){return arguments.length?(u=En(r=n),t):r},t.y=function(n){return arguments.length?(o=En(i=n),t):i},t.clipExtent=function(n){return arguments.length?(a=null==n?sl:n,t):a===sl?null:a},t.size=function(n){return arguments.length?t.clipExtent(n&&[[0,0],n]):a===sl?null:a&&a[1]},t)};var sl=[[-1e6,-1e6],[1e6,1e6]];ao.geom.delaunay=function(n){return ao.geom.voronoi().triangles(n)},ao.geom.quadtree=function(n,t,e,r,i){function u(n){function u(n,t,e,r,i,u,o,a){if(!isNaN(e)&&!isNaN(r))if(n.leaf){var l=n.x,f=n.y;if(null!=l)if(xo(l-e)+xo(f-r)<.01)c(n,t,e,r,i,u,o,a);else{var s=n.point;n.x=n.y=n.point=null,c(n,s,l,f,i,u,o,a),c(n,t,e,r,i,u,o,a)}else n.x=e,n.y=r,n.point=t}else c(n,t,e,r,i,u,o,a)}function c(n,t,e,r,i,o,a,l){var c=.5*(i+a),f=.5*(o+l),s=e>=c,h=r>=f,p=h<<1|s;n.leaf=!1,n=n.nodes[p]||(n.nodes[p]=hr()),s?i=c:a=c,h?o=f:l=f,u(n,t,e,r,i,o,a,l)}var f,s,h,p,g,v,d,y,m,M=En(a),x=En(l);if(null!=t)v=t,d=e,y=r,m=i;else if(y=m=-(v=d=1/0),s=[],h=[],g=n.length,o)for(p=0;g>p;++p)f=n[p],f.x<v&&(v=f.x),f.y<d&&(d=f.y),f.x>y&&(y=f.x),f.y>m&&(m=f.y),s.push(f.x),h.push(f.y);else for(p=0;g>p;++p){var b=+M(f=n[p],p),_=+x(f,p);v>b&&(v=b),d>_&&(d=_),b>y&&(y=b),_>m&&(m=_),s.push(b),h.push(_)}var w=y-v,S=m-d;w>S?m=d+w:y=v+S;var k=hr();if(k.add=function(n){u(k,n,+M(n,++p),+x(n,p),v,d,y,m)},k.visit=function(n){pr(n,k,v,d,y,m)},k.find=function(n){return gr(k,n[0],n[1],v,d,y,m)},p=-1,null==t){for(;++p<g;)u(k,n[p],s[p],h[p],v,d,y,m);--p}else n.forEach(k.add);return s=h=n=f=null,k}var o,a=Ce,l=ze;return(o=arguments.length)?(a=fr,l=sr,3===o&&(i=e,r=t,e=t=0),u(n)):(u.x=function(n){return arguments.length?(a=n,u):a},u.y=function(n){return arguments.length?(l=n,u):l},u.extent=function(n){return arguments.length?(null==n?t=e=r=i=null:(t=+n[0][0],e=+n[0][1],r=+n[1][0],i=+n[1][1]),u):null==t?null:[[t,e],[r,i]]},u.size=function(n){return arguments.length?(null==n?t=e=r=i=null:(t=e=0,r=+n[0],i=+n[1]),u):null==t?null:[r-t,i-e]},u)},ao.interpolateRgb=vr,ao.interpolateObject=dr,ao.interpolateNumber=yr,ao.interpolateString=mr;var hl=/[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g,pl=new RegExp(hl.source,"g");ao.interpolate=Mr,ao.interpolators=[function(n,t){var e=typeof t;return("string"===e?ua.has(t.toLowerCase())||/^(#|rgb\(|hsl\()/i.test(t)?vr:mr:t instanceof an?vr:Array.isArray(t)?xr:"object"===e&&isNaN(t)?dr:yr)(n,t)}],ao.interpolateArray=xr;var gl=function(){return m},vl=ao.map({linear:gl,poly:Er,quad:function(){return Sr},cubic:function(){return kr},sin:function(){return Ar},exp:function(){return Cr},circle:function(){return zr},elastic:Lr,back:qr,bounce:function(){return Tr}}),dl=ao.map({"in":m,out:_r,"in-out":wr,"out-in":function(n){return wr(_r(n))}});ao.ease=function(n){var t=n.indexOf("-"),e=t>=0?n.slice(0,t):n,r=t>=0?n.slice(t+1):"in";return e=vl.get(e)||gl,r=dl.get(r)||m,br(r(e.apply(null,lo.call(arguments,1))))},ao.interpolateHcl=Rr,ao.interpolateHsl=Dr,ao.interpolateLab=Pr,ao.interpolateRound=Ur,ao.transform=function(n){var t=fo.createElementNS(ao.ns.prefix.svg,"g");return(ao.transform=function(n){if(null!=n){t.setAttribute("transform",n);var e=t.transform.baseVal.consolidate()}return new jr(e?e.matrix:yl)})(n)},jr.prototype.toString=function(){return"translate("+this.translate+")rotate("+this.rotate+")skewX("+this.skew+")scale("+this.scale+")"};var yl={a:1,b:0,c:0,d:1,e:0,f:0};ao.interpolateTransform=$r,ao.layout={},ao.layout.bundle=function(){return function(n){for(var t=[],e=-1,r=n.length;++e<r;)t.push(Jr(n[e]));return t}},ao.layout.chord=function(){function n(){var n,c,s,h,p,g={},v=[],d=ao.range(u),y=[];for(e=[],r=[],n=0,h=-1;++h<u;){for(c=0,p=-1;++p<u;)c+=i[h][p];v.push(c),y.push(ao.range(u)),n+=c}for(o&&d.sort(function(n,t){return o(v[n],v[t])}),a&&y.forEach(function(n,t){n.sort(function(n,e){return a(i[t][n],i[t][e])})}),n=(Ho-f*u)/n,c=0,h=-1;++h<u;){for(s=c,p=-1;++p<u;){var m=d[h],M=y[m][p],x=i[m][M],b=c,_=c+=x*n;g[m+"-"+M]={index:m,subindex:M,startAngle:b,endAngle:_,value:x}}r[m]={index:m,startAngle:s,endAngle:c,value:v[m]},c+=f}for(h=-1;++h<u;)for(p=h-1;++p<u;){var w=g[h+"-"+p],S=g[p+"-"+h];(w.value||S.value)&&e.push(w.value<S.value?{source:S,target:w}:{source:w,target:S})}l&&t()}function t(){e.sort(function(n,t){return l((n.source.value+n.target.value)/2,(t.source.value+t.target.value)/2)})}var e,r,i,u,o,a,l,c={},f=0;return c.matrix=function(n){return arguments.length?(u=(i=n)&&i.length,e=r=null,c):i},c.padding=function(n){return arguments.length?(f=n,e=r=null,c):f},c.sortGroups=function(n){return arguments.length?(o=n,e=r=null,c):o},c.sortSubgroups=function(n){return arguments.length?(a=n,e=null,c):a},c.sortChords=function(n){return arguments.length?(l=n,e&&t(),c):l},c.chords=function(){return e||n(),e},c.groups=function(){return r||n(),r},c},ao.layout.force=function(){function n(n){return function(t,e,r,i){if(t.point!==n){var u=t.cx-n.x,o=t.cy-n.y,a=i-e,l=u*u+o*o;if(l>a*a/y){if(v>l){var c=t.charge/l;n.px-=u*c,n.py-=o*c}return!0}if(t.point&&l&&v>l){var c=t.pointCharge/l;n.px-=u*c,n.py-=o*c}}return!t.charge}}function t(n){n.px=ao.event.x,n.py=ao.event.y,l.resume()}var e,r,i,u,o,a,l={},c=ao.dispatch("start","tick","end"),f=[1,1],s=.9,h=ml,p=Ml,g=-30,v=xl,d=.1,y=.64,M=[],x=[];return l.tick=function(){if((i*=.99)<.005)return e=null,c.end({type:"end",alpha:i=0}),!0;var t,r,l,h,p,v,y,m,b,_=M.length,w=x.length;for(r=0;w>r;++r)l=x[r],h=l.source,p=l.target,m=p.x-h.x,b=p.y-h.y,(v=m*m+b*b)&&(v=i*o[r]*((v=Math.sqrt(v))-u[r])/v,m*=v,b*=v,p.x-=m*(y=h.weight+p.weight?h.weight/(h.weight+p.weight):.5),p.y-=b*y,h.x+=m*(y=1-y),h.y+=b*y);if((y=i*d)&&(m=f[0]/2,b=f[1]/2,r=-1,y))for(;++r<_;)l=M[r],l.x+=(m-l.x)*y,l.y+=(b-l.y)*y;if(g)for(ri(t=ao.geom.quadtree(M),i,a),r=-1;++r<_;)(l=M[r]).fixed||t.visit(n(l));for(r=-1;++r<_;)l=M[r],l.fixed?(l.x=l.px,l.y=l.py):(l.x-=(l.px-(l.px=l.x))*s,l.y-=(l.py-(l.py=l.y))*s);c.tick({type:"tick",alpha:i})},l.nodes=function(n){return arguments.length?(M=n,l):M},l.links=function(n){return arguments.length?(x=n,l):x},l.size=function(n){return arguments.length?(f=n,l):f},l.linkDistance=function(n){return arguments.length?(h="function"==typeof n?n:+n,l):h},l.distance=l.linkDistance,l.linkStrength=function(n){return arguments.length?(p="function"==typeof n?n:+n,l):p},l.friction=function(n){return arguments.length?(s=+n,l):s},l.charge=function(n){return arguments.length?(g="function"==typeof n?n:+n,l):g},l.chargeDistance=function(n){return arguments.length?(v=n*n,l):Math.sqrt(v)},l.gravity=function(n){return arguments.length?(d=+n,l):d},l.theta=function(n){return arguments.length?(y=n*n,l):Math.sqrt(y)},l.alpha=function(n){return arguments.length?(n=+n,i?n>0?i=n:(e.c=null,e.t=NaN,e=null,c.end({type:"end",alpha:i=0})):n>0&&(c.start({type:"start",alpha:i=n}),e=qn(l.tick)),l):i},l.start=function(){function n(n,r){if(!e){for(e=new Array(i),l=0;i>l;++l)e[l]=[];for(l=0;c>l;++l){var u=x[l];e[u.source.index].push(u.target),e[u.target.index].push(u.source)}}for(var o,a=e[t],l=-1,f=a.length;++l<f;)if(!isNaN(o=a[l][n]))return o;return Math.random()*r}var t,e,r,i=M.length,c=x.length,s=f[0],v=f[1];for(t=0;i>t;++t)(r=M[t]).index=t,r.weight=0;for(t=0;c>t;++t)r=x[t],"number"==typeof r.source&&(r.source=M[r.source]),"number"==typeof r.target&&(r.target=M[r.target]),++r.source.weight,++r.target.weight;for(t=0;i>t;++t)r=M[t],isNaN(r.x)&&(r.x=n("x",s)),isNaN(r.y)&&(r.y=n("y",v)),isNaN(r.px)&&(r.px=r.x),isNaN(r.py)&&(r.py=r.y);if(u=[],"function"==typeof h)for(t=0;c>t;++t)u[t]=+h.call(this,x[t],t);else for(t=0;c>t;++t)u[t]=h;if(o=[],"function"==typeof p)for(t=0;c>t;++t)o[t]=+p.call(this,x[t],t);else for(t=0;c>t;++t)o[t]=p;if(a=[],"function"==typeof g)for(t=0;i>t;++t)a[t]=+g.call(this,M[t],t);else for(t=0;i>t;++t)a[t]=g;return l.resume()},l.resume=function(){return l.alpha(.1)},l.stop=function(){return l.alpha(0)},l.drag=function(){return r||(r=ao.behavior.drag().origin(m).on("dragstart.force",Qr).on("drag.force",t).on("dragend.force",ni)),arguments.length?void this.on("mouseover.force",ti).on("mouseout.force",ei).call(r):r},ao.rebind(l,c,"on")};var ml=20,Ml=1,xl=1/0;ao.layout.hierarchy=function(){function n(i){var u,o=[i],a=[];for(i.depth=0;null!=(u=o.pop());)if(a.push(u),(c=e.call(n,u,u.depth))&&(l=c.length)){for(var l,c,f;--l>=0;)o.push(f=c[l]),f.parent=u,f.depth=u.depth+1;r&&(u.value=0),u.children=c}else r&&(u.value=+r.call(n,u,u.depth)||0),delete u.children;return oi(i,function(n){var e,i;t&&(e=n.children)&&e.sort(t),r&&(i=n.parent)&&(i.value+=n.value)}),a}var t=ci,e=ai,r=li;return n.sort=function(e){return arguments.length?(t=e,n):t},n.children=function(t){return arguments.length?(e=t,n):e},n.value=function(t){return arguments.length?(r=t,n):r},n.revalue=function(t){return r&&(ui(t,function(n){n.children&&(n.value=0)}),oi(t,function(t){var e;t.children||(t.value=+r.call(n,t,t.depth)||0),(e=t.parent)&&(e.value+=t.value)})),t},n},ao.layout.partition=function(){function n(t,e,r,i){var u=t.children;if(t.x=e,t.y=t.depth*i,t.dx=r,t.dy=i,u&&(o=u.length)){var o,a,l,c=-1;for(r=t.value?r/t.value:0;++c<o;)n(a=u[c],e,l=a.value*r,i),e+=l}}function t(n){var e=n.children,r=0;if(e&&(i=e.length))for(var i,u=-1;++u<i;)r=Math.max(r,t(e[u]));return 1+r}function e(e,u){var o=r.call(this,e,u);return n(o[0],0,i[0],i[1]/t(o[0])),o}var r=ao.layout.hierarchy(),i=[1,1];return e.size=function(n){return arguments.length?(i=n,e):i},ii(e,r)},ao.layout.pie=function(){function n(o){var a,l=o.length,c=o.map(function(e,r){return+t.call(n,e,r)}),f=+("function"==typeof r?r.apply(this,arguments):r),s=("function"==typeof i?i.apply(this,arguments):i)-f,h=Math.min(Math.abs(s)/l,+("function"==typeof u?u.apply(this,arguments):u)),p=h*(0>s?-1:1),g=ao.sum(c),v=g?(s-l*p)/g:0,d=ao.range(l),y=[];return null!=e&&d.sort(e===bl?function(n,t){return c[t]-c[n]}:function(n,t){return e(o[n],o[t])}),d.forEach(function(n){y[n]={data:o[n],value:a=c[n],startAngle:f,endAngle:f+=a*v+p,padAngle:h}}),y}var t=Number,e=bl,r=0,i=Ho,u=0;return n.value=function(e){return arguments.length?(t=e,n):t},n.sort=function(t){return arguments.length?(e=t,n):e},n.startAngle=function(t){return arguments.length?(r=t,n):r},n.endAngle=function(t){return arguments.length?(i=t,n):i},n.padAngle=function(t){return arguments.length?(u=t,n):u},n};var bl={};ao.layout.stack=function(){function n(a,l){if(!(h=a.length))return a;var c=a.map(function(e,r){return t.call(n,e,r)}),f=c.map(function(t){return t.map(function(t,e){return[u.call(n,t,e),o.call(n,t,e)]})}),s=e.call(n,f,l);c=ao.permute(c,s),f=ao.permute(f,s);var h,p,g,v,d=r.call(n,f,l),y=c[0].length;for(g=0;y>g;++g)for(i.call(n,c[0][g],v=d[g],f[0][g][1]),p=1;h>p;++p)i.call(n,c[p][g],v+=f[p-1][g][1],f[p][g][1]);return a}var t=m,e=gi,r=vi,i=pi,u=si,o=hi;return n.values=function(e){return arguments.length?(t=e,n):t},n.order=function(t){return arguments.length?(e="function"==typeof t?t:_l.get(t)||gi,n):e},n.offset=function(t){return arguments.length?(r="function"==typeof t?t:wl.get(t)||vi,n):r},n.x=function(t){return arguments.length?(u=t,n):u},n.y=function(t){return arguments.length?(o=t,n):o},n.out=function(t){return arguments.length?(i=t,n):i},n};var _l=ao.map({"inside-out":function(n){var t,e,r=n.length,i=n.map(di),u=n.map(yi),o=ao.range(r).sort(function(n,t){return i[n]-i[t]}),a=0,l=0,c=[],f=[];for(t=0;r>t;++t)e=o[t],l>a?(a+=u[e],c.push(e)):(l+=u[e],f.push(e));return f.reverse().concat(c)},reverse:function(n){return ao.range(n.length).reverse()},"default":gi}),wl=ao.map({silhouette:function(n){var t,e,r,i=n.length,u=n[0].length,o=[],a=0,l=[];for(e=0;u>e;++e){for(t=0,r=0;i>t;t++)r+=n[t][e][1];r>a&&(a=r),o.push(r)}for(e=0;u>e;++e)l[e]=(a-o[e])/2;return l},wiggle:function(n){var t,e,r,i,u,o,a,l,c,f=n.length,s=n[0],h=s.length,p=[];for(p[0]=l=c=0,e=1;h>e;++e){for(t=0,i=0;f>t;++t)i+=n[t][e][1];for(t=0,u=0,a=s[e][0]-s[e-1][0];f>t;++t){for(r=0,o=(n[t][e][1]-n[t][e-1][1])/(2*a);t>r;++r)o+=(n[r][e][1]-n[r][e-1][1])/a;u+=o*n[t][e][1]}p[e]=l-=i?u/i*a:0,c>l&&(c=l)}for(e=0;h>e;++e)p[e]-=c;return p},expand:function(n){var t,e,r,i=n.length,u=n[0].length,o=1/i,a=[];for(e=0;u>e;++e){for(t=0,r=0;i>t;t++)r+=n[t][e][1];if(r)for(t=0;i>t;t++)n[t][e][1]/=r;else for(t=0;i>t;t++)n[t][e][1]=o}for(e=0;u>e;++e)a[e]=0;return a},zero:vi});ao.layout.histogram=function(){function n(n,u){for(var o,a,l=[],c=n.map(e,this),f=r.call(this,c,u),s=i.call(this,f,c,u),u=-1,h=c.length,p=s.length-1,g=t?1:1/h;++u<p;)o=l[u]=[],o.dx=s[u+1]-(o.x=s[u]),o.y=0;if(p>0)for(u=-1;++u<h;)a=c[u],a>=f[0]&&a<=f[1]&&(o=l[ao.bisect(s,a,1,p)-1],o.y+=g,o.push(n[u]));return l}var t=!0,e=Number,r=bi,i=Mi;return n.value=function(t){return arguments.length?(e=t,n):e},n.range=function(t){return arguments.length?(r=En(t),n):r},n.bins=function(t){return arguments.length?(i="number"==typeof t?function(n){return xi(n,t)}:En(t),n):i},n.frequency=function(e){return arguments.length?(t=!!e,n):t},n},ao.layout.pack=function(){function n(n,u){var o=e.call(this,n,u),a=o[0],l=i[0],c=i[1],f=null==t?Math.sqrt:"function"==typeof t?t:function(){return t};if(a.x=a.y=0,oi(a,function(n){n.r=+f(n.value)}),oi(a,Ni),r){var s=r*(t?1:Math.max(2*a.r/l,2*a.r/c))/2;oi(a,function(n){n.r+=s}),oi(a,Ni),oi(a,function(n){n.r-=s})}return Ci(a,l/2,c/2,t?1:1/Math.max(2*a.r/l,2*a.r/c)),o}var t,e=ao.layout.hierarchy().sort(_i),r=0,i=[1,1];return n.size=function(t){return arguments.length?(i=t,n):i},n.radius=function(e){return arguments.length?(t=null==e||"function"==typeof e?e:+e,n):t},n.padding=function(t){return arguments.length?(r=+t,n):r},ii(n,e)},ao.layout.tree=function(){function n(n,i){var f=o.call(this,n,i),s=f[0],h=t(s);if(oi(h,e),h.parent.m=-h.z,ui(h,r),c)ui(s,u);else{var p=s,g=s,v=s;ui(s,function(n){n.x<p.x&&(p=n),n.x>g.x&&(g=n),n.depth>v.depth&&(v=n)});var d=a(p,g)/2-p.x,y=l[0]/(g.x+a(g,p)/2+d),m=l[1]/(v.depth||1);ui(s,function(n){n.x=(n.x+d)*y,n.y=n.depth*m})}return f}function t(n){for(var t,e={A:null,children:[n]},r=[e];null!=(t=r.pop());)for(var i,u=t.children,o=0,a=u.length;a>o;++o)r.push((u[o]=i={_:u[o],parent:t,children:(i=u[o].children)&&i.slice()||[],A:null,a:null,z:0,m:0,c:0,s:0,t:null,i:o}).a=i);return e.children[0]}function e(n){var t=n.children,e=n.parent.children,r=n.i?e[n.i-1]:null;if(t.length){Di(n);var u=(t[0].z+t[t.length-1].z)/2;r?(n.z=r.z+a(n._,r._),n.m=n.z-u):n.z=u}else r&&(n.z=r.z+a(n._,r._));n.parent.A=i(n,r,n.parent.A||e[0])}function r(n){n._.x=n.z+n.parent.m,n.m+=n.parent.m}function i(n,t,e){if(t){for(var r,i=n,u=n,o=t,l=i.parent.children[0],c=i.m,f=u.m,s=o.m,h=l.m;o=Ti(o),i=qi(i),o&&i;)l=qi(l),u=Ti(u),u.a=n,r=o.z+s-i.z-c+a(o._,i._),r>0&&(Ri(Pi(o,n,e),n,r),c+=r,f+=r),s+=o.m,c+=i.m,h+=l.m,f+=u.m;o&&!Ti(u)&&(u.t=o,u.m+=s-f),i&&!qi(l)&&(l.t=i,l.m+=c-h,e=n)}return e}function u(n){n.x*=l[0],n.y=n.depth*l[1]}var o=ao.layout.hierarchy().sort(null).value(null),a=Li,l=[1,1],c=null;return n.separation=function(t){return arguments.length?(a=t,n):a},n.size=function(t){return arguments.length?(c=null==(l=t)?u:null,n):c?null:l},n.nodeSize=function(t){return arguments.length?(c=null==(l=t)?null:u,n):c?l:null},ii(n,o)},ao.layout.cluster=function(){function n(n,u){var o,a=t.call(this,n,u),l=a[0],c=0;oi(l,function(n){var t=n.children;t&&t.length?(n.x=ji(t),n.y=Ui(t)):(n.x=o?c+=e(n,o):0,n.y=0,o=n)});var f=Fi(l),s=Hi(l),h=f.x-e(f,s)/2,p=s.x+e(s,f)/2;return oi(l,i?function(n){n.x=(n.x-l.x)*r[0],n.y=(l.y-n.y)*r[1]}:function(n){n.x=(n.x-h)/(p-h)*r[0],n.y=(1-(l.y?n.y/l.y:1))*r[1]}),a}var t=ao.layout.hierarchy().sort(null).value(null),e=Li,r=[1,1],i=!1;return n.separation=function(t){return arguments.length?(e=t,n):e},n.size=function(t){return arguments.length?(i=null==(r=t),n):i?null:r},n.nodeSize=function(t){return arguments.length?(i=null!=(r=t),n):i?r:null},ii(n,t)},ao.layout.treemap=function(){function n(n,t){for(var e,r,i=-1,u=n.length;++i<u;)r=(e=n[i]).value*(0>t?0:t),e.area=isNaN(r)||0>=r?0:r}function t(e){var u=e.children;if(u&&u.length){var o,a,l,c=s(e),f=[],h=u.slice(),g=1/0,v="slice"===p?c.dx:"dice"===p?c.dy:"slice-dice"===p?1&e.depth?c.dy:c.dx:Math.min(c.dx,c.dy);for(n(h,c.dx*c.dy/e.value),f.area=0;(l=h.length)>0;)f.push(o=h[l-1]),f.area+=o.area,"squarify"!==p||(a=r(f,v))<=g?(h.pop(),g=a):(f.area-=f.pop().area,i(f,v,c,!1),v=Math.min(c.dx,c.dy),f.length=f.area=0,g=1/0);f.length&&(i(f,v,c,!0),f.length=f.area=0),u.forEach(t)}}function e(t){var r=t.children;if(r&&r.length){var u,o=s(t),a=r.slice(),l=[];for(n(a,o.dx*o.dy/t.value),l.area=0;u=a.pop();)l.push(u),l.area+=u.area,null!=u.z&&(i(l,u.z?o.dx:o.dy,o,!a.length),l.length=l.area=0);r.forEach(e)}}function r(n,t){for(var e,r=n.area,i=0,u=1/0,o=-1,a=n.length;++o<a;)(e=n[o].area)&&(u>e&&(u=e),e>i&&(i=e));return r*=r,t*=t,r?Math.max(t*i*g/r,r/(t*u*g)):1/0}function i(n,t,e,r){var i,u=-1,o=n.length,a=e.x,c=e.y,f=t?l(n.area/t):0;
 if(t==e.dx){for((r||f>e.dy)&&(f=e.dy);++u<o;)i=n[u],i.x=a,i.y=c,i.dy=f,a+=i.dx=Math.min(e.x+e.dx-a,f?l(i.area/f):0);i.z=!0,i.dx+=e.x+e.dx-a,e.y+=f,e.dy-=f}else{for((r||f>e.dx)&&(f=e.dx);++u<o;)i=n[u],i.x=a,i.y=c,i.dx=f,c+=i.dy=Math.min(e.y+e.dy-c,f?l(i.area/f):0);i.z=!1,i.dy+=e.y+e.dy-c,e.x+=f,e.dx-=f}}function u(r){var i=o||a(r),u=i[0];return u.x=u.y=0,u.value?(u.dx=c[0],u.dy=c[1]):u.dx=u.dy=0,o&&a.revalue(u),n([u],u.dx*u.dy/u.value),(o?e:t)(u),h&&(o=i),i}var o,a=ao.layout.hierarchy(),l=Math.round,c=[1,1],f=null,s=Oi,h=!1,p="squarify",g=.5*(1+Math.sqrt(5));return u.size=function(n){return arguments.length?(c=n,u):c},u.padding=function(n){function t(t){var e=n.call(u,t,t.depth);return null==e?Oi(t):Ii(t,"number"==typeof e?[e,e,e,e]:e)}function e(t){return Ii(t,n)}if(!arguments.length)return f;var r;return s=null==(f=n)?Oi:"function"==(r=typeof n)?t:"number"===r?(n=[n,n,n,n],e):e,u},u.round=function(n){return arguments.length?(l=n?Math.round:Number,u):l!=Number},u.sticky=function(n){return arguments.length?(h=n,o=null,u):h},u.ratio=function(n){return arguments.length?(g=n,u):g},u.mode=function(n){return arguments.length?(p=n+"",u):p},ii(u,a)},ao.random={normal:function(n,t){var e=arguments.length;return 2>e&&(t=1),1>e&&(n=0),function(){var e,r,i;do e=2*Math.random()-1,r=2*Math.random()-1,i=e*e+r*r;while(!i||i>1);return n+t*e*Math.sqrt(-2*Math.log(i)/i)}},logNormal:function(){var n=ao.random.normal.apply(ao,arguments);return function(){return Math.exp(n())}},bates:function(n){var t=ao.random.irwinHall(n);return function(){return t()/n}},irwinHall:function(n){return function(){for(var t=0,e=0;n>e;e++)t+=Math.random();return t}}},ao.scale={};var Sl={floor:m,ceil:m};ao.scale.linear=function(){return Wi([0,1],[0,1],Mr,!1)};var kl={s:1,g:1,p:1,r:1,e:1};ao.scale.log=function(){return ru(ao.scale.linear().domain([0,1]),10,!0,[1,10])};var Nl=ao.format(".0e"),El={floor:function(n){return-Math.ceil(-n)},ceil:function(n){return-Math.floor(-n)}};ao.scale.pow=function(){return iu(ao.scale.linear(),1,[0,1])},ao.scale.sqrt=function(){return ao.scale.pow().exponent(.5)},ao.scale.ordinal=function(){return ou([],{t:"range",a:[[]]})},ao.scale.category10=function(){return ao.scale.ordinal().range(Al)},ao.scale.category20=function(){return ao.scale.ordinal().range(Cl)},ao.scale.category20b=function(){return ao.scale.ordinal().range(zl)},ao.scale.category20c=function(){return ao.scale.ordinal().range(Ll)};var Al=[2062260,16744206,2924588,14034728,9725885,9197131,14907330,8355711,12369186,1556175].map(xn),Cl=[2062260,11454440,16744206,16759672,2924588,10018698,14034728,16750742,9725885,12955861,9197131,12885140,14907330,16234194,8355711,13092807,12369186,14408589,1556175,10410725].map(xn),zl=[3750777,5395619,7040719,10264286,6519097,9216594,11915115,13556636,9202993,12426809,15186514,15190932,8666169,11356490,14049643,15177372,8077683,10834324,13528509,14589654].map(xn),Ll=[3244733,7057110,10406625,13032431,15095053,16616764,16625259,16634018,3253076,7652470,10607003,13101504,7695281,10394312,12369372,14342891,6513507,9868950,12434877,14277081].map(xn);ao.scale.quantile=function(){return au([],[])},ao.scale.quantize=function(){return lu(0,1,[0,1])},ao.scale.threshold=function(){return cu([.5],[0,1])},ao.scale.identity=function(){return fu([0,1])},ao.svg={},ao.svg.arc=function(){function n(){var n=Math.max(0,+e.apply(this,arguments)),c=Math.max(0,+r.apply(this,arguments)),f=o.apply(this,arguments)-Io,s=a.apply(this,arguments)-Io,h=Math.abs(s-f),p=f>s?0:1;if(n>c&&(g=c,c=n,n=g),h>=Oo)return t(c,p)+(n?t(n,1-p):"")+"Z";var g,v,d,y,m,M,x,b,_,w,S,k,N=0,E=0,A=[];if((y=(+l.apply(this,arguments)||0)/2)&&(d=u===ql?Math.sqrt(n*n+c*c):+u.apply(this,arguments),p||(E*=-1),c&&(E=tn(d/c*Math.sin(y))),n&&(N=tn(d/n*Math.sin(y)))),c){m=c*Math.cos(f+E),M=c*Math.sin(f+E),x=c*Math.cos(s-E),b=c*Math.sin(s-E);var C=Math.abs(s-f-2*E)<=Fo?0:1;if(E&&yu(m,M,x,b)===p^C){var z=(f+s)/2;m=c*Math.cos(z),M=c*Math.sin(z),x=b=null}}else m=M=0;if(n){_=n*Math.cos(s-N),w=n*Math.sin(s-N),S=n*Math.cos(f+N),k=n*Math.sin(f+N);var L=Math.abs(f-s+2*N)<=Fo?0:1;if(N&&yu(_,w,S,k)===1-p^L){var q=(f+s)/2;_=n*Math.cos(q),w=n*Math.sin(q),S=k=null}}else _=w=0;if(h>Uo&&(g=Math.min(Math.abs(c-n)/2,+i.apply(this,arguments)))>.001){v=c>n^p?0:1;var T=g,R=g;if(Fo>h){var D=null==S?[_,w]:null==x?[m,M]:Re([m,M],[S,k],[x,b],[_,w]),P=m-D[0],U=M-D[1],j=x-D[0],F=b-D[1],H=1/Math.sin(Math.acos((P*j+U*F)/(Math.sqrt(P*P+U*U)*Math.sqrt(j*j+F*F)))/2),O=Math.sqrt(D[0]*D[0]+D[1]*D[1]);R=Math.min(g,(n-O)/(H-1)),T=Math.min(g,(c-O)/(H+1))}if(null!=x){var I=mu(null==S?[_,w]:[S,k],[m,M],c,T,p),Y=mu([x,b],[_,w],c,T,p);g===T?A.push("M",I[0],"A",T,",",T," 0 0,",v," ",I[1],"A",c,",",c," 0 ",1-p^yu(I[1][0],I[1][1],Y[1][0],Y[1][1]),",",p," ",Y[1],"A",T,",",T," 0 0,",v," ",Y[0]):A.push("M",I[0],"A",T,",",T," 0 1,",v," ",Y[0])}else A.push("M",m,",",M);if(null!=S){var Z=mu([m,M],[S,k],n,-R,p),V=mu([_,w],null==x?[m,M]:[x,b],n,-R,p);g===R?A.push("L",V[0],"A",R,",",R," 0 0,",v," ",V[1],"A",n,",",n," 0 ",p^yu(V[1][0],V[1][1],Z[1][0],Z[1][1]),",",1-p," ",Z[1],"A",R,",",R," 0 0,",v," ",Z[0]):A.push("L",V[0],"A",R,",",R," 0 0,",v," ",Z[0])}else A.push("L",_,",",w)}else A.push("M",m,",",M),null!=x&&A.push("A",c,",",c," 0 ",C,",",p," ",x,",",b),A.push("L",_,",",w),null!=S&&A.push("A",n,",",n," 0 ",L,",",1-p," ",S,",",k);return A.push("Z"),A.join("")}function t(n,t){return"M0,"+n+"A"+n+","+n+" 0 1,"+t+" 0,"+-n+"A"+n+","+n+" 0 1,"+t+" 0,"+n}var e=hu,r=pu,i=su,u=ql,o=gu,a=vu,l=du;return n.innerRadius=function(t){return arguments.length?(e=En(t),n):e},n.outerRadius=function(t){return arguments.length?(r=En(t),n):r},n.cornerRadius=function(t){return arguments.length?(i=En(t),n):i},n.padRadius=function(t){return arguments.length?(u=t==ql?ql:En(t),n):u},n.startAngle=function(t){return arguments.length?(o=En(t),n):o},n.endAngle=function(t){return arguments.length?(a=En(t),n):a},n.padAngle=function(t){return arguments.length?(l=En(t),n):l},n.centroid=function(){var n=(+e.apply(this,arguments)+ +r.apply(this,arguments))/2,t=(+o.apply(this,arguments)+ +a.apply(this,arguments))/2-Io;return[Math.cos(t)*n,Math.sin(t)*n]},n};var ql="auto";ao.svg.line=function(){return Mu(m)};var Tl=ao.map({linear:xu,"linear-closed":bu,step:_u,"step-before":wu,"step-after":Su,basis:zu,"basis-open":Lu,"basis-closed":qu,bundle:Tu,cardinal:Eu,"cardinal-open":ku,"cardinal-closed":Nu,monotone:Fu});Tl.forEach(function(n,t){t.key=n,t.closed=/-closed$/.test(n)});var Rl=[0,2/3,1/3,0],Dl=[0,1/3,2/3,0],Pl=[0,1/6,2/3,1/6];ao.svg.line.radial=function(){var n=Mu(Hu);return n.radius=n.x,delete n.x,n.angle=n.y,delete n.y,n},wu.reverse=Su,Su.reverse=wu,ao.svg.area=function(){return Ou(m)},ao.svg.area.radial=function(){var n=Ou(Hu);return n.radius=n.x,delete n.x,n.innerRadius=n.x0,delete n.x0,n.outerRadius=n.x1,delete n.x1,n.angle=n.y,delete n.y,n.startAngle=n.y0,delete n.y0,n.endAngle=n.y1,delete n.y1,n},ao.svg.chord=function(){function n(n,a){var l=t(this,u,n,a),c=t(this,o,n,a);return"M"+l.p0+r(l.r,l.p1,l.a1-l.a0)+(e(l,c)?i(l.r,l.p1,l.r,l.p0):i(l.r,l.p1,c.r,c.p0)+r(c.r,c.p1,c.a1-c.a0)+i(c.r,c.p1,l.r,l.p0))+"Z"}function t(n,t,e,r){var i=t.call(n,e,r),u=a.call(n,i,r),o=l.call(n,i,r)-Io,f=c.call(n,i,r)-Io;return{r:u,a0:o,a1:f,p0:[u*Math.cos(o),u*Math.sin(o)],p1:[u*Math.cos(f),u*Math.sin(f)]}}function e(n,t){return n.a0==t.a0&&n.a1==t.a1}function r(n,t,e){return"A"+n+","+n+" 0 "+ +(e>Fo)+",1 "+t}function i(n,t,e,r){return"Q 0,0 "+r}var u=Me,o=xe,a=Iu,l=gu,c=vu;return n.radius=function(t){return arguments.length?(a=En(t),n):a},n.source=function(t){return arguments.length?(u=En(t),n):u},n.target=function(t){return arguments.length?(o=En(t),n):o},n.startAngle=function(t){return arguments.length?(l=En(t),n):l},n.endAngle=function(t){return arguments.length?(c=En(t),n):c},n},ao.svg.diagonal=function(){function n(n,i){var u=t.call(this,n,i),o=e.call(this,n,i),a=(u.y+o.y)/2,l=[u,{x:u.x,y:a},{x:o.x,y:a},o];return l=l.map(r),"M"+l[0]+"C"+l[1]+" "+l[2]+" "+l[3]}var t=Me,e=xe,r=Yu;return n.source=function(e){return arguments.length?(t=En(e),n):t},n.target=function(t){return arguments.length?(e=En(t),n):e},n.projection=function(t){return arguments.length?(r=t,n):r},n},ao.svg.diagonal.radial=function(){var n=ao.svg.diagonal(),t=Yu,e=n.projection;return n.projection=function(n){return arguments.length?e(Zu(t=n)):t},n},ao.svg.symbol=function(){function n(n,r){return(Ul.get(t.call(this,n,r))||$u)(e.call(this,n,r))}var t=Xu,e=Vu;return n.type=function(e){return arguments.length?(t=En(e),n):t},n.size=function(t){return arguments.length?(e=En(t),n):e},n};var Ul=ao.map({circle:$u,cross:function(n){var t=Math.sqrt(n/5)/2;return"M"+-3*t+","+-t+"H"+-t+"V"+-3*t+"H"+t+"V"+-t+"H"+3*t+"V"+t+"H"+t+"V"+3*t+"H"+-t+"V"+t+"H"+-3*t+"Z"},diamond:function(n){var t=Math.sqrt(n/(2*Fl)),e=t*Fl;return"M0,"+-t+"L"+e+",0 0,"+t+" "+-e+",0Z"},square:function(n){var t=Math.sqrt(n)/2;return"M"+-t+","+-t+"L"+t+","+-t+" "+t+","+t+" "+-t+","+t+"Z"},"triangle-down":function(n){var t=Math.sqrt(n/jl),e=t*jl/2;return"M0,"+e+"L"+t+","+-e+" "+-t+","+-e+"Z"},"triangle-up":function(n){var t=Math.sqrt(n/jl),e=t*jl/2;return"M0,"+-e+"L"+t+","+e+" "+-t+","+e+"Z"}});ao.svg.symbolTypes=Ul.keys();var jl=Math.sqrt(3),Fl=Math.tan(30*Yo);Co.transition=function(n){for(var t,e,r=Hl||++Zl,i=Ku(n),u=[],o=Ol||{time:Date.now(),ease:Nr,delay:0,duration:250},a=-1,l=this.length;++a<l;){u.push(t=[]);for(var c=this[a],f=-1,s=c.length;++f<s;)(e=c[f])&&Qu(e,f,i,r,o),t.push(e)}return Wu(u,i,r)},Co.interrupt=function(n){return this.each(null==n?Il:Bu(Ku(n)))};var Hl,Ol,Il=Bu(Ku()),Yl=[],Zl=0;Yl.call=Co.call,Yl.empty=Co.empty,Yl.node=Co.node,Yl.size=Co.size,ao.transition=function(n,t){return n&&n.transition?Hl?n.transition(t):n:ao.selection().transition(n)},ao.transition.prototype=Yl,Yl.select=function(n){var t,e,r,i=this.id,u=this.namespace,o=[];n=A(n);for(var a=-1,l=this.length;++a<l;){o.push(t=[]);for(var c=this[a],f=-1,s=c.length;++f<s;)(r=c[f])&&(e=n.call(r,r.__data__,f,a))?("__data__"in r&&(e.__data__=r.__data__),Qu(e,f,u,i,r[u][i]),t.push(e)):t.push(null)}return Wu(o,u,i)},Yl.selectAll=function(n){var t,e,r,i,u,o=this.id,a=this.namespace,l=[];n=C(n);for(var c=-1,f=this.length;++c<f;)for(var s=this[c],h=-1,p=s.length;++h<p;)if(r=s[h]){u=r[a][o],e=n.call(r,r.__data__,h,c),l.push(t=[]);for(var g=-1,v=e.length;++g<v;)(i=e[g])&&Qu(i,g,a,o,u),t.push(i)}return Wu(l,a,o)},Yl.filter=function(n){var t,e,r,i=[];"function"!=typeof n&&(n=O(n));for(var u=0,o=this.length;o>u;u++){i.push(t=[]);for(var e=this[u],a=0,l=e.length;l>a;a++)(r=e[a])&&n.call(r,r.__data__,a,u)&&t.push(r)}return Wu(i,this.namespace,this.id)},Yl.tween=function(n,t){var e=this.id,r=this.namespace;return arguments.length<2?this.node()[r][e].tween.get(n):Y(this,null==t?function(t){t[r][e].tween.remove(n)}:function(i){i[r][e].tween.set(n,t)})},Yl.attr=function(n,t){function e(){this.removeAttribute(a)}function r(){this.removeAttributeNS(a.space,a.local)}function i(n){return null==n?e:(n+="",function(){var t,e=this.getAttribute(a);return e!==n&&(t=o(e,n),function(n){this.setAttribute(a,t(n))})})}function u(n){return null==n?r:(n+="",function(){var t,e=this.getAttributeNS(a.space,a.local);return e!==n&&(t=o(e,n),function(n){this.setAttributeNS(a.space,a.local,t(n))})})}if(arguments.length<2){for(t in n)this.attr(t,n[t]);return this}var o="transform"==n?$r:Mr,a=ao.ns.qualify(n);return Ju(this,"attr."+n,t,a.local?u:i)},Yl.attrTween=function(n,t){function e(n,e){var r=t.call(this,n,e,this.getAttribute(i));return r&&function(n){this.setAttribute(i,r(n))}}function r(n,e){var r=t.call(this,n,e,this.getAttributeNS(i.space,i.local));return r&&function(n){this.setAttributeNS(i.space,i.local,r(n))}}var i=ao.ns.qualify(n);return this.tween("attr."+n,i.local?r:e)},Yl.style=function(n,e,r){function i(){this.style.removeProperty(n)}function u(e){return null==e?i:(e+="",function(){var i,u=t(this).getComputedStyle(this,null).getPropertyValue(n);return u!==e&&(i=Mr(u,e),function(t){this.style.setProperty(n,i(t),r)})})}var o=arguments.length;if(3>o){if("string"!=typeof n){2>o&&(e="");for(r in n)this.style(r,n[r],e);return this}r=""}return Ju(this,"style."+n,e,u)},Yl.styleTween=function(n,e,r){function i(i,u){var o=e.call(this,i,u,t(this).getComputedStyle(this,null).getPropertyValue(n));return o&&function(t){this.style.setProperty(n,o(t),r)}}return arguments.length<3&&(r=""),this.tween("style."+n,i)},Yl.text=function(n){return Ju(this,"text",n,Gu)},Yl.remove=function(){var n=this.namespace;return this.each("end.transition",function(){var t;this[n].count<2&&(t=this.parentNode)&&t.removeChild(this)})},Yl.ease=function(n){var t=this.id,e=this.namespace;return arguments.length<1?this.node()[e][t].ease:("function"!=typeof n&&(n=ao.ease.apply(ao,arguments)),Y(this,function(r){r[e][t].ease=n}))},Yl.delay=function(n){var t=this.id,e=this.namespace;return arguments.length<1?this.node()[e][t].delay:Y(this,"function"==typeof n?function(r,i,u){r[e][t].delay=+n.call(r,r.__data__,i,u)}:(n=+n,function(r){r[e][t].delay=n}))},Yl.duration=function(n){var t=this.id,e=this.namespace;return arguments.length<1?this.node()[e][t].duration:Y(this,"function"==typeof n?function(r,i,u){r[e][t].duration=Math.max(1,n.call(r,r.__data__,i,u))}:(n=Math.max(1,n),function(r){r[e][t].duration=n}))},Yl.each=function(n,t){var e=this.id,r=this.namespace;if(arguments.length<2){var i=Ol,u=Hl;try{Hl=e,Y(this,function(t,i,u){Ol=t[r][e],n.call(t,t.__data__,i,u)})}finally{Ol=i,Hl=u}}else Y(this,function(i){var u=i[r][e];(u.event||(u.event=ao.dispatch("start","end","interrupt"))).on(n,t)});return this},Yl.transition=function(){for(var n,t,e,r,i=this.id,u=++Zl,o=this.namespace,a=[],l=0,c=this.length;c>l;l++){a.push(n=[]);for(var t=this[l],f=0,s=t.length;s>f;f++)(e=t[f])&&(r=e[o][i],Qu(e,f,o,u,{time:r.time,ease:r.ease,delay:r.delay+r.duration,duration:r.duration})),n.push(e)}return Wu(a,o,u)},ao.svg.axis=function(){function n(n){n.each(function(){var n,c=ao.select(this),f=this.__chart__||e,s=this.__chart__=e.copy(),h=null==l?s.ticks?s.ticks.apply(s,a):s.domain():l,p=null==t?s.tickFormat?s.tickFormat.apply(s,a):m:t,g=c.selectAll(".tick").data(h,s),v=g.enter().insert("g",".domain").attr("class","tick").style("opacity",Uo),d=ao.transition(g.exit()).style("opacity",Uo).remove(),y=ao.transition(g.order()).style("opacity",1),M=Math.max(i,0)+o,x=Zi(s),b=c.selectAll(".domain").data([0]),_=(b.enter().append("path").attr("class","domain"),ao.transition(b));v.append("line"),v.append("text");var w,S,k,N,E=v.select("line"),A=y.select("line"),C=g.select("text").text(p),z=v.select("text"),L=y.select("text"),q="top"===r||"left"===r?-1:1;if("bottom"===r||"top"===r?(n=no,w="x",k="y",S="x2",N="y2",C.attr("dy",0>q?"0em":".71em").style("text-anchor","middle"),_.attr("d","M"+x[0]+","+q*u+"V0H"+x[1]+"V"+q*u)):(n=to,w="y",k="x",S="y2",N="x2",C.attr("dy",".32em").style("text-anchor",0>q?"end":"start"),_.attr("d","M"+q*u+","+x[0]+"H0V"+x[1]+"H"+q*u)),E.attr(N,q*i),z.attr(k,q*M),A.attr(S,0).attr(N,q*i),L.attr(w,0).attr(k,q*M),s.rangeBand){var T=s,R=T.rangeBand()/2;f=s=function(n){return T(n)+R}}else f.rangeBand?f=s:d.call(n,s,f);v.call(n,f,s),y.call(n,s,s)})}var t,e=ao.scale.linear(),r=Vl,i=6,u=6,o=3,a=[10],l=null;return n.scale=function(t){return arguments.length?(e=t,n):e},n.orient=function(t){return arguments.length?(r=t in Xl?t+"":Vl,n):r},n.ticks=function(){return arguments.length?(a=co(arguments),n):a},n.tickValues=function(t){return arguments.length?(l=t,n):l},n.tickFormat=function(e){return arguments.length?(t=e,n):t},n.tickSize=function(t){var e=arguments.length;return e?(i=+t,u=+arguments[e-1],n):i},n.innerTickSize=function(t){return arguments.length?(i=+t,n):i},n.outerTickSize=function(t){return arguments.length?(u=+t,n):u},n.tickPadding=function(t){return arguments.length?(o=+t,n):o},n.tickSubdivide=function(){return arguments.length&&n},n};var Vl="bottom",Xl={top:1,right:1,bottom:1,left:1};ao.svg.brush=function(){function n(t){t.each(function(){var t=ao.select(this).style("pointer-events","all").style("-webkit-tap-highlight-color","rgba(0,0,0,0)").on("mousedown.brush",u).on("touchstart.brush",u),o=t.selectAll(".background").data([0]);o.enter().append("rect").attr("class","background").style("visibility","hidden").style("cursor","crosshair"),t.selectAll(".extent").data([0]).enter().append("rect").attr("class","extent").style("cursor","move");var a=t.selectAll(".resize").data(v,m);a.exit().remove(),a.enter().append("g").attr("class",function(n){return"resize "+n}).style("cursor",function(n){return $l[n]}).append("rect").attr("x",function(n){return/[ew]$/.test(n)?-3:null}).attr("y",function(n){return/^[ns]/.test(n)?-3:null}).attr("width",6).attr("height",6).style("visibility","hidden"),a.style("display",n.empty()?"none":null);var l,s=ao.transition(t),h=ao.transition(o);c&&(l=Zi(c),h.attr("x",l[0]).attr("width",l[1]-l[0]),r(s)),f&&(l=Zi(f),h.attr("y",l[0]).attr("height",l[1]-l[0]),i(s)),e(s)})}function e(n){n.selectAll(".resize").attr("transform",function(n){return"translate("+s[+/e$/.test(n)]+","+h[+/^s/.test(n)]+")"})}function r(n){n.select(".extent").attr("x",s[0]),n.selectAll(".extent,.n>rect,.s>rect").attr("width",s[1]-s[0])}function i(n){n.select(".extent").attr("y",h[0]),n.selectAll(".extent,.e>rect,.w>rect").attr("height",h[1]-h[0])}function u(){function u(){32==ao.event.keyCode&&(C||(M=null,L[0]-=s[1],L[1]-=h[1],C=2),S())}function v(){32==ao.event.keyCode&&2==C&&(L[0]+=s[1],L[1]+=h[1],C=0,S())}function d(){var n=ao.mouse(b),t=!1;x&&(n[0]+=x[0],n[1]+=x[1]),C||(ao.event.altKey?(M||(M=[(s[0]+s[1])/2,(h[0]+h[1])/2]),L[0]=s[+(n[0]<M[0])],L[1]=h[+(n[1]<M[1])]):M=null),E&&y(n,c,0)&&(r(k),t=!0),A&&y(n,f,1)&&(i(k),t=!0),t&&(e(k),w({type:"brush",mode:C?"move":"resize"}))}function y(n,t,e){var r,i,u=Zi(t),l=u[0],c=u[1],f=L[e],v=e?h:s,d=v[1]-v[0];return C&&(l-=f,c-=d+f),r=(e?g:p)?Math.max(l,Math.min(c,n[e])):n[e],C?i=(r+=f)+d:(M&&(f=Math.max(l,Math.min(c,2*M[e]-r))),r>f?(i=r,r=f):i=f),v[0]!=r||v[1]!=i?(e?a=null:o=null,v[0]=r,v[1]=i,!0):void 0}function m(){d(),k.style("pointer-events","all").selectAll(".resize").style("display",n.empty()?"none":null),ao.select("body").style("cursor",null),q.on("mousemove.brush",null).on("mouseup.brush",null).on("touchmove.brush",null).on("touchend.brush",null).on("keydown.brush",null).on("keyup.brush",null),z(),w({type:"brushend"})}var M,x,b=this,_=ao.select(ao.event.target),w=l.of(b,arguments),k=ao.select(b),N=_.datum(),E=!/^(n|s)$/.test(N)&&c,A=!/^(e|w)$/.test(N)&&f,C=_.classed("extent"),z=W(b),L=ao.mouse(b),q=ao.select(t(b)).on("keydown.brush",u).on("keyup.brush",v);if(ao.event.changedTouches?q.on("touchmove.brush",d).on("touchend.brush",m):q.on("mousemove.brush",d).on("mouseup.brush",m),k.interrupt().selectAll("*").interrupt(),C)L[0]=s[0]-L[0],L[1]=h[0]-L[1];else if(N){var T=+/w$/.test(N),R=+/^n/.test(N);x=[s[1-T]-L[0],h[1-R]-L[1]],L[0]=s[T],L[1]=h[R]}else ao.event.altKey&&(M=L.slice());k.style("pointer-events","none").selectAll(".resize").style("display",null),ao.select("body").style("cursor",_.style("cursor")),w({type:"brushstart"}),d()}var o,a,l=N(n,"brushstart","brush","brushend"),c=null,f=null,s=[0,0],h=[0,0],p=!0,g=!0,v=Bl[0];return n.event=function(n){n.each(function(){var n=l.of(this,arguments),t={x:s,y:h,i:o,j:a},e=this.__chart__||t;this.__chart__=t,Hl?ao.select(this).transition().each("start.brush",function(){o=e.i,a=e.j,s=e.x,h=e.y,n({type:"brushstart"})}).tween("brush:brush",function(){var e=xr(s,t.x),r=xr(h,t.y);return o=a=null,function(i){s=t.x=e(i),h=t.y=r(i),n({type:"brush",mode:"resize"})}}).each("end.brush",function(){o=t.i,a=t.j,n({type:"brush",mode:"resize"}),n({type:"brushend"})}):(n({type:"brushstart"}),n({type:"brush",mode:"resize"}),n({type:"brushend"}))})},n.x=function(t){return arguments.length?(c=t,v=Bl[!c<<1|!f],n):c},n.y=function(t){return arguments.length?(f=t,v=Bl[!c<<1|!f],n):f},n.clamp=function(t){return arguments.length?(c&&f?(p=!!t[0],g=!!t[1]):c?p=!!t:f&&(g=!!t),n):c&&f?[p,g]:c?p:f?g:null},n.extent=function(t){var e,r,i,u,l;return arguments.length?(c&&(e=t[0],r=t[1],f&&(e=e[0],r=r[0]),o=[e,r],c.invert&&(e=c(e),r=c(r)),e>r&&(l=e,e=r,r=l),e==s[0]&&r==s[1]||(s=[e,r])),f&&(i=t[0],u=t[1],c&&(i=i[1],u=u[1]),a=[i,u],f.invert&&(i=f(i),u=f(u)),i>u&&(l=i,i=u,u=l),i==h[0]&&u==h[1]||(h=[i,u])),n):(c&&(o?(e=o[0],r=o[1]):(e=s[0],r=s[1],c.invert&&(e=c.invert(e),r=c.invert(r)),e>r&&(l=e,e=r,r=l))),f&&(a?(i=a[0],u=a[1]):(i=h[0],u=h[1],f.invert&&(i=f.invert(i),u=f.invert(u)),i>u&&(l=i,i=u,u=l))),c&&f?[[e,i],[r,u]]:c?[e,r]:f&&[i,u])},n.clear=function(){return n.empty()||(s=[0,0],h=[0,0],o=a=null),n},n.empty=function(){return!!c&&s[0]==s[1]||!!f&&h[0]==h[1]},ao.rebind(n,l,"on")};var $l={n:"ns-resize",e:"ew-resize",s:"ns-resize",w:"ew-resize",nw:"nwse-resize",ne:"nesw-resize",se:"nwse-resize",sw:"nesw-resize"},Bl=[["n","e","s","w","nw","ne","se","sw"],["e","w"],["n","s"],[]],Wl=ga.format=xa.timeFormat,Jl=Wl.utc,Gl=Jl("%Y-%m-%dT%H:%M:%S.%LZ");Wl.iso=Date.prototype.toISOString&&+new Date("2000-01-01T00:00:00.000Z")?eo:Gl,eo.parse=function(n){var t=new Date(n);return isNaN(t)?null:t},eo.toString=Gl.toString,ga.second=On(function(n){return new va(1e3*Math.floor(n/1e3))},function(n,t){n.setTime(n.getTime()+1e3*Math.floor(t))},function(n){return n.getSeconds()}),ga.seconds=ga.second.range,ga.seconds.utc=ga.second.utc.range,ga.minute=On(function(n){return new va(6e4*Math.floor(n/6e4))},function(n,t){n.setTime(n.getTime()+6e4*Math.floor(t))},function(n){return n.getMinutes()}),ga.minutes=ga.minute.range,ga.minutes.utc=ga.minute.utc.range,ga.hour=On(function(n){var t=n.getTimezoneOffset()/60;return new va(36e5*(Math.floor(n/36e5-t)+t))},function(n,t){n.setTime(n.getTime()+36e5*Math.floor(t))},function(n){return n.getHours()}),ga.hours=ga.hour.range,ga.hours.utc=ga.hour.utc.range,ga.month=On(function(n){return n=ga.day(n),n.setDate(1),n},function(n,t){n.setMonth(n.getMonth()+t)},function(n){return n.getMonth()}),ga.months=ga.month.range,ga.months.utc=ga.month.utc.range;var Kl=[1e3,5e3,15e3,3e4,6e4,3e5,9e5,18e5,36e5,108e5,216e5,432e5,864e5,1728e5,6048e5,2592e6,7776e6,31536e6],Ql=[[ga.second,1],[ga.second,5],[ga.second,15],[ga.second,30],[ga.minute,1],[ga.minute,5],[ga.minute,15],[ga.minute,30],[ga.hour,1],[ga.hour,3],[ga.hour,6],[ga.hour,12],[ga.day,1],[ga.day,2],[ga.week,1],[ga.month,1],[ga.month,3],[ga.year,1]],nc=Wl.multi([[".%L",function(n){return n.getMilliseconds()}],[":%S",function(n){return n.getSeconds()}],["%I:%M",function(n){return n.getMinutes()}],["%I %p",function(n){return n.getHours()}],["%a %d",function(n){return n.getDay()&&1!=n.getDate()}],["%b %d",function(n){return 1!=n.getDate()}],["%B",function(n){return n.getMonth()}],["%Y",zt]]),tc={range:function(n,t,e){return ao.range(Math.ceil(n/e)*e,+t,e).map(io)},floor:m,ceil:m};Ql.year=ga.year,ga.scale=function(){return ro(ao.scale.linear(),Ql,nc)};var ec=Ql.map(function(n){return[n[0].utc,n[1]]}),rc=Jl.multi([[".%L",function(n){return n.getUTCMilliseconds()}],[":%S",function(n){return n.getUTCSeconds()}],["%I:%M",function(n){return n.getUTCMinutes()}],["%I %p",function(n){return n.getUTCHours()}],["%a %d",function(n){return n.getUTCDay()&&1!=n.getUTCDate()}],["%b %d",function(n){return 1!=n.getUTCDate()}],["%B",function(n){return n.getUTCMonth()}],["%Y",zt]]);ec.year=ga.year.utc,ga.scale.utc=function(){return ro(ao.scale.linear(),ec,rc)},ao.text=An(function(n){return n.responseText}),ao.json=function(n,t){return Cn(n,"application/json",uo,t)},ao.html=function(n,t){return Cn(n,"text/html",oo,t)},ao.xml=An(function(n){return n.responseXML}),"function"==typeof define&&define.amd?(this.d3=ao,define(ao)):"object"==typeof module&&module.exports?module.exports=ao:this.d3=ao}();
 angular.module('n52.core.map', [])
-        .factory('mapService', ['$rootScope', 'leafletBoundsHelpers', 'interfaceService', 'statusService', 'settingsService', 'servicesHelper', '$injector',
-            function ($rootScope, leafletBoundsHelpers, interfaceService, statusService, settingsService, servicesHelper, $injector) {
-                var markerRenderer = ['statusIntervalMarkerRenderer', 'normalMarkerRenderer'];
-                if (settingsService.markerRenderer)
-                    markerRenderer = settingsService.markerRenderer;
-                var baselayer = settingsService.baselayer ? settingsService.baselayer : {
-                    osm: {
-                        name: 'Open Street Map',
-                        type: 'xyz',
-                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        layerOptions: {
-                            showOnSelector: true
-                        }
+    .factory('mapService', ['$rootScope', 'leafletBoundsHelpers', 'interfaceService', 'statusService', 'settingsService', 'servicesHelper', '$injector',
+        function($rootScope, leafletBoundsHelpers, interfaceService, statusService, settingsService, servicesHelper, $injector) {
+            var markerRenderer = ['statusIntervalMarkerRenderer', 'normalMarkerRenderer'];
+            if (settingsService.markerRenderer)
+                markerRenderer = settingsService.markerRenderer;
+            var baselayer = settingsService.baselayer ? settingsService.baselayer : {
+                osm: {
+                    name: 'Open Street Map',
+                    type: 'xyz',
+                    url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    layerOptions: {
+                        showOnSelector: true
                     }
-                };
-                var overlays = angular.extend(settingsService.overlays,
-                        {
-                            cluster: {
-                                name: 'Stations',
-                                type: 'markercluster',
-                                visible: true,
-                                layerOptions: {
-                                    showOnSelector: false
-                                }
-                            }
-                        });
-                var map = {
-                  id : settingsService.stationMap ? settingsService.stationMap : "stationMap"
-                };
-                if (settingsService.showScale) {
-                    map.controls = {
-                        scale: true
-                    };
                 }
-                var requestCounter;
-                var bounds;
-
-                var init = function () {
-                    map.loading = false;
-                    map.markers = {};
-                    map.paths = {};
-                    map.popup = {};
-                    map.bounds = {};
-                    map.center = {};
-                    map.layers = {
-                        baselayers: baselayer,
-                        overlays: overlays
-                    };
-
-                    $rootScope.$on('allPhenomenaSelected', function (evt) {
-                        map.selectedPhenomenon = null;
-                        requestStations();
-                    });
-                    $rootScope.$on('phenomenonSelected', function (evt, phenomenon) {
-                        map.selectedPhenomenon = phenomenon;
-                        requestStations(phenomenon);
-                    });
-                    $rootScope.$on('redrawStations', function (evt, phenomenon) {
-                        requestStations(map.selectedPhenomenon);
-                    });
-                    $rootScope.$on('newProviderSelected', function (evt) {
-                        requestStations();
-                    });
-
-                    requestStations();
-                };
-
-                var shouldRequestTimeseries = function () {
-                    var needsTimeseriesRequest = false;
-                    angular.forEach(markerRenderer, function (renderer) {
-                        needsTimeseriesRequest = needsTimeseriesRequest || $injector.get(renderer).needsTimeseriesRequested();
-                    });
-                    return needsTimeseriesRequest;
-                };
-
-                var requestStations = function (phenomenon) {
-                    requestCounter = 0;
-                    bounds = null;
-                    angular.copy({}, map.markers);
-                    angular.copy({}, map.paths);
-                    map.loading = true;
-                    if (shouldRequestTimeseries() && phenomenon) {
-                        angular.forEach(phenomenon.provider, function (provider) {
-                            requestCounter++;
-                            requestTimeseriesOfService(provider.serviceID, provider.url, createStation, provider.phenomenonID);
-                        });
-                    } else if (phenomenon) {
-                        angular.forEach(phenomenon.provider, function (entry) {
-                            requestCounter++;
-                            requestStationsOfService(entry.serviceID, entry.url, createStation, entry.phenomenonID);
-                        });
-                    } else if (settingsService.aggregateServices && angular.isUndefined(statusService.status.apiProvider.url)) {
-                        servicesHelper.doForAllServices(function (provider, url) {
-                            requestCounter++;
-                            requestStationsOfService(provider.id, url, createStation);
-                        });
-                    } else {
-                        var provider = statusService.status.apiProvider;
-                        requestCounter++;
-                        requestStationsOfService(provider.serviceID, provider.url, createStation);
+            };
+            var overlays = angular.extend(settingsService.overlays, {
+                cluster: {
+                    name: 'Stations',
+                    type: 'markercluster',
+                    visible: true,
+                    layerOptions: {
+                        showOnSelector: false
                     }
+                }
+            });
+            var map = {
+                id: settingsService.stationMap ? settingsService.stationMap : "stationMap"
+            };
+            if (settingsService.showScale) {
+                map.controls = {
+                    scale: true
+                };
+            }
+            var requestCounter;
+            var bounds;
+
+            var init = function() {
+                map.loading = false;
+                map.markers = {};
+                map.paths = {};
+                map.popup = {};
+                map.bounds = {};
+                map.center = {};
+                map.layers = {
+                    baselayers: baselayer,
+                    overlays: overlays
                 };
 
-                var requestTimeseriesOfService = function (serviceID, url, callback, phenomenonID) {
-                    var params = {
-                        service: serviceID,
-                        phenomenon: phenomenonID,
-                        expanded: true,
-                        force_latest_values: true,
-                        status_intervals: true
-                    };
-                    interfaceService.getTimeseries(null, url, params).then(function (data) {
-                        callback(data, url);
+                $rootScope.$on('allPhenomenaSelected', function(evt) {
+                    map.selectedPhenomenon = null;
+                    requestStations();
+                });
+                $rootScope.$on('phenomenonSelected', function(evt, phenomenon) {
+                    map.selectedPhenomenon = phenomenon;
+                    requestStations(phenomenon);
+                });
+                $rootScope.$on('redrawStations', function(evt, phenomenon) {
+                    requestStations(map.selectedPhenomenon);
+                });
+                $rootScope.$on('newProviderSelected', function(evt) {
+                    requestStations();
+                });
+
+                requestStations();
+            };
+
+            var shouldRequestTimeseries = function() {
+                var needsTimeseriesRequest = false;
+                angular.forEach(markerRenderer, function(renderer) {
+                    needsTimeseriesRequest = needsTimeseriesRequest || $injector.get(renderer).needsTimeseriesRequested();
+                });
+                return needsTimeseriesRequest;
+            };
+
+            var requestStations = function(phenomenon) {
+                requestCounter = 0;
+                bounds = null;
+                angular.copy({}, map.markers);
+                angular.copy({}, map.paths);
+                map.loading = true;
+                if (shouldRequestTimeseries() && phenomenon) {
+                    angular.forEach(phenomenon.provider, function(provider) {
+                        requestCounter++;
+                        requestTimeseriesOfService(provider.serviceID, provider.url, createStation, provider.phenomenonID);
                     });
-                };
-
-                var requestStationsOfService = function (serviceID, url, callback, phenomenonID) {
-                    var params = {
-                        service: serviceID,
-                        phenomenon: phenomenonID
-                    };
-                    interfaceService.getStations(null, url, params).then(function (data) {
-                        callback(data, url);
+                } else if (phenomenon) {
+                    angular.forEach(phenomenon.provider, function(entry) {
+                        requestCounter++;
+                        requestStationsOfService(entry.serviceID, entry.url, createStation, entry.phenomenonID);
                     });
-                };
+                } else if (settingsService.aggregateServices && angular.isUndefined(statusService.status.apiProvider.url)) {
+                    servicesHelper.doForAllServices(function(provider, url) {
+                        requestCounter++;
+                        requestStationsOfService(provider.id, url, createStation);
+                    });
+                } else {
+                    var provider = statusService.status.apiProvider;
+                    requestCounter++;
+                    requestStationsOfService(provider.serviceID, provider.url, createStation);
+                }
+            };
 
-                var createStation = function (data, serviceUrl) {
-                    requestCounter--;
-                    if (data.length > 0) {
-                        var firstElemCoord = getCoordinates(data[0]);
+            var requestTimeseriesOfService = function(serviceID, url, callback, phenomenonID) {
+                var params = {
+                    service: serviceID,
+                    phenomenon: phenomenonID,
+                    expanded: true,
+                    force_latest_values: true,
+                    status_intervals: true
+                };
+                interfaceService.getTimeseries(null, url, params).then(function(data) {
+                    callback(data, url);
+                });
+            };
+
+            var requestStationsOfService = function(serviceID, url, callback, phenomenonID) {
+                var params = {
+                    service: serviceID,
+                    phenomenon: phenomenonID
+                };
+                interfaceService.getStations(null, url, params).then(function(data) {
+                    callback(data, url);
+                });
+            };
+
+            var createStation = function(data, serviceUrl) {
+                requestCounter--;
+                if (data.length > 0) {
+                    var firstElemCoord = getCoordinates(data[0]);
+                    if (firstElemCoord) {
+
                         if (!angular.isObject(bounds)) {
                             bounds = {
                                 topmost: firstElemCoord[1],
@@ -63583,7 +64369,7 @@ angular.module('n52.core.map', [])
                                 rightmost: firstElemCoord[0]
                             };
                         }
-                        angular.forEach(data, function (elem) {
+                        angular.forEach(data, function(elem) {
                             var geom = getCoordinates(elem);
                             if (!isNaN(geom[0]) || !isNaN(geom[1])) {
                                 if (geom[0] > bounds.rightmost) {
@@ -63598,7 +64384,8 @@ angular.module('n52.core.map', [])
                                 if (geom[1] < bounds.bottommost) {
                                     bounds.bottommost = geom[1];
                                 }
-                                var i = 0, addedMarker;
+                                var i = 0,
+                                    addedMarker;
                                 do {
                                     addedMarker = $injector.get(markerRenderer[i]).addMarker({
                                         map: map,
@@ -63610,72 +64397,79 @@ angular.module('n52.core.map', [])
                                 } while (!addedMarker);
                             }
                         });
-                        if (requestCounter === 0)
-                            setBounds(bounds.bottommost, bounds.leftmost, bounds.topmost, bounds.rightmost);
+                    } else {
+                        console.warn('Found stations in service ' + serviceUrl + ' which don\'t have coordinates to draw them on the map.');
                     }
                     if (requestCounter === 0)
-                        map.loading = false;
-                };
+                        setBounds(bounds.bottommost, bounds.leftmost, bounds.topmost, bounds.rightmost);
+                }
+                if (requestCounter === 0)
+                    map.loading = false;
+            };
 
-                var setBounds = function (bottommost, leftmost, topmost, rightmost) {
-                    if (bottommost === topmost && leftmost === rightmost) {
-                        var southWest = L.latLng(parseFloat(bottommost), parseFloat(leftmost)),
-                                northEast = L.latLng(parseFloat(topmost), parseFloat(rightmost)),
-                                bounds = L.latLngBounds(southWest, northEast),
-                                center = bounds.getCenter();
-                        angular.copy({
-                            lat: center.lat,
-                            lng: center.lng,
-                            zoom: 12
-                        }, map.center);
-                    } else {
-                        angular.copy(leafletBoundsHelpers.createBoundsFromArray([
-                            [parseFloat(bottommost), parseFloat(leftmost)],
-                            [parseFloat(topmost), parseFloat(rightmost)]]), map.bounds);
-                    }
-                };
+            var setBounds = function(bottommost, leftmost, topmost, rightmost) {
+                if (bottommost === topmost && leftmost === rightmost) {
+                    var southWest = L.latLng(parseFloat(bottommost), parseFloat(leftmost)),
+                        northEast = L.latLng(parseFloat(topmost), parseFloat(rightmost)),
+                        bounds = L.latLngBounds(southWest, northEast),
+                        center = bounds.getCenter();
+                    angular.copy({
+                        lat: center.lat,
+                        lng: center.lng,
+                        zoom: 12
+                    }, map.center);
+                } else {
+                    angular.copy(leafletBoundsHelpers.createBoundsFromArray([
+                        [parseFloat(bottommost), parseFloat(leftmost)],
+                        [parseFloat(topmost), parseFloat(rightmost)]
+                    ]), map.bounds);
+                }
+            };
 
-                var getCoordinates = function (elem) {
-                    if (elem.geometry && elem.geometry.coordinates) {
-                        return elem.geometry.coordinates;
-                    } else {
-                        return elem.station.geometry.coordinates;
-                    }
-                };
+            var getCoordinates = function(elem) {
+                if (elem.geometry && elem.geometry.coordinates)
+                    return elem.geometry.coordinates;
+                if (elem.station && elem.station.geometry && elem.station.geometry.coordinates)
+                    return elem.station.geometry.coordinates;
+                return null;
+            };
 
-                init();
-                return {
-                    map: map
+            init();
+            return {
+                map: map
+            };
+        }
+    ])
+    .service('stationService', ['interfaceService', 'settingsService',
+        function(interfaceService, settingsService) {
+            var preselectFirstTimeseries = angular.isUndefined(settingsService.preselectedFirstTimeseriesInStationView) ? false : settingsService.preselectedFirstTimeseriesInStationView === true;
+            var selectFirst,
+                station = {
+                    entry: {}
                 };
-            }])
-        .service('stationService', ['interfaceService', 'settingsService',
-            function (interfaceService, settingsService) {
-                var preselectFirstTimeseries = angular.isUndefined(settingsService.preselectedFirstTimeseriesInStationView) ? false : settingsService.preselectedFirstTimeseriesInStationView === true;
-                var selectFirst,
-                        station = {
-                            entry: {}
-                        };
-                determineTimeseries = function (stationId, url) {
-                    selectFirst = preselectFirstTimeseries;
-                    station.entry = {};
-                    interfaceService.getStations(stationId, url).then(function (result) {
-                        station.entry = result;
-                        angular.forEach(result.properties.timeseries, function (timeseries, id) {
-                            timeseries.selected = selectFirst || !preselectFirstTimeseries;
-                            selectFirst = false;
-                            interfaceService.getTimeseries(id, url).then(function (ts) {
-                                angular.extend(timeseries, ts);
-                            });
+            determineTimeseries = function(stationId, url) {
+                selectFirst = preselectFirstTimeseries;
+                station.entry = {};
+                interfaceService.getStations(stationId, url).then(function(result) {
+                    station.entry = result;
+                    angular.forEach(result.properties.timeseries, function(timeseries, id) {
+                        timeseries.selected = selectFirst || !preselectFirstTimeseries;
+                        selectFirst = false;
+                        interfaceService.getTimeseries(id, url).then(function(ts) {
+                            angular.extend(timeseries, ts);
                         });
                     });
-                };
+                });
+            };
 
-                return {
-                    determineTimeseries: determineTimeseries,
-                    preselectFirstTimeseries: preselectFirstTimeseries,
-                    station: station
-                };
-            }]);
+            return {
+                determineTimeseries: determineTimeseries,
+                preselectFirstTimeseries: preselectFirstTimeseries,
+                station: station
+            };
+        }
+    ]);
+
 angular.module('n52.core.map')
         .factory('markerRendererHelper', [
             function () {
@@ -63690,35 +64484,38 @@ angular.module('n52.core.map')
                 };
             }]);
 angular.module('n52.core.map')
-        .factory('normalMarkerRenderer', ['statusService', 'settingsService', 'markerRendererHelper',
-            function (statusService, settingsService, markerRendererHelper) {
+    .factory('normalMarkerRenderer', ['statusService', 'settingsService', 'markerRendererHelper',
+        function(statusService, settingsService, markerRendererHelper) {
 
-                var stationMarkerIcon = settingsService.stationIconOptions ? settingsService.stationIconOptions : {};
+            var stationMarkerIcon = settingsService.stationIconOptions ? settingsService.stationIconOptions : {};
 
-                var addMarker = function (params) {
-                    var marker = {
-                        lat: params.geometry[1],
-                        lng: params.geometry[0],
-                        icon: stationMarkerIcon,
-                        stationsId: params.element.station ? params.element.station.properties.id : params.element.properties.id,
-                        url: params.serviceUrl
-                    };
-                    if (statusService.status.clusterStations) {
-                        marker.layer = 'cluster';
-                    }
-                    params.map.markers[markerRendererHelper.getStationId()] = marker;
-                    return true;
+            var addMarker = function(params) {
+                var marker = {
+                    lat: params.geometry[1],
+                    lng: params.geometry[0],
+                    icon: stationMarkerIcon,
+                    platformType: params.element.platformType,
+                    stationsId: params.element.station ? params.element.station.properties.id : params.element.properties.id,
+                    url: params.serviceUrl
                 };
-                
-                var needsTimeseriesRequested = function() {
-                    return false;
-                };
+                if (statusService.status.clusterStations) {
+                    marker.layer = 'cluster';
+                }
+                params.map.markers[markerRendererHelper.getStationId()] = marker;
+                return true;
+            };
 
-                return {
-                    needsTimeseriesRequested: needsTimeseriesRequested,
-                    addMarker: addMarker
-                };
-            }]);
+            var needsTimeseriesRequested = function() {
+                return false;
+            };
+
+            return {
+                needsTimeseriesRequested: needsTimeseriesRequested,
+                addMarker: addMarker
+            };
+        }
+    ]);
+
 angular.module('n52.core.map')
         .factory('statusIntervalMarkerRenderer', ['interfaceService', 'statusService', 'settingsService', 'markerRendererHelper',
             function (interfaceService, statusService, settingsService, markerRendererHelper) {
@@ -63945,23 +64742,24 @@ angular.module('n52.core.map')
                 };
             }]);
 angular.module('n52.core.map')
-        .controller('SwcSearchCtrl', ['$scope', 'mapService', 'nominatimService', 'leafletBoundsHelpers', 'settingsService',
-            function ($scope, mapService, nominatimService, leafletBoundsHelpers, settingsService) {
-                $scope.startSearch = function (term) {
-                    if (angular.isDefined(term) && angular.isString(term)) {
-                        nominatimService.query(term).then(function (data) {
-                            angular.copy(leafletBoundsHelpers.createBoundsFromArray([
-                                [parseFloat(data.boundingbox[0]), parseFloat(data.boundingbox[2])],
-                                [parseFloat(data.boundingbox[1]), parseFloat(data.boundingbox[3])]]), mapService.map.bounds);
-                            mapService.map.markers.searchResult = {
-                                lat: parseFloat(data.lat),
-                                lng: parseFloat(data.lon),
-                                icon: settingsService.searchResultIconOptions ? settingsService.searchResultIconOptions : {}
-                            };
-                        });
-                    }
-                };
-            }]);
+.controller('SwcSearchCtrl', ['$scope', 'mapService', 'nominatimService', 'leafletBoundsHelpers', 'settingsService',
+function ($scope, mapService, nominatimService, leafletBoundsHelpers, settingsService) {
+  $scope.startSearch = function (term) {
+    if (angular.isDefined(term) && angular.isString(term)) {
+      nominatimService.query(term, mapService.map.id).then(function (data) {
+        angular.copy(leafletBoundsHelpers.createBoundsFromArray([
+          [parseFloat(data.boundingbox[0]), parseFloat(data.boundingbox[2])],
+          [parseFloat(data.boundingbox[1]), parseFloat(data.boundingbox[3])]]), mapService.map.bounds);
+          mapService.map.markers.searchResult = {
+            lat: parseFloat(data.lat),
+            lng: parseFloat(data.lon),
+            icon: settingsService.searchResultIconOptions ? settingsService.searchResultIconOptions : {}
+          };
+        });
+      }
+    };
+  }]);
+
 angular.module('n52.core.map')
         .controller('SwcZoomControlsCtrl', ['$scope', 'mapService', function ($scope, mapService) {
                 $scope.zoomIn = function () {
@@ -64017,69 +64815,103 @@ angular.module('n52.core.map')
                 };
             }]);
 angular.module('n52.core.map')
-        .directive('swcModalStationOpener', [
-            function () {
-                return {
-                    restrict: 'E',
-                    scope: {
-                        mapid: '=',
-                        controller: '='
-                    },
-                    controller: ['$scope', '$rootScope', 'modalStationOpenSrvc',
-                        function ($scope, $rootScope, modalStationOpenSrvc) {
-                            clickmarker = function (event, args) {
-                                var station = {
-                                    ctrl : $scope.controller
-                                };
-                                if (args.model) {
-                                    station.id = args.model.stationsId ? args.model.stationsId : "";
-                                    station.url = args.model.url ? args.model.url : "";
-                                } else if (args.leafletObject && args.leafletObject.options) {
-                                    station.id = args.leafletObject.options.stationsId ? args.leafletObject.options.stationsId : "";
-                                    station.url = args.leafletObject.options.url ? args.leafletObject.options.url : "";
-                                }
-                                modalStationOpenSrvc.openStation(station);
-                            };
-                            var mapId = $scope.mapid;
-                            var pathClickListener = $rootScope.$on('leafletDirectivePath.' + mapId + '.click', clickmarker);
-                            var markerClickListener = $rootScope.$on('leafletDirectiveMarker.' + mapId + '.click', clickmarker);
-                            $scope.$on('$destroy', function () {
-                                pathClickListener();
-                                markerClickListener();
-                            });
-                        }]
-                };
-            }])
-        .factory('modalStationOpenSrvc', ['$uibModal','mapService',
-            function ($uibModal, mapService) {
-                function openStation(station) {
-                    $uibModal.open({
-                        animation: true,
-                        templateUrl: 'templates/map/station.html',
-                        resolve: {
-                            selection: function () {
-                                var url = station.url;
-                                var phenomenonId;
-                                if (mapService.map.selectedPhenomenon) {
-                                    angular.forEach(mapService.map.selectedPhenomenon.provider, function (provider) {
-                                        if (url === provider.url)
-                                            phenomenonId = provider.phenomenonID;
-                                    });
-                                }
-                                return {
-                                    stationId: station.id,
-                                    phenomenonId: phenomenonId,
-                                    url: url
-                                };
+    .directive('swcModalStationOpener', [
+        function() {
+            return {
+                restrict: 'E',
+                scope: {
+                    mapid: '=',
+                    controller: '=',
+                    stationaryremotectrl: '='
+                },
+                controller: ['$scope', '$rootScope', 'modalStationOpenSrvc',
+                    function($scope, $rootScope, modalStationOpenSrvc) {
+                        clickmarker = function(event, args) {
+                            var station = {};
+                            if (args.model) {
+                                station.id = args.model.stationsId ? args.model.stationsId : "";
+                                station.url = args.model.url ? args.model.url : "";
+                            } else if (args.leafletObject && args.leafletObject.options) {
+                                station.id = args.leafletObject.options.stationsId ? args.leafletObject.options.stationsId : "";
+                                station.url = args.leafletObject.options.url ? args.leafletObject.options.url : "";
                             }
-                        },
-                        controller: station.ctrl || 'SwcModalStationCtrl'
-                    });
-                }
-                return {
-                    openStation: openStation
-                };
-            }]);
+                            switch (args.model.platformType) {
+                                case 'stationary_remote':
+                                    station.ctrl = $scope.stationaryremotectrl;
+                                    modalStationOpenSrvc.openStationRemotePlatform(station);
+                                    break;
+                                    //case 'stationary_insitu':
+                                default:
+                                    station.ctrl = $scope.controller;
+                                    modalStationOpenSrvc.openStation(station);
+                            }
+                        };
+                        var mapId = $scope.mapid;
+                        var pathClickListener = $rootScope.$on('leafletDirectivePath.' + mapId + '.click', clickmarker);
+                        var markerClickListener = $rootScope.$on('leafletDirectiveMarker.' + mapId + '.click', clickmarker);
+                        $scope.$on('$destroy', function() {
+                            pathClickListener();
+                            markerClickListener();
+                        });
+                    }
+                ]
+            };
+        }
+    ])
+    .service('modalStationOpenSrvc', ['$uibModal', 'mapService',
+        function($uibModal, mapService) {
+            this.openStation = function(station) {
+                $uibModal.open({
+                    animation: true,
+                    templateUrl: 'templates/map/station.html',
+                    resolve: {
+                        selection: function() {
+                            var url = station.url;
+                            var phenomenonId;
+                            if (mapService.map.selectedPhenomenon) {
+                                angular.forEach(mapService.map.selectedPhenomenon.provider, function(provider) {
+                                    if (url === provider.url)
+                                        phenomenonId = provider.phenomenonID;
+                                });
+                            }
+                            return {
+                                stationId: station.id,
+                                phenomenonId: phenomenonId,
+                                url: url
+                            };
+                        }
+                    },
+                    controller: station.ctrl || 'SwcModalStationCtrl'
+                });
+            };
+
+            this.openStationRemotePlatform = function(platform) {
+                $uibModal.open({
+                    animation: true,
+                    templateUrl: 'templates/map/stationary-remote-platform.html',
+                    resolve: {
+                        selection: function() {
+                            var url = platform.url;
+                            var phenomenonId;
+                            if (mapService.map.selectedPhenomenon) {
+                                angular.forEach(mapService.map.selectedPhenomenon.provider, function(provider) {
+                                    if (url === provider.url)
+                                        phenomenonId = provider.phenomenonID;
+                                });
+                            }
+                            return {
+                                id: platform.id,
+                                phenomenonId: phenomenonId,
+                                url: url
+                            };
+                        }
+                    },
+                    controller: platform.ctrl
+                });
+            };
+        }
+    ]);
+
 angular.module('n52.core.map')
         .directive('swcStationLoading', [
             function () {
@@ -64094,81 +64926,84 @@ angular.module('n52.core.map')
                 $scope.map = mapService.map;
             }]);
 angular.module('n52.core.phenomena', [])
-        .factory('PhenomenonListFactory', ['$rootScope', 'interfaceService', 'statusService', 'settingsService', 'servicesHelper',
-            function ($rootScope, interfaceService, statusService, settingsService, servicesHelper) {
-                var phenomena = {};
-                phenomena.selection = null;
+    .factory('PhenomenonListFactory', ['$rootScope', 'interfaceService', 'statusService', 'settingsService', 'servicesHelper',
+        function($rootScope, interfaceService, statusService, settingsService, servicesHelper) {
+            var phenomena = {};
+            phenomena.selection = null;
+            phenomena.items = [];
+
+            loadPhenomena = function() {
                 phenomena.items = [];
+                if (settingsService.aggregateServices && angular.isUndefined(statusService.status.apiProvider.url)) {
+                    loadPhenomenaForAllProvider();
+                } else {
+                    loadPhenomenaForProvider(statusService.status.apiProvider.serviceID, statusService.status.apiProvider.url);
+                }
+            };
 
-                loadPhenomena = function () {
-                    phenomena.items = [];
-                    if (settingsService.aggregateServices && angular.isUndefined(statusService.status.apiProvider.url)) {
-                        loadPhenomenaForAllProvider();
-                    } else {
-                        loadPhenomenaForProvider(statusService.status.apiProvider.serviceID, statusService.status.apiProvider.url);
-                    }
+            loadPhenomenaForProvider = function(serviceID, providerUrl) {
+                var params = {
+                    service: serviceID,
+                    platformTypes: 'stationary'
                 };
+                interfaceService.getPhenomena(null, providerUrl, params).then(function(data) {
+                    addResultsToList(data, serviceID, providerUrl);
+                });
+            };
 
-                loadPhenomenaForProvider = function (serviceID, providerUrl) {
-                    var params = {
-                        service: serviceID
+            loadPhenomenaForAllProvider = function() {
+                phenomena.items = [];
+                servicesHelper.doForAllServices(function(provider, url) {
+                    loadPhenomenaForProvider(provider.id, url);
+                });
+            };
+
+            addResultsToList = function(results, serviceID, providerUrl) {
+                angular.forEach(results, function(entry) {
+                    var phenomenon = {
+                        serviceID: serviceID,
+                        url: providerUrl,
+                        phenomenonID: entry.id
                     };
-                    interfaceService.getPhenomena(null, providerUrl, params).then(function (data) {
-                        addResultsToList(data, serviceID, providerUrl);
-                    });
-                };
-
-                loadPhenomenaForAllProvider = function () {
-                    phenomena.items = [];
-                    servicesHelper.doForAllServices(function(provider,url){
-                        loadPhenomenaForProvider(provider.id, url);
-                    });
-                };
-
-                addResultsToList = function (results, serviceID, providerUrl) {
-                    angular.forEach(results, function (entry) {
-                        var phenomenon = {
-                            serviceID: serviceID,
-                            url: providerUrl,
-                            phenomenonID: entry.id
-                        };
-                        var idx;
-                        for (var i = 0; i < phenomena.items.length; i++) {
-                            if (phenomena.items[i].label.toUpperCase() === entry.label.toUpperCase()) {
-                                idx = i;
-                                break;
-                            }
+                    var idx;
+                    for (var i = 0; i < phenomena.items.length; i++) {
+                        if (phenomena.items[i].label.toUpperCase() === entry.label.toUpperCase()) {
+                            idx = i;
+                            break;
                         }
-                        if (angular.isNumber(idx)) {
-                            phenomena.items[idx].provider.push(phenomenon);
-                        } else {
-                            var newEntry = {
-                                label: entry.label,
-                                provider: [phenomenon]
-                            };
-                            phenomena.items.push(newEntry);
-                        }
-                    });
-                };
-
-                setSelection = function (phenomenon) {
-                    if (phenomenon) {
-                        phenomena.selection = phenomenon;
-                        $rootScope.$emit('phenomenonSelected', phenomenon);
-                    } else {
-                        phenomena.selection = null;
-                        $rootScope.$emit('allPhenomenaSelected');
                     }
-                };
+                    if (angular.isNumber(idx)) {
+                        phenomena.items[idx].provider.push(phenomenon);
+                    } else {
+                        var newEntry = {
+                            label: entry.label,
+                            provider: [phenomenon]
+                        };
+                        phenomena.items.push(newEntry);
+                    }
+                });
+            };
 
-                $rootScope.$on('newProviderSelected', loadPhenomena);
+            setSelection = function(phenomenon) {
+                if (phenomenon) {
+                    phenomena.selection = phenomenon;
+                    $rootScope.$emit('phenomenonSelected', phenomenon);
+                } else {
+                    phenomena.selection = null;
+                    $rootScope.$emit('allPhenomenaSelected');
+                }
+            };
 
-                loadPhenomena();
-                return {
-                    setSelection: setSelection,
-                    phenomena: phenomena
-                };
-            }]);
+            $rootScope.$on('newProviderSelected', loadPhenomena);
+
+            loadPhenomena();
+            return {
+                setSelection: setSelection,
+                phenomena: phenomena
+            };
+        }
+    ]);
+
 angular.module('n52.core.phenomena')
         .controller('SwcPhenomenaButtonController', ['$scope', 'statusService', 'PhenomenonListFactory', 
             function ($scope, statusService, PhenomenonListFactory) {
@@ -65024,8 +65859,8 @@ angular.module('n52.core.overviewDiagram', [])
                 $scope.options = flotOverviewChartServ.options;
                 $scope.dataset = flotOverviewChartServ.dataset;
             }])
-        .factory('flotOverviewChartServ', ['timeseriesService', 'timeService', '$rootScope', 'interfaceService', 'flotDataHelperServ', 'settingsService', 'monthNamesTranslaterServ',
-            function (timeseriesService, timeService, $rootScope, interfaceService, flotDataHelperServ, settingsService, monthNamesTranslaterServ) {
+        .factory('flotOverviewChartServ', ['timeseriesService', 'statusService', 'timeService', '$rootScope', 'interfaceService', 'flotDataHelperServ', 'settingsService', 'monthNamesTranslaterServ',
+            function (timeseriesService, statusService, timeService, $rootScope, interfaceService, flotDataHelperServ, settingsService, monthNamesTranslaterServ) {
                 var options = {
                     series: {
                         downsample: {
@@ -65125,11 +65960,13 @@ angular.module('n52.core.overviewDiagram', [])
                 }
 
                 function loadOverViewData(tsId) {
+                    
+                    var generalizeData = statusService.status.generalizeData || false;
                     options.loading = true;
                     var ts = timeseriesService.getTimeseries(tsId);
                     if (ts) {
                         var start = options.xaxis.min, end = options.xaxis.max;
-                        interfaceService.getTsData(ts.id, ts.apiUrl, {start: start, end: end}, extendedDataRequest).then(function (data) {
+                        interfaceService.getTsData(ts.id, ts.apiUrl, {start: start, end: end}, extendedDataRequest, generalizeData).then(function (data) {
                             flotDataHelperServ.updateTimeseriesInDataSet(dataset, renderOptions, ts.internalId, data[ts.id]);
                             options.loading = false;
                         });
@@ -67141,300 +67978,321 @@ angular.module('n52.core.listSelection')
             }]);
 
 angular.module('n52.core.listSelection')
-        .controller('SwcListSelectionCtrl', ['$scope', 'interfaceService', 'statusService', 'timeseriesService', '$rootScope', 'listSelectionSrvc', 'settingsService', 'servicesHelper',
-            function ($scope, interfaceService, statusService, timeseriesService, $rootScope, listSelectionSrvc, settingsService, servicesHelper) {
-                angular.forEach($scope.parameters, function (param, openedIdx) {
-                    $scope.$watch('parameters[' + openedIdx + '].isOpen', function (newVal) {
-                        if (newVal) {
-                            $scope.selectedParameterIndex = openedIdx;
-                            $scope.disableFollowingParameters();
-                        }
-                    });
+    .controller('SwcListSelectionCtrl', ['$scope', 'interfaceService', 'statusService', 'timeseriesService', '$rootScope', 'listSelectionSrvc', 'settingsService', 'servicesHelper', 'serviceFinder', '$location',
+        function($scope, interfaceService, statusService, timeseriesService, $rootScope, listSelectionSrvc, settingsService, servicesHelper, serviceFinder, $location) {
+            angular.forEach($scope.parameters, function(param, openedIdx) {
+                $scope.$watch('parameters[' + openedIdx + '].isOpen', function(newVal) {
+                    if (newVal) {
+                        $scope.selectedParameterIndex = openedIdx;
+                        $scope.disableFollowingParameters();
+                    }
                 });
+            });
 
-                _clearSelection = function () {
-                    angular.forEach($scope.parameters, function (parameter) {
-                        delete parameter.items;
-                        delete parameter.selectedIdx;
-                    });
+            _clearSelection = function() {
+                angular.forEach($scope.parameters, function(parameter) {
+                    delete parameter.items;
+                    delete parameter.selectedIdx;
+                });
+            };
+
+            $rootScope.$on('newProviderSelected', function() {
+                _clearSelection();
+                $scope.openNext(0);
+            });
+
+            $scope.createParams = function(url, serviceID) {
+                var params = {
+                    service: serviceID
                 };
-
-                $rootScope.$on('newProviderSelected', function () {
-                    _clearSelection();
-                    $scope.openNext(0);
-                });
-
-                $scope.createParams = function (url, serviceID) {
-                    var params = {
-                        service: serviceID
-                    };
-                    var temp;
-                    for (var i = 0; i < $scope.parameters.length; i++) {
-                        if (angular.isNumber($scope.parameters[i].selectedIdx)) {
-                            var selectedItem = $scope.parameters[i].items[$scope.parameters[i].selectedIdx];
-                            if (selectedItem) {
-                                for (var j = 0; j < selectedItem.provider.length; j++) {
-                                    if (selectedItem.provider[j].url === url && selectedItem.provider[j].serviceID === serviceID) {
-                                        params[$scope.parameters[i].type] = selectedItem.provider[j].elemID;
-                                        break;
-                                    }
+                var temp;
+                for (var i = 0; i < $scope.parameters.length; i++) {
+                    if (angular.isNumber($scope.parameters[i].selectedIdx)) {
+                        var selectedItem = $scope.parameters[i].items[$scope.parameters[i].selectedIdx];
+                        if (selectedItem) {
+                            for (var j = 0; j < selectedItem.provider.length; j++) {
+                                if (selectedItem.provider[j].url === url && selectedItem.provider[j].serviceID === serviceID) {
+                                    params[$scope.parameters[i].type] = selectedItem.provider[j].elemID;
+                                    break;
                                 }
                             }
-                        } else {
-                            temp = i;
-                            break;
                         }
-                    }
-                    if (Object.keys(params).length === temp + 1 || Object.keys(params).length === 5) {
-                        return params;
                     } else {
-                        return null;
+                        temp = i;
+                        break;
                     }
-                };
-
-                $scope.getItems = function (currParam) {
-                    currParam.items = [];
-                    if (currParam.type === 'category') {
-                        $scope.requestItems(currParam, $scope.getCategories);
-                    } else if (currParam.type === 'feature') {
-                        $scope.requestItems(currParam, $scope.getFeatures);
-                    } else if (currParam.type === 'phenomenon') {
-                        $scope.requestItems(currParam, $scope.getPhenomena);
-                    } else if (currParam.type === 'procedure') {
-                        $scope.requestItems(currParam, $scope.getProcedures);
-                    }
-                };
-
-                $scope.requestItems = function (currParam, itemsTypeFunc) {
-                    var paramConstellation;
-                    if (settingsService.aggregateServices && angular.isUndefined(statusService.status.apiProvider.url)) {
-                        servicesHelper.doForAllServices(function (provider, url) {
-                            paramConstellation = $scope.createParams(url, provider.id);
-                            if (paramConstellation)
-                                itemsTypeFunc(url, provider.id, currParam, paramConstellation);
-                        });
-                    } else {
-                        var provider = statusService.status.apiProvider;
-                        paramConstellation = $scope.createParams(provider.url, provider.serviceID);
-                        if (paramConstellation)
-                            itemsTypeFunc(provider.url, provider.serviceID, currParam, paramConstellation);
-                    }
-                };
-
-                $scope.getCategories = function (url, serviceID, currParam, params) {
-                    interfaceService.getCategories(null, url, params).then(function (data) {
-                        addEntries(data, serviceID, url, currParam);
-                    });
-                };
-
-                $scope.getFeatures = function (url, serviceID, currParam, params) {
-                    interfaceService.getFeatures(null, url, params).then(function (data) {
-                        addEntries(data, serviceID, url, currParam);
-                    });
-                };
-
-                $scope.getPhenomena = function (url, serviceID, currParam, params) {
-                    interfaceService.getPhenomena(null, url, params).then(function (data) {
-                        addEntries(data, serviceID, url, currParam);
-                    });
-                };
-
-                $scope.getProcedures = function (url, serviceID, currParam, params) {
-                    interfaceService.getProcedures(null, url, params).then(function (data) {
-                        addEntries(data, serviceID, url, currParam);
-                    });
-                };
-
-                addEntries = function (data, serviceID, url, currParam) {
-                    angular.forEach(data, function (entry) {
-                        var categorie = {
-                            serviceID: serviceID,
-                            url: url,
-                            elemID: entry.id
-                        };
-                        var idx;
-                        for (var i = 0; i < currParam.items.length; i++) {
-                            if (currParam.items[i].label.toUpperCase() === entry.label.toUpperCase()) {
-                                idx = i;
-                                break;
-                            }
-                        }
-                        if (angular.isNumber(idx)) {
-                            currParam.items[idx].provider.push(categorie);
-                        } else {
-                            var newEntry = {
-                                label: entry.label,
-                                provider: [categorie]
-                            };
-                            currParam.items.push(newEntry);
-                        }
-                        currParam.items.push();
-                    });
-                };
-
-                $scope.openNext = function (currentIdx) {
-                    $scope.parameters[currentIdx].isDisabled = false;
-                    $scope.selectedParameterIndex = currentIdx;
-                    if (currentIdx - 1 >= 0)
-                        $scope.parameters[currentIdx - 1].isOpen = false;
-                    $scope.parameters[currentIdx].isOpen = true;
-                    $scope.getItems($scope.parameters[currentIdx]);
-                };
-
-                $scope.disableFollowingParameters = function () {
-                    angular.forEach($scope.parameters, function (param, idx) {
-                        if (idx > $scope.selectedParameterIndex) {
-                            param.isDisabled = true;
-                            param.isOpen = false;
-                            delete param.selectedIdx;
-                            delete param.items;
-                        }
-                        if (idx >= $scope.selectedParameterIndex) {
-                            delete param.headerAddition;
-                        }
-                    });
-                };
-
-                $scope.openItem = function (item, paramIndex) {
-                    if (angular.isNumber(paramIndex))
-                        $scope.selectedParameterIndex = paramIndex;
-                    $scope.disableFollowingParameters();
-                    $scope.addItem(item, $scope.selectedParameterIndex);
-                    $scope.deselectItems($scope.parameters[$scope.selectedParameterIndex].items);
-                    item.selected = true;
-                    if ($scope.selectedParameterIndex < $scope.parameters.length - 1) {
-                        $scope.openNext($scope.selectedParameterIndex + 1);
-                    } else {
-                        if (item.provider.length === 1) {
-                            $scope.addToDiagram($scope.createParams(item.provider[0].url, item.provider[0].serviceID), item.provider[0].url);
-                        }
-                    }
-                };
-
-                $scope.addItem = function (item, idx) {
-                    var parameters = $scope.parameters[idx];
-                    for (var i = 0; i < parameters.items.length; i++) {
-                        if (parameters.items[i].label === item.label) {
-                            parameters.selectedIdx = i;
-                            break;
-                        }
-                    }
-                    parameters.headerAddition = item.label;
-                };
-
-                $scope.deselectItems = function (items) {
-                    angular.forEach(items, function (item) {
-                        item.selected = false;
-                    });
-                };
-
-                $scope.addToDiagram = function (params, url) {
-                    timeseriesService.addTimeseriesById(null, url, params);
-                };
-
-                if ($scope.listselectionid) {
-                    if (listSelectionSrvc.hasEntry($scope.listselectionid)) {
-                        $scope.parameters = listSelectionSrvc.getEntry($scope.listselectionid);
-                    } else {
-                        listSelectionSrvc.setEntry($scope.listselectionid, $scope.parameters);
-                        $scope.openNext(0);
-                    }
+                }
+                if (Object.keys(params).length === temp + 1 || Object.keys(params).length === 5) {
+                    return params;
                 } else {
+                    return null;
+                }
+            };
+
+            $scope.getItems = function(currParam) {
+                currParam.items = [];
+                if (currParam.type === 'category') {
+                    $scope.requestItems(currParam, $scope.getCategories);
+                } else if (currParam.type === 'feature') {
+                    $scope.requestItems(currParam, $scope.getFeatures);
+                } else if (currParam.type === 'phenomenon') {
+                    $scope.requestItems(currParam, $scope.getPhenomena);
+                } else if (currParam.type === 'procedure') {
+                    $scope.requestItems(currParam, $scope.getProcedures);
+                }
+            };
+
+            $scope.requestItems = function(currParam, itemsTypeFunc) {
+                var paramConstellation;
+                currParam.loading = 0;
+                if (settingsService.aggregateServices && angular.isUndefined(statusService.status.apiProvider.url)) {
+                    servicesHelper.doForAllServices(function(provider, url) {
+                        paramConstellation = $scope.createParams(url, provider.id);
+                        if (paramConstellation) {
+                            currParam.loading++;
+                            itemsTypeFunc(url, provider.id, currParam, paramConstellation);
+                        }
+                    });
+                } else {
+                    var provider = statusService.status.apiProvider;
+                    paramConstellation = $scope.createParams(provider.url, provider.serviceID);
+                    if (paramConstellation) {
+                        currParam.loading++;
+                        itemsTypeFunc(provider.url, provider.serviceID, currParam, paramConstellation);
+                    }
+                }
+            };
+
+            $scope.getCategories = function(url, serviceID, currParam, params) {
+                interfaceService.getCategories(null, url, params).then(function(data) {
+                    addEntries(data, serviceID, url, currParam);
+                });
+            };
+
+            $scope.getFeatures = function(url, serviceID, currParam, params) {
+                interfaceService.getFeatures(null, url, params).then(function(data) {
+                    addEntries(data, serviceID, url, currParam);
+                });
+            };
+
+            $scope.getPhenomena = function(url, serviceID, currParam, params) {
+                interfaceService.getPhenomena(null, url, params).then(function(data) {
+                    addEntries(data, serviceID, url, currParam);
+                });
+            };
+
+            $scope.getProcedures = function(url, serviceID, currParam, params) {
+                interfaceService.getProcedures(null, url, params).then(function(data) {
+                    addEntries(data, serviceID, url, currParam);
+                });
+            };
+
+            addEntries = function(data, serviceID, url, currParam) {
+                currParam.loading--;
+                angular.forEach(data, function(entry) {
+                    var categorie = {
+                        serviceID: serviceID,
+                        url: url,
+                        elemID: entry.id
+                    };
+                    var idx;
+                    for (var i = 0; i < currParam.items.length; i++) {
+                        if (currParam.items[i].label.toUpperCase() === entry.label.toUpperCase()) {
+                            idx = i;
+                            break;
+                        }
+                    }
+                    if (angular.isNumber(idx)) {
+                        currParam.items[idx].provider.push(categorie);
+                    } else {
+                        var newEntry = {
+                            label: entry.label,
+                            provider: [categorie]
+                        };
+                        currParam.items.push(newEntry);
+                    }
+                    currParam.items.push();
+                });
+            };
+
+            $scope.openNext = function(currentIdx) {
+                $scope.parameters[currentIdx].isDisabled = false;
+                $scope.selectedParameterIndex = currentIdx;
+                if (currentIdx - 1 >= 0)
+                    $scope.parameters[currentIdx - 1].isOpen = false;
+                $scope.parameters[currentIdx].isOpen = true;
+                $scope.getItems($scope.parameters[currentIdx]);
+            };
+
+            $scope.disableFollowingParameters = function() {
+                angular.forEach($scope.parameters, function(param, idx) {
+                    if (idx > $scope.selectedParameterIndex) {
+                        param.isDisabled = true;
+                        param.isOpen = false;
+                        delete param.selectedIdx;
+                        delete param.items;
+                    }
+                    if (idx >= $scope.selectedParameterIndex) {
+                        delete param.headerAddition;
+                    }
+                });
+            };
+
+            $scope.openItem = function(item, paramIndex) {
+                if (angular.isNumber(paramIndex))
+                    $scope.selectedParameterIndex = paramIndex;
+                $scope.disableFollowingParameters();
+                $scope.addItem(item, $scope.selectedParameterIndex);
+                $scope.deselectItems($scope.parameters[$scope.selectedParameterIndex].items);
+                item.selected = true;
+                if ($scope.selectedParameterIndex < $scope.parameters.length - 1) {
+                    $scope.openNext($scope.selectedParameterIndex + 1);
+                } else {
+                    if (item.provider.length === 1) {
+                        $scope.processSelection($scope.createParams(item.provider[0].url, item.provider[0].serviceID), item.provider[0].url);
+                    }
+                }
+            };
+
+            $scope.addItem = function(item, idx) {
+                var parameters = $scope.parameters[idx];
+                for (var i = 0; i < parameters.items.length; i++) {
+                    if (parameters.items[i].label === item.label) {
+                        parameters.selectedIdx = i;
+                        break;
+                    }
+                }
+                parameters.headerAddition = item.label;
+            };
+
+            $scope.deselectItems = function(items) {
+                angular.forEach(items, function(item) {
+                    item.selected = false;
+                });
+            };
+
+            $scope.processSelection = function(params, url) {
+                interfaceService.getTimeseries(null, url, params).then(result => {
+                    // TODO iterate over results
+                    var dataset = result[0];
+                    if (dataset.datasetType) {
+                        serviceFinder.getPresentDataset(dataset.datasetType, dataset.seriesParameters.platform.platformType, url).presentDataset(dataset, url);
+                    } else {
+                        timeseriesService.addTimeseries(dataset);
+                        $location.url('/diagram');
+                    }
+                });
+            };
+
+            if ($scope.listselectionid) {
+                if (listSelectionSrvc.hasEntry($scope.listselectionid)) {
+                    $scope.parameters = listSelectionSrvc.getEntry($scope.listselectionid);
+                } else {
+                    listSelectionSrvc.setEntry($scope.listselectionid, $scope.parameters);
                     $scope.openNext(0);
                 }
-            }])
-        .factory('listSelectionSrvc', ['$rootScope', function ($rootScope) {
-                var entries = {};
-                getEntry = function (id) {
-                    return entries[id];
-                };
-                setEntry = function (id, entry) {
-                    entries[id] = entry;
-                };
-                hasEntry = function (id) {
-                    return angular.isDefined(entries[id]);
-                };
-                $rootScope.$on('newProviderSelected', function () {
-                    entries = {};
-                });
-                return {
-                    getEntry: getEntry,
-                    setEntry: setEntry,
-                    hasEntry: hasEntry
-                };
-            }]);
-angular.module('n52.core.listSelection')
-        .controller('SwcListSelectionParametersCtrl', ['$scope',
-            function ($scope) {
-                $scope.categoryParams = [
-                    {
-                        type: 'category',
-                        header: 'listSelection.headers.category'
-                    },
-                    {
-                        type: 'feature',
-                        header: 'listSelection.headers.station'
-                    },
-                    {
-                        type: 'phenomenon',
-                        header: 'listSelection.headers.phenomenon'
-                    },
-                    {
-                        type: 'procedure',
-                        header: 'listSelection.headers.procedure'
-                    }
-                ];
+            } else {
+                $scope.openNext(0);
+            }
+        }
+    ])
+    .factory('listSelectionSrvc', ['$rootScope', function($rootScope) {
+        var entries = {};
+        getEntry = function(id) {
+            return entries[id];
+        };
+        setEntry = function(id, entry) {
+            entries[id] = entry;
+        };
+        hasEntry = function(id) {
+            return angular.isDefined(entries[id]);
+        };
+        $rootScope.$on('newProviderSelected', function() {
+            entries = {};
+        });
+        return {
+            getEntry: getEntry,
+            setEntry: setEntry,
+            hasEntry: hasEntry
+        };
+    }]);
 
-                $scope.stationParams = [
-                    {
-                        type: 'feature',
-                        header: 'listSelection.headers.station'
-                    },
-                    {
-                        type: 'category',
-                        header: 'listSelection.headers.category'
-                    },
-                    {
-                        type: 'phenomenon',
-                        header: 'listSelection.headers.phenomenon'
-                    },
-                    {
-                        type: 'procedure',
-                        header: 'listSelection.headers.procedure'
-                    }
-                ];
-
-                $scope.phenomenonParams = [
-                    {
-                        type: 'phenomenon',
-                        header: 'listSelection.headers.phenomenon'
-                    },
-                    {
-                        type: 'category',
-                        header: 'listSelection.headers.category'
-                    },
-                    {
-                        type: 'feature',
-                        header: 'listSelection.headers.station'
-                    },
-                    {
-                        type: 'procedure',
-                        header: 'listSelection.headers.procedure'
-                    }
-                ];
-            }]);
 angular.module('n52.core.listSelection')
-        .controller('SwcModalListSelectionCtrl', ['$scope', '$controller', '$location',
-            function ($scope, $controller, $location) {
-                var ctrl = $controller('SwcListSelectionCtrl', {$scope: $scope});
-                var oldAddToDiagram = $scope.addToDiagram;
-                angular.extend(this, ctrl);
-                $scope.addToDiagram = function(params, url) {
-                    oldAddToDiagram(params, url);
-                    $location.url('/diagram');
-                    $scope.$parent.close();
-                };
-            }]);
+    .controller('SwcListSelectionParametersCtrl', ['$scope',
+        function($scope) {
+            $scope.categoryParams = [{
+                type: 'category',
+                header: 'listSelection.headers.category'
+            }, {
+                type: 'feature',
+                header: 'listSelection.headers.station'
+            }, {
+                type: 'phenomenon',
+                header: 'listSelection.headers.phenomenon'
+            }, {
+                type: 'procedure',
+                header: 'listSelection.headers.procedure'
+            }];
+
+            $scope.stationParams = [{
+                type: 'feature',
+                header: 'listSelection.headers.station'
+            }, {
+                type: 'category',
+                header: 'listSelection.headers.category'
+            }, {
+                type: 'phenomenon',
+                header: 'listSelection.headers.phenomenon'
+            }, {
+                type: 'procedure',
+                header: 'listSelection.headers.procedure'
+            }];
+
+            $scope.phenomenonParams = [{
+                type: 'phenomenon',
+                header: 'listSelection.headers.phenomenon'
+            }, {
+                type: 'category',
+                header: 'listSelection.headers.category'
+            }, {
+                type: 'feature',
+                header: 'listSelection.headers.station'
+            }, {
+                type: 'procedure',
+                header: 'listSelection.headers.procedure'
+            }];
+
+            $scope.procedureParams = [{
+                type: 'procedure',
+                header: 'listSelection.headers.procedure'
+            }, {
+                type: 'feature',
+                header: 'listSelection.headers.station'
+            }, {
+                type: 'phenomenon',
+                header: 'listSelection.headers.phenomenon'
+            }, {
+                type: 'category',
+                header: 'listSelection.headers.category'
+            }];
+        }
+    ]);
+
+angular.module('n52.core.listSelection')
+    .controller('SwcModalListSelectionCtrl', ['$scope', '$controller', '$location',
+        function($scope, $controller, $location) {
+            var ctrl = $controller('SwcListSelectionCtrl', {
+                $scope: $scope
+            });
+            var oldProcessSelection = $scope.processSelection;
+            angular.extend(this, ctrl);
+            $scope.processSelection = function(params, url) {
+                oldProcessSelection(params, url);
+                $scope.$parent.close();
+            };
+        }
+    ]);
+
 angular.module('n52.core.listSelection')
         .controller('SwcValidateParameterConstellationCtrl', ['$scope', 'interfaceService', 'statusService', 'timeseriesService',
             function ($scope, interfaceService, statusService, timeseriesService) {
@@ -68268,188 +69126,323 @@ angular.module('n52.core.favorite', [])
                 ;
             }]);
 angular.module('n52.core.interface', [])
-        .service('interfaceService', ['$http', '$q', 'statusService', 'interfaceServiceUtils', 'utils',
-          function ($http, $q, statusService, interfaceServiceUtils, utils) {
+    .service('interfaceService', ['$http', '$q', 'interfaceServiceUtils', 'utils',
+        function($http, $q, interfaceServiceUtils, utils) {
 
-            this.getServices = function (apiUrl, id) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'services/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs({expanded: true}))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getStations = function (id, apiUrl, params) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'stations/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getPhenomena = function (id, apiUrl, params) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'phenomena/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getCategories = function (id, apiUrl, params) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'categories/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getFeatures = function (id, apiUrl, params) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'features/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getProcedures = function (id, apiUrl, params) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'procedures/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.search = function (apiUrl, arrayParams) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'search', interfaceServiceUtils.createRequestConfigs({q: arrayParams.join(',')}))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getTimeseries = function (id, apiUrl, params) {
-              if (angular.isUndefined(params))
-                params = {};
-              params.expanded = true;
-              params.force_latest_values = true;
-              params.status_intervals = true;
-              params.rendering_hints = true;
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'timeseries/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          if (angular.isArray(response.data)) {
-                            var array = [];
-                            angular.forEach(response.data, function (ts) {
-                              array.push(interfaceServiceUtils.pimpTs(ts, apiUrl));
+            isNewApi = function(apiUrl) {
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl).then(response => {
+                        if (response && response.data && !isNaN(response.data.length)) {
+                            response.data.forEach(entry => {
+                                if (entry.id === 'platforms') {
+                                    resolve(true);
+                                }
                             });
-                            resolve(array);
-                          } else {
-                            resolve(interfaceServiceUtils.pimpTs(response.data, apiUrl));
-                          }
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getExtras = function (tsId, apiUrl, params) {
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'timeseries/' + interfaceServiceUtils.createIdString(tsId) + '/extras', interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-
-            this.getTsData = function (id, apiUrl, timespan, extendedData) {
-              var params = {
-                timespan: utils.createRequestTimespan(timespan.start, timespan.end),
-                generalize: statusService.status.generalizeData || false,
-                expanded: true,
-                format: 'flot'
-              };
-              if (extendedData) {
-                angular.extend(params, extendedData);
-              }
-              return $q(function (resolve, reject) {
-                $http.get(apiUrl + 'timeseries/' + interfaceServiceUtils.createIdString(id) + "/getData", interfaceServiceUtils.createRequestConfigs(params))
-                        .then(function (response) {
-                          interfaceServiceUtils.revampTimeseriesData(response.data, id);
-                          resolve(response.data);
-                        }, function (error) {
-                          interfaceServiceUtils.errorCallback(error, reject);
-                        });
-              });
-            };
-          }])
-        .service('interfaceServiceUtils', ['settingsService', 'utils', '$log',
-          function (settingsService, utils, $log) {
-
-            this.createRequestConfigs = function (params) {
-              if (angular.isUndefined(params)) {
-                params = settingsService.additionalParameters;
-              } else {
-                angular.extend(params, settingsService.additionalParameters);
-              }
-              return {
-                params: params,
-                cache: true
-              };
-            };
-
-            this.errorCallback = function (error, reject) {
-              if (error.data && error.data.userMessage)
-                $log.error(error.data.userMessage);
-              reject(error);
-            };
-
-            this.createIdString = function (id) {
-              return (id === null || angular.isUndefined(id) ? "" : id);
-            };
-
-            this.pimpTs = function (ts, url) {
-              ts.apiUrl = url;
-              ts.internalId = utils.createInternalId(ts.id, url);
-              if (ts.uom === settingsService.undefinedUomString) {
-                delete ts.uom;
-              }
-              return ts;
-            };
-            
-            this.revampTimeseriesData = function(data, id) {
-              if (data[id].values.length > 0 && data[id].values[0].timestamp) {
-                var temp = [];
-                angular.forEach(data[id].values, function (entry) {
-                  temp.push([entry.timestamp, entry.value]);
+                        }
+                        resolve(false);
+                    });
                 });
-                data[id].values = temp;
-              }
             };
 
-          }]);
+            addAllPlatformTypes = function(params) {
+                if (params && !params.platformTypes)
+                    params.platformTypes = 'all';
+                return params;
+            };
+
+            getPlatforms = function(id, apiUrl, params) {
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'platforms/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getMobilePlatforms = function(id, apiUrl, params) {
+                interfaceServiceUtils.extendParams(params, {
+                    platformTypes: 'mobile'
+                });
+                return getPlatforms(id, apiUrl, params);
+            };
+
+            this.getStationaryPlatforms = function(id, apiUrl, params) {
+                interfaceServiceUtils.extendParams(params, {
+                    platformTypes: 'stationary'
+                });
+                return getPlatforms(id, apiUrl, params);
+            };
+
+            this.getServices = function(apiUrl, id) {
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'services/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs({
+                            expanded: true
+                        }))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getStations = function(id, apiUrl, params) {
+                return $q((resolve, reject) => {
+                    isNewApi(apiUrl).then(isNew => {
+                        if (isNew) {
+                            interfaceServiceUtils.extendParams(params, {
+                                expanded: true
+                            });
+                            this.getStationaryPlatforms(id, apiUrl, params)
+                                .then(response => {
+                                    if (isNaN(response.length)) {
+                                        response.properties = {
+                                            id: response.id
+                                        };
+                                    } else {
+                                        response.forEach(entry => {
+                                            entry.properties = {
+                                                id: entry.id
+                                            };
+                                        });
+                                    }
+                                    resolve(response);
+                                });
+                        } else {
+                            $http.get(apiUrl + 'stations/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                                .then(response => {
+                                    resolve(response.data);
+                                }, error => {
+                                    interfaceServiceUtils.errorCallback(error, reject);
+                                });
+                        }
+                    });
+                });
+            };
+
+            this.getPhenomena = function(id, apiUrl, params) {
+                addAllPlatformTypes(params);
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'phenomena/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getCategories = function(id, apiUrl, params) {
+                addAllPlatformTypes(params);
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'categories/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getFeatures = function(id, apiUrl, params) {
+                addAllPlatformTypes(params);
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'features/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getProcedures = function(id, apiUrl, params) {
+                addAllPlatformTypes(params);
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'procedures/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.search = function(apiUrl, arrayParams) {
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'search', interfaceServiceUtils.createRequestConfigs({
+                            q: arrayParams.join(',')
+                        }))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getTimeseries = function(id, apiUrl, params) {
+                if (angular.isUndefined(params))
+                    params = {};
+                params.expanded = true;
+                params.force_latest_values = true;
+                params.status_intervals = true;
+                params.rendering_hints = true;
+                return $q((resolve, reject) => {
+                    isNewApi(apiUrl).then(isNew => {
+                        if (isNew) {
+                            this.getDatasets(id, apiUrl, params)
+                                .then(response => {
+                                    if (isNaN(response.length)) {
+                                        response.properties = {
+                                            id: response.id
+                                        };
+                                    } else {
+                                        response.forEach(entry => {
+                                            entry.properties = {
+                                                id: entry.id
+                                            };
+                                        });
+                                    }
+                                    resolve(response);
+                                });
+                        } else {
+                            $http.get(apiUrl + 'timeseries/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                                .then(response => {
+                                    if (angular.isArray(response.data)) {
+                                        var array = [];
+                                        angular.forEach(response.data, ts => {
+                                            array.push(interfaceServiceUtils.pimpTs(ts, apiUrl));
+                                        });
+                                        resolve(array);
+                                    } else {
+                                        resolve(interfaceServiceUtils.pimpTs(response.data, apiUrl));
+                                    }
+                                }, error => {
+                                    interfaceServiceUtils.errorCallback(error, reject);
+                                });
+                        }
+                    });
+                });
+            };
+
+            this.getExtras = function(tsId, apiUrl, params) {
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'timeseries/' + interfaceServiceUtils.createIdString(tsId) + '/extras', interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getTsData = function(id, apiUrl, timespan, extendedData, generalizeData) {
+                var params = {
+                    timespan: utils.createRequestTimespan(timespan.start, timespan.end),
+                    generalize: generalizeData || false,
+                    expanded: true,
+                    format: 'flot'
+                };
+                if (extendedData) {
+                    angular.extend(params, extendedData);
+                }
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'timeseries/' + interfaceServiceUtils.createIdString(id) + "/getData", interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            interfaceServiceUtils.revampTimeseriesData(response.data, id);
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getDatasets = function(id, apiUrl, params) {
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'datasets/' + interfaceServiceUtils.createIdString(id), interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+
+            this.getDatasetData = function(id, apiUrl, timespan, extendedParams) {
+                var params = {
+                    timespan: utils.createRequestTimespan(timespan.start, timespan.end)
+                };
+                if (extendedParams) {
+                    angular.extend(params, extendedParams);
+                }
+                return $q((resolve, reject) => {
+                    $http.get(apiUrl + 'datasets/' + interfaceServiceUtils.createIdString(id) + '/data', interfaceServiceUtils.createRequestConfigs(params))
+                        .then(response => {
+                            resolve(response.data);
+                        }, error => {
+                            interfaceServiceUtils.errorCallback(error, reject);
+                        });
+                });
+            };
+        }
+    ])
+    .service('interfaceServiceUtils', ['settingsService', 'utils', '$log',
+        function(settingsService, utils, $log) {
+
+            this.extendParams = function(params, extendParams) {
+                if (!params) {
+                    return extendParams;
+                } else {
+                    return angular.extend(params, extendParams);
+                }
+            };
+
+            this.createRequestConfigs = function(params) {
+                if (angular.isUndefined(params)) {
+                    params = settingsService.additionalParameters;
+                } else {
+                    angular.extend(params, settingsService.additionalParameters);
+                }
+                return {
+                    params: params,
+                    cache: true
+                };
+            };
+
+            this.errorCallback = function(error, reject) {
+                if (error.data && error.data.userMessage)
+                    $log.error(error.data.userMessage);
+                reject(error);
+            };
+
+            this.createIdString = function(id) {
+                return (id === null || angular.isUndefined(id) ? "" : id);
+            };
+
+            this.pimpTs = function(ts, url) {
+                ts.apiUrl = url;
+                ts.internalId = utils.createInternalId(ts.id, url);
+                if (ts.uom === settingsService.undefinedUomString) {
+                    delete ts.uom;
+                }
+                return ts;
+            };
+
+            this.revampTimeseriesData = function(data, id) {
+                if (data[id].values.length > 0 && data[id].values[0].timestamp) {
+                    var temp = [];
+                    angular.forEach(data[id].values, entry => {
+                        temp.push([entry.timestamp, entry.value]);
+                    });
+                    data[id].values = temp;
+                }
+            };
+
+        }
+    ]);
 
 angular.module('n52.core.permalinkGen', [])
         .factory('permalinkGenerationService', ['$location', 'timeseriesService', 'statusService', 'utils',
@@ -68516,217 +69509,230 @@ angular.module('n52.core.permalinkEval', ['n52.core.utils'])
                 };
             }]);
 angular.module('n52.core.settings', [])
-        .service('settingsService', ['config', function (config) {
-                var settings = {
-                    // For more informations about the settings options, please check: http://52north.github.io/js-sensorweb-client
-                    // The entries in this list will be removed from the provider list offered to the user
-                    providerBlackList: [
-                        {
-                            serviceID: 'srv_6d9ccea8d609ecb74d4a512922bb7cee', // ircel
-                            apiUrl: 'http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/'
-                        },
-                        {
-                            serviceID: 'srv_7cabc8c30a85fab035c95882df6db343', // BfG sos
-                            apiUrl: 'http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/'
-                        },
-                        {
-                            serviceID: 'srv_7cabc8c30a85fab035c95882df6db343', // Wupperverbands-SOS
-                            apiUrl: 'http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/'
+    .service('settingsService', ['config', function(config) {
+        var settings = {
+            // For more informations about the settings options, please check: http://52north.github.io/js-sensorweb-client
+            // The entries in this list will be removed from the provider list offered to the user
+            providerBlackList: [],
+            // A list of timeseries-API urls and an appropriate identifier to create internal timeseries ids - should be defined in the settings.json
+            restApiUrls: {
+                //                        'http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/': '52nSensorweb',
+                //                        'http://sosrest.irceline.be/api/v1/': 'irceline',
+                //                        'http://www.fluggs.de/sos2/api/v1/': 'fluggs'
+                //                        'http://sensors.geonovum.nl/sos/api/v1/': 'geonovum'
+            },
+            // default selected provider
+            defaultProvider: {
+                //                        serviceID: 'srv_738111ed219f738cfc85be0c8d87843c',
+                //                        url: 'http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/'
+            },
+            // default setting for clustering stations
+            clusterStations: true,
+            // default setting for generalization of the data
+            generalizeData: true,
+            // default setting for save status
+            saveStatus: false,
+            // default setting for concentration marker
+            concentrationMarker: false,
+            // base layer in the map
+            baselayer: {},
+            // overlay layer in the map
+            overlays: {},
+            // zoom level in the map, used for user location and station position
+            zoom: 13,
+            // how long a station popup to visualize the location should be visible on the map (in msec)
+            stationPopupDuration: 10000,
+            // date/time format which is used on several places
+            dateformat: 'DD.MM.YY HH:mm [h]',
+            shortDateformat: 'DD.MM.YY',
+            // default color for circled marker, when last value is older than 'ignoreAfterDuration' or the timeseries has no last value
+            defaultMarkerColor: '#123456',
+            // duration buffer for time series request
+            timeseriesDataBuffer: moment.duration(2, 'h'),
+            // default start time extent
+            defaultStartTimeExtent: {
+                duration: moment.duration(1, 'day'),
+                end: moment().endOf('day')
+            },
+            // default scaling of loaded diagram
+            defaultZeroScale: false,
+            // default grouping timeseries with same uom
+            defaultGroupedAxis: true,
+            // additional parameters which are append to the request
+            additionalParameters: {
+                locale: 'de'
+            },
+            // default language for i18n
+            defaultLanguage: 'en',
+            // should saving the status be possible,
+            saveStatusPossible: true,
+            // entries on a page for the values table
+            pagesize: 20,
+            // line width for selected timeseries
+            selectedLineWidth: 5,
+            // common line width for unselected timeseries
+            commonLineWidth: 2,
+            // chart styling options see for more details: https://github.com/flot/flot/blob/master/API.md
+            chartOptions: {},
+            // colorlist to select for a different timeseries color
+            colorList: ['#1abc9c', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', '#f1c40f',
+                '#d35400', '#c0392b', '#7f8c8d'
+            ],
+            // colorlist for the reference values
+            refColorList: [],
+            // select the color from the predefined lists
+            selectColorFromList: false,
+            // interval to display the timeseries in a bar diagram with label and value in hours
+            intervalList: [{
+                label: 'styleChange.barChartInterval.hour',
+                caption: 'byHour',
+                value: 1
+            }, {
+                label: 'styleChange.barChartInterval.day',
+                caption: 'byDay',
+                value: 24
+            }, {
+                label: 'styleChange.barChartInterval.week',
+                caption: 'byWeek',
+                value: 7 * 24
+            }, {
+                label: 'styleChange.barChartInterval.month',
+                caption: 'byMonth',
+                value: 30 * 24
+            }],
+            timeRangeData: {
+                presets: [{
+                    name: 'lastHour',
+                    label: 'timeSelection.presets.lastHour',
+                    interval: {
+                        from: moment().subtract(1, 'hours'),
+                        till: moment(),
+                        duration: moment.duration(1, 'hours')
+                    }
+                }, {
+                    name: 'today',
+                    label: 'timeSelection.presets.today',
+                    interval: {
+                        from: moment().startOf('day'),
+                        till: moment().endOf('day'),
+                        duration: moment.duration(1, 'days')
+                    }
+                }, {
+                    name: 'yesterday',
+                    label: 'timeSelection.presets.yesterday',
+                    interval: {
+                        from: moment().subtract(1, 'days').startOf('day'),
+                        till: moment().subtract(1, 'days').endOf('day'),
+                        duration: moment.duration(1, 'days')
+                    }
+                }, {
+                    name: 'todayYesterday',
+                    label: 'timeSelection.presets.todayYesterday',
+                    interval: {
+                        from: moment().subtract(1, 'days').startOf('day'),
+                        till: moment().endOf('day'),
+                        duration: moment.duration(2, 'days')
+                    }
+                }, {
+                    name: 'thisWeek',
+                    label: 'timeSelection.presets.thisWeek',
+                    interval: {
+                        from: moment().startOf('isoWeek'),
+                        till: moment().endOf('isoWeek'),
+                        duration: moment.duration(1, 'weeks')
+                    }
+                }, {
+                    name: 'lastWeek',
+                    label: 'timeSelection.presets.lastWeek',
+                    interval: {
+                        from: moment().subtract(1, 'weeks').startOf('isoWeek'),
+                        till: moment().subtract(1, 'weeks').endOf('isoWeek'),
+                        duration: moment.duration(1, 'weeks')
+                    }
+                }, {
+                    name: 'thisMonth',
+                    label: 'timeSelection.presets.thisMonth',
+                    interval: {
+                        from: moment().startOf('month'),
+                        till: moment().endOf('month'),
+                        duration: moment.duration(1, 'months')
+                    }
+                }, {
+                    name: 'lastMonth',
+                    label: 'timeSelection.presets.lastMonth',
+                    interval: {
+                        from: moment().subtract(1, 'months').startOf('month'),
+                        till: moment().subtract(1, 'months').endOf('month'),
+                        duration: moment.duration(1, 'months')
+                    }
+                }, {
+                    name: 'thisYear',
+                    label: 'timeSelection.presets.thisYear',
+                    interval: {
+                        from: moment().startOf('year'),
+                        till: moment().endOf('year'),
+                        duration: moment.duration(1, 'years')
+                    }
+                }, {
+                    name: 'lastYear',
+                    label: 'timeSelection.presets.lastYear',
+                    interval: {
+                        from: moment().subtract(1, 'years').startOf('year'),
+                        till: moment().subtract(1, 'years').endOf('year'),
+                        duration: moment.duration(1, 'years')
+                    }
+                }]
+            },
+            notifyOptions: {
+                position: 'bottom-left',
+                fade_in_speed: 1000,
+                fade_out_speed: 1000,
+                time: 2000
+            },
+            wmsLayer: [],
+            // configuration for the tile layer in the leaflet map (see for more information: http://leafletjs.com/reference.html#tilelayer )
+            tileLayerUrl: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+            tileLayerOptions: {
+                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            },
+            enableGeoSearch: true,
+            supportedLanguages: [{
+                code: 'de',
+                label: 'Deutsch'
+            }, {
+                code: 'en',
+                label: 'English'
+            }]
+        };
+        angular.merge(settings, config);
+        return settings;
+    }])
+    .service('serviceFinder', ['settingsService', '$injector',
+        function(settingsService, $injector) {
+
+            this.getPresentDataset = function(datasetType, platformType, providerUrl) {
+                var presentDataset = settingsService.presentDataset;
+                if (datasetType in presentDataset && presentDataset[datasetType].length) {
+                    var serviceString;
+                    presentDataset[datasetType].some(entry => {
+                        if (entry &&
+                            !entry.url || entry.url === providerUrl &&
+                            !entry.platformType || entry.platformType === platformType
+                        ) {
+                            serviceString = entry.service;
+                            return true;
                         }
-                    ],
-                    // A list of timeseries-API urls and an appropriate identifier to create internal timeseries ids - should be defined in the settings.json
-                    restApiUrls: {
-//                        'http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/': '52nSensorweb',
-//                        'http://sosrest.irceline.be/api/v1/': 'irceline',
-//                        'http://www.fluggs.de/sos2/api/v1/': 'fluggs'
-//                        'http://sensors.geonovum.nl/sos/api/v1/': 'geonovum'
-                    },
-                    // default selected provider
-                    defaultProvider: {
-//                        serviceID: 'srv_738111ed219f738cfc85be0c8d87843c',
-//                        url: 'http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/'
-                    },
-                    // default setting for clustering stations
-                    clusterStations: true,
-                    // default setting for generalization of the data
-                    generalizeData: true,
-                    // default setting for save status
-                    saveStatus: false,
-                    // default setting for concentration marker
-                    concentrationMarker: false,
-                    // base layer in the map
-                    baselayer: {},
-                    // overlay layer in the map
-                    overlays: {},
-                    // zoom level in the map, used for user location and station position
-                    zoom: 13,
-                    // how long a station popup to visualize the location should be visible on the map (in msec)
-                    stationPopupDuration: 10000,
-                    // date/time format which is used on several places
-                    dateformat: 'DD.MM.YY HH:mm [h]',
-                    shortDateformat: 'DD.MM.YY',
-                    // default color for circled marker, when last value is older than 'ignoreAfterDuration' or the timeseries has no last value
-                    defaultMarkerColor: '#123456',
-                    // duration buffer for time series request
-                    timeseriesDataBuffer: moment.duration(2, 'h'),
-                    // default start time extent
-                    defaultStartTimeExtent: {
-                        duration: moment.duration(1, 'day'),
-                        end: moment().endOf('day')
-                    },
-                    // default scaling of loaded diagram
-                    defaultZeroScale: false,
-                    // default grouping timeseries with same uom
-                    defaultGroupedAxis: true,
-                    // additional parameters which are append to the request
-                    additionalParameters: {
-                        locale: 'de'
-                    },
-                    // default language for i18n
-                    defaultLanguage: 'en',
-                    // should saving the status be possible,
-                    saveStatusPossible: true,
-                    // entries on a page for the values table
-                    pagesize: 20,
-                    // line width for selected timeseries
-                    selectedLineWidth: 5,
-                    // common line width for unselected timeseries
-                    commonLineWidth: 2,
-                    // chart styling options see for more details: https://github.com/flot/flot/blob/master/API.md
-                    chartOptions: {},
-                    // colorlist to select for a different timeseries color
-                    colorList: ['#1abc9c', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', '#f1c40f',
-                        '#d35400', '#c0392b', '#7f8c8d'],
-                    // colorlist for the reference values
-                    refColorList: [],
-                    // select the color from the predefined lists
-                    selectColorFromList: false,
-                    // interval to display the timeseries in a bar diagram with label and value in hours
-                    intervalList: [
-                        {label: 'styleChange.barChartInterval.hour', caption: 'byHour', value: 1},
-                        {label: 'styleChange.barChartInterval.day', caption: 'byDay', value: 24},
-                        {label: 'styleChange.barChartInterval.week', caption: 'byWeek', value: 7 * 24},
-                        {label: 'styleChange.barChartInterval.month', caption: 'byMonth', value: 30 * 24}
-                    ],
-                    timeRangeData: {
-                        presets: [
-                            {
-                                name: 'lastHour',
-                                label: 'timeSelection.presets.lastHour',
-                                interval: {
-                                    from: moment().subtract(1, 'hours'),
-                                    till: moment(),
-                                    duration: moment.duration(1, 'hours')
-                                }
-                            },
-                            {
-                                name: 'today',
-                                label: 'timeSelection.presets.today',
-                                interval: {
-                                    from: moment().startOf('day'),
-                                    till: moment().endOf('day'),
-                                    duration: moment.duration(1, 'days')
-                                }
-                            },
-                            {
-                                name: 'yesterday',
-                                label: 'timeSelection.presets.yesterday',
-                                interval: {
-                                    from: moment().subtract(1, 'days').startOf('day'),
-                                    till: moment().subtract(1, 'days').endOf('day'),
-                                    duration: moment.duration(1, 'days')
-                                }
-                            },
-                            {
-                                name: 'todayYesterday',
-                                label: 'timeSelection.presets.todayYesterday',
-                                interval: {
-                                    from: moment().subtract(1, 'days').startOf('day'),
-                                    till: moment().endOf('day'),
-                                    duration: moment.duration(2, 'days')
-                                }
-                            },
-                            {
-                                name: 'thisWeek',
-                                label: 'timeSelection.presets.thisWeek',
-                                interval: {
-                                    from: moment().startOf('isoWeek'),
-                                    till: moment().endOf('isoWeek'),
-                                    duration: moment.duration(1, 'weeks')
-                                }
-                            },
-                            {
-                                name: 'lastWeek',
-                                label: 'timeSelection.presets.lastWeek',
-                                interval: {
-                                    from: moment().subtract(1, 'weeks').startOf('isoWeek'),
-                                    till: moment().subtract(1, 'weeks').endOf('isoWeek'),
-                                    duration: moment.duration(1, 'weeks')
-                                }
-                            },
-                            {
-                                name: 'thisMonth',
-                                label: 'timeSelection.presets.thisMonth',
-                                interval: {
-                                    from: moment().startOf('month'),
-                                    till: moment().endOf('month'),
-                                    duration: moment.duration(1, 'months')
-                                }
-                            },
-                            {
-                                name: 'lastMonth',
-                                label: 'timeSelection.presets.lastMonth',
-                                interval: {
-                                    from: moment().subtract(1, 'months').startOf('month'),
-                                    till: moment().subtract(1, 'months').endOf('month'),
-                                    duration: moment.duration(1, 'months')
-                                }
-                            },
-                            {
-                                name: 'thisYear',
-                                label: 'timeSelection.presets.thisYear',
-                                interval: {
-                                    from: moment().startOf('year'),
-                                    till: moment().endOf('year'),
-                                    duration: moment.duration(1, 'years')
-                                }
-                            },
-                            {
-                                name: 'lastYear',
-                                label: 'timeSelection.presets.lastYear',
-                                interval: {
-                                    from: moment().subtract(1, 'years').startOf('year'),
-                                    till: moment().subtract(1, 'years').endOf('year'),
-                                    duration: moment.duration(1, 'years')
-                                }
-                            }
-                        ]
-                    },
-                    notifyOptions: {
-                        position: 'bottom-left',
-                        fade_in_speed: 1000,
-                        fade_out_speed: 1000,
-                        time: 2000
-                    },
-                    wmsLayer: [],
-                    // configuration for the tile layer in the leaflet map (see for more information: http://leafletjs.com/reference.html#tilelayer )
-                    tileLayerUrl: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-                    tileLayerOptions: {
-                        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    },
-                    enableGeoSearch: true,
-                    supportedLanguages: [{
-                            code: "de",
-                            label: "Deutsch"
-                        }, {
-                            code: "en",
-                            label: "English"
-                        }
-                    ]
-                };
-                angular.merge(settings, config);
-                return settings;
-            }]);
+                    });
+                    return $injector.get(serviceString);
+                }
+                // TODO integrate a default service
+                console.error('Doesn\'t find a service for the datasetType ' + datasetType + '. Please check the settings of the client.');
+                return null;
+            };
+
+        }
+    ]);
+
 angular.module('n52.core.status', [])
         .factory('statusService', ['$rootScope', 'localStorageService', 'settingsService',
             function ($rootScope, localStorageService, settingsService) {
@@ -69007,138 +70013,141 @@ angular.module('n52.core.time', [])
                 };
             }]);
 angular.module('n52.core.timeseries', [])
-        .factory('timeseriesService', ['$rootScope', 'interfaceService', 'statusService', 'styleService', 'settingsService', 'utils',
-            function ($rootScope, interfaceService, statusService, styleService, settingsService, utils) {
-                var defaultDuration = settingsService.timeseriesDataBuffer || moment.duration(2, 'h');
+    .factory('timeseriesService', ['$rootScope', 'interfaceService', 'statusService', 'styleService', 'settingsService', 'utils',
+        function($rootScope, interfaceService, statusService, styleService, settingsService, utils) {
+            var defaultDuration = settingsService.timeseriesDataBuffer || moment.duration(2, 'h');
 
-                var timeseries = {};
-                var tsData = {};
+            var timeseries = {};
+            var tsData = {};
 
-                $rootScope.$on('timeExtentChanged', function (evt) {
-                    _loadAllData();
-                });
+            $rootScope.$on('timeExtentChanged', function(evt) {
+                _loadAllData();
+            });
 
-                function _loadAllData() {
-                    // TODO evtl. erst wenn alle Daten da sind soll die Daten auch gesetzt werden???
-                    angular.forEach(timeseries, function (ts) {
-                        _loadTsData(ts);
-                    });
-                }
-
-                function _addTs(ts) {
-                    ts.timebuffer = defaultDuration;
-                    styleService.createStylesInTs(ts);
-                    timeseries[ts.internalId] = ts;
-                    statusService.addTimeseries(ts);
+            function _loadAllData() {
+                // TODO evtl. erst wenn alle Daten da sind soll die Daten auch gesetzt werden???
+                angular.forEach(timeseries, function(ts) {
                     _loadTsData(ts);
-                }
+                });
+            }
 
-                function _loadTsData(ts) {
-                    ts.loadingData = true;
-                    interfaceService.getTsData(ts.id, ts.apiUrl, utils.createBufferedCurrentTimespan(statusService.getTime(), ts.timebuffer))
-                            .then(function (data) {
-                                _addTsData(data, ts);
-                            });
-                }
+            function _addTs(ts) {
+                ts.timebuffer = defaultDuration;
+                styleService.createStylesInTs(ts);
+                timeseries[ts.internalId] = ts;
+                statusService.addTimeseries(ts);
+                _loadTsData(ts);
+            }
 
-                function _createNewTimebuffer(data) {
-                    if (data.length >= 2) {
-                        var newDuration = moment.duration(data[1][0] - data[0][0]);
-                        if (newDuration > defaultDuration) {
-                            return newDuration;
-                        } else {
-                            return defaultDuration;
-                        }
-                    }
-                    return defaultDuration;
-                }
+            function _loadTsData(ts) {
+                var generalizeData = statusService.status.generalizeData || false;
+                ts.loadingData = true;
+                interfaceService.getTsData(ts.id, ts.apiUrl, utils.createBufferedCurrentTimespan(statusService.getTime(), ts.timebuffer, generalizeData))
+                    .then(function(data) {
+                        _addTsData(data, ts);
+                    });
+            }
 
-                function _addTsData(data, ts) {
-                    ts.timebuffer = _createNewTimebuffer(data[ts.id].values);
-                    tsData[ts.internalId] = data[ts.id];
-                    if (tsData[ts.internalId].values && tsData[ts.internalId].values.length) {
-                        ts.hasNoDataInCurrentExtent = false;
+            function _createNewTimebuffer(data) {
+                if (data.length >= 2) {
+                    var newDuration = moment.duration(data[1][0] - data[0][0]);
+                    if (newDuration > defaultDuration) {
+                        return newDuration;
                     } else {
-                        ts.hasNoDataInCurrentExtent = true;
+                        return defaultDuration;
                     }
-                    $rootScope.$emit('timeseriesDataChanged', ts.internalId);
-                    ts.loadingData = false;
                 }
+                return defaultDuration;
+            }
 
-                function getData(internalId) {
-                    return tsData[internalId];
+            function _addTsData(data, ts) {
+                ts.timebuffer = _createNewTimebuffer(data[ts.id].values);
+                tsData[ts.internalId] = data[ts.id];
+                if (tsData[ts.internalId].values && tsData[ts.internalId].values.length) {
+                    ts.hasNoDataInCurrentExtent = false;
+                } else {
+                    ts.hasNoDataInCurrentExtent = true;
                 }
+                $rootScope.$emit('timeseriesDataChanged', ts.internalId);
+                ts.loadingData = false;
+            }
 
-                function getTimeseries(internalId) {
-                    return timeseries[internalId];
-                }
+            function getData(internalId) {
+                return tsData[internalId];
+            }
 
-                function getAllTimeseries() {
-                    return timeseries;
-                }
+            function getTimeseries(internalId) {
+                return timeseries[internalId];
+            }
 
-                function hasTimeseries(internalId) {
-                    return angular.isObject(timeseries[internalId]);
-                }
+            function getAllTimeseries() {
+                return timeseries;
+            }
 
-                function getTimeseriesCount() {
-                    return Object.keys(timeseries).length;
-                }
+            function hasTimeseries(internalId) {
+                return angular.isObject(timeseries[internalId]);
+            }
 
-                function addTimeseriesById(id, apiUrl, params) {
-                    interfaceService.getTimeseries(id, apiUrl, params).then(function (data) {
-                        if (angular.isArray(data)) {
-                            angular.forEach(data, function (ts) {
-                                _addTs(ts, apiUrl);
-                            });
-                        } else {
-                            _addTs(data, apiUrl);
-                        }
-                    });
-                }
+            function getTimeseriesCount() {
+                return Object.keys(timeseries).length;
+            }
 
-                function addTimeseries(ts) {
-                    _addTs(angular.copy(ts));
-                }
+            function addTimeseriesById(id, apiUrl, params) {
+                interfaceService.getTimeseries(id, apiUrl, params).then(function(data) {
+                    if (angular.isArray(data)) {
+                        angular.forEach(data, function(ts) {
+                            _addTs(ts, apiUrl);
+                        });
+                    } else {
+                        _addTs(data, apiUrl);
+                    }
+                });
+            }
 
-                function removeTimeseries(internalId) {
-                    styleService.deleteStyle(timeseries[internalId]);
-                    delete timeseries[internalId];
-                    delete tsData[internalId];
-                    statusService.removeTimeseries(internalId);
-                    $rootScope.$emit('timeseriesDataChanged', internalId);
-                }
+            function addTimeseries(ts) {
+                _addTs(angular.copy(ts));
+            }
 
-                function removeAllTimeseries() {
-                    angular.forEach(timeseries, function (elem) {
-                        removeTimeseries(elem.internalId);
-                    });
-                }
+            function removeTimeseries(internalId) {
+                styleService.deleteStyle(timeseries[internalId]);
+                delete timeseries[internalId];
+                delete tsData[internalId];
+                statusService.removeTimeseries(internalId);
+                $rootScope.$emit('timeseriesDataChanged', internalId);
+            }
 
-                function toggleReferenceValue(refValue, internalId) {
-                    refValue.visible = !refValue.visible;
-                    $rootScope.$emit('timeseriesDataChanged', internalId);
-                }
+            function removeAllTimeseries() {
+                angular.forEach(timeseries, function(elem) {
+                    removeTimeseries(elem.internalId);
+                });
+            }
 
-                function isTimeseriesVisible(internalId) {
-                    return hasTimeseries(internalId) && timeseries[internalId].styles.visible;
-                }
+            function toggleReferenceValue(refValue, internalId) {
+                refValue.visible = !refValue.visible;
+                $rootScope.$emit('timeseriesDataChanged', internalId);
+            }
 
-                return {
-                    addTimeseriesById: addTimeseriesById,
-                    addTimeseries: addTimeseries,
-                    removeTimeseries: removeTimeseries,
-                    removeAllTimeseries: removeAllTimeseries,
-                    toggleReferenceValue: toggleReferenceValue,
-                    isTimeseriesVisible: isTimeseriesVisible,
-                    getData: getData,
-                    getTimeseries: getTimeseries,
-                    getAllTimeseries: getAllTimeseries,
-                    hasTimeseries: hasTimeseries,
-                    getTimeseriesCount: getTimeseriesCount,
-                    timeseries: timeseries
-                };
-            }]);
+            function isTimeseriesVisible(internalId) {
+                return hasTimeseries(internalId) && timeseries[internalId].styles.visible;
+            }
+
+            return {
+                addTimeseriesById: addTimeseriesById,
+                addTimeseries: addTimeseries,
+                removeTimeseries: removeTimeseries,
+                removeAllTimeseries: removeAllTimeseries,
+                toggleReferenceValue: toggleReferenceValue,
+                isTimeseriesVisible: isTimeseriesVisible,
+                getData: getData,
+                getTimeseries: getTimeseries,
+                getAllTimeseries: getAllTimeseries,
+                hasTimeseries: hasTimeseries,
+                getTimeseriesCount: getTimeseriesCount,
+                timeseries: timeseries
+            };
+        }
+    ]);
+
 angular.module('n52.core.utils', [])
         .factory('utils', ['$window', 'settingsService',
           function ($window, settingsService) {
@@ -69398,13 +70407,13 @@ angular.module('n52.core.helper')
 angular.module('n52.core.interface')
         .config(['$provide',
           function ($provide) {
-            $provide.decorator('interfaceService', ['$delegate', '$q', 'statusService', '$http', 'interfaceServiceUtils', 'utils',
-              function ($delegate, $q, statusService, $http, interfaceServiceUtils, utils) {
+            $provide.decorator('interfaceService', ['$delegate', '$q', '$http', 'interfaceServiceUtils', 'utils',
+              function ($delegate, $q, $http, interfaceServiceUtils, utils) {
                 var maxTimeExtent = moment.duration(365, 'day'), promises;
 
-                $delegate.getTsData = function (id, apiUrl, timespan, extendedData) {
+                $delegate.getTsData = function (id, apiUrl, timespan, extendedData, generalizeData) {
                   var params = {
-                    generalize: statusService.status.generalizeData || false,
+                    generalize: generalizeData || false,
                     expanded: true,
                     format: 'flot'
                   };
@@ -69417,7 +70426,7 @@ angular.module('n52.core.interface')
                     var start = moment(timespan.start);
                     while (start.isBefore(moment(timespan.end))) {
                       var step = moment(start).add(maxTimeExtent);
-                      var promise = $delegate.getTsData(id, apiUrl, {start: start, end: step}, extendedData);
+                      var promise = $delegate.getTsData(id, apiUrl, {start: start, end: step}, extendedData, generalizeData);
                       promises.push(promise);
                       start = step;
                     }

@@ -28,53 +28,13 @@
  */
 package org.n52.sos.ogc.sensorML;
 
-import org.n52.sos.ogc.sensorML.elements.SmlLocation;
-import org.n52.sos.ogc.sensorML.elements.SmlPosition;
+import org.n52.sos.ogc.sensorML.elements.SmlConnection;
 
-/**
- * @since 4.0.0
- * 
- */
-public class AbstractComponent extends AbstractProcess implements HasPosition<AbstractComponent> {
+public interface HasConnections<T> {
 
-    private static final long serialVersionUID = -7668360974212650356L;
-    private SmlPosition position;
+    public SmlConnection getConnections();
 
-    private SmlLocation location;
+    public T setConnections(final SmlConnection component);
 
-    public SmlPosition getPosition() {
-        return position;
-    }
-
-    public AbstractComponent setPosition(final SmlPosition position) {
-        this.position = position;
-        return this;
-    }
-
-    public boolean isSetPosition() {
-        return position != null;
-    }
-
-    public SmlLocation getLocation() {
-        return location;
-    }
-
-    public AbstractComponent setLocation(final SmlLocation location) {
-        this.location = location;
-        return this;
-    }
-
-    public boolean isSetLocation() {
-        return location != null;
-    }
-    
-    @Override
-    public String getDescriptionFormat() {
-        return SensorMLConstants.NS_SML;
-    }
-    
-    @Override
-    public String getDefaultElementEncoding() {
-        return SensorMLConstants.NS_SML;
-    }
+    public boolean isSetConnections();
 }

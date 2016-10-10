@@ -15,6 +15,7 @@
     <property name="published" type="org.hibernate.type.TrueFalseType" formula="'T'" />
     <property formula="'measurement'" name="datasetType" type="string"/>
 
+    <property formula="null" insert="false" name="domainId" type="string" update="false"/>
     <property column="firsttimestamp" name="firstValueAt" type="iso_string"/>
     <property column="lasttimestamp" name="lastValueAt" type="iso_string"/>
 
