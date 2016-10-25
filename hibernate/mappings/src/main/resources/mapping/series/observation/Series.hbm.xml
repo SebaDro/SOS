@@ -36,12 +36,20 @@
                     unique-key="seriesIdentity" >
             </column>
         </many-to-one>
+        <!-- 
         <many-to-one name="offering" 
-				        class="org.n52.sos.ds.hibernate.entities.Offering" 
-				        fetch="select" 
-				        lazy="no-proxy" 
-				        foreign-key="seriesOfferingFk">
-            <formula>null</formula>
+                        class="org.n52.sos.ds.hibernate.entities.Offering" 
+                        foreign-key="seriesOfferingFk">
+            <column index="seriesOfferingIdx" 
+                    name="offeringId"
+                    not-null="true"
+                    unique-key="seriesIdentity" >
+                <comment>Foreign Key (FK) to the related offering. Contains "offering".offeringid</comment>
+            </column>
+        </many-to-one>
+         -->
+        <many-to-one name="offering" class="org.n52.sos.ds.hibernate.entities.Offering">
+            <formula>(SELECT o.offeringid FROM sos2.observation o WHERE o.seriesid = seriesid and rownum=1)</formula><    
         </many-to-one>
         <property name="deleted"
                   type="org.hibernate.type.TrueFalseType">
@@ -87,6 +95,7 @@
                     not-null="false" >
             </column>
         </many-to-one>
+        
         <property name="identifier" type="string">
             <formula>null</formula>
         </property>

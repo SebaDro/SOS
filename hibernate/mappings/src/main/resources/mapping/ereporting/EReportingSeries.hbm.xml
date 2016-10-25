@@ -44,6 +44,16 @@
                 <comment>Foreign Key (FK) to the related procedure. Contains "procedure".procedureid</comment>
             </column>
         </many-to-one>
+        <many-to-one name="offering" 
+                     class="org.n52.sos.ds.hibernate.entities.Offering" 
+                     foreign-key="seriesOfferingFk">
+            <column index="seriesOfferingIdx" 
+                    name="offeringId" 
+                    not-null="true"
+                    unique-key="seriesIdentity" >
+                <comment>Foreign Key (FK) to the related procedure. Contains "offering".offeringid</comment>
+            </column>
+        </many-to-one>
         <many-to-one name="samplingPoint"
                      class="org.n52.sos.ds.hibernate.entities.ereporting.EReportingSamplingPoint"
                      foreign-key="seriesSampPointFk">
@@ -56,8 +66,6 @@
         </many-to-one>
         <many-to-one name="offering" 
 				        class="org.n52.sos.ds.hibernate.entities.Offering" 
-				        fetch="select" 
-				        lazy="no-proxy" 
 				        foreign-key="oseriesOfferingFk">
             <column index="seriesOfferingIdx" 
 			            name="offeringId">

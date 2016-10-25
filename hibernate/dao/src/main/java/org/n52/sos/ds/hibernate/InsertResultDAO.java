@@ -86,6 +86,7 @@ import org.n52.sos.ogc.swe.SweConstants;
 import org.n52.sos.ogc.swe.SweDataArray;
 import org.n52.sos.ogc.swe.SweDataRecord;
 import org.n52.sos.ogc.swe.SweField;
+import org.n52.sos.ogc.swe.SweVector;
 import org.n52.sos.ogc.swe.encoding.SweAbstractEncoding;
 import org.n52.sos.ogc.swe.encoding.SweTextEncoding;
 import org.n52.sos.ogc.swe.simpleType.SweAbstractSimpleType;
@@ -109,10 +110,9 @@ import com.google.common.collect.Sets;
 public class InsertResultDAO extends AbstractInsertResultDAO implements CapabilitiesExtensionProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InsertResultDAO.class);
-
     private static final int FLUSH_THRESHOLD = 50;
-
     private final HibernateSessionHolder sessionHolder = new HibernateSessionHolder();
+    private ResultHandlingHelper helper = new  ResultHandlingHelper();
 
     /**
      * constructor
@@ -148,11 +148,11 @@ public class InsertResultDAO extends AbstractInsertResultDAO implements Capabili
             response.setObservation(o);
             final List<OmObservation> observations = getSingleObservationsFromObservation(o);
 
-            final Set<ObservationConstellation> obsConsts =
-                    Sets.newHashSet(new ObservationConstellationDAO().getObservationConstellation(
+            final ObservationConstellation obsConst =
+                    new ObservationConstellationDAO().getObservationConstellation(
                             resultTemplate.getProcedure(),
                             resultTemplate.getObservableProperty(),
-                            Sets.newHashSet(resultTemplate.getOffering().getIdentifier()), session));
+                            resultTemplate.getOffering(), session);
 
             int insertion = 0;
             final int size = observations.size();
@@ -160,11 +160,11 @@ public class InsertResultDAO extends AbstractInsertResultDAO implements Capabili
             LOGGER.debug("Start saving {} observations.", size);
             for (final OmObservation observation : observations) {
                 if (observation.getValue() instanceof SingleObservationValue) {
-                    observationDAO.insertObservationSingleValue(obsConsts, resultTemplate.getFeatureOfInterest(),
-                            observation, codespaceCache, unitCache, session);
+                    observationDAO.insertObservationSingleValue(obsConst, resultTemplate.getFeatureOfInterest(),
+                            observation, codespaceCache, unitCache, Sets.newHashSet(obsConst.getOffering()), session);
                 } else if (observation.getValue() instanceof MultiObservationValues) {
-                    observationDAO.insertObservationMultiValue(obsConsts, resultTemplate.getFeatureOfInterest(),
-                            observation, codespaceCache, unitCache, session);
+                    observationDAO.insertObservationMultiValue(obsConst, resultTemplate.getFeatureOfInterest(),
+                            observation, codespaceCache, unitCache, Sets.newHashSet(obsConst.getOffering()), session);
                 }
                 if ((++insertion % FLUSH_THRESHOLD) == 0) {
                     session.flush();
@@ -323,8 +323,8 @@ public class InsertResultDAO extends AbstractInsertResultDAO implements Capabili
     private OmObservation getObservation(final ResultTemplate resultTemplate, final String[] blockValues,
             final SweAbstractDataComponent resultStructure, final SweAbstractEncoding encoding, final Session session)
             throws OwsExceptionReport {
-        final int resultTimeIndex = ResultHandlingHelper.hasResultTime(resultStructure);
-        final int phenomenonTimeIndex = ResultHandlingHelper.hasPhenomenonTime(resultStructure);
+        final int resultTimeIndex = helper.hasResultTime(resultStructure);
+        final int phenomenonTimeIndex = helper.hasPhenomenonTime(resultStructure);
 
         final SweDataRecord record = setRecordFrom(resultStructure);
 
@@ -361,9 +361,11 @@ public class InsertResultDAO extends AbstractInsertResultDAO implements Capabili
                 } else if (swefield.getElement() instanceof SweDataRecord) {
                     getIndexForObservedPropertyAndUnit((SweDataRecord) swefield.getElement(), j, observedProperties,
                             units, reserved);
+                } else if (swefield.getElement() instanceof SweVector) {
+                    helper.checkVectorForSamplingGeometry(swefield);
                 } else {
                     throw new NoApplicableCodeException().withMessage(
-                            "The swe:Field element of type {} is not yet supported!",
+                            "The swe:Field element of type %s is not yet supported!",
                             swefield.getElement().getClass().getName());
                 }
             }

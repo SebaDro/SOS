@@ -42,6 +42,7 @@ import org.junit.Test;
 import org.n52.sos.ds.hibernate.dao.observation.AbstractObservationDAO;
 import org.n52.sos.ds.hibernate.dao.observation.ObservationContext;
 import org.n52.sos.ds.hibernate.dao.observation.ObservationFactory;
+import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
 import org.n52.sos.ds.hibernate.entities.observation.Observation;
 import org.n52.sos.ds.hibernate.entities.observation.series.full.SeriesNumericObservation;
 import org.n52.sos.exception.CodedException;
@@ -68,7 +69,7 @@ public class AbstractObservationDAOTest {
    
     @Test
     public void add_phenomenonTime_instant_value() throws OwsExceptionReport {
-        Observation observation = new SeriesNumericObservation();
+        Observation<?> observation = new SeriesNumericObservation();
         TimeInstant phenomenonTime = new TimeInstant(new DateTime());
         dao.addPhenomenonTimeToObservation(observation, phenomenonTime);
         Assert.assertTrue(observation.getPhenomenonTimeStart() != null);
@@ -173,6 +174,12 @@ public class AbstractObservationDAOTest {
     public class TestObservationDAO extends AbstractObservationDAO {
 
         @Override
+        protected void addObservationContextToObservation(ObservationContext ctx,
+                Observation<?> observation, Session session) throws CodedException {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
         public Criteria getObservationInfoCriteriaForFeatureOfInterestAndProcedure(String feature, String procedure,
                 Session session) {
             // TODO Auto-generated method stub
@@ -245,13 +252,6 @@ public class AbstractObservationDAOTest {
         }
 
         @Override
-        protected void addObservationContextToObservation(ObservationContext observationIdentifiers,
-                Observation<?> observation, Session session) throws CodedException {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
         public ScrollableResults getObservations(Set<String> procedure, Set<String> observableProperty,
                 Set<String> featureOfInterest, Set<String> offering, Criterion filterCriterion, Session session) {
             // TODO Auto-generated method stub
@@ -259,7 +259,7 @@ public class AbstractObservationDAOTest {
         }
 
         @Override
-        public Criteria getTemoralReferencedObservationCriteriaFor(OmObservation observation, Session session)
+        public Criteria getTemoralReferencedObservationCriteriaFor(OmObservation observation, ObservationConstellation observationConstellation, Session session)
                 throws CodedException {
             // TODO Auto-generated method stub
             return null;
@@ -282,7 +282,7 @@ public class AbstractObservationDAOTest {
             // TODO Auto-generated method stub
             return null;
         }
-        
+
     }
 
 }

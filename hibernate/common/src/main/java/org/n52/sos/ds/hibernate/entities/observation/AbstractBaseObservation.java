@@ -35,12 +35,13 @@ import org.n52.sos.ds.hibernate.entities.AbstractIdentifierNameDescriptionEntity
 import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.parameter.Parameter;
 import org.n52.sos.util.CollectionHelper;
+import org.n52.sos.util.Comparables;
 
 import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class AbstractBaseObservation
         extends AbstractIdentifierNameDescriptionEntity
-        implements BaseObservation {
+        implements BaseObservation, Comparable<AbstractBaseObservation> {
     private static final long serialVersionUID = 5618279055717823761L;
 
     private long observationId;
@@ -86,6 +87,11 @@ public abstract class AbstractBaseObservation
         }
     }
 
+    @Override
+    public boolean isSetOfferings() {
+        return getOfferings() != null && !getOfferings().isEmpty();
+    }
+    
     @Override
     public Geometry getSamplingGeometry() {
         return samplingGeometry;
@@ -226,4 +232,8 @@ public abstract class AbstractBaseObservation
         return CollectionHelper.isNotEmpty(getRelatedObservations());
     }
 
+    @Override
+    public int compareTo(AbstractBaseObservation o) {
+        return Comparables.chain(o).compare(getObservationId(), o.getObservationId()).result();
+    }
 }
