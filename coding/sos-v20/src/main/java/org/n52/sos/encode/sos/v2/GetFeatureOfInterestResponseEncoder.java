@@ -28,14 +28,19 @@
  */
 package org.n52.sos.encode.sos.v2;
 
+import java.io.OutputStream;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.opengis.sos.x20.GetFeatureOfInterestResponseDocument;
-import net.opengis.sos.x20.GetFeatureOfInterestResponseType;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.xmlbeans.XmlObject;
+import org.n52.sos.encode.EncodingValues;
+import org.n52.sos.encode.GmlEncoderv321;
+import org.n52.sos.encode.streaming.StreamingDataEncoder;
+import org.n52.sos.encode.streaming.sos.v2.GetFeatureOfInterestXmlStreamWriter;
+import org.n52.sos.exception.ows.NoApplicableCodeException;
 import org.n52.sos.ogc.gml.AbstractFeature;
 import org.n52.sos.ogc.om.features.FeatureCollection;
 import org.n52.sos.ogc.om.features.samplingFeatures.SamplingFeature;
@@ -47,8 +52,13 @@ import org.n52.sos.response.GetFeatureOfInterestResponse;
 import org.n52.sos.service.profile.Profile;
 import org.n52.sos.util.XmlHelper;
 import org.n52.sos.w3c.SchemaLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
+
+import net.opengis.sos.x20.GetFeatureOfInterestResponseDocument;
+import net.opengis.sos.x20.GetFeatureOfInterestResponseType;
 
 /**
  * TODO JavaDoc
@@ -57,7 +67,10 @@ import com.google.common.collect.Sets;
  * 
  * @since 4.0.0
  */
-public class GetFeatureOfInterestResponseEncoder extends AbstractSosResponseEncoder<GetFeatureOfInterestResponse> {
+public class GetFeatureOfInterestResponseEncoder extends AbstractSosResponseEncoder<GetFeatureOfInterestResponse> implements StreamingDataEncoder {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetFeatureOfInterestResponseEncoder.class);
+    
     public GetFeatureOfInterestResponseEncoder() {
         super(SosConstants.Operations.GetFeatureOfInterest.name(), GetFeatureOfInterestResponse.class);
     }
@@ -75,8 +88,21 @@ public class GetFeatureOfInterestResponseEncoder extends AbstractSosResponseEnco
         } else if (feature instanceof SamplingFeature) {
             addFeatureOfInterest(feature, xbGetFoiResponse);
         }
-        XmlHelper.makeGmlIdsUnique(document.getDomNode());
+        if (LOGGER.isDebugEnabled()) {
+            XmlHelper.makeGmlIdsUnique(document.getDomNode());
+        }
         return document;
+    }
+    
+    @Override
+    protected void create(GetFeatureOfInterestResponse response, OutputStream outputStream,
+            EncodingValues encodingValues) throws OwsExceptionReport {
+        try {
+            encodingValues.setEncoder(this);
+            new GetFeatureOfInterestXmlStreamWriter().write(response, outputStream, encodingValues);
+        } catch (XMLStreamException xmlse) {
+            throw new NoApplicableCodeException().causedBy(xmlse);
+        }
     }
 
     private void addFeatureOfInterest(AbstractFeature feature, GetFeatureOfInterestResponseType response)
