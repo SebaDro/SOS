@@ -36,7 +36,6 @@
                     unique-key="seriesIdentity" >
             </column>
         </many-to-one>
-        <!-- 
         <many-to-one name="offering" 
                         class="org.n52.sos.ds.hibernate.entities.Offering" 
                         foreign-key="seriesOfferingFk">
@@ -47,10 +46,11 @@
                 <comment>Foreign Key (FK) to the related offering. Contains "offering".offeringid</comment>
             </column>
         </many-to-one>
-         -->
+        <!-- 
         <many-to-one name="offering" class="org.n52.sos.ds.hibernate.entities.Offering">
             <formula>(SELECT o.offeringid FROM sos2.observation o WHERE o.seriesid = seriesid and rownum=1)</formula>
         </many-to-one>
+         -->
         <property name="deleted"
                   type="org.hibernate.type.TrueFalseType">
             <formula>'F'</formula>

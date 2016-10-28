@@ -12,12 +12,12 @@
     <many-to-one class="PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
     <many-to-one class="FeatureEntity" column="featureofinterestid" insert="false" name="feature" update="false"/>
     <many-to-one class="PlatformEntity" column="procedureid" insert="false" name="platform" update="false"/>
-    <!-- 
     <many-to-one class="OfferingEntity" column="offeringid" insert="false" name="offering" update="false"/>
-     -->
+    <!-- 
     <many-to-one name="offering" class="OfferingEntity">
-            <formula>(SELECT o.offeringid FROM sos2.observation o WHERE o.seriesid = seriesid and rownum=1)</formula>
-        </many-to-one>
+    	<formula>(SELECT o.offeringid FROM sos2.observation o WHERE o.seriesid = seriesid and rownum=1)</formula>
+    </many-to-one>
+    -->
     <property name="published" type="org.hibernate.type.TrueFalseType" formula="'T'" />
     <property formula="'measurement'" name="datasetType" type="string"/>
 
