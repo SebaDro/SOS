@@ -4,28 +4,26 @@
   "undefinedUomString": "-",
   "aggregateServices": true,
   "saveStatus": true,
+  "providerBlackList": [{
+    "serviceID": "xyz",
+    "apiUrl": "http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/"
+  }],
   "restApiUrls": {
-        "http://codm.hzg.de/52n-sos-webapp/api/v1/": "1"
-    },
-    "defaultProvider": {
-        "serviceID": "1",
-        "apiUrl": "http://codm.hzg.de/52n-sos-webapp/api/v1/"
-    },
+    "http://codm.hzg.de/52n-sos-webapp/api/v1/": "codmhzg"
+  },
+  "defaultProvider": {
+    "serviceID": "1",
+    "url": "http://codm.hzg.de/52n-sos-webapp/api/v1/"
+  },
   "chartOptions": {
     "yaxis": {
       "tickDecimals": 2
     }
   },
-  "supportedLanguages": [
-    {
-      "code": "de",
-      "label": "Deutsch"
-    },
-    {
-      "code": "en",
-      "label": "English"
-    }
-  ],
+  "supportedLanguages": [{
+    "code": "en",
+    "label": "English"
+  }],
   "selectColorFromList": true,
   "colorList": [
     "#078D53",
@@ -90,5 +88,11 @@
       "group": "Raster"
     }
   },
-  "showScale": true
+  "showScale": true,
+  "datasetPresenter": {
+    "measurement": [{
+      "service": "mobilePresentDataset",
+      "platformType": "mobile_insitu"
+    }]
+  }
 }

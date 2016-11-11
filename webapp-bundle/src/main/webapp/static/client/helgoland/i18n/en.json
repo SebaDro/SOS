@@ -60,6 +60,10 @@
       "station": "Station",
       "selectAllTimeseries": "select all timeseries"
     },
+    "platformSelection": {
+      "platform": "Platform",
+      "datasetType": "Dataset type"
+    },
     "stationLocation": {
       "station": "Station",
       "timeseries": "Timeseries",
@@ -283,7 +287,7 @@
       "platform": "Mobile platform",
       "offering": "Offering",
       "track": "Tracks",
-      "phenomenon": "Phenomenon",
+      "phenomenon": "Observed property",
       "dataset": "Dataset"
     },
     "noSupport": "Provider doesn't deliver trajectories",
