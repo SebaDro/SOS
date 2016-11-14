@@ -19,6 +19,7 @@
     </many-to-one>
     -->
     <property name="published" type="org.hibernate.type.TrueFalseType" formula="'T'" />
+    <property name="deleted" type="org.hibernate.type.TrueFalseType" formula="'F'" />
     <property formula="'measurement'" name="datasetType" type="string"/>
 
     <property formula="null" insert="false" name="domainId" type="string" update="false"/>
