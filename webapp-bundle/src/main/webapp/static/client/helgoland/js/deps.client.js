@@ -69002,6 +69002,7 @@ angular.module('n52.client.mobile', [])
                         };
                         $scope.geometry = combinedSrvc.geometry;
                         $scope.series = combinedSrvc.series;
+                        $scope.providerUrl = combinedSrvc.providerUrl;
                         $scope.highlight = combinedSrvc.highlight;
                         $scope.selectedSection = combinedSrvc.selectedSection;
                         $scope.paths = {
@@ -69484,8 +69485,8 @@ angular.module('n52.client.mobile', [])
             };
         }
     ])
-    .service('combinedSrvc', ['interfaceService', 'statusService',
-        function(interfaceService, statusService) {
+    .service('combinedSrvc', ['interfaceService', 'statusService', '$route',
+        function(interfaceService, statusService, $route) {
             this.highlight = {};
             this.selectedSection = {
                 values: []
@@ -69514,6 +69515,7 @@ angular.module('n52.client.mobile', [])
             this.series = {};
 
             this.loadSeries = function(id, url) {
+                this.series.providerUrl = url;
                 statusService.status.mobile = {
                     id: id,
                     url: url
@@ -69533,6 +69535,9 @@ angular.module('n52.client.mobile', [])
                                 this.processData(data[id].values);
                                 this.series.loading = false;
                             });
+                    }, e => {
+                        this.series.label = 'Error while loading dataset';
+                        this.series.loading = false;
                     });
             };
 
@@ -69608,7 +69613,9 @@ angular.module('n52.client.mobile', [])
                 this.selectedSection.values = [];
             };
 
-            if (statusService.status.mobile) {
+            if ($route.current.params.datasetId && $route.current.params.providerUrl) {
+                this.loadSeries($route.current.params.datasetId, $route.current.params.providerUrl);
+            } else if (statusService.status.mobile) {
                 let lastEntry = statusService.status.mobile;
                 if (lastEntry.id && lastEntry.url) {
                     this.loadSeries(lastEntry.id, lastEntry.url);
@@ -69616,6 +69623,25 @@ angular.module('n52.client.mobile', [])
             }
         }
     ])
+    .component('swcMobilePermalink', {
+        templateUrl: 'templates/mobile/permalink.html',
+        bindings: {
+            datasetid: '<',
+            providerurl: '<'
+        },
+        controller: ['permalinkGenerationService', '$window', '$translate',
+            function(permalinkGenerationService, $window, $translate) {
+                var ctrl = this;
+                ctrl.createPermalink = function() {
+                    var link = permalinkGenerationService.createPermalink('/mobileDiagram', {
+                        datasetId: ctrl.datasetid,
+                        providerUrl: ctrl.providerurl
+                    });
+                    $window.prompt($translate.instant('settings.permalink.clipboardInfo'), link);
+                };
+            }
+        ]
+    })
     .service('mobilePresentDataset', ['$location', 'combinedSrvc',
         function($location, combinedSrvc) {
             this.presentDataset = function(dataset, providerUrl) {
@@ -70918,69 +70944,77 @@ angular.module('n52.core.interface', [])
     ]);
 
 angular.module('n52.core.permalinkGen', [])
-        .factory('permalinkGenerationService', ['$location', 'timeseriesService', 'statusService', 'utils',
-            function ($location, timeseriesService, statusService, utils) {
-                createTimeseriesParam = function (timeseriesId) {
-                    var ids = [];
-                    if (angular.isUndefined(timeseriesId)) {
-                        angular.forEach(timeseriesService.getAllTimeseries(), function (elem) {
-                            ids.push(elem.internalId);
-                        });
-                    } else {
-                        ids.push(timeseriesId);
+    .service('permalinkGenerationService', ['$location', 'timeseriesService', 'statusService', 'utils',
+        function($location, timeseriesService, statusService, utils) {
+            createTimeseriesParam = function(timeseriesId) {
+                var ids = [];
+                if (angular.isUndefined(timeseriesId)) {
+                    angular.forEach(timeseriesService.getAllTimeseries(), function(elem) {
+                        ids.push(elem.internalId);
+                    });
+                } else {
+                    ids.push(timeseriesId);
+                }
+                return "ts=" + encodeURIComponent(ids.join());
+            };
+            createTimeParam = function() {
+                var timespan = statusService.getTime();
+                return "timespan=" + encodeURIComponent(utils.createRequestTimespan(timespan.start, timespan.end));
+            };
+            createBaseUrl = function(path) {
+                if (path) {
+                    return $location.absUrl().substring(0, $location.absUrl().indexOf($location.path())) + path + '?';
+                } else {
+                    return $location.absUrl().substring(0, $location.absUrl().indexOf('?')) + '?';
+                }
+            };
+            this.createPermalink = function(path, params) {
+                var parameterArray = [];
+                for (var property in params) {
+                    if (params.hasOwnProperty(property)) {
+                        parameterArray.push(property + '=' + encodeURIComponent(params[property]));
                     }
-                    return "ts=" + encodeURIComponent(ids.join());
-                };
-                createTimeParam = function () {
-                    var timespan = statusService.getTime();
-                    return "timespan=" + encodeURIComponent(utils.createRequestTimespan(timespan.start, timespan.end));
-                };
-                getCurrentPermalink = function (timeseriesId) {
-                    var params = [];
-                    var url = $location.absUrl();
-                    var link;
-                    if (url.indexOf('?') > 0) {
-                        link = $location.absUrl().substring(0, $location.absUrl().indexOf('?'));
-                    } else {
-                        link = $location.absUrl();
-                    }
-                    link = link + '?';
-                    // create timespan
-                    params.push(createTimeParam());
-                    // create id list
-                    params.push(createTimeseriesParam(timeseriesId));
-                    return link + params.join("&");
-                };
-                return {
-                    getCurrentPermalink: getCurrentPermalink
-                };
-            }]);
+                }
+                return createBaseUrl(path) + parameterArray.join("&");
+            };
+            this.getCurrentPermalink = function(timeseriesId) {
+                var params = [];
+                // create timespan
+                params.push(createTimeParam());
+                // create id list
+                params.push(createTimeseriesParam(timeseriesId));
+                return createBaseUrl('/diagram') + params.join("&");
+            };
+        }
+    ]);
 angular.module('n52.core.permalinkEval', ['n52.core.utils'])
-        .factory('permalinkEvaluationService', ['$location', 'utils',
-            function ($location, utils) {
-                var parameters = $location.search();
-                hasParam = function (name) {
-                    return angular.isDefined(parameters[name]);
-                };
-                getParam = function (name) {
-                    if (hasParam(name, parameters)) {
-                        return parameters[name];
-                    }
-                    return null;
-                };
-                getParameterArray = function (param) {
-                    var array = getParam(param);
-                    if (angular.isString(array)) {
-                        return array.split(',');
-                    }
-                    return null;
-                };
-                return {
-                    hasParam: hasParam,
-                    getParam: getParam,
-                    getParameterArray: getParameterArray
-                };
-            }]);
+    .factory('permalinkEvaluationService', ['$location', 'utils',
+        function($location, utils) {
+            var parameters = $location.search();
+            hasParam = function(name) {
+                return angular.isDefined(parameters[name]);
+            };
+            getParam = function(name) {
+                if (hasParam(name, parameters)) {
+                    return parameters[name];
+                }
+                return null;
+            };
+            getParameterArray = function(param) {
+                var array = getParam(param);
+                if (angular.isString(array)) {
+                    return array.split(',');
+                }
+                return null;
+            };
+            return {
+                hasParam: hasParam,
+                getParam: getParam,
+                getParameterArray: getParameterArray
+            };
+        }
+    ]);
+
 angular.module('n52.core.settings', [])
     .service('settingsService', ['config', function(config) {
         var settings = {

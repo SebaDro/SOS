@@ -127,14 +127,14 @@ mainApp.config(['$routeProvider', function($routeProvider) {
         //     },
         //     reloadOnSearch: false
         // })
-        .when('/diagram/settings', {
-            name: 'navigation.settings',
-            modal: {
-                controller: 'SwcUserSettingsWindowCtrl',
-                templateUrl: 'templates/settings/user-settings-modal.html'
-            },
-            reloadOnSearch: false
-        })
+        // .when('/diagram/settings', {
+        //     name: 'navigation.settings',
+        //     modal: {
+        //         controller: 'SwcUserSettingsWindowCtrl',
+        //         templateUrl: 'templates/settings/user-settings-modal.html'
+        //     },
+        //     reloadOnSearch: false
+        // })
         .otherwise({
             redirectTo: '/mobileDiagram'
         });
