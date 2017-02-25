@@ -299,7 +299,10 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
                 processDataAvailability(series, context, session);
             }
         }
-        return context.getDataAvailabilityList();
+        if (gdaV20) {
+            return context.getDataAvailabilityList();
+        }
+        return checkForDuplictation(context.getDataAvailabilityList());
     }
 
     private boolean checkForGDAv20(GetDataAvailabilityRequest request) {
@@ -321,7 +324,7 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
      */
     private void processDataAvailabilityForEachOffering(Series series, GdaRequestContext context, Session session) throws OwsExceptionReport {
         List<OfferingMinMaxTime> offeringTimePeriodList = null;
-        if (series.hasOffering() && series.isSetFirstLastTime()) {
+        if (series.isSetOffering() && series.isSetFirstLastTime()) {
             offeringTimePeriodList = Lists.newArrayList();
             offeringTimePeriodList.add(new OfferingMinMaxTime().setOffering(series.getOffering().getIdentifier())
                     .setTimePeriod(new TimePeriod(series.getFirstTimeStamp(), series.getLastTimeStamp())));
@@ -354,7 +357,7 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
                         dataAvailability.setResultTimes(getResultTimesFromSeriesObservation(context.getSeriesObservationDAO(), series,
                                 context.getRequest(), session));
                     }
-                    dataAvailability.setOffering(getOfferingReference(context.getOfferings(), ommt.getOffering(), session));
+                    dataAvailability.setOffering(getOfferingReference(series, context.getOfferings(), ommt.getOffering(), session));
                     dataAvailability.setFormatDescriptor(getFormatDescriptor(ommt.getOffering(), context, series));
                     checkForMetadataExtension(dataAvailability, series, session);
                     context.addDataAvailability(dataAvailability);
@@ -410,6 +413,27 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
                 }
             }
         }
+    }
+
+    private List<DataAvailability> checkForDuplictation(List<DataAvailability> dataAvailabilityValues) {
+        List<DataAvailability> checked = Lists.newLinkedList();
+        for (DataAvailability dataAvailability : dataAvailabilityValues) {
+            if (checked.isEmpty()) {
+                checked.add(dataAvailability);
+            } else {
+                boolean notDuplicated = true;
+                for (DataAvailability checkedDA : checked) {
+                    if (dataAvailability.equals(checkedDA)) {
+                        checkedDA.getPhenomenonTime().extendToContain(dataAvailability.getPhenomenonTime());
+                        notDuplicated = false;
+                    }
+                }
+                if (notDuplicated) {
+                    checked.add(dataAvailability);
+                }
+            }
+        }
+        return checked;
     }
 
     private boolean addParentDataAvailabilityIfMissing(Set<DataAvailability> parentDataAvailabilities,
@@ -768,12 +792,9 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
         String identifier = series.getProcedure().getIdentifier();
         if (!procedures.containsKey(identifier)) {
             ReferenceType referenceType = new ReferenceType(identifier);
-            // TODO
-            // SosProcedureDescription sosProcedureDescription = new
-            // HibernateProcedureConverter().createSosProcedureDescription(procedure,
-            // procedure.getProcedureDescriptionFormat().getProcedureDescriptionFormat(),
-            // Sos2Constants.SERVICEVERSION, session);
-            // if ()
+            if (series.getProcedure().isSetName()) {
+                referenceType.setTitle(series.getProcedure().getName());
+            }
             procedures.put(identifier, referenceType);
         }
         return procedures.get(identifier);
@@ -783,10 +804,9 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
         String identifier = series.getObservableProperty().getIdentifier();
         if (!observableProperties.containsKey(identifier)) {
             ReferenceType referenceType = new ReferenceType(identifier);
-            // TODO
-            // if (observableProperty.isSetDescription()) {
-            // referenceType.setTitle(observableProperty.getDescription());
-            // }
+            if (series.getObservableProperty().isSetName()) {
+                referenceType.setTitle(series.getObservableProperty().getName());
+            }
             observableProperties.put(identifier, referenceType);
         }
         return observableProperties.get(identifier);
@@ -809,11 +829,13 @@ public class GetDataAvailabilityDAO extends AbstractGetDataAvailabilityDAO imple
         return featuresOfInterest.get(identifier);
     }
     
-    private ReferenceType getOfferingReference(Map<String, ReferenceType> offerings, String offering,
+    private ReferenceType getOfferingReference(Series series, Map<String, ReferenceType> offerings, String offering,
             Session session) throws OwsExceptionReport {
         if (!offerings.containsKey(offering)) {
             ReferenceType referenceType = new ReferenceType(offering);
-            // TODO query for name?
+            if (series.isSetOffering() && series.getOffering().isSetName()) {
+                referenceType.setTitle(series.getOffering().getName());
+            }
             offerings.put(offering, referenceType);
         }
         return offerings.get(offering);

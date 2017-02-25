@@ -19,7 +19,7 @@
     "favorite": "Favoriten",
     "provider": "Anbieter",
     "listSelection": "Listenauswahl",
-    "trajectories": "Trajektories",
+    "trajectories": "Trajektorien",
     "settings": "Einstellungen"
   },
   "chart": {
@@ -41,10 +41,14 @@
       "dec": "Dez"
     }
   },
+  "table": {
+    "time": "Zeit"
+  },
   "providerList": {
     "provider": "Datenanbieter",
     "serviceUrl": "Service-URL",
     "stations": "Stationen",
+    "platforms": "Platformen",
     "timeseries": "Zeitreihen",
     "phenomena": "Phänomene",
     "selectAll": "Selektiere alle Anbieter"
@@ -55,6 +59,10 @@
     "stationSelection": {
       "station": "Station",
       "selectAllTimeseries": "wähle alle Zeitreihen"
+    },
+    "platformSelection": {
+      "platform": "Platform",
+      "datasetType": "Datentyp"
     },
     "stationLocation": {
       "station": "Station",
@@ -277,6 +285,7 @@
     "header": "Listenbasierte Fahrtenauswahl",
     "headers": {
       "platform": "Mobile Platform",
+      "offering": "Offering",
       "track": "Pfad",
       "phenomenon": "Phänomen",
       "dataset": "Dataset"

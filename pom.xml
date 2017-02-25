@@ -70,6 +70,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate.spatial.version>4.3.1-52N</hibernate.spatial.version>
+        <c3p0.version>0.9.5.2</c3p0.version>
         <sqlite.version>3.7.2</sqlite.version>
         <geotools.version>14.0</geotools.version>
         <jackson.version>2.7.3</jackson.version>
@@ -77,7 +78,7 @@
         <sqljdbc4.version>4.0</sqljdbc4.version>
 
         <!-- 52N dependency versions -->
-        <n52.common.xml.version>2.1.1-SNAPSHOT</n52.common.xml.version>
+        <n52.common.xml.version>2.2.0</n52.common.xml.version>
         <!-- Remove third party ncname resolver from SOS and use OXF instead -->
         <!-- <n52.oxf.version>2.0.0-alpha.4</n52.oxf.version> -->
         <org.springframework.security.version>4.1.0.RELEASE</org.springframework.security.version>
@@ -361,6 +362,11 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>coding-inspire-ompr</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>inspire-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -586,6 +592,10 @@
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.mchange</groupId>
+                        <artifactId>c3p0</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -602,6 +612,11 @@
                         <artifactId>postgresql</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.mchange</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>${c3p0.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
@@ -1181,12 +1196,24 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-epsg-hsql</artifactId>
                 <version>${geotools.version}</version>
+		<exclusions>
+			<exclusion>
+				<groupId>javax.media</groupId>
+				<artifactId>jai_core</artifactId>
+			</exclusion>
+		</exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
                 <version>${geotools.version}</version>
-            </dependency>
+		<exclusions>
+		        <exclusion>
+				<groupId>javax.media</groupId>
+				<artifactId>jai_core</artifactId>
+			</exclusion>
+		</exclusions>
+	    </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-referencing</artifactId>
@@ -1196,6 +1223,10 @@
                         <groupId>java3d</groupId>
                         <artifactId>vecmath</artifactId>
                     </exclusion>
+	            <exclusion>
+			<groupId>javax.media</groupId>
+			<artifactId>jai_core</artifactId>
+		    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -1207,6 +1238,12 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-api</artifactId>
                 <version>${geotools.version}</version>
+		<exclusions>
+	            <exclusion>
+			<groupId>javax.media</groupId>
+			<artifactId>jai_core</artifactId>
+		    </exclusion>
+		</exclusions>
             </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>

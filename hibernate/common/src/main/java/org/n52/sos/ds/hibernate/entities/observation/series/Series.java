@@ -29,6 +29,8 @@
 package org.n52.sos.ds.hibernate.entities.observation.series;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.n52.sos.ds.hibernate.entities.AbstractIdentifierNameDescriptionEntity;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasDeletedFlag;
@@ -38,6 +40,7 @@ import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasPublishedFlag;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasSeriesType;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasUnit;
 import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasWriteableObservationContext;
+import org.n52.sos.ds.hibernate.entities.HibernateRelations.HasOfferings;
 import org.n52.sos.ds.hibernate.entities.ObservableProperty;
 import org.n52.sos.ds.hibernate.entities.Offering;
 import org.n52.sos.ds.hibernate.entities.Procedure;
@@ -60,14 +63,12 @@ public class Series extends AbstractIdentifierNameDescriptionEntity
                    HasUnit, 
                    HasPublishedFlag, 
                    HasSeriesType,
-                   HasOffering {
+                   HasOffering{
 
     private static final long serialVersionUID = 7838379468605356753L;
     
     public static String ID = "seriesId";
-    
     public static String FIRST_TIME_STAMP = "firstTimeStamp";
-    
     public static String LAST_TIME_STAMP = "lastTimeStamp";
     
     public static final String ALIAS = "s";
@@ -78,20 +79,18 @@ public class Series extends AbstractIdentifierNameDescriptionEntity
     private AbstractFeatureOfInterest featureOfInterest;
     private ObservableProperty observableProperty;
     private Procedure procedure;
-    private Boolean deleted = false;
-    
-    private Boolean published = true;
+    private Offering offering;
 
-    // the following values are used by the timeseries api
+    private Boolean deleted = false;
+    private Boolean published = true;
+    // the following values are used by the rest api
     private Date firstTimeStamp;
     private Date lastTimeStamp;
     private Double firstNumericValue;
     private Double lastNumericValue;
     private Unit unit;
     private boolean hiddenChild;
-    private Offering offering;
     private String seriesType;
-
     /**
      * Get series id
      *
@@ -286,20 +285,25 @@ public class Series extends AbstractIdentifierNameDescriptionEntity
     }
 
     @Override
-    public void setOffering(Offering offering) {
-        this.offering = offering;
-    }
-
-    @Override
     public Offering getOffering() {
         return offering;
     }
+
+    @Override
+    public void setOffering(final Offering offering) {
+        this.offering = offering;
+    }
     
-    public boolean hasOffering() {
+    @Override
+    public boolean isSetOffering() {
         return getOffering() != null;
     }
 
-    
+    public boolean hasSameObservationIdentifier(Series s) {
+        return getFeatureOfInterest().equals(s.getFeatureOfInterest()) && getProcedure().equals(s.getProcedure())
+                && getObservableProperty().equals(s.getObservableProperty());
+    }
+
     public String getSeriesType() {
         return this.seriesType;
     }

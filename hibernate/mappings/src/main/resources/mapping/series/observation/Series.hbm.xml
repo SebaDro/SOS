@@ -45,13 +45,13 @@
             </column>
         </many-to-one>
         <many-to-one name="offering" 
-				        class="org.n52.sos.ds.hibernate.entities.Offering" 
-				        fetch="select" 
-				        lazy="no-proxy" 
-				        foreign-key="seriesOfferingFk">
+                        class="org.n52.sos.ds.hibernate.entities.Offering" 
+                        foreign-key="seriesOfferingFk">
             <column index="seriesOfferingIdx" 
-			            name="offeringId">
-            	<comment>Foreign Key (FK) to the related offering. Contains "offering".offeringid</comment>
+                    name="offeringId"
+                    not-null="true"
+                    unique-key="seriesIdentity" >
+                <comment>Foreign Key (FK) to the related offering. Contains "offering".offeringid</comment>
             </column>
         </many-to-one>
         <property name="deleted"
@@ -85,6 +85,8 @@
         <property name="firstTimeStamp"
                   type="timestamp">
             <column name="firstTimeStamp"
+                    not-null="false"
+                    default="NULL"
                     length="29" >
                 <comment>The time stamp of the first (temporal) observation associated to this series</comment>
             </column>
@@ -92,6 +94,8 @@
         <property name="lastTimeStamp"
                   type="timestamp">
             <column name="lastTimeStamp"
+                    not-null="false"
+                    default="NULL"
                     length="29" >
                 <comment>The time stamp of the last (temporal) observation associated to this series</comment>
             </column>
@@ -118,6 +122,7 @@
                 <comment>Foreign Key (FK) to the related unit of the first/last numeric values . Contains "unit".unitid</comment>
             </column>
         </many-to-one>
+        
         <property name="identifier" type="string">
             <column name="identifier" not-null="false" unique-key="seriesIdentifierUK">
                 <comment>The identifier of the series, gml:identifier. Unique</comment>

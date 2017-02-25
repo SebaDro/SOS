@@ -27,14 +27,21 @@
 -- Public License for more details.
 --
 
-ALTER TABLE series ADD firstTimeStamp timestamp;
-ALTER TABLE series ADD lastTimeStamp timestamp;
-ALTER TABLE series ADD firstNumericValue DOUBLE PRECISION;
-ALTER TABLE series ADD lastNumericValue DOUBLE PRECISION;
-ALTER TABLE series ADD unitId number(19,0);
+-- alter table
+alter table sos.series add column offeringid int8;
 
-alter table series add constraint seriesUnitFk foreign key (unitId) references unit;
+-- drop and add constraint
+alter table sos.series drop index seriesIdentity;
+alter table sos.observation drop index obsIdentifierUK;
+alter table sos.series add constraint seriesIdentity unique (featureOfInterestId, observablePropertyId, procedureId, offeringId);
 
-ALTER TABLE procedure ADD referenceFlag char(1 char) default 'F' check (referenceFlag in ('T','F'));
+-- create index
+create index seriesOfferingIdx on sos.series (offeringId);
 
-ALTER TABLE observation ADD samplingGeometry GEOMETRY;
+-- create foreign keys
+alter table sos.series add constraint seriesOfferingFk foreign key (offeringId) references sos.offering;
+
+-- update series table (!!! Works only if each observation relates to one and the same offering!!!)
+SET SQL_SAFE_UPDATES=0;
+UPDATE sos.series ser, (SELECT DISTINCT o.seriesid, off.offeringid FROM sos.observation o inner join sos.observationhasoffering off on o.observationid = off.observationid) q SET ser.offeringid = q.offeringid  WHERE q.seriesid = ser.seriesid;
+SET SQL_SAFE_UPDATES=1;

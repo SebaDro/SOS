@@ -169,7 +169,8 @@ public interface HibernateRelations {
             extends HasReadableObservationContext,
                     HasObservableProperty,
                     HasProcedure,
-                    HasFeatureOfInterest {
+                    HasFeatureOfInterest,
+                    HasOffering {
     }
 
     interface HasDescriptionXml {
@@ -288,6 +289,8 @@ public interface HibernateRelations {
         void setOffering(Offering offering);
 
         Offering getOffering();
+        
+        boolean isSetOffering();
     }
 
     interface HasPhenomenonTime {
@@ -503,6 +506,8 @@ public interface HibernateRelations {
 
 //        Object getOffering();
         void setOfferings(Object offerings);
+        
+        boolean isSetOfferings();
 
     }
     

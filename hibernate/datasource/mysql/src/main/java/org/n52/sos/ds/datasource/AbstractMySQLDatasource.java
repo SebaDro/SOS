@@ -222,5 +222,4 @@ public abstract class AbstractMySQLDatasource extends AbstractHibernateFullDBDat
         }
         return checkSchema;
     }
-
 }
