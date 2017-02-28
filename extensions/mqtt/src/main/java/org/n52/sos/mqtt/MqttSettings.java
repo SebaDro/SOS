@@ -34,7 +34,10 @@ import java.util.Set;
 import org.n52.sos.config.SettingDefinition;
 import org.n52.sos.config.SettingDefinitionGroup;
 import org.n52.sos.config.SettingDefinitionProvider;
+import org.n52.sos.config.settings.ChoiceSettingDefinition;
 import org.n52.sos.config.settings.StringSettingDefinition;
+import org.n52.sos.mqtt.decode.AdsbDecoder;
+import org.n52.sos.mqtt.decode.FifaDecoder;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -44,6 +47,8 @@ public class MqttSettings implements SettingDefinitionProvider {
     public static final String MQTT_HOST = "mqtt.host";
     public static final String MQTT_PORT = "mqtt.port";
     public static final String MQTT_TOPIC = "mqtt.topic";
+    public static final String MQTT_DECODER = "mqtt.decoder";
+    public static final String MQTT_PROTOCOL = "mqtt.protocol";
     public static final SettingDefinitionGroup GROUP = new SettingDefinitionGroup().setTitle("MQTT").setOrder(10);
     
     public static final StringSettingDefinition MQTT_HOST_DEFINITION =
@@ -76,9 +81,33 @@ public class MqttSettings implements SettingDefinitionProvider {
                     .setTitle("MQTT broker topic")
                     .setDescription("");
     
+    public static final ChoiceSettingDefinition MQTT_PROTOCOL_DEFINITION =
+            new ChoiceSettingDefinition()
+                    .setGroup(GROUP)
+                    .setOrder(ORDER_3)
+                    .setKey(MQTT_DECODER)
+                    .setDefaultValue("tcp")
+                    .addOption("tcp")
+                    .addOption("ws")
+                    .setOptional(false)
+                    .setTitle("MQTT decoder")
+                    .setDescription("Select the decoder");
+    
+    public static final ChoiceSettingDefinition MQTT_DECODER_DEFINITION =
+            new ChoiceSettingDefinition()
+                    .setGroup(GROUP)
+                    .setOrder(ORDER_4)
+                    .setKey(MQTT_DECODER)
+                    .setDefaultValue(AdsbDecoder.class.getName())
+                    .addOption(AdsbDecoder.class.getName(), AdsbDecoder.class.getSimpleName())
+                    .addOption(FifaDecoder.class.getName(), FifaDecoder.class.getSimpleName())
+                    .setOptional(false)
+                    .setTitle("MQTT decoder")
+                    .setDescription("Select the decoder");
+    
 
     private static final Set<SettingDefinition<?, ?>> DEFINITIONS = ImmutableSet.<SettingDefinition<?, ?>> of(
-            MQTT_HOST_DEFINITION, MQTT_PORT_DEFINITION, MQTT_TOPIC_DEFINITION);
+            MQTT_HOST_DEFINITION, MQTT_PORT_DEFINITION, MQTT_TOPIC_DEFINITION, MQTT_PROTOCOL_DEFINITION, MQTT_DECODER_DEFINITION);
 
     @Override
     public Set<SettingDefinition<?, ?>> getSettingDefinitions() {

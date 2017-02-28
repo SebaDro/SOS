@@ -30,7 +30,7 @@ package org.n52.sos.mqtt.api;
 
 import org.joda.time.DateTime;
 
-public class AdsbMessage {
+public class AdsbMessage implements MqttMessage {
     
     public static final String HEX = "hex";
     public static final String FLIGHT = "flight";

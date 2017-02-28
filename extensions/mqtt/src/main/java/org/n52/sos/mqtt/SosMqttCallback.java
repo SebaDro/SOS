@@ -41,7 +41,10 @@ import org.n52.sos.exception.ows.concrete.VersionNotSupportedException;
 import org.n52.sos.mqtt.api.AdsbMessage;
 import org.n52.sos.mqtt.convert.AdsbToInsertObservation;
 import org.n52.sos.mqtt.convert.AdsbToInsertSensor;
+import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
+import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 import org.n52.sos.mqtt.decode.AdsbDecoder;
+import org.n52.sos.mqtt.decode.MqttDecoder;
 import org.n52.sos.ogc.ows.CompositeOwsException;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.request.AbstractServiceRequest;
@@ -59,10 +62,16 @@ import org.slf4j.LoggerFactory;
 public class SosMqttCallback implements MqttCallback {
     
     private static final Logger LOG = LoggerFactory.getLogger(SosMqttCallback.class);
-    private AdsbDecoder adsbDecoder = new AdsbDecoder();
-    private AdsbToInsertSensor adsbToInsertSensor = new AdsbToInsertSensor();
-    private AdsbToInsertObservation adsbToInsertObservation = new AdsbToInsertObservation();
+    private MqttDecoder decoder;
+    private MqttInsertSensorConverter insertSensorConverter;
+    private MqttInsertObservationConverter insertObservationConverter;
     
+    public SosMqttCallback(String decoderName) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+        decoder = (MqttDecoder) Class.forName(decoderName).newInstance();
+        insertSensorConverter = decoder.getInsertSensorConverter();
+        insertObservationConverter = decoder.getInsertOnbservationConverter();
+    }
+
     @Override
     public void connectionLost(Throwable cause) {
         LOG.warn("Connection lost", cause);
@@ -71,15 +80,15 @@ public class SosMqttCallback implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         try {
-            for (AdsbMessage adsbMessage : adsbDecoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
+            for (AdsbMessage adsbMessage : decoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
                 if (!isProcedureRegistered(adsbMessage.getHex())) {
                     InsertSensorRequest request;
                     
-                        request = adsbToInsertSensor.convert(adsbMessage);
+                        request = insertSensorConverter.convert(adsbMessage);
                    
                     getServiceOperator(request).receiveRequest(request);
                 }
-                InsertObservationRequest request = adsbToInsertObservation.convert(adsbMessage);
+                InsertObservationRequest request = insertObservationConverter.convert(adsbMessage);
                 getServiceOperator(request).receiveRequest(request);
             }
         } catch (OwsExceptionReport e) {

@@ -36,6 +36,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.n52.sos.config.SettingsManager;
 import org.n52.sos.config.annotation.Configurable;
 import org.n52.sos.config.annotation.Setting;
+import org.n52.sos.exception.ConfigurationException;
 import org.n52.sos.service.SosContextListener;
 import org.n52.sos.util.Cleanupable;
 import org.slf4j.Logger;
@@ -61,6 +62,8 @@ public class MqttConsumer implements Cleanupable {
     private String host;
     private String port;
     private MqttClient client;
+    private String decoder;
+    private String protocol;
 
     /**
      * the MQTT QoS as enum. use #ordinal() to get the int
@@ -95,7 +98,11 @@ public class MqttConsumer implements Cleanupable {
         if (!client.isConnected()) {
             client.connect();
             LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
-            client.setCallback(new SosMqttCallback());
+            try {
+                client.setCallback(new SosMqttCallback(getDecoder()));
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                throw new ConfigurationException("Error while starting MQTT consumer", e);
+            }
         }
         subscribe(getTopic(), QualityOfService.EXACTLY_ONCE);
         LOG.debug("Subscibed to topic: {}", getTopic());
@@ -147,6 +154,16 @@ public class MqttConsumer implements Cleanupable {
     public void setPort(String port) {
         this.port = port;
     }
+    
+    @Setting(MqttSettings.MQTT_DECODER)
+    public void setDecoder(String decoder) {
+        this.decoder = decoder;
+    }
+    
+    @Setting(MqttSettings.MQTT_PROTOCOL)
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
 
     /**
      * @return the topic
@@ -167,6 +184,14 @@ public class MqttConsumer implements Cleanupable {
      */
     public String getPort() {
         return port;
+    }
+    
+    public String getDecoder() {
+        return decoder;
+    }
+    
+    public String getProtocol() {
+        return protocol;
     }
     
 //    public static void main(String[] args) throws MqttException {

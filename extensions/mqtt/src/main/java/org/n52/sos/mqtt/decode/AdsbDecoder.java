@@ -28,37 +28,19 @@
  */
 package org.n52.sos.mqtt.decode;
 
-import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.n52.sos.mqtt.api.AdsbMessage;
+import org.n52.sos.mqtt.api.MqttMessage;
+import org.n52.sos.mqtt.convert.AdsbToInsertObservation;
+import org.n52.sos.mqtt.convert.AdsbToInsertSensor;
+import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
+import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Sets;
 
-public class AdsbDecoder {
+public class AdsbDecoder extends AbstractMqttDecoder {
     
-    private JsonNode jsonNode;
-
-    public Set<AdsbMessage> decoder(JsonNode json) {
-        Set<AdsbMessage> messages = Sets.newHashSet();
-        if (json == null || json.isNull() || json.isMissingNode()) {
-            return messages;
-        }
-        if (json.isArray()) {
-            for (JsonNode n : json) {
-                if (n.isObject()) {
-                    messages.add(parseAdsbMessage(n));
-                }
-            }
-        } else if (json.isObject()) {
-            messages.add(parseAdsbMessage(json));
-        }
-        
-        return messages;
-    }
-
-    private AdsbMessage parseAdsbMessage(JsonNode json) {
+    protected MqttMessage parseMessage(JsonNode json) {
         return new AdsbMessage()
                 .setHex(getString(json, AdsbMessage.HEX))
                 .setFlight(getString(json, AdsbMessage.HEX))
@@ -71,36 +53,15 @@ public class AdsbDecoder {
                 .setSquawk(getString(json, AdsbMessage.SQUAWK));
     }
 
-    private String getString(JsonNode json, String name) {
-        jsonNode = json.get(name);
-        if (jsonNode.isNull()) {
-            return "";
-        }
-        return jsonNode.asText();
+
+    @Override
+    public MqttInsertSensorConverter getInsertSensorConverter() {
+        return new AdsbToInsertSensor();
     }
-    
-    private double getDouble(JsonNode json, String name) {
-        jsonNode = json.get(name);
-        if (jsonNode.isNull()) {
-            return Double.NaN;
-        }
-        return jsonNode.asDouble();
-    }
-    
-    private int getInteger(JsonNode json, String name) {
-        jsonNode = json.get(name);
-        if (jsonNode.isNull()) {
-            return Integer.MIN_VALUE;
-        }
-        return jsonNode.asInt();
-    }
-    
-    private DateTime getDateTime(JsonNode json, String name){
-    	return new DateTime(getLong(json, name)*1000);
-    }
-    
-    private long getLong(JsonNode json, String name){
-    	return json.get(name).asLong();
+
+    @Override
+    public MqttInsertObservationConverter getInsertOnbservationConverter() {
+        return new AdsbToInsertObservation();
     }
 
 }

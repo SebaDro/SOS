@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.joda.time.ReadWritableDateTime;
 import org.n52.sos.mqtt.api.AdsbMessage;
 import org.n52.sos.ogc.gml.AbstractFeature;
 import org.n52.sos.ogc.gml.CodeWithAuthority;
@@ -64,7 +63,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Geometry;
 
-public class AdsbToInsertObservation {
+public class AdsbToInsertObservation implements MqttInsertObservationConverter<AdsbMessage> {
     
     public InsertObservationRequest convert(AdsbMessage message) throws OwsExceptionReport {
         List<OmObservation> observations = Lists.newArrayList();
