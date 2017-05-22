@@ -11,6 +11,7 @@
         <property column="phenomenontime" name="timestart" type="timestamp"/>
         <property column="phenomenontime" name="timeend" type="timestamp" insert="false" update="false"/>
         <property formula="'F'" name="deleted" type="org.hibernate.type.TrueFalseType"/>
+        <property formula="'F'" name="parent" type="org.hibernate.type.TrueFalseType"/>
         <component class="GeometryEntity" name="geometryEntity">
            <property column="lat" name="lat" type="double" />
            <property column="lon" name="lon" type="double" />
