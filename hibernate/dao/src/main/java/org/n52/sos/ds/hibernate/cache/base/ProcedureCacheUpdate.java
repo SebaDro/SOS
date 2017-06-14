@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -234,6 +234,7 @@ public class ProcedureCacheUpdate extends AbstractQueueingDatasourceCacheUpdate<
     private void getParents(Set<String> parents, Procedure procedure) {
         if (procedure instanceof TProcedure && ((TProcedure)procedure).getParents() != null) {
             for (Procedure parent : ((TProcedure)procedure).getParents()) {
+                parents.add(parent.getIdentifier());
                 getParents(parents, parent);
             }
         }

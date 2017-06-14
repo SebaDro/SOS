@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -194,24 +194,22 @@ public abstract class SimpleBinding extends Binding {
     }
 
     protected MediaType chooseResponseContentTypeForExceptionReport(
-            List<MediaType> acceptHeader, MediaType defaultContentType)
-            throws HTTPException {
+            List<MediaType> acceptHeader, MediaType defaultContentType) {
         /*
          * TODO get a list of response content types and check against
          * wildcards/qualities
          */
         if (acceptHeader.isEmpty()) {
             return defaultContentType;
-        }
-        for (MediaType mt : acceptHeader) {
-            MediaType mediaType = mt.withoutParameter(QUALITY);
-            if (defaultContentType.isCompatible(mediaType)) {
-                return defaultContentType;
-            } else if (hasEncoder(new ExceptionEncoderKey(mediaType))) {
-                return mediaType;
+        } else {
+            for (MediaType mt : acceptHeader) {
+                MediaType mediaType = mt.withoutParameter(QUALITY);
+                if (hasEncoder(new ExceptionEncoderKey(mediaType))) {
+                    return mediaType;
+                }
             }
+            return defaultContentType;
         }
-        throw new HTTPException(HTTPStatus.NOT_ACCEPTABLE);
     }
 
     protected ServiceOperator getServiceOperator(ServiceOperatorKey sokt) throws OwsExceptionReport {

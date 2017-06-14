@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.n52.sos.ogc.gml.AbstractFeature;
+import org.n52.sos.ogc.series.wml.DefaultPointMetadata;
+import org.n52.sos.ogc.series.wml.Metadata;
 import org.n52.sos.ogc.sos.SosProcedureDescription;
 import org.n52.sos.util.Constants;
 import org.n52.sos.w3c.Nillable;
@@ -43,7 +45,7 @@ import com.google.common.base.Objects;
 /**
  * @since 4.0.0
  */
-public class OmObservationConstellation implements Serializable, Cloneable {
+public class OmObservationConstellation extends AbstractFeature implements Serializable, Cloneable {
     private static final long serialVersionUID = 8758412729768944974L;
 
     /** Identifier of the procedure by which the observation is made */
@@ -64,6 +66,10 @@ public class OmObservationConstellation implements Serializable, Cloneable {
     private String observationType;
 
     // private SosResultTemplate sosResultTemplate;
+
+    private DefaultPointMetadata defaultPointMetadata;
+
+    private Metadata metadata;
 
     /**
      * default constructor
@@ -386,6 +392,9 @@ public class OmObservationConstellation implements Serializable, Cloneable {
         clone.setObservationType(this.getObservationType());
         clone.setOfferings(new HashSet<String>(this.getOfferings()));
         clone.setProcedure(this.getProcedure());
+        clone.setIdentifier(this.getIdentifier());
+        clone.setName(this.getName());
+        clone.setDescription(this.getDescription());
         return clone;
     }
 
@@ -403,6 +412,30 @@ public class OmObservationConstellation implements Serializable, Cloneable {
 
     private boolean hasProcedure() {
         return getProcedure() != null && getProcedure().isSetIdentifier();
+    }
+
+    public boolean isSetDefaultPointMetadata() {
+        return defaultPointMetadata != null;
+    }
+
+    public DefaultPointMetadata getDefaultPointMetadata() {
+        return defaultPointMetadata;
+    }
+
+    public void setDefaultPointMetadata(DefaultPointMetadata defaultPointMetadata) {
+        this.defaultPointMetadata = defaultPointMetadata;
+    }
+
+    public boolean isSetMetadata() {
+        return metadata != null;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 
     @Override

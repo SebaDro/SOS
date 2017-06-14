@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@ import java.util.Set;
 import org.n52.sos.coding.CodingRepository;
 import org.n52.sos.config.annotation.Configurable;
 import org.n52.sos.config.annotation.Setting;
-import org.n52.sos.convert.RequestResponseModifier;
+import org.n52.sos.convert.AbstractRequestResponseModifier;
 import org.n52.sos.convert.RequestResponseModifierFacilitator;
 import org.n52.sos.convert.RequestResponseModifierKeyType;
 import org.n52.sos.encode.ObservationEncoder;
@@ -73,9 +73,12 @@ import org.n52.sos.ogc.swe.simpleType.SweBoolean;
 import org.n52.sos.ogc.swes.SwesExtensionImpl;
 import org.n52.sos.request.AbstractObservationRequest;
 import org.n52.sos.request.AbstractServiceRequest;
+import org.n52.sos.request.GetObservationByIdRequest;
 import org.n52.sos.request.GetObservationRequest;
 import org.n52.sos.request.InsertObservationRequest;
+import org.n52.sos.response.AbstractObservationResponse;
 import org.n52.sos.response.AbstractServiceResponse;
+import org.n52.sos.response.GetObservationByIdResponse;
 import org.n52.sos.response.GetObservationResponse;
 import org.n52.sos.response.InsertObservationResponse;
 import org.n52.sos.service.Configurator;
@@ -94,28 +97,31 @@ import com.google.common.collect.Sets;
 
 @Configurable
 public class SplitMergeObservations
-        implements RequestResponseModifier<AbstractServiceRequest<?>, AbstractServiceResponse> {
+        extends AbstractRequestResponseModifier<AbstractServiceRequest<?>, AbstractServiceResponse> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SplitMergeObservations.class);
     private static final Set<RequestResponseModifierKeyType> REQUEST_RESPONSE_MODIFIER_KEY_TYPES = getKeyTypes();
-    private boolean includeResultTimeForMerging = false; 
+    private boolean includeResultTimeForMerging = false;
+    private boolean checkForDuplicity = false;
+    
     
     @Setting(ServiceSettings.INCLUDE_RESULT_TIME_FOR_MERGING)
     public void setIncludeResultTimeForMerging(boolean includeResultTimeForMerging) {
         this.includeResultTimeForMerging = includeResultTimeForMerging;
-    }   
+    }
+    
+    @Setting(ServiceSettings.CHECK_FOR_DUPLICITY)
+    public void setCheckForDuplicity(boolean checkForDuplicity) {
+        this.checkForDuplicity = checkForDuplicity;
+    } 
 
-    /**
-     * Get the keys
-     * 
-     * @return Set of keys
-     */
     private static Set<RequestResponseModifierKeyType> getKeyTypes() {
         Set<String> services = Sets.newHashSet(SosConstants.SOS);
         Set<String> versions = Sets.newHashSet(Sos1Constants.SERVICEVERSION, Sos2Constants.SERVICEVERSION);
         Map<AbstractServiceRequest<?>, AbstractServiceResponse> requestResponseMap = Maps.newHashMap();
 
         requestResponseMap.put(new GetObservationRequest(), new GetObservationResponse());
+        requestResponseMap.put(new GetObservationByIdRequest(), new GetObservationByIdResponse());
         requestResponseMap.put(new InsertObservationRequest(), new InsertObservationResponse());
         Set<RequestResponseModifierKeyType> keys = Sets.newHashSet();
         for (String service : services) {
@@ -144,14 +150,12 @@ public class SplitMergeObservations
         }
         if (request instanceof AbstractObservationRequest) {
             AbstractObservationRequest req = (AbstractObservationRequest) request;
-            if (req.isSetResponseFormat()) {
-                if (OmConstants.NS_OM_2.equals(req.getResponseFormat())
+            if (req.isSetResponseFormat() ) {
+                if (checkForDuplicity && (OmConstants.NS_OM_2.equals(req.getResponseFormat())
                         || OmConstants.NS_OM.equals(req.getResponseFormat())
                         || OmConstants.CONTENT_TYPE_OM.toString().equals(req.getResponseFormat())
-                        || OmConstants.CONTENT_TYPE_OM_2.toString().equals(req.getResponseFormat())) {
-                    req.setCheckForDuplicity(true);
-                } else {
-                    req.setCheckForDuplicity(false);
+                        || OmConstants.CONTENT_TYPE_OM_2.toString().equals(req.getResponseFormat()))) {
+                    req.setCheckForDuplicity(checkForDuplicity);
                 }
             }
         }
@@ -315,16 +319,16 @@ public class SplitMergeObservations
     @Override
     public AbstractServiceResponse modifyResponse(AbstractServiceRequest<?> request, AbstractServiceResponse response)
             throws OwsExceptionReport {
-        if (request instanceof GetObservationRequest && response instanceof GetObservationResponse) {
-            return mergeObservations((GetObservationRequest) request, (GetObservationResponse) response);
+        if (request instanceof AbstractObservationRequest && response instanceof AbstractObservationResponse) {
+            return mergeObservations((AbstractObservationRequest) request, (AbstractObservationResponse) response);
         }
-        if (response instanceof GetObservationResponse) {
-            return mergeObservations((GetObservationResponse) response);
+        if (response instanceof AbstractObservationResponse) {
+            return mergeObservations((AbstractObservationResponse) response);
         }
         return response;
     }
 
-    private AbstractServiceResponse mergeObservations(GetObservationRequest request, GetObservationResponse response)
+    private AbstractServiceResponse mergeObservations(AbstractObservationRequest request, AbstractObservationResponse response)
             throws OwsExceptionReport {
         boolean checkForMergeObservationsInResponse = checkForMergeObservationsInResponse(request);
         request.setMergeObservationValues(checkForMergeObservationsInResponse);
@@ -348,7 +352,7 @@ public class SplitMergeObservations
         return response;
     }
 
-    private void mergeObservationsWithSameConstellation(GetObservationResponse response) {
+    private void mergeObservationsWithSameConstellation(AbstractObservationResponse response) {
         // TODO merge all observations with the same observationContellation
         // FIXME Failed to set the observation type to sweArrayObservation for
         // the merged Observations
@@ -360,7 +364,7 @@ public class SplitMergeObservations
         }
     }
 
-    private boolean checkEncoderForMergeObservations(GetObservationResponse response) throws OwsExceptionReport {
+    private boolean checkEncoderForMergeObservations(AbstractObservationResponse response) throws OwsExceptionReport {
         if (response.isSetResponseFormat()) {
             // check for XML encoder
             ObservationEncoder<Object, Object> encoder =
@@ -396,7 +400,7 @@ public class SplitMergeObservations
         return false;
     }
 
-    private boolean checkResultModel(GetObservationResponse response) {
+    private boolean checkResultModel(AbstractObservationResponse response) {
         if (response.isSetResultModel()) {
             if (!OmConstants.OBS_TYPE_OBSERVATION.equals(response.getResultModel())) {
                 return false;
@@ -405,7 +409,7 @@ public class SplitMergeObservations
         return true;
     }
 
-    private AbstractServiceResponse mergeObservations(GetObservationResponse response) throws OwsExceptionReport {
+    private AbstractServiceResponse mergeObservations(AbstractObservationResponse response) throws OwsExceptionReport {
         boolean checkEncoderForMergeObservations = checkEncoderForMergeObservations(response);
         if (checkEncoderForMergeObservations && !response.hasStreamingData()) {
             if (!response.hasStreamingData()) {
@@ -416,14 +420,14 @@ public class SplitMergeObservations
         return response;
     }
 
-    private boolean checkForMergeObservationsInResponse(GetObservationRequest sosRequest) {
+    private boolean checkForMergeObservationsInResponse(AbstractObservationRequest sosRequest) {
         if (getActiveProfile().isMergeValues() || isSetExtensionMergeObservationsToSweDataArray(sosRequest)) {
             return true;
         }
         return false;
     }
 
-    private boolean isSetExtensionMergeObservationsToSweDataArray(final GetObservationRequest sosRequest) {
+    private boolean isSetExtensionMergeObservationsToSweDataArray(final AbstractObservationRequest sosRequest) {
         return sosRequest.isSetExtensions() && sosRequest.getExtensions()
                 .isBooleanExtensionSet(Sos2Constants.Extensions.MergeObservationsIntoDataArray.name());
     }
@@ -434,7 +438,7 @@ public class SplitMergeObservations
 
     @Override
     public RequestResponseModifierFacilitator getFacilitator() {
-        return new RequestResponseModifierFacilitator().setMerger(true).setSplitter(true);
+        return super.getFacilitator().setMerger(true).setSplitter(true);
     }
 
 }

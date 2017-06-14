@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -80,15 +80,15 @@ public class SosMqttCallback implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         try {
-            for (AdsbMessage adsbMessage : decoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
-                if (!isProcedureRegistered(adsbMessage.getHex())) {
+            for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : decoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
+                if (!isProcedureRegistered(mqttMessage.getProcedure())) {
                     InsertSensorRequest request;
                     
-                        request = insertSensorConverter.convert(adsbMessage);
+                        request = insertSensorConverter.convert(mqttMessage);
                    
                     getServiceOperator(request).receiveRequest(request);
                 }
-                InsertObservationRequest request = insertObservationConverter.convert(adsbMessage);
+                InsertObservationRequest request = insertObservationConverter.convert(mqttMessage);
                 getServiceOperator(request).receiveRequest(request);
             }
         } catch (OwsExceptionReport e) {
