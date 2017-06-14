@@ -34,8 +34,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.n52.sos.exception.CodedException;
 import org.n52.sos.exception.ows.NoApplicableCodeException;
@@ -233,9 +231,9 @@ public class ObservationUnfolder {
                     for (final Value<?> iValue : observedValues) {
                         OmObservation newObservation = null;
                         if (isProfileObservations()) {
-                            newObservation = createSingleValueObservation(multiObservation, phenomenonTime, resultTime, convertToProfileValue(iValue, parameterHolder));
+                            newObservation = createSingleValueObservation(multiObservation, phenomenonTime, resultTime, convertToProfileValue(iValue, parameterHolder), parameterHolder);
                         } else {
-                            newObservation = createSingleValueObservation(multiObservation, phenomenonTime, resultTime, iValue);
+                            newObservation = createSingleValueObservation(multiObservation, phenomenonTime, resultTime, iValue, parameterHolder);
                         }
                                 
                         if (samplingGeometry != null && samplingGeometry.hasGeometry()) {
@@ -320,7 +318,7 @@ public class ObservationUnfolder {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private OmObservation createSingleValueObservation(final OmObservation multiObservation, final Time phenomenonTime,
-            TimeInstant resultTime, final Value<?> iValue) throws CodedException {
+            TimeInstant resultTime, final Value<?> iValue, ParameterHolder parameter) throws CodedException {
         final ObservationValue<?> value = new SingleObservationValue(phenomenonTime, iValue);
         final OmObservation newObservation = new OmObservation();
         newObservation.setNoDataValue(multiObservation.getNoDataValue());
@@ -335,6 +333,9 @@ public class ObservationUnfolder {
             throw new NoApplicableCodeException()
                 .causedBy(e)
                 .withMessage("Error while cloning %s!", OmObservationConstellation.class.getName());
+        }
+        if (parameter.isSetParameter()) {
+            newObservation.setParameter(parameter.getParameter());
         }
         
         /*
@@ -435,12 +436,16 @@ public class ObservationUnfolder {
         if (parameterHolder.isSetHeightDepthParameter()) {
             if (parameterHolder.isSetHeightParameter()) {
                 profileLevel.setLevelStart(toQuantityValue(parameterHolder.getHeightParameter()));
+                parameterHolder.removeParameter(parameterHolder.getHeightParameter());
             } if (parameterHolder.isSetDepthParameter()) {
                 profileLevel.setLevelStart(toQuantityValue(parameterHolder.getDepthParameter()));
+                parameterHolder.removeParameter(parameterHolder.getDepthParameter());
             }
         } else if (parameterHolder.isSetFromToParameter()) {
             profileLevel.setLevelStart(toQuantityValue(parameterHolder.getFromParameter()));
             profileLevel.setLevelEnd(toQuantityValue(parameterHolder.getToParameter()));
+            parameterHolder.removeParameter(parameterHolder.getFromParameter());
+            parameterHolder.removeParameter(parameterHolder.getToParameter());
         }
         return new ProfileValue().addValue(profileLevel);
     }
