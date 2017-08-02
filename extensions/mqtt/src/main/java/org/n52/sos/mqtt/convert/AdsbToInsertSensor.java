@@ -116,7 +116,6 @@ public class AdsbToInsertSensor extends AbstractMqttInsertSensorConverter<AdsbMe
         SosInsertionMetadata metadata = new SosInsertionMetadata();
         metadata.setFeatureOfInterestTypes(Collections.singleton(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE));
         metadata.setObservationTypes(Collections.singleton(OmConstants.OBS_TYPE_MEASUREMENT));
-        metadata.setObservationTypes(Collections.singleton(InspireOMSOConstants.OBS_TYPE_TRAJECTORY_OBSERVATION));
         return metadata;
     }
 

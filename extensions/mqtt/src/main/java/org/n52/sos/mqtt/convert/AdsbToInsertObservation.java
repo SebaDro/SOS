@@ -97,6 +97,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         observation.setObservationConstellation(createObservationConstellation(message, AdsbMessage.ALTITUDE));
         observation.addParameter(createSpatialFilteringProfileParameter(message));
         observation.setValue(createQuantityObservationValue(message.getTime(), message.getAltitude(), AdsbMessage.ALTITUDE_UNIT));
+        observation.setResultTime(new TimeInstant(message.getTime()));
         return observation;
     }
 
@@ -105,6 +106,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         observation.setObservationConstellation(createObservationConstellation(message, AdsbMessage.SPEED));
         observation.addParameter(createSpatialFilteringProfileParameter(message));
         observation.setValue(createQuantityObservationValue(message.getTime(), message.getSpeed(), AdsbMessage.SPEED_UNIT));
+        observation.setResultTime(new TimeInstant(message.getTime()));
         return observation;
     }
 
@@ -113,6 +115,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         observation.setObservationConstellation(createObservationConstellation(message, AdsbMessage.TRACK));
         observation.addParameter(createSpatialFilteringProfileParameter(message));
         observation.setValue(createQuantityObservationValue(message.getTime(), message.getTrack(), AdsbMessage.TRACK_UNIT));
+        observation.setResultTime(new TimeInstant(message.getTime()));
         return observation;
     }
 
