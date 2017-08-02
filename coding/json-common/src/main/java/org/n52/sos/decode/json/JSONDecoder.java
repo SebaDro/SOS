@@ -92,7 +92,7 @@ public abstract class JSONDecoder<T> implements Decoder<T, JsonNode> {
         return getDecoder(type).decode(json);
     }
 
-    protected <T> List<T> decodeJsonToObjectList(JsonNode node, Class<T> type) throws OwsExceptionReport {
+    public <T> List<T> decodeJsonToObjectList(JsonNode node, Class<T> type) throws OwsExceptionReport {
         Decoder<T, JsonNode> decoder = getDecoder(type);
         if (node.isArray()) {
             List<T> filters = Lists.newArrayListWithExpectedSize(node.size());
