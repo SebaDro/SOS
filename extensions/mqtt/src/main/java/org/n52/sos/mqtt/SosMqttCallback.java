@@ -32,6 +32,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.n52.sos.cache.ContentCache;
+import org.n52.sos.config.SettingsManager;
 import org.n52.sos.exception.ows.concrete.InvalidAcceptVersionsParameterException;
 import org.n52.sos.exception.ows.concrete.InvalidServiceOrVersionException;
 import org.n52.sos.exception.ows.concrete.InvalidServiceParameterException;
@@ -60,14 +61,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SosMqttCallback implements MqttCallback {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(SosMqttCallback.class);
     private MqttDecoder decoder;
     private MqttInsertSensorConverter insertSensorConverter;
     private MqttInsertObservationConverter insertObservationConverter;
-    
+
     public SosMqttCallback(String decoderName) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         decoder = (MqttDecoder) Class.forName(decoderName).newInstance();
+        SettingsManager.getInstance().configure(decoder);
         insertSensorConverter = decoder.getInsertSensorConverter();
         insertObservationConverter = decoder.getInsertOnbservationConverter();
     }
@@ -83,16 +85,16 @@ public class SosMqttCallback implements MqttCallback {
             for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : decoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
                 if (!isProcedureRegistered(mqttMessage.getProcedure())) {
                     InsertSensorRequest request;
-                    
-                        request = insertSensorConverter.convert(mqttMessage);
-                   
+
+                    request = insertSensorConverter.convert(mqttMessage);
+
                     getServiceOperator(request).receiveRequest(request);
                 }
                 InsertObservationRequest request = insertObservationConverter.convert(mqttMessage);
                 getServiceOperator(request).receiveRequest(request);
             }
         } catch (OwsExceptionReport e) {
-           LOG.error("Error while processing messages!", e);
+            LOG.error("Error while processing messages!", e);
         }
     }
 
@@ -100,15 +102,15 @@ public class SosMqttCallback implements MqttCallback {
     public void deliveryComplete(IMqttDeliveryToken token) {
         LOG.info("Delivery completed for message id '{}'", token.getMessageId());
     }
-    
+
     private ContentCache getCache() {
         return Configurator.getInstance().getCache();
     }
-    
+
     private boolean isProcedureRegistered(String procedure) {
         return getCache().getProcedures().contains(procedure);
     }
-    
+
     protected ServiceOperator getServiceOperator(ServiceOperatorKey sokt) throws OwsExceptionReport {
         return getServiceOperatorRepository().getServiceOperator(sokt);
     }
@@ -123,7 +125,7 @@ public class SosMqttCallback implements MqttCallback {
         }
         throw new InvalidServiceOrVersionException(request.getService(), request.getVersion());
     }
-    
+
     protected void checkServiceOperatorKeyTypes(AbstractServiceRequest<?> request) throws OwsExceptionReport {
         CompositeOwsException exceptions = new CompositeOwsException();
         for (ServiceOperatorKey sokt : request.getServiceOperatorKeyType()) {
@@ -147,19 +149,17 @@ public class SosMqttCallback implements MqttCallback {
                         exceptions.add(new InvalidAcceptVersionsParameterException(gcr.getAcceptVersions()));
                     }
                 }
-            } else {
-                if (sokt.hasVersion()) {
-                    if (sokt.getVersion().isEmpty()) {
-                        exceptions.add(new MissingVersionParameterException());
-                    } else if (!isVersionSupported(sokt.getService(), sokt.getVersion())) {
-                        exceptions.add(new VersionNotSupportedException());
-                    }
+            } else if (sokt.hasVersion()) {
+                if (sokt.getVersion().isEmpty()) {
+                    exceptions.add(new MissingVersionParameterException());
+                } else if (!isVersionSupported(sokt.getService(), sokt.getVersion())) {
+                    exceptions.add(new VersionNotSupportedException());
                 }
             }
         }
         exceptions.throwIfNotEmpty();
     }
-    
+
     protected boolean isVersionSupported(String service, String acceptVersion) {
         return getServiceOperatorRepository().isVersionSupported(service, acceptVersion);
     }
@@ -167,7 +167,7 @@ public class SosMqttCallback implements MqttCallback {
     protected boolean isServiceSupported(String service) {
         return getServiceOperatorRepository().isServiceSupported(service);
     }
-    
+
     protected ServiceOperatorRepository getServiceOperatorRepository() {
         return ServiceOperatorRepository.getInstance();
     }

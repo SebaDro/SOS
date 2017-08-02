@@ -40,74 +40,86 @@ import org.n52.sos.mqtt.decode.AdsbDecoder;
 import org.n52.sos.mqtt.decode.FifaDecoder;
 
 import com.google.common.collect.ImmutableSet;
-
+import org.n52.sos.mqtt.decode.TtnDecoder;
 
 public class MqttSettings implements SettingDefinitionProvider {
-    
+
     public static final String MQTT_HOST = "mqtt.host";
     public static final String MQTT_PORT = "mqtt.port";
     public static final String MQTT_TOPIC = "mqtt.topic";
     public static final String MQTT_DECODER = "mqtt.decoder";
     public static final String MQTT_PROTOCOL = "mqtt.protocol";
+    public static final String MQTT_OM_OBSERVABLE_PROPERTY = "mqtt.om.observableProperty";
     public static final SettingDefinitionGroup GROUP = new SettingDefinitionGroup().setTitle("MQTT").setOrder(10);
-    
-    public static final StringSettingDefinition MQTT_HOST_DEFINITION =
-            new StringSettingDefinition()
-                    .setGroup(GROUP)
-                    .setOrder(ORDER_0)
-                    .setKey(MQTT_HOST)
-                    .setDefaultValue("ows.dev.52north.org")
-                    .setOptional(true)
-                    .setTitle("MQTT broker host")
-                    .setDescription("");
-    
-    public static final StringSettingDefinition MQTT_PORT_DEFINITION =
-            new StringSettingDefinition()
-                    .setGroup(GROUP)
-                    .setOrder(ORDER_1)
-                    .setKey(MQTT_PORT)
-                    .setDefaultValue("1883")
-                    .setOptional(true)
-                    .setTitle("MQTT broker port")
-                    .setDescription("");
-    
-    public static final StringSettingDefinition MQTT_TOPIC_DEFINITION =
-            new StringSettingDefinition()
-                    .setGroup(GROUP)
-                    .setOrder(ORDER_2)
-                    .setKey(MQTT_TOPIC)
-                    .setDefaultValue("n52.adsb")
-                    .setOptional(true)
-                    .setTitle("MQTT broker topic")
-                    .setDescription("");
-    
-    public static final ChoiceSettingDefinition MQTT_PROTOCOL_DEFINITION =
-            new ChoiceSettingDefinition()
-                    .setGroup(GROUP)
-                    .setOrder(ORDER_3)
-                    .setKey(MQTT_PROTOCOL)
-                    .setDefaultValue("tcp")
-                    .addOption("tcp")
-                    .addOption("ws")
-                    .setOptional(false)
-                    .setTitle("MQTT protocol")
-                    .setDescription("Select the protocol");
-    
-    public static final ChoiceSettingDefinition MQTT_DECODER_DEFINITION =
-            new ChoiceSettingDefinition()
-                    .setGroup(GROUP)
-                    .setOrder(ORDER_4)
-                    .setKey(MQTT_DECODER)
-                    .setDefaultValue(AdsbDecoder.class.getName())
-                    .addOption(AdsbDecoder.class.getName(), AdsbDecoder.class.getSimpleName())
-                    .addOption(FifaDecoder.class.getName(), FifaDecoder.class.getSimpleName())
-                    .setOptional(false)
-                    .setTitle("MQTT decoder")
-                    .setDescription("Select the decoder");
+
+    public static final StringSettingDefinition MQTT_HOST_DEFINITION
+            = new StringSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_0)
+            .setKey(MQTT_HOST)
+            .setDefaultValue("ows.dev.52north.org")
+            .setOptional(true)
+            .setTitle("MQTT broker host")
+            .setDescription("");
+
+    public static final StringSettingDefinition MQTT_PORT_DEFINITION
+            = new StringSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_1)
+            .setKey(MQTT_PORT)
+            .setDefaultValue("1883")
+            .setOptional(true)
+            .setTitle("MQTT broker port")
+            .setDescription("");
+
+    public static final StringSettingDefinition MQTT_TOPIC_DEFINITION
+            = new StringSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_2)
+            .setKey(MQTT_TOPIC)
+            .setDefaultValue("n52.adsb")
+            .setOptional(true)
+            .setTitle("MQTT broker topic")
+            .setDescription("");
+
+    public static final ChoiceSettingDefinition MQTT_PROTOCOL_DEFINITION
+            = new ChoiceSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_3)
+            .setKey(MQTT_PROTOCOL)
+            .setDefaultValue("tcp")
+            .addOption("tcp")
+            .addOption("ws")
+            .setOptional(false)
+            .setTitle("MQTT protocol")
+            .setDescription("Select the protocol");
+
+    public static final ChoiceSettingDefinition MQTT_DECODER_DEFINITION
+            = new ChoiceSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_4)
+            .setKey(MQTT_DECODER)
+            .setDefaultValue(AdsbDecoder.class.getName())
+            .addOption(AdsbDecoder.class.getName(), AdsbDecoder.class.getSimpleName())
+            .addOption(FifaDecoder.class.getName(), FifaDecoder.class.getSimpleName())
+            .addOption(TtnDecoder.class.getName(), TtnDecoder.class.getSimpleName())
+            .setOptional(false)
+            .setTitle("MQTT decoder")
+            .setDescription("Select the decoder");
+
+    public static final StringSettingDefinition MQTT_OM_OBSERVABLE_PROPERTY_DEFINITION
+            = new StringSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_5)
+            .setKey(MQTT_OM_OBSERVABLE_PROPERTY)
+            .setDefaultValue("")
+            .setOptional(true)
+            .setTitle("O&M observable properties")
+            .setDescription("Specify the observable properties (e.g. temperature;humidity;cloudCoverage");
     
 
-    private static final Set<SettingDefinition<?, ?>> DEFINITIONS = ImmutableSet.<SettingDefinition<?, ?>> of(
-            MQTT_HOST_DEFINITION, MQTT_PORT_DEFINITION, MQTT_TOPIC_DEFINITION, MQTT_PROTOCOL_DEFINITION, MQTT_DECODER_DEFINITION);
+    private static final Set<SettingDefinition<?, ?>> DEFINITIONS = ImmutableSet.<SettingDefinition<?, ?>>of(
+            MQTT_HOST_DEFINITION, MQTT_PORT_DEFINITION, MQTT_TOPIC_DEFINITION, MQTT_PROTOCOL_DEFINITION, MQTT_DECODER_DEFINITION, MQTT_OM_OBSERVABLE_PROPERTY_DEFINITION);
 
     @Override
     public Set<SettingDefinition<?, ?>> getSettingDefinitions() {

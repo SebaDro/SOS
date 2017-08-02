@@ -39,9 +39,11 @@ import org.n52.sos.mqtt.api.MqttMessage;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Sets;
+import org.n52.sos.config.annotation.Configurable;
 
+@Configurable
 public abstract class AbstractMqttDecoder implements MqttDecoder {
-    
+
     protected abstract MqttMessage parseMessage(JsonNode n);
 
     @Override
@@ -59,7 +61,7 @@ public abstract class AbstractMqttDecoder implements MqttDecoder {
         } else if (json.isObject()) {
             messages.add(parseMessage(json));
         }
-        
+
         return messages;
     }
 
@@ -70,7 +72,7 @@ public abstract class AbstractMqttDecoder implements MqttDecoder {
         }
         return jsonNode.asText();
     }
-    
+
     protected double getDouble(JsonNode json, String name) {
         JsonNode jsonNode = json.get(name);
         if (jsonNode.isNull()) {
@@ -78,7 +80,7 @@ public abstract class AbstractMqttDecoder implements MqttDecoder {
         }
         return jsonNode.asDouble();
     }
-    
+
     protected int getInteger(JsonNode json, String name) {
         JsonNode jsonNode = json.get(name);
         if (jsonNode.isNull()) {
@@ -86,15 +88,19 @@ public abstract class AbstractMqttDecoder implements MqttDecoder {
         }
         return jsonNode.asInt();
     }
-    
-    protected DateTime getDateTime(JsonNode json, String name){
-        return new DateTime(getLong(json, name)*1000);
+
+    protected DateTime getDateTime(JsonNode json, String name) {
+        return new DateTime(getLong(json, name) * 1000);
     }
-    
-    protected long getLong(JsonNode json, String name){
+
+    protected long getLong(JsonNode json, String name) {
         return json.get(name).asLong();
     }
-    
+
+    protected JsonNode getJsonNode(JsonNode json, String name) {
+        return json.get(name);
+    }
+
     protected Map<String, Object> getMap(JsonNode json, String name) {
         Map<String, Object> map = new HashMap<>();
         JsonNode jsonNode = json.get(name);
@@ -105,7 +111,7 @@ public abstract class AbstractMqttDecoder implements MqttDecoder {
             while (jsonNode.fields().hasNext()) {
                 Entry<String, JsonNode> type = (Entry<String, JsonNode>) jsonNode.fields().next();
                 map.put(type.getKey(), parse(jsonNode));
-                
+
             }
         }
         return map;
