@@ -18,12 +18,8 @@
 package org.n52.sos.mqtt.convert;
 
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import java.util.List;
-import static org.n52.sos.coding.json.JSONConstants.OBSERVATION;
-import org.n52.sos.decode.json.impl.InsertObservationRequestDecoder;
 import org.n52.sos.decode.json.impl.ObservationDecoder;
-import org.n52.sos.mqtt.api.OmMessage;
 import org.n52.sos.mqtt.api.TtnMessage;
 import org.n52.sos.ogc.om.OmObservation;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
@@ -50,7 +46,6 @@ public class TtnInsertObservationConverter implements MqttInsertObservationConve
 
         List<OmObservation> observations = observationDecoder.decodeJsonToObjectList(message.getOmPayload(), OmObservation.class);
 
-//        List<OmObservation> observations = Lists.newArrayList(observation);
         InsertObservationRequest request = new InsertObservationRequest();
         request.setService(SosConstants.SOS);
         request.setVersion(Sos2Constants.SERVICEVERSION);
