@@ -17,7 +17,6 @@
  */
 package org.n52.sos.mqtt.convert;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;

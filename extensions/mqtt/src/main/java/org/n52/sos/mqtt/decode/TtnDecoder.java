@@ -36,6 +36,7 @@ public class TtnDecoder extends AbstractMqttDecoder {
 
     private String[] observableProperty;
 
+
     @Override
     protected MqttMessage parseMessage(JsonNode n) {
         JsonNode node = getJsonNode(n, TtnMessage.PAYLOAD_FIELDS);
