@@ -40,6 +40,7 @@ import org.n52.sos.mqtt.decode.AdsbDecoder;
 import org.n52.sos.mqtt.decode.FifaDecoder;
 
 import com.google.common.collect.ImmutableSet;
+import org.n52.sos.mqtt.decode.OmDecoder;
 import org.n52.sos.mqtt.decode.TtnDecoder;
 
 public class MqttSettings implements SettingDefinitionProvider {
@@ -47,9 +48,12 @@ public class MqttSettings implements SettingDefinitionProvider {
     public static final String MQTT_HOST = "mqtt.host";
     public static final String MQTT_PORT = "mqtt.port";
     public static final String MQTT_TOPIC = "mqtt.topic";
+    public static final String MQTT_USERNAME = "mqtt.username";
+    public static final String MQTT_PASSWORD = "mqtt.password";
     public static final String MQTT_DECODER = "mqtt.decoder";
     public static final String MQTT_PROTOCOL = "mqtt.protocol";
     public static final String MQTT_OM_OBSERVABLE_PROPERTY = "mqtt.om.observableProperty";
+    public static final String MQTT_OM_OBSERVATION_FIELD = "mqtt.om.observationField";
     public static final SettingDefinitionGroup GROUP = new SettingDefinitionGroup().setTitle("MQTT").setOrder(10);
 
     public static final StringSettingDefinition MQTT_HOST_DEFINITION
@@ -82,10 +86,30 @@ public class MqttSettings implements SettingDefinitionProvider {
             .setTitle("MQTT broker topic")
             .setDescription("");
 
+    public static final StringSettingDefinition MQTT_USERNAME_DEFINITION
+            = new StringSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_3)
+            .setKey(MQTT_USERNAME)
+            .setDefaultValue("")
+            .setOptional(true)
+            .setTitle("MQTT username")
+            .setDescription("Username for authentication");
+
+    public static final StringSettingDefinition MQTT_PASSWORD_DEFINITION
+            = new StringSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_4)
+            .setKey(MQTT_PASSWORD)
+            .setDefaultValue("")
+            .setOptional(true)
+            .setTitle("MQTT password")
+            .setDescription("Password for authentication");
+
     public static final ChoiceSettingDefinition MQTT_PROTOCOL_DEFINITION
             = new ChoiceSettingDefinition()
             .setGroup(GROUP)
-            .setOrder(ORDER_3)
+            .setOrder(ORDER_5)
             .setKey(MQTT_PROTOCOL)
             .setDefaultValue("tcp")
             .addOption("tcp")
@@ -97,12 +121,13 @@ public class MqttSettings implements SettingDefinitionProvider {
     public static final ChoiceSettingDefinition MQTT_DECODER_DEFINITION
             = new ChoiceSettingDefinition()
             .setGroup(GROUP)
-            .setOrder(ORDER_4)
+            .setOrder(ORDER_6)
             .setKey(MQTT_DECODER)
             .setDefaultValue(AdsbDecoder.class.getName())
             .addOption(AdsbDecoder.class.getName(), AdsbDecoder.class.getSimpleName())
             .addOption(FifaDecoder.class.getName(), FifaDecoder.class.getSimpleName())
             .addOption(TtnDecoder.class.getName(), TtnDecoder.class.getSimpleName())
+            .addOption(OmDecoder.class.getName(), OmDecoder.class.getSimpleName())
             .setOptional(false)
             .setTitle("MQTT decoder")
             .setDescription("Select the decoder");
@@ -110,16 +135,25 @@ public class MqttSettings implements SettingDefinitionProvider {
     public static final StringSettingDefinition MQTT_OM_OBSERVABLE_PROPERTY_DEFINITION
             = new StringSettingDefinition()
             .setGroup(GROUP)
-            .setOrder(ORDER_5)
+            .setOrder(ORDER_7)
             .setKey(MQTT_OM_OBSERVABLE_PROPERTY)
             .setDefaultValue("")
             .setOptional(true)
             .setTitle("O&M observable properties")
             .setDescription("Specify the observable properties (e.g. temperature;humidity;cloudCoverage");
-    
+
+    public static final StringSettingDefinition MQTT_OM_OBSERVATION_FIELD_DEFINITION
+            = new StringSettingDefinition()
+            .setGroup(GROUP)
+            .setOrder(ORDER_8)
+            .setKey(MQTT_OM_OBSERVATION_FIELD)
+            .setDefaultValue("")
+            .setOptional(true)
+            .setTitle("O&M observation field")
+            .setDescription("Specify the field that contains the O&M observation property");
 
     private static final Set<SettingDefinition<?, ?>> DEFINITIONS = ImmutableSet.<SettingDefinition<?, ?>>of(
-            MQTT_HOST_DEFINITION, MQTT_PORT_DEFINITION, MQTT_TOPIC_DEFINITION, MQTT_PROTOCOL_DEFINITION, MQTT_DECODER_DEFINITION, MQTT_OM_OBSERVABLE_PROPERTY_DEFINITION);
+            MQTT_HOST_DEFINITION, MQTT_PORT_DEFINITION, MQTT_TOPIC_DEFINITION, MQTT_USERNAME_DEFINITION, MQTT_PASSWORD_DEFINITION, MQTT_PROTOCOL_DEFINITION, MQTT_DECODER_DEFINITION, MQTT_OM_OBSERVABLE_PROPERTY_DEFINITION, MQTT_OM_OBSERVATION_FIELD_DEFINITION);
 
     @Override
     public Set<SettingDefinition<?, ?>> getSettingDefinitions() {

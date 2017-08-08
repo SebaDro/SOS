@@ -31,6 +31,7 @@ package org.n52.sos.mqtt;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.n52.sos.config.SettingsManager;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 @Configurable
 public class MqttConsumer implements Cleanupable {
-
+    
     private static final Logger LOG = LoggerFactory.getLogger(MqttConsumer.class);
     private static MqttConsumer instance;
     /*
@@ -64,6 +65,8 @@ public class MqttConsumer implements Cleanupable {
     private MqttClient client;
     private String decoder;
     private String protocol;
+    private String username;
+    private String password;
 
     /**
      * the MQTT QoS as enum. use #ordinal() to get the int
@@ -71,7 +74,7 @@ public class MqttConsumer implements Cleanupable {
     public enum QualityOfService {
         AT_MOST_ONCE, AT_LEAST_ONCE, EXACTLY_ONCE
     }
-
+    
     private MqttConsumer() {
         SosContextListener.registerShutdownHook(this);
     }
@@ -83,11 +86,10 @@ public class MqttConsumer implements Cleanupable {
         }
         return instance;
     }
-    
-    
+
     /**
      * connects the client
-     * 
+     *
      * @throws MqttException
      */
     public void connect() throws MqttException {
@@ -96,7 +98,14 @@ public class MqttConsumer implements Cleanupable {
             LOG.debug("MQTT client created!");
         }
         if (!client.isConnected()) {
-            client.connect();
+            if (!username.isEmpty() && !password.isEmpty()) {
+                MqttConnectOptions options = new MqttConnectOptions();
+                options.setUserName(username);
+                options.setPassword(password.toCharArray());
+                client.connect(options);
+            } else {
+                client.connect();
+            }
             LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
             try {
                 client.setCallback(new SosMqttCallback(getDecoder()));
@@ -110,18 +119,15 @@ public class MqttConsumer implements Cleanupable {
 
     /**
      * subscribe for a topic
-     * 
-     * @param topic
-     *            the topic to subscribe to
-     * @param qos
-     *            the QoS level
-     * @throws MqttException
-     *             if something goes wrong
+     *
+     * @param topic the topic to subscribe to
+     * @param qos the QoS level
+     * @throws MqttException if something goes wrong
      */
     private void subscribe(String topic, QualityOfService qos) throws MqttException {
         client.subscribe(topic, qos.ordinal());
     }
-
+    
     @Override
     public void cleanup() {
         try {
@@ -134,22 +140,20 @@ public class MqttConsumer implements Cleanupable {
         }
     }
     
-   
-    
     private String getId() {
-       return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString();
     }
     
     @Setting(MqttSettings.MQTT_TOPIC)
     public void setTopic(String topic) {
         this.topic = topic;
     }
-
+    
     @Setting(MqttSettings.MQTT_HOST)
     public void setHost(String host) {
         this.host = host;
     }
-
+    
     @Setting(MqttSettings.MQTT_PORT)
     public void setPort(String port) {
         this.port = port;
@@ -163,6 +167,16 @@ public class MqttConsumer implements Cleanupable {
     @Setting(MqttSettings.MQTT_PROTOCOL)
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+    }
+    
+    @Setting(MqttSettings.MQTT_USERNAME)
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    @Setting(MqttSettings.MQTT_PASSWORD)
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -194,6 +208,14 @@ public class MqttConsumer implements Cleanupable {
         return protocol;
     }
     
+    public String getUsername() {
+        return username;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
 //    public static void main(String[] args) throws MqttException {
 //        MqttConsumer c = new MqttConsumer();
 //        c.setHost("ows.dev.52north.org");
@@ -206,5 +228,4 @@ public class MqttConsumer implements Cleanupable {
 //
 //        }
 //    }
-
 }
