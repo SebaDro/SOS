@@ -90,7 +90,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         constellation.setObservationType(OmConstants.OBS_TYPE_MEASUREMENT);
         constellation.setProcedure(createProcedure(message));
         return constellation;
-    }
+    } 
 
     private OmObservation createAltitudeObservation(AdsbMessage message) throws OwsExceptionReport {
         OmObservation observation = new OmObservation();
@@ -134,7 +134,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
     private AbstractFeature createFeatureOfInterest(AdsbMessage message) {
         String identifier = message.getFlight();
         SamplingFeature samplingFeature = new SamplingFeature(new CodeWithAuthority(identifier));
-        if (Strings.isNullOrEmpty(message.getFlight())) {
+        if (!Strings.isNullOrEmpty(message.getFlight())) {
             samplingFeature.addName(message.getFlight());
         }
         return samplingFeature;
