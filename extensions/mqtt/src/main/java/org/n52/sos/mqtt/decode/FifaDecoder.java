@@ -37,7 +37,7 @@ import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class FifaDecoder extends AbstractMqttDecoder {
+public class FifaDecoder extends AbstractMqttJsonDecoder {
 
     @Override
     protected MqttMessage parseMessage(JsonNode json) {

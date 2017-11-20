@@ -28,6 +28,7 @@
  */
 package org.n52.sos.mqtt;
 
+import java.util.Set;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -78,7 +79,7 @@ public class SosMqttCallback implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         try {
-            for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : decoder.decoder(JSONUtils.loadString(new String(message.getPayload())))) {
+            for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : decoder.decode(new String(message.getPayload()))) {
                 if (!isProcedureRegistered(mqttMessage.getProcedure())) {
                     InsertSensorRequest request;
 

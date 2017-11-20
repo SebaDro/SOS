@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface MqttDecoder {
 
-    Set<MqttMessage> decoder(JsonNode json);
+    Set<MqttMessage> decode(String payload);
 
     MqttInsertSensorConverter getInsertSensorConverter();
     

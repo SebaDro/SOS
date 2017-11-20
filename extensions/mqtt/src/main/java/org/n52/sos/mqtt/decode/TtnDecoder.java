@@ -32,7 +32,7 @@ import org.n52.sos.mqtt.convert.TtnInsertSensorConverter;
  *
  * @author Sebastian Drost
  */
-public class TtnDecoder extends AbstractMqttDecoder {
+public class TtnDecoder extends AbstractMqttJsonDecoder {
 
     private String[] observableProperty;
 

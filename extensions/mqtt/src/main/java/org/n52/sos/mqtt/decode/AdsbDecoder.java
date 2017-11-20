@@ -38,7 +38,7 @@ import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class AdsbDecoder extends AbstractMqttDecoder {
+public class AdsbDecoder extends AbstractMqttJsonDecoder {
     
     protected MqttMessage parseMessage(JsonNode json) {
         return new AdsbMessage()

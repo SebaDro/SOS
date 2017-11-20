@@ -40,14 +40,19 @@ import org.n52.sos.mqtt.api.MqttMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Sets;
 import org.n52.sos.config.annotation.Configurable;
+import org.n52.sos.util.JSONUtils;
 
 @Configurable
-public abstract class AbstractMqttDecoder implements MqttDecoder {
+public abstract class AbstractMqttJsonDecoder implements MqttDecoder {
 
     protected abstract MqttMessage parseMessage(JsonNode n);
-
+    
     @Override
-    public Set<MqttMessage> decoder(JsonNode json) {
+    public Set<MqttMessage> decode(String payload){
+        return decodeJson(JSONUtils.loadString(payload));
+    }
+
+    protected Set<MqttMessage> decodeJson(JsonNode json) {
         Set<MqttMessage> messages = Sets.newHashSet();
         if (json == null || json.isNull() || json.isMissingNode()) {
             return messages;
