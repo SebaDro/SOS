@@ -37,10 +37,10 @@ import org.n52.sos.ogc.sos.SosInsertionMetadata;
  */
 public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<OmMessage> {
 
-    private String[] observableProperty;
+    private String[] observableProperties;
 
-    public OmInsertSensorConverter setObservableProperty(String[] observableProperty) {
-        this.observableProperty = observableProperty;
+    public OmInsertSensorConverter setObservableProperties(String[] observableProperties) {
+        this.observableProperties = observableProperties;
         return this;
     }
 
@@ -64,7 +64,7 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
 
     @Override
     protected List<String> createObservableProperties() {
-        return Lists.newArrayList(observableProperty);
+        return Lists.newArrayList(observableProperties);
     }
 
     @Override
@@ -75,8 +75,8 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
     @Override
     protected List<SmlClassifier> createClassificationList() {
         List<SmlClassifier> classifier = Lists.newArrayList();
-        for (int i = 0; i < observableProperty.length; i++) {
-            classifier.add(createClassification(observableProperty[i]));
+        for (int i = 0; i < observableProperties.length; i++) {
+            classifier.add(createClassification(observableProperties[i]));
         }
         return classifier;
     }
@@ -99,8 +99,8 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
     @Override
     protected List<SmlIo<?>> createOutputs() {
         List<SmlIo<?>> outputs = Lists.newArrayList();
-        for (int i = 0; i < observableProperty.length; i++) {
-            outputs.add(createOutput(observableProperty[i], ""));
+        for (int i = 0; i < observableProperties.length; i++) {
+            outputs.add(createOutput(observableProperties[i], ""));
         }
         return outputs;
     }
@@ -108,8 +108,8 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
     @Override
     protected List<SmlIo<?>> createInputs() {
         List<SmlIo<?>> inputs = Lists.newArrayList();
-        for (int i = 0; i < observableProperty.length; i++) {
-            inputs.add(createInput(observableProperty[i]));
+        for (int i = 0; i < observableProperties.length; i++) {
+            inputs.add(createInput(observableProperties[i]));
         }
         return inputs;
     }

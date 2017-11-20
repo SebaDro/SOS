@@ -31,7 +31,7 @@ import org.n52.sos.mqtt.convert.OmInsertSensorConverter;
  *
  * @author Sebastian Drost
  */
-public class OmDecoder extends AbstractMqttDecoder {
+public class OmDecoder extends AbstractMqttJsonDecoder {
 
     private String[] observableProperty;
     private String observationField;
@@ -52,7 +52,7 @@ public class OmDecoder extends AbstractMqttDecoder {
     @Override
     public MqttInsertSensorConverter getInsertSensorConverter() {
         OmInsertSensorConverter converter = new OmInsertSensorConverter();
-        converter.setObservableProperty(observableProperty);
+        converter.setObservableProperties(observableProperty);
         return converter;
     }
 
