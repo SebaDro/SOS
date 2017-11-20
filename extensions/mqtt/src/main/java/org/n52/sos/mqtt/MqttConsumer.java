@@ -29,6 +29,7 @@
 package org.n52.sos.mqtt;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -49,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 @Configurable
 public class MqttConsumer implements Cleanupable {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(MqttConsumer.class);
     private static MqttConsumer instance;
     /*
@@ -74,11 +75,11 @@ public class MqttConsumer implements Cleanupable {
     public enum QualityOfService {
         AT_MOST_ONCE, AT_LEAST_ONCE, EXACTLY_ONCE
     }
-    
+
     private MqttConsumer() {
         SosContextListener.registerShutdownHook(this);
     }
-    
+
     public static MqttConsumer getInstance() {
         if (instance == null) {
             instance = new MqttConsumer();
@@ -98,7 +99,7 @@ public class MqttConsumer implements Cleanupable {
             LOG.debug("MQTT client created!");
         }
         if (!client.isConnected()) {
-            if (!username.isEmpty() && !password.isEmpty()) {
+            if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
                 MqttConnectOptions options = new MqttConnectOptions();
                 options.setUserName(username);
                 options.setPassword(password.toCharArray());
@@ -117,6 +118,18 @@ public class MqttConsumer implements Cleanupable {
         LOG.debug("Subscibed to topic: {}", getTopic());
     }
 
+    public boolean isConnected() {
+        if (client != null && client.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void disconnect() {
+        cleanup();
+    }
+
     /**
      * subscribe for a topic
      *
@@ -127,7 +140,7 @@ public class MqttConsumer implements Cleanupable {
     private void subscribe(String topic, QualityOfService qos) throws MqttException {
         client.subscribe(topic, qos.ordinal());
     }
-    
+
     @Override
     public void cleanup() {
         try {
@@ -139,41 +152,41 @@ public class MqttConsumer implements Cleanupable {
             LOG.error("Error while closing connection!", e);
         }
     }
-    
+
     private String getId() {
         return UUID.randomUUID().toString();
     }
-    
+
     @Setting(MqttSettings.MQTT_TOPIC)
     public void setTopic(String topic) {
         this.topic = topic;
     }
-    
+
     @Setting(MqttSettings.MQTT_HOST)
     public void setHost(String host) {
         this.host = host;
     }
-    
+
     @Setting(MqttSettings.MQTT_PORT)
     public void setPort(String port) {
         this.port = port;
     }
-    
+
     @Setting(MqttSettings.MQTT_DECODER)
     public void setDecoder(String decoder) {
         this.decoder = decoder;
     }
-    
+
     @Setting(MqttSettings.MQTT_PROTOCOL)
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
-    
+
     @Setting(MqttSettings.MQTT_USERNAME)
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     @Setting(MqttSettings.MQTT_PASSWORD)
     public void setPassword(String password) {
         this.password = password;
@@ -199,19 +212,19 @@ public class MqttConsumer implements Cleanupable {
     public String getPort() {
         return port;
     }
-    
+
     public String getDecoder() {
         return decoder;
     }
-    
+
     public String getProtocol() {
         return protocol;
     }
-    
+
     public String getUsername() {
         return username;
     }
-    
+
     public String getPassword() {
         return password;
     }
