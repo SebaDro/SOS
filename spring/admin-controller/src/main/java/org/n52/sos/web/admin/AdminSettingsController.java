@@ -58,6 +58,8 @@ import org.n52.sos.config.SettingValue;
 import org.n52.sos.ds.ConnectionProviderException;
 import org.n52.sos.exception.ConfigurationException;
 import org.n52.sos.exception.JSONException;
+import org.n52.sos.mqtt.MqttConsumer;
+import org.n52.sos.mqtt.MqttSettings;
 import org.n52.sos.util.JSONUtils;
 import org.n52.sos.util.StringHelper;
 import org.n52.sos.web.AbstractController;
@@ -65,11 +67,9 @@ import org.n52.sos.web.ControllerConstants;
 import org.n52.sos.web.auth.DefaultAdministratorUser;
 import org.n52.sos.web.auth.UserService;
 
-
-
-
 @Controller
 public class AdminSettingsController extends AbstractController {
+
     private static final Logger LOG = LoggerFactory.getLogger(AdminSettingsController.class);
 
     @Autowired
@@ -105,6 +105,7 @@ public class AdminSettingsController extends AbstractController {
         try {
             updateAdminUser(request, user);
             updateSettings(request);
+            updateMqttSetting(request);
         } catch (ConnectionProviderException e1) {
             LOG.error("Error saving settings", e1);
             throw new RuntimeException(e1.getMessage());
@@ -124,7 +125,7 @@ public class AdminSettingsController extends AbstractController {
 
     private String getSettingsJsonString()
             throws ConfigurationException, JSONException,
-                   ConnectionProviderException {
+            ConnectionProviderException {
         return JSONUtils.print(toJSONValueMap(getSettingsManager().getSettings()));
     }
 
@@ -137,11 +138,11 @@ public class AdminSettingsController extends AbstractController {
     }
 
     private void updateSettings(HttpServletRequest request) throws ConnectionProviderException {
-        Map<SettingDefinition<?, ?>, SettingValue<?>> changedSettings =
-                new HashMap<SettingDefinition<?, ?>, SettingValue<?>>();
+        Map<SettingDefinition<?, ?>, SettingValue<?>> changedSettings
+                = new HashMap<SettingDefinition<?, ?>, SettingValue<?>>();
         for (SettingDefinition<?, ?> def : getSettingsManager().getSettingDefinitions()) {
-            SettingValue<?> newValue =
-                    getSettingsManager().getSettingFactory().newSettingValue(def, request.getParameter(def.getKey()));
+            SettingValue<?> newValue
+                    = getSettingsManager().getSettingFactory().newSettingValue(def, request.getParameter(def.getKey()));
             changedSettings.put(def, newValue);
         }
         logSettings(changedSettings.values());
@@ -180,6 +181,18 @@ public class AdminSettingsController extends AbstractController {
                     getUserService().setAdminUserName(loggedInAdmin, newUsername);
                 }
             }
+        }
+    }
+
+    private void updateMqttSetting(HttpServletRequest request) {
+        if (request.getParameter(MqttSettings.MQTT_ACTIVE) != null) {
+            try {
+                MqttConsumer.getInstance().connect();
+            } catch (Exception e) {
+                LOG.error("Error while statring MqttConsumer", e);
+            }
+        } else {
+            MqttConsumer.getInstance().disconnect();
         }
     }
 }

@@ -64,11 +64,11 @@ public class AdminReloadCacheController extends AbstractAdminController {
         if (!cacheIsLoading()) {
             LOG.debug("Reloading Capabilitities Cache");
             updateCache();
-            try {
-                MqttConsumer.getInstance().connect();
-            } catch (Exception e) {
-               LOG.error("Error while statring MqttConsumer", e);
-            }
+//            try {
+//                MqttConsumer.getInstance().connect();
+//            } catch (Exception e) {
+//               LOG.error("Error while statring MqttConsumer", e);
+//            }
             
         }
         // TODO display other message here because the WebUI is displaying information about successful cache update start but nothing is happening
