@@ -27,30 +27,40 @@ public class CtdMessage implements MqttMessage {
 
     public static final String PRESSURE = "pressure";
     public static final String TEMPERATURE = "temperature";
-    public static final String CONDITION = "condition";
-    public static final String SALTINESS = "saltiness";
-    public static final String SOUND_V = "sound_v";
+    public static final String CONDUCTIVITY = "conductivity";
+    public static final String SALINITY = "salinity";
+    public static final String SOUND_VELOCITY = "sound velocity";
 
-    public static final String PRESSURE_UNIT = "bar";
-    public static final String TEMPERATURE_UNIT = "°";
-    public static final String CONDITION_UNIT = "unknown";
-    public static final String SALTINESS_UNIT = "unknown";
-    public static final String SOUND_V_UNIT = "unknown";
+    public static final String PRESSURE_UNIT = "dbar";
+    public static final String TEMPERATURE_UNIT = "°C";
+    public static final String CONDUCTIVITY_UNIT = "mS/cm";
+    public static final String SALINITY_UNIT = "PSU";
+    public static final String SOUND_VELOCITY_UNIT = "m/s";
 
-    private DateTime time;
+    private DateTime shoreStationTime;
+    private DateTime instrumentTime;
     private String sensorId;
     private double pressure;
     private double temperature;
-    private double condition;
-    private double saltiness;
-    private String soundV;
+    private double conductivity;
+    private double salinity;
+    private double soundVelocity;
 
-    public DateTime getTime() {
-        return time;
+    public DateTime getShoreStationTime() {
+        return shoreStationTime;
     }
 
-    public CtdMessage setTime(DateTime time) {
-        this.time = time;
+    public CtdMessage setShoreStationTime(DateTime time) {
+        this.shoreStationTime = time;
+        return this;
+    }
+    
+        public DateTime getInstrumentTime() {
+        return instrumentTime;
+    }
+
+    public CtdMessage setInstrumentTime(DateTime instrumentTime) {
+        this.instrumentTime = instrumentTime;
         return this;
     }
 
@@ -81,30 +91,30 @@ public class CtdMessage implements MqttMessage {
         return this;
     }
 
-    public double getCondition() {
-        return condition;
+    public double getConductivity() {
+        return conductivity;
     }
 
-    public CtdMessage setCondition(double condition) {
-        this.condition = condition;
+    public CtdMessage setConductivity(double condition) {
+        this.conductivity = condition;
         return this;
     }
 
-    public double getSaltiness() {
-        return saltiness;
+    public double getSalinity() {
+        return salinity;
     }
 
-    public CtdMessage setSaltiness(double saltiness) {
-        this.saltiness = saltiness;
+    public CtdMessage setSalinity(double saltiness) {
+        this.salinity = saltiness;
         return this;
     }
 
-    public String getSoundV() {
-        return soundV;
+    public double getSoundVelocity() {
+        return soundVelocity;
     }
 
-    public CtdMessage setSoundV(String soundV) {
-        this.soundV = soundV;
+    public CtdMessage setSoundVelocity(double soundV) {
+        this.soundVelocity = soundV;
         return this;
     }
 

@@ -35,7 +35,6 @@ import org.n52.sos.ogc.om.OmObservationConstellation;
 import org.n52.sos.ogc.om.SingleObservationValue;
 import org.n52.sos.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.sos.ogc.om.values.QuantityValue;
-import org.n52.sos.ogc.om.values.TextValue;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sensorML.v20.PhysicalSystem;
 import org.n52.sos.ogc.sos.Sos2Constants;
@@ -53,12 +52,28 @@ public class CtdInsertObservationConverter implements MqttInsertObservationConve
 
     @Override
     public InsertObservationRequest convert(CtdMessage message) throws OwsExceptionReport {
+        String procedure = message.getProcedure();
+        String featureId = message.getProcedure();
+        String offering = message.getProcedure();
+        DateTime phenomenonTime = message.getShoreStationTime();
+        DateTime resultTime = message.getShoreStationTime();
+
         List<OmObservation> observations = Lists.newArrayList();
-        observations.add(createPressureObservation(message));
-        observations.add(createTemperatureObservation(message));
-        observations.add(createConditionObservation(message));
-        observations.add(createSaltinessObservation(message));
-//        observations.add(createSoundVObservation(message));
+        observations.add(createQuantityObservation(procedure, CtdMessage.PRESSURE,
+                featureId, offering, message.getPressure(), CtdMessage.PRESSURE_UNIT,
+                phenomenonTime, resultTime));
+        observations.add(createQuantityObservation(procedure, CtdMessage.CONDUCTIVITY,
+                featureId, offering, message.getConductivity(), CtdMessage.CONDUCTIVITY_UNIT,
+                phenomenonTime, resultTime));
+        observations.add(createQuantityObservation(procedure, CtdMessage.SALINITY,
+                featureId, offering, message.getSalinity(), CtdMessage.SALINITY_UNIT,
+                phenomenonTime, resultTime));
+        observations.add(createQuantityObservation(procedure, CtdMessage.SOUND_VELOCITY,
+                featureId, offering, message.getSoundVelocity(), CtdMessage.SOUND_VELOCITY_UNIT,
+                phenomenonTime, resultTime));
+        observations.add(createQuantityObservation(procedure, CtdMessage.TEMPERATURE,
+                featureId, offering, message.getTemperature(), CtdMessage.TEMPERATURE_UNIT,
+                phenomenonTime, resultTime));
 
         InsertObservationRequest request = new InsertObservationRequest();
         request.setService(SosConstants.SOS);
@@ -71,53 +86,21 @@ public class CtdInsertObservationConverter implements MqttInsertObservationConve
         return request;
     }
 
-    private OmObservation createPressureObservation(CtdMessage message) {
+    private OmObservation createQuantityObservation(String procedure, String phenomenon, String featureId, String offering, double value, String unit, DateTime phenomenonTime, DateTime resultTime) {
         OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, CtdMessage.PRESSURE));
-        observation.setValue(createQuantityObservationValue(message.getTime(), message.getPressure(), CtdMessage.PRESSURE_UNIT));
-        observation.setResultTime(new TimeInstant(message.getTime()));
+        observation.setObservationConstellation(createObservationConstellation(procedure, phenomenon, featureId, offering));
+        observation.setValue(createQuantityObservationValue(phenomenonTime, value, unit));
+        observation.setResultTime(new TimeInstant(resultTime));
         return observation;
     }
 
-    private OmObservation createTemperatureObservation(CtdMessage message) {
-        OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, CtdMessage.TEMPERATURE));
-        observation.setValue(createQuantityObservationValue(message.getTime(), message.getTemperature(), CtdMessage.TEMPERATURE_UNIT));
-        observation.setResultTime(new TimeInstant(message.getTime()));
-        return observation;
-    }
-
-    private OmObservation createConditionObservation(CtdMessage message) {
-        OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, CtdMessage.CONDITION));
-        observation.setValue(createQuantityObservationValue(message.getTime(), message.getCondition(), CtdMessage.CONDITION_UNIT));
-        observation.setResultTime(new TimeInstant(message.getTime()));
-        return observation;
-    }
-
-    private OmObservation createSaltinessObservation(CtdMessage message) {
-        OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, CtdMessage.SALTINESS));
-        observation.setValue(createQuantityObservationValue(message.getTime(), message.getSaltiness(), CtdMessage.SALTINESS_UNIT));
-        observation.setResultTime(new TimeInstant(message.getTime()));
-        return observation;
-    }
-
-    private OmObservation createSoundVObservation(CtdMessage message) {
-        OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, CtdMessage.SOUND_V));
-        observation.setValue(createTextObservationValue(message.getTime(), message.getSoundV(), CtdMessage.SOUND_V_UNIT));
-        observation.setResultTime(new TimeInstant(message.getTime()));
-        return observation;
-    }
-
-    private OmObservationConstellation createObservationConstellation(CtdMessage message, String phenomenon) {
+    private OmObservationConstellation createObservationConstellation(String procedure, String phenomenon, String featureId, String offering) {
         OmObservationConstellation constellation = new OmObservationConstellation();
         constellation.setObservableProperty(createPhenomenon(phenomenon));
-        constellation.setFeatureOfInterest(createFeatureOfInterest(message));
-        constellation.setOfferings(createOffering(message));
+        constellation.setFeatureOfInterest(createFeatureOfInterest(featureId));
+        constellation.setOfferings(createOffering(offering));
         constellation.setObservationType(OmConstants.OBS_TYPE_MEASUREMENT);
-        constellation.setProcedure(createProcedure(message));
+        constellation.setProcedure(createProcedure(procedure));
         return constellation;
     }
 
@@ -130,28 +113,18 @@ public class CtdInsertObservationConverter implements MqttInsertObservationConve
         return obsValue;
     }
 
-    private ObservationValue<?> createTextObservationValue(DateTime time, String value, String unit) {
-        SingleObservationValue<String> obsValue = new SingleObservationValue<>();
-        TextValue quantityValue = new TextValue(value);
-        quantityValue.setUnit(unit);
-        obsValue.setValue(quantityValue);
-        obsValue.setPhenomenonTime(new TimeInstant(time));
-        return obsValue;
-    }
-
-    private AbstractFeature createFeatureOfInterest(CtdMessage message) {
-        String identifier = message.getSensorId();
+    private AbstractFeature createFeatureOfInterest(String identifier) {;
         SamplingFeature samplingFeature = new SamplingFeature(new CodeWithAuthority(identifier));
         samplingFeature.addName(identifier);
         return samplingFeature;
     }
 
-    private SosProcedureDescription createProcedure(CtdMessage message) {
-        return new PhysicalSystem().setIdentifier(message.getSensorId());
+    private SosProcedureDescription createProcedure(String procedure) {
+        return new PhysicalSystem().setIdentifier(procedure);
     }
 
-    private Set<String> createOffering(CtdMessage message) {
-        return Sets.newHashSet(message.getProcedure());
+    private Set<String> createOffering(String offering) {
+        return Sets.newHashSet(offering);
     }
 
     private AbstractPhenomenon createPhenomenon(String identifier) {

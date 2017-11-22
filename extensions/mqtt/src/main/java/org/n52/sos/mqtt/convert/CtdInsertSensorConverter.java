@@ -59,7 +59,7 @@ public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<
 
     @Override
     protected List<String> createObservableProperties() {
-        return Lists.newArrayList(CtdMessage.PRESSURE, CtdMessage.TEMPERATURE, CtdMessage.CONDITION, CtdMessage.SALTINESS, CtdMessage.SOUND_V);
+        return Lists.newArrayList(CtdMessage.PRESSURE, CtdMessage.TEMPERATURE, CtdMessage.CONDUCTIVITY, CtdMessage.SALINITY, CtdMessage.SOUND_VELOCITY);
     }
 
     @Override
@@ -72,9 +72,9 @@ public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<
         List<SmlClassifier> classifier = Lists.newArrayList();
         classifier.add(createClassification(CtdMessage.PRESSURE));
         classifier.add(createClassification(CtdMessage.TEMPERATURE));
-        classifier.add(createClassification(CtdMessage.CONDITION));
-        classifier.add(createClassification(CtdMessage.SALTINESS));
-        classifier.add(createClassification(CtdMessage.SOUND_V));
+        classifier.add(createClassification(CtdMessage.CONDUCTIVITY));
+        classifier.add(createClassification(CtdMessage.SALINITY));
+        classifier.add(createClassification(CtdMessage.SOUND_VELOCITY));
         return classifier;
     }
 
@@ -103,9 +103,9 @@ public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<
         List<SmlIo<?>> outputs = Lists.newArrayList();
         outputs.add(createOutput(CtdMessage.PRESSURE, CtdMessage.PRESSURE_UNIT));
         outputs.add(createOutput(CtdMessage.TEMPERATURE, CtdMessage.TEMPERATURE_UNIT));
-        outputs.add(createOutput(CtdMessage.CONDITION, CtdMessage.CONDITION_UNIT));
-        outputs.add(createOutput(CtdMessage.SALTINESS, CtdMessage.SALTINESS_UNIT));
-        outputs.add(createOutput(CtdMessage.SOUND_V, CtdMessage.SOUND_V_UNIT));
+        outputs.add(createOutput(CtdMessage.CONDUCTIVITY, CtdMessage.CONDUCTIVITY_UNIT));
+        outputs.add(createOutput(CtdMessage.SALINITY, CtdMessage.SALINITY_UNIT));
+        outputs.add(createOutput(CtdMessage.SOUND_VELOCITY, CtdMessage.SOUND_VELOCITY_UNIT));
         return outputs;
     }
 
@@ -114,9 +114,9 @@ public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<
         List<SmlIo<?>> inputs = Lists.newArrayList();
         inputs.add(createInput(CtdMessage.PRESSURE));
         inputs.add(createInput(CtdMessage.TEMPERATURE));
-        inputs.add(createInput(CtdMessage.CONDITION));
-        inputs.add(createInput(CtdMessage.SALTINESS));
-        inputs.add(createInput(CtdMessage.SOUND_V));
+        inputs.add(createInput(CtdMessage.CONDUCTIVITY));
+        inputs.add(createInput(CtdMessage.SALINITY));
+        inputs.add(createInput(CtdMessage.SOUND_VELOCITY));
         return inputs;
     }
 

@@ -44,13 +44,13 @@ public class CtdDecoder extends AbstractMqttCsvDecoder {
             String[] observationData = new StrTokenizer(sensorData[2], " ").getTokenArray();
 
             return new CtdMessage()
-                    .setTime(ISODateTimeFormat.dateTime().parseDateTime(sensorData[0]))
+                    .setShoreStationTime(ISODateTimeFormat.dateTime().parseDateTime(sensorData[0]))
                     .setSensorId(sensorData[1])
                     .setPressure(Double.parseDouble(observationData[0]))
                     .setTemperature(Double.parseDouble(observationData[1]))
-                    .setCondition(Double.parseDouble(observationData[2]))
-                    .setSaltiness(Double.parseDouble(observationData[3]))
-                    .setSoundV(observationData[4]);
+                    .setConductivity(Double.parseDouble(observationData[2]))
+                    .setSalinity(Double.parseDouble(observationData[3]))
+                    .setSoundVelocity(Double.parseDouble(observationData[4]));
         } catch (Exception ex) {
             LOG.error("Error parsing MQTT message.", ex);
             return null;
