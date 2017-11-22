@@ -158,7 +158,7 @@ public class MqttSettings implements SettingDefinitionProvider {
                     .setDefaultValue("")
                     .setOptional(true)
                     .setTitle("O&M observable properties")
-                    .setDescription("Specify the observable properties (e.g. temperature;humidity;cloudCoverage)");
+                    .setDescription("Specify the observable properties (Only for OmDecoder - e.g. temperature;humidity;cloudCoverage)");
 
     public static final StringSettingDefinition MQTT_OM_OBSERVATION_FIELD_DEFINITION
             = new StringSettingDefinition()
