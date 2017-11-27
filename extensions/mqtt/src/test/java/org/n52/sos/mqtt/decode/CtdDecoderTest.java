@@ -42,6 +42,11 @@ public class CtdDecoderTest {
         CtdMessage acquisitionMessage = (CtdMessage) decoder.parseMessage(acquisitionPayload);
         
         Assert.assertThat(((CtdMessage)observationMessage).getPressure(), CoreMatchers.equalTo(24.07));
+        Assert.assertThat(((CtdMessage)observationMessage).getTemperature(), CoreMatchers.equalTo(12.625));
+        Assert.assertThat(((CtdMessage)observationMessage).getConductivity(), CoreMatchers.equalTo(37.067));
+        Assert.assertThat(((CtdMessage)observationMessage).getSalinity(), CoreMatchers.equalTo(31.615));
+        Assert.assertThat(((CtdMessage)observationMessage).getSoundVelocity(), CoreMatchers.equalTo(1495.3035));
+        
         Assert.assertThat(paramMessage, CoreMatchers.nullValue());
         Assert.assertThat(acquisitionMessage, CoreMatchers.nullValue());
     }
