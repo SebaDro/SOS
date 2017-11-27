@@ -99,14 +99,13 @@ public class MqttConsumer implements Cleanupable {
             LOG.debug("MQTT client created!");
         }
         if (!client.isConnected()) {
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setAutomaticReconnect(true);
             if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
-                MqttConnectOptions options = new MqttConnectOptions();
                 options.setUserName(username);
                 options.setPassword(password.toCharArray());
-                client.connect(options);
-            } else {
-                client.connect();
             }
+            client.connect(options);
             LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
             try {
                 client.setCallback(new SosMqttCallback(getDecoder()));

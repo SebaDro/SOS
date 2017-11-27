@@ -42,6 +42,7 @@ import org.n52.sos.mqtt.decode.FifaDecoder;
 import com.google.common.collect.ImmutableSet;
 import org.n52.sos.config.settings.BooleanSettingDefinition;
 import org.n52.sos.mqtt.decode.CtdDecoder;
+import org.n52.sos.mqtt.decode.FluorometerDecoder;
 import org.n52.sos.mqtt.decode.OmDecoder;
 import org.n52.sos.mqtt.decode.TtnDecoder;
 
@@ -146,6 +147,7 @@ public class MqttSettings implements SettingDefinitionProvider {
                     .addOption(TtnDecoder.class.getName(), TtnDecoder.class.getSimpleName())
                     .addOption(OmDecoder.class.getName(), OmDecoder.class.getSimpleName())
                     .addOption(CtdDecoder.class.getName(), CtdDecoder.class.getSimpleName())
+                    .addOption(FluorometerDecoder.class.getName(), FluorometerDecoder.class.getSimpleName())
                     .setOptional(false)
                     .setTitle("MQTT decoder")
                     .setDescription("Select the decoder");

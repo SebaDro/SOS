@@ -28,6 +28,8 @@
  */
 package org.n52.sos.mqtt.api;
 
+import org.joda.time.DateTime;
+
 public interface MqttMessage {
 
     String getProcedure();

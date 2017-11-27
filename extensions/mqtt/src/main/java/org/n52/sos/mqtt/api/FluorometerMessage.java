@@ -39,9 +39,9 @@ public class FluorometerMessage implements MqttMessage {
     private String sensorId;
     private double fluorescenceWavelength;
     private double turbidityWavelength;
-    private double chlCount;
-    private double ntuCount;
-    private double thermistor;
+    private int chlCount;
+    private int ntuCount;
+    private int thermistor;
 
     public DateTime getShoreStationTime() {
         return shoreStationTime;
@@ -88,29 +88,29 @@ public class FluorometerMessage implements MqttMessage {
         return this;
     }
 
-    public double getChlCount() {
+    public int getChlCount() {
         return chlCount;
     }
 
-    public FluorometerMessage setChlCount(double chl) {
+    public FluorometerMessage setChlCount(int chl) {
         this.chlCount = chl;
         return this;
     }
 
-    public double getNtuCount() {
+    public int getNtuCount() {
         return ntuCount;
     }
 
-    public FluorometerMessage setNtuCount(double ntu) {
+    public FluorometerMessage setNtuCount(int ntu) {
         this.ntuCount = ntu;
         return this;
     }    
 
-    public double getThermistor() {
+    public int getThermistor() {
         return thermistor;
     }
 
-    public FluorometerMessage setThermistor(double thermistor) {
+    public FluorometerMessage setThermistor(int thermistor) {
         this.thermistor = thermistor;
         return this;
     }
