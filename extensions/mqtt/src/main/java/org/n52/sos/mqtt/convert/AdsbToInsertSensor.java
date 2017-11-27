@@ -70,9 +70,9 @@ public class AdsbToInsertSensor extends AbstractMqttInsertSensorConverter<AdsbMe
     @Override
     protected List<SmlIo<?>> createOutputs() {
         List<SmlIo<?>> outputs = Lists.newArrayList();
-        outputs.add(createOutput(AdsbMessage.ALTITUDE, AdsbMessage.ALTITUDE_UNIT));
-        outputs.add(createOutput(AdsbMessage.SPEED, AdsbMessage.SPEED_UNIT));
-        outputs.add(createOutput(AdsbMessage.TRACK, AdsbMessage.TRACK_UNIT));
+        outputs.add(createQuantityOutput(AdsbMessage.ALTITUDE, AdsbMessage.ALTITUDE_UNIT));
+        outputs.add(createQuantityOutput(AdsbMessage.SPEED, AdsbMessage.SPEED_UNIT));
+        outputs.add(createQuantityOutput(AdsbMessage.TRACK, AdsbMessage.TRACK_UNIT));
         return outputs;
     }
     

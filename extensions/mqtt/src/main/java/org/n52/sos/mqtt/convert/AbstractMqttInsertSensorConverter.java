@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
@@ -24,7 +24,7 @@
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
- * Public License for more details.
+ * Public License for more details.z
  */
 package org.n52.sos.mqtt.convert;
 
@@ -57,11 +57,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import org.n52.sos.ogc.swe.simpleType.SweCount;
 
 public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsertSensorConverter<T> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqttInsertSensorConverter.class);
-    
+
     @Override
     public InsertSensorRequest convert(T message) throws OwsExceptionReport {
         final InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
@@ -72,7 +73,7 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
         insertSensorRequest.setRequestContext(requestContext);
         insertSensorRequest.setProcedureDescriptionFormat(SensorML20Constants.NS_SML_20);
         final PhysicalSystem system = new PhysicalSystem();
-        
+
         final String procedureId = getProcedure(message);
         final SosOffering sosOffering = new SosOffering(getProcedure(message), true);
         system.addOffering(sosOffering);
@@ -83,18 +84,18 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
                 .setClassifications(createClassificationList())
                 .addCapabilities(createCapabilities(sosOffering))
                 .addCapabilities(createMobileInsitu())
-//                .addContact(createContact(schemaDescription.getDataset())) // TODO
+                //                .addContact(createContact(schemaDescription.getDataset())) // TODO
                 // ... // TODO
                 .setIdentifier(procedureId);
-        
+
         system.setSensorDescriptionXmlString(encodeToXml(system));
-        
+
         insertSensorRequest.setObservableProperty(createObservableProperties());
         insertSensorRequest.setProcedureDescription(system);
         insertSensorRequest.setMetadata(createInsertSensorMetadata());
         return insertSensorRequest;
     }
-    
+
     protected static String encodeToXml(final PhysicalSystem system) {
         try {
             return new SensorMLEncoderv20().encode(system).xmlText();
@@ -103,31 +104,37 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
             return "";  // TODO empty but valid sml
         }
     }
-    
+
     protected SmlIo<?> createInput(String phenomeon) {
         return new SmlIo<>(new SweObservableProperty()
                 .setDefinition(phenomeon))
                 .setIoName(phenomeon);
     }
-    
-    protected SmlIo<?> createOutput(String phenomeon, String unit) {
+
+    protected SmlIo<?> createQuantityOutput(String phenomeon, String unit) {
         return new SmlIo<>(new SweQuantity()
                 .setUom(unit)
                 .setDefinition(phenomeon))
                 .setIoName(phenomeon);
     }
-    
+
+    protected SmlIo<?> createCountOutput(String phenomeon) {
+        return new SmlIo<>(new SweCount()
+                .setDefinition(phenomeon))
+                .setIoName(phenomeon);
+    }
+
     protected SmlClassifier createClassification(String phenomenon) {
         return new SmlClassifier(
-                "phenomenon", 
+                "phenomenon",
                 "urn:ogc:def:classifier:OGC:1.0:phenomenon",
-                null, 
+                null,
                 phenomenon);
     }
-    
+
     protected SmlCapabilities createOfferingCapabilities(SosOffering offering) {
         SmlCapabilities capabilities = new SmlCapabilities("offerings");
-        
+
         SmlCapability ofering = new SmlCapability("offeringID", createText("urn:ogc:def:identifier:OGC:offeringID", offering.getIdentifier()));
         capabilities.addCapability(ofering);
         return capabilities;
@@ -136,31 +143,31 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
     protected SweField createTextField(String name, String definition, String value) {
         return new SweField(name, new SweText().setValue(value).setDefinition(definition));
     }
-    
+
     protected SweText createText(String definition, String value) {
         return (SweText) new SweText().setValue(value).setDefinition(definition);
-    } 
+    }
 
     protected List<SmlCapabilities> createMobileInsitu(boolean insitu, boolean mobile) {
         SmlCapabilities capabilities = new SmlCapabilities("metadata");
-        
-        SmlCapability smlcInsitu  = new SmlCapability("insitu");
+
+        SmlCapability smlcInsitu = new SmlCapability("insitu");
         smlcInsitu.setAbstractDataComponent(new SweBoolean().setValue(insitu).addName("insitu"));
         capabilities.addCapability(smlcInsitu);
-        
+
         SmlCapability smlcMmobile = new SmlCapability("mobile");
         smlcMmobile.setAbstractDataComponent(new SweBoolean().setValue(mobile).addName("mobile"));
         capabilities.addCapability(smlcMmobile);
-        
+
         return Lists.newArrayList(capabilities);
     }
-    
+
     protected List<SmlCapabilities> createCapabilities(SosOffering offering) {
         List<SmlCapabilities> capabilities = new ArrayList<>();
         capabilities.add(createOfferingCapabilities(offering));
         return capabilities;
     }
-    
+
     protected abstract String getProcedure(T message);
 
     protected abstract SosInsertionMetadata createInsertSensorMetadata();

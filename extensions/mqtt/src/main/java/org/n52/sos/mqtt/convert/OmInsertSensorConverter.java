@@ -69,7 +69,7 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
 
     @Override
     protected List<SmlCapabilities> createMobileInsitu() {
-        return createMobileInsitu(true, true);
+        return createMobileInsitu(true, false);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
     protected List<SmlIo<?>> createOutputs() {
         List<SmlIo<?>> outputs = Lists.newArrayList();
         for (int i = 0; i < observableProperties.length; i++) {
-            outputs.add(createOutput(observableProperties[i], ""));
+            outputs.add(createQuantityOutput(observableProperties[i], ""));
         }
         return outputs;
     }

@@ -62,15 +62,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 public class AdsbToInsertObservation implements MqttInsertObservationConverter<AdsbMessage> {
-    
+
     public InsertObservationRequest convert(AdsbMessage message) throws OwsExceptionReport {
         List<OmObservation> observations = Lists.newArrayList();
         observations.add(createTrackObservation(message));
         observations.add(createSpeedObservation(message));
         observations.add(createAltitudeObservation(message));
-        
+
         InsertObservationRequest request = new InsertObservationRequest();
         request.setService(SosConstants.SOS);
         request.setVersion(Sos2Constants.SERVICEVERSION);
@@ -81,7 +82,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         request.setObservation(observations);
         return request;
     }
-    
+
     private OmObservationConstellation createObservationConstellation(AdsbMessage message, String phenomenon) {
         OmObservationConstellation constellation = new OmObservationConstellation();
         constellation.setObservableProperty(createPhenomenon(phenomenon));
@@ -90,7 +91,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         constellation.setObservationType(OmConstants.OBS_TYPE_MEASUREMENT);
         constellation.setProcedure(createProcedure(message));
         return constellation;
-    } 
+    }
 
     private OmObservation createAltitudeObservation(AdsbMessage message) throws OwsExceptionReport {
         OmObservation observation = new OmObservation();
@@ -144,13 +145,13 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         final NamedValue<Geometry> namedValue = new NamedValue<Geometry>();
         namedValue.setName(new ReferenceType(Sos2Constants.HREF_PARAMETER_SPATIAL_FILTERING_PROFILE));
         int epsg = 4326;
-        JTSHelper.getGeometryFactoryForSRID(epsg);
+        GeometryFactory factory = JTSHelper.getGeometryFactoryForSRID(epsg);
         final String wktString = GeometryHandler.getInstance().getWktString(message.getLon(), message.getLat());
         Geometry geometry = JTSHelper.createGeometryFromWKT(wktString, epsg);
         namedValue.setValue(new GeometryValue(geometry));
         return namedValue;
     }
-    
+
     protected SingleObservationValue<Double> createQuantityObservationValue(DateTime time, int value, String unit) {
         SingleObservationValue<Double> obsValue = new SingleObservationValue<>();
         QuantityValue quantityValue = new QuantityValue(Double.parseDouble(Integer.toString(value)));

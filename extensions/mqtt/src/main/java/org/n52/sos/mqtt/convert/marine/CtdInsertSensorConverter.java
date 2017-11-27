@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.n52.sos.mqtt.convert;
+package org.n52.sos.mqtt.convert.marine;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.n52.sos.mqtt.api.CtdMessage;
+import org.n52.sos.mqtt.convert.AbstractMqttInsertSensorConverter;
 import org.n52.sos.ogc.OGCConstants;
 import org.n52.sos.ogc.om.OmConstants;
 import org.n52.sos.ogc.om.features.SfConstants;
@@ -64,7 +65,7 @@ public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<
 
     @Override
     protected List<SmlCapabilities> createMobileInsitu() {
-        return createMobileInsitu(true, true);
+        return createMobileInsitu(true, false);
     }
 
     @Override
@@ -101,11 +102,11 @@ public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<
     @Override
     protected List<SmlIo<?>> createOutputs() {
         List<SmlIo<?>> outputs = Lists.newArrayList();
-        outputs.add(createOutput(CtdMessage.PRESSURE, CtdMessage.PRESSURE_UNIT));
-        outputs.add(createOutput(CtdMessage.TEMPERATURE, CtdMessage.TEMPERATURE_UNIT));
-        outputs.add(createOutput(CtdMessage.CONDUCTIVITY, CtdMessage.CONDUCTIVITY_UNIT));
-        outputs.add(createOutput(CtdMessage.SALINITY, CtdMessage.SALINITY_UNIT));
-        outputs.add(createOutput(CtdMessage.SOUND_VELOCITY, CtdMessage.SOUND_VELOCITY_UNIT));
+        outputs.add(createQuantityOutput(CtdMessage.PRESSURE, CtdMessage.PRESSURE_UNIT));
+        outputs.add(createQuantityOutput(CtdMessage.TEMPERATURE, CtdMessage.TEMPERATURE_UNIT));
+        outputs.add(createQuantityOutput(CtdMessage.CONDUCTIVITY, CtdMessage.CONDUCTIVITY_UNIT));
+        outputs.add(createQuantityOutput(CtdMessage.SALINITY, CtdMessage.SALINITY_UNIT));
+        outputs.add(createQuantityOutput(CtdMessage.SOUND_VELOCITY, CtdMessage.SOUND_VELOCITY_UNIT));
         return outputs;
     }
 
