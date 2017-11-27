@@ -21,6 +21,8 @@ import org.apache.commons.lang.text.StrTokenizer;
 import org.joda.time.format.ISODateTimeFormat;
 import org.n52.sos.mqtt.api.FluorometerMessage;
 import org.n52.sos.mqtt.api.MqttMessage;
+import org.n52.sos.mqtt.convert.marine.FluorometerInsertObservationConverter;
+import org.n52.sos.mqtt.convert.marine.FluorometerInsertSensorConverter;
 import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
 import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 import org.slf4j.Logger;
@@ -44,10 +46,10 @@ public class FluorometerDecoder extends AbstractMqttCsvDecoder {
                     .setShoreStationTime(ISODateTimeFormat.dateTime().parseDateTime(sensorData[0]))
                     .setSensorId(sensorData[1])
                     .setFluorescenceWavelength(Double.parseDouble(observationData[2]))
-                    .setChlCount(Double.parseDouble(observationData[3]))
+                    .setChlCount(Integer.parseInt(observationData[3]))
                     .setTurbidityWavelength(Double.parseDouble(observationData[4]))
-                    .setNtuCount(Double.parseDouble(observationData[5]))
-                    .setThermistor(Double.parseDouble(observationData[6]));
+                    .setNtuCount(Integer.parseInt(observationData[5]))
+                    .setThermistor(Integer.parseInt(observationData[6]));
         } catch (Exception ex) {
             LOG.error("Error parsing MQTT message.", ex);
             return null;
@@ -56,12 +58,12 @@ public class FluorometerDecoder extends AbstractMqttCsvDecoder {
 
     @Override
     public MqttInsertSensorConverter getInsertSensorConverter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new FluorometerInsertSensorConverter();
     }
 
     @Override
     public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new FluorometerInsertObservationConverter();
     }
 
 }
