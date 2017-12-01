@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+    <bean id="mqttSettingDefinitionGroup" class="org.n52.faroe.SettingDefinitionGroup">
+        <property name="title" value="MQTT" />
+        <property name="order" value="10.0" />
+    </bean>
+    <bean class="org.n52.faroe.settings.BooleanSettingDefinition">
+        <property name="key" value="mqtt.active" />
+        <property name="title" value="MQTT active" />
+        <property name="description" value="Activate/Deactivate MQTT support. If true, the MQTT client will subscribe to the specified MQTT broker and topic." />
+        <property name="order" value="1.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="false" />
+        <property name="optional" value="false" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.host" />
+        <property name="title" value="MQTT broker host" />
+        <property name="order" value="2.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="ows.dev.52north.org" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.port" />
+        <property name="title" value="MQTT broker port" />
+        <property name="order" value="3.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="1883" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.topic" />
+        <property name="title" value="MQTT broker topic" />
+        <property name="order" value="4.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="n52.adsb" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.username" />
+        <property name="title" value="MQTT username" />
+        <property name="description" value="Username for authentication" />
+        <property name="order" value="5.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.password" />
+        <property name="title" value="MQTT password" />
+        <property name="description" value="Password for authentication" />
+        <property name="order" value="6.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.ChoiceSettingDefinition">
+        <property name="key" value="mqtt.protocol" />
+        <property name="title" value="MQTT protocol" />
+        <property name="description" value="Select the protocol" />
+        <property name="order" value="7.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="tcp" />
+        <property name="options">
+            <map>
+                <entry key="tcp" value="tcp" />
+                <entry key="ws" value="ws" />
+            </map>
+        </property>
+        <property name="optional" value="false" />
+    </bean>
+    <bean class="org.n52.faroe.settings.ChoiceSettingDefinition">
+        <property name="key" value="mqtt.decoder" />
+        <property name="title" value="MQTT decoder" />
+        <property name="description" value="Select the decoder" />
+        <property name="order" value="8.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="org.n52.sos.mqtt.decode.AdsbDecoder" />
+        <property name="options">
+            <map>
+                <entry key="org.n52.sos.mqtt.decode.AdsbDecoder" value="AdsbDecoder" />
+                <entry key="org.n52.sos.mqtt.decode.FifaDecoder" value="FifaDecoder" />
+                <entry key="org.n52.sos.mqtt.decode.TtnDecoder" value="TtnDecoder" />
+                <entry key="org.n52.sos.mqtt.decode.OmDecoder" value="OmDecoder" />
+                <entry key="org.n52.sos.mqtt.decode.CtdDecoder" value="CtdDecoder" />
+                <entry key="org.n52.sos.mqtt.decode.FluorometerDecoder" value="FluorometerDecoder" />
+            </map>
+        </property>
+        <property name="optional" value="false" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.om.observableProperty" />
+        <property name="title" value="OM observable properties" />
+        <property name="description" value="Specify the observable properties (Only for OmDecoder - e.g. temperature;humidity;cloudCoverage)" />
+        <property name="order" value="9.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.om.observationField" />
+        <property name="title" value="OM obervation field" />
+        <property name="description" value="Specify the field that contains the OM observation property (only for JSON coded observations)" />
+        <property name="order" value="10.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.csv.lineSeperator" />
+        <property name="title" value="CSV line seperator" />
+        <property name="description" value="Specify a line seperator (only for CSV coded observations)" />
+        <property name="order" value="11.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="" />
+        <property name="optional" value="true" />
+    </bean>
+    <bean class="org.n52.faroe.settings.StringSettingDefinition">
+        <property name="key" value="mqtt.csv.fieldSeperator" />
+        <property name="title" value="CSV field seperator" />
+        <property name="description" value="Specify a field seperator (only for CSV coded observations)" />
+        <property name="order" value="12.0" />
+        <property name="group" ref="mqttSettingDefinitionGroup" />
+        <property name="defaultValue" value="" />
+        <property name="optional" value="true" />
+    </bean>
+</beans>
