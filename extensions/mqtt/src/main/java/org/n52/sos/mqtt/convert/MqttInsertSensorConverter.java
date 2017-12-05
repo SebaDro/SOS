@@ -30,10 +30,14 @@ package org.n52.sos.mqtt.convert;
 
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.sos.request.InsertSensorRequest;
+import org.n52.svalbard.encode.Encoder;
+import org.n52.svalbard.encode.EncoderRepository;
 
 
 public interface MqttInsertSensorConverter<T> {
 
     InsertSensorRequest convert(T message) throws OwsExceptionReport;
+
+    public void setEncoderRepository(EncoderRepository encoderRepository);
 
 }
