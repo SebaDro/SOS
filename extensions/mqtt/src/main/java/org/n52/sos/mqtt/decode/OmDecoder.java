@@ -29,6 +29,7 @@
 package org.n52.sos.mqtt.decode;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.n52.faroe.annotation.Configurable;
 import org.n52.faroe.annotation.Setting;
 import org.n52.sos.mqtt.MqttSettings;
 import org.n52.sos.mqtt.api.MqttMessage;
@@ -42,6 +43,7 @@ import org.n52.sos.mqtt.convert.OmInsertSensorConverter;
  *
  * @author Sebastian Drost
  */
+@Configurable
 public class OmDecoder extends AbstractMqttJsonDecoder {
 
     private String[] observableProperty;
