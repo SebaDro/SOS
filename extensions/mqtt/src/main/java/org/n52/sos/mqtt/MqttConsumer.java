@@ -29,15 +29,21 @@
 package org.n52.sos.mqtt;
 
 import java.util.UUID;
+import javax.inject.Inject;
 
+import org.n52.faroe.SettingsService;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.n52.faroe.ConfigurationError;
+import org.n52.faroe.annotation.Configurable;
 import org.n52.faroe.annotation.Setting;
+import org.n52.janmayen.Debouncer;
 import org.n52.janmayen.lifecycle.Constructable;
 import org.n52.janmayen.lifecycle.Destroyable;
+import org.n52.sos.mqtt.decode.MqttDecoder;
+import org.n52.svalbard.encode.EncoderRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,17 +52,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author Matthes Rieke <m.rieke@52north.org>
  */
+@Configurable
 public class MqttConsumer implements Constructable, Destroyable {
 
     private static final Logger LOG = LoggerFactory.getLogger(MqttConsumer.class);
     private static MqttConsumer instance;
-    /*
-     * Procedure: hex FeatureOfInterest: flight / hex Phenomenon: track, speed,
-     * altitude Offering: hex SamplingGeometry: lat, lon timestamp:
-     *
-     *
-     * Local caching + expire time (last update)
-     */
+
     private String topic;
     private String host;
     private String port;
@@ -65,15 +66,45 @@ public class MqttConsumer implements Constructable, Destroyable {
     private String protocol;
     private String username;
     private String password;
+    private boolean isActive;
+
+    private Debouncer debouncer;
+
+    @Inject
+    SettingsService settingsManager;
+
+    @Inject
+    EncoderRepository encoderRepository;
 
     @Override
     public void init() {
-        LOG.info("MQTT client connected");
+        LOG.debug("MQTT client initialized");
+        createDebouncer();
+        try {
+            connect();
+            LOG.info("MQTT client connected");
+        } catch (Exception ex) {
+            LOG.error("Error during connecting MQTT client", ex);
+        }
     }
 
     @Override
     public void destroy() {
         cleanup();
+    }
+
+    private void createDebouncer() {
+        debouncer = new Debouncer(1000, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    cleanup();
+                    connect();
+                } catch (Exception ex) {
+                    LOG.error("Error during connecting MQTT client", ex);
+                }
+            }
+        });
     }
 
     /**
@@ -83,9 +114,6 @@ public class MqttConsumer implements Constructable, Destroyable {
         AT_MOST_ONCE, AT_LEAST_ONCE, EXACTLY_ONCE
     }
 
-//    private MqttConsumer() {
-//        SosContextListener.registerShutdownHook(this);
-//    }
     public static MqttConsumer getInstance() {
         if (instance == null) {
             instance = new MqttConsumer();
@@ -100,27 +128,32 @@ public class MqttConsumer implements Constructable, Destroyable {
      * @throws MqttException
      */
     public void connect() throws MqttException {
-        if (client == null) {
-            this.client = new MqttClient(String.format("tcp://%s:%s", getHost(), getPort()), getId(), new MemoryPersistence());
-            LOG.debug("MQTT client created!");
-        }
-        if (!client.isConnected()) {
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setAutomaticReconnect(true);
-            if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
-                options.setUserName(username);
-                options.setPassword(password.toCharArray());
+        if (isActive) {
+            if (client == null) {
+                this.client = new MqttClient(String.format("tcp://%s:%s", getHost(), getPort()), getId(), new MemoryPersistence());
+                LOG.debug("MQTT client created!");
             }
-            client.connect(options);
-            LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
-            try {
-                client.setCallback(new SosMqttCallback(getDecoder()));
-            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                throw new ConfigurationError("Error while starting MQTT consumer", e);
+            if (!client.isConnected()) {
+                MqttConnectOptions options = new MqttConnectOptions();
+                options.setAutomaticReconnect(true);
+                options.setConnectionTimeout(0);
+                if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+                    options.setUserName(username);
+                    options.setPassword(password.toCharArray());
+                }
+                client.connect(options);
+                LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
+                try {
+                    MqttDecoder decoder = (MqttDecoder) Class.forName(getDecoder()).newInstance();
+                    settingsManager.configure(decoder);
+                    client.setCallback(new SosMqttCallback(decoder, encoderRepository));
+                } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                    throw new ConfigurationError("Error while starting MQTT consumer", e);
+                }
             }
+            subscribe(getTopic(), QualityOfService.EXACTLY_ONCE);
+            LOG.debug("Subscibed to topic: {}", getTopic());
         }
-        subscribe(getTopic(), QualityOfService.EXACTLY_ONCE);
-        LOG.debug("Subscibed to topic: {}", getTopic());
     }
 
     public boolean isConnected() {
@@ -129,10 +162,6 @@ public class MqttConsumer implements Constructable, Destroyable {
         } else {
             return false;
         }
-    }
-
-    public void disconnect() {
-//        cleanup();
     }
 
     /**
@@ -148,7 +177,7 @@ public class MqttConsumer implements Constructable, Destroyable {
 
     private void cleanup() {
         try {
-            if (client != null) {
+            if (client != null && getTopic() != null) {
                 client.unsubscribe(getTopic());
                 client.disconnect();
             }
@@ -157,43 +186,67 @@ public class MqttConsumer implements Constructable, Destroyable {
         }
     }
 
+    private void requestConnecting() {
+        if (debouncer != null) {
+            debouncer.call();
+        }
+    }
+
     private String getId() {
         return UUID.randomUUID().toString();
     }
 
     @Setting(MqttSettings.MQTT_TOPIC)
-    public void setTopic(final String topic) {
+    public void setTopic(String topic) {
         this.topic = topic;
+        requestConnecting();
     }
 
     @Setting(MqttSettings.MQTT_HOST)
     public void setHost(String host) {
         this.host = host;
+        requestConnecting();
     }
 
     @Setting(MqttSettings.MQTT_PORT)
     public void setPort(String port) {
         this.port = port;
+        requestConnecting();
     }
 
     @Setting(MqttSettings.MQTT_DECODER)
     public void setDecoder(String decoder) {
         this.decoder = decoder;
+        requestConnecting();
     }
 
     @Setting(MqttSettings.MQTT_PROTOCOL)
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+        requestConnecting();
     }
 
     @Setting(MqttSettings.MQTT_USERNAME)
     public void setUsername(String username) {
         this.username = username;
+        requestConnecting();
     }
 
     @Setting(MqttSettings.MQTT_PASSWORD)
     public void setPassword(String password) {
         this.password = password;
+        requestConnecting();
+    }
+
+    @Setting(MqttSettings.MQTT_ACTIVE)
+    public void setActive(boolean active) {
+        this.isActive = active;
+        if (isActive) {
+            requestConnecting();
+        } else {
+            cleanup();
+        }
+
     }
 
     /**
@@ -233,16 +286,8 @@ public class MqttConsumer implements Constructable, Destroyable {
         return password;
     }
 
-//    public static void main(String[] args) throws MqttException {
-//        MqttConsumer c = new MqttConsumer();
-//        c.setHost("ows.dev.52north.org");
-//        c.setTopic("n52.adsb");
-//        c.setPort("1883");
-//        c.connect();
-//        c.subscribe(c.getTopic(), QualityOfService.EXACTLY_ONCE);
-//
-//        while (true) {
-//
-//        }
-//    }
+    public boolean isActive() {
+        return isActive;
+    }
+
 }
