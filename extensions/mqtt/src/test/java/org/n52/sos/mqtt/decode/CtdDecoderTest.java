@@ -35,9 +35,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.n52.faroe.ConfigurationError;
+import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
+import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.sos.mqtt.api.CtdMessage;
-import org.n52.sos.mqtt.api.MqttMessage;
 
 /**
  *
@@ -50,6 +50,12 @@ public class CtdDecoderTest {
 
     private static final String LINE_SEPERATOR = "\n";
 
+    private static final String MESSAGE_WITH_NUMERIC_OBSERVATION_VALUES
+            = "2017-11-16T12:00:55.517Z|I-OCEAN7-304-0616641|  24.07  12.625  37.067  31.615 1495.3035 18:54:31.20M";
+
+    private static final String MESSAGE_WITH_NON_EXPECTED_CONTENT
+            = "TimeStamp|SensorID|  Press   Temp    Cond    Sal    SoundV";
+
     private static CtdDecoder decoder;
 
     @BeforeClass
@@ -59,9 +65,8 @@ public class CtdDecoderTest {
     }
 
     @Test
-    public void shouldParseMessageWhenReceivingObservationValues() {
-        String observationPayload = "2017-11-16T12:00:55.517Z|I-OCEAN7-304-0616641|  24.07  12.625  37.067  31.615 1495.3035 18:54:31.20M";
-        CtdMessage observationMessage = (CtdMessage) decoder.parseMessage(observationPayload);
+    public void shouldParseMessageWhenReceivingObservationValues() throws OwsExceptionReport {
+        CtdMessage observationMessage = (CtdMessage) decoder.parseMessage(MESSAGE_WITH_NUMERIC_OBSERVATION_VALUES);
 
         Assert.assertThat(observationMessage.getPressure(), CoreMatchers.equalTo(24.07));
         Assert.assertThat(observationMessage.getTemperature(), CoreMatchers.equalTo(12.625));
@@ -72,11 +77,11 @@ public class CtdDecoderTest {
     }
 
     @Test
-    public void shouldNotParseMessageWhenReceivingNonObservationValues() {
-        String paramPayload = "2017-11-16T12:00:50.468Z|I-OCEAN7-304-0616641|  Press   Temp    Cond    Sal    SoundV";
-        CtdMessage paramMessage = (CtdMessage) decoder.parseMessage(paramPayload);
+    public void shouldShowExcpetionWhenReceivingNonNumericObservationValues() throws OwsExceptionReport {
+        thrown.expect(NoApplicableCodeException.class);
+        thrown.expectMessage(is("Error while parsing message with non expected content."));
 
-        Assert.assertThat(paramMessage, CoreMatchers.nullValue());
+        decoder.parseMessage(MESSAGE_WITH_NON_EXPECTED_CONTENT);
     }
 
 }
