@@ -40,12 +40,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
-import net.opengis.swe.x20.TextEncodingDocument;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.janmayen.net.IPAddress;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.ows.service.OwsServiceRequestContext;
 import org.n52.shetland.ogc.sensorML.SensorML20Constants;
+import org.n52.shetland.ogc.sensorML.SensorMLConstants;
 import org.n52.shetland.ogc.sensorML.elements.SmlCapabilities;
 import org.n52.shetland.ogc.sensorML.elements.SmlCapability;
 import org.n52.shetland.ogc.sensorML.elements.SmlClassifier;
@@ -61,6 +61,7 @@ import org.n52.shetland.ogc.swe.simpleType.SweCount;
 import org.n52.shetland.ogc.swe.simpleType.SweObservableProperty;
 import org.n52.shetland.ogc.swe.simpleType.SweQuantity;
 import org.n52.shetland.ogc.swe.simpleType.SweText;
+import org.n52.svalbard.encode.Encoder;
 import org.n52.svalbard.encode.EncoderRepository;
 import org.n52.svalbard.encode.exception.EncodingException;
 import org.n52.svalbard.util.CodingHelper;
@@ -68,7 +69,13 @@ import org.n52.svalbard.util.CodingHelper;
 public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsertSensorConverter<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqttInsertSensorConverter.class);
-    private static final EncoderRepository encoderRepository = new EncoderRepository();
+//    private static final EncoderRepository encoderRepository = new EncoderRepository();
+
+    private EncoderRepository encoderRepository;
+
+    public void setEncoderRepository(EncoderRepository encoderRepository) {
+        this.encoderRepository = encoderRepository;
+    }
 
     @Override
     public InsertSensorRequest convert(T message) throws OwsExceptionReport {
@@ -105,14 +112,13 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
         return insertSensorRequest;
     }
 
-    protected static String encodeToXml(final PhysicalSystem system) {
+    protected String encodeToXml(final PhysicalSystem system) {
         try {
-            TextEncodingDocument xbTextEncDoc = TextEncodingDocument.Factory.newInstance();
-            xbTextEncDoc.addNewTextEncoding()
-                    .set((XmlObject) encoderRepository
-                            .getEncoder(CodingHelper.getEncoderKey(SweConstants.NS_SWE_20, system))
-                            .encode(system));
-            return xbTextEncDoc.xmlText();
+            Encoder encoder = encoderRepository
+                    .getEncoder(CodingHelper.getEncoderKey(SensorML20Constants.NS_SML_20, system));
+            XmlObject xml = (XmlObject) encoder.encode(system);
+            String text = xml.xmlText();
+            return text;
         } catch (EncodingException ex) {
             LOGGER.error("Could not encode SML to valid XML.", ex);
             return "";  // TODO empty but valid sml
