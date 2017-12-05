@@ -29,11 +29,9 @@
 package org.n52.sos.mqtt;
 
 import com.vividsolutions.jts.io.ParseException;
-import javax.inject.Inject;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.n52.faroe.SettingsService;
 import org.n52.iceland.exception.ows.concrete.InvalidAcceptVersionsParameterException;
 import org.n52.iceland.exception.ows.concrete.InvalidServiceOrVersionException;
 import org.n52.iceland.exception.ows.concrete.InvalidServiceParameterException;
@@ -55,6 +53,8 @@ import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
 import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 import org.n52.sos.mqtt.decode.MqttDecoder;
 import org.n52.sos.service.Configurator;
+import org.n52.svalbard.encode.Encoder;
+import org.n52.svalbard.encode.EncoderRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,13 +66,10 @@ public class SosMqttCallback implements MqttCallback {
     private MqttInsertSensorConverter insertSensorConverter;
     private MqttInsertObservationConverter insertObservationConverter;
 
-    @Inject
-    private SettingsService settingsManager;
-
-    public SosMqttCallback(String decoderName) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        decoder = (MqttDecoder) Class.forName(decoderName).newInstance();
-        settingsManager.configure(decoder);
+    public SosMqttCallback(MqttDecoder decoder, EncoderRepository encoderRepository) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+        this.decoder = decoder;
         insertSensorConverter = decoder.getInsertSensorConverter();
+        insertSensorConverter.setEncoderRepository(encoderRepository);
         insertObservationConverter = decoder.getInsertOnbservationConverter();
     }
 
