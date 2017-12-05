@@ -30,6 +30,8 @@ package org.n52.sos.mqtt.decode;
 
 import org.apache.commons.lang.text.StrTokenizer;
 import org.joda.time.format.ISODateTimeFormat;
+import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
+import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.sos.mqtt.api.FluorometerMessage;
 import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.convert.marine.FluorometerInsertObservationConverter;
@@ -48,7 +50,7 @@ public class FluorometerDecoder extends AbstractMqttCsvDecoder {
     private static final Logger LOG = LoggerFactory.getLogger(FluorometerDecoder.class);
 
     @Override
-    protected MqttMessage parseMessage(String message) {
+    protected MqttMessage parseMessage(String message) throws OwsExceptionReport {
         try {
             String[] sensorData = new StrTokenizer(message, "|").getTokenArray();
             String[] observationData = new StrTokenizer(sensorData[2], "\t").getTokenArray();
@@ -61,9 +63,8 @@ public class FluorometerDecoder extends AbstractMqttCsvDecoder {
                     .setTurbidityWavelength(Double.parseDouble(observationData[4]))
                     .setNtuCount(Integer.parseInt(observationData[5]))
                     .setThermistor(Integer.parseInt(observationData[6]));
-        } catch (Exception ex) {
-            LOG.error("Error parsing MQTT message.", ex);
-            return null;
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException ex) {
+            throw new NoApplicableCodeException().causedBy(ex).withMessage("Error while parsing message with non expected content.", message);
         }
     }
 

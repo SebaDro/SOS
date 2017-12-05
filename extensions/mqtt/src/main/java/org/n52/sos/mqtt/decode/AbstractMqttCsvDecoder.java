@@ -33,9 +33,11 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.n52.faroe.annotation.Setting;
+import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 
 import org.n52.sos.mqtt.MqttSettings;
 import org.n52.sos.mqtt.api.MqttMessage;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -45,10 +47,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public abstract class AbstractMqttCsvDecoder implements MqttDecoder {
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AbstractMqttCsvDecoder.class);
+
     private String lineSeperator;
     private String fieldSeperator;
 
-    protected abstract MqttMessage parseMessage(String n);
+    protected abstract MqttMessage parseMessage(String n) throws OwsExceptionReport;
 
     @Override
     public Set<MqttMessage> decode(String payload) {
@@ -58,9 +62,13 @@ public abstract class AbstractMqttCsvDecoder implements MqttDecoder {
         }
         StrTokenizer tokenizer = new StrTokenizer(payload, lineSeperator);
         for (String m : ((List<String>) tokenizer.getTokenList())) {
-            MqttMessage message = parseMessage(m);
-            if (message != null) {
-                messages.add(parseMessage(m));
+            try {
+                MqttMessage message = parseMessage(m);
+                if (message != null) {
+                    messages.add(parseMessage(m));
+                }
+            } catch (OwsExceptionReport ex) {
+                LOG.error("Error while parsing message", ex);
             }
         };
         return messages;

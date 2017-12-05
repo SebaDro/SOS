@@ -30,6 +30,8 @@ package org.n52.sos.mqtt.decode;
 
 import org.apache.commons.lang.text.StrTokenizer;
 import org.joda.time.format.ISODateTimeFormat;
+import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
+import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.sos.mqtt.api.CtdMessage;
 import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.convert.marine.CtdInsertObservationConverter;
@@ -48,7 +50,7 @@ public class CtdDecoder extends AbstractMqttCsvDecoder {
     private static final Logger LOG = LoggerFactory.getLogger(CtdDecoder.class);
 
     @Override
-    protected MqttMessage parseMessage(String message) {
+    protected MqttMessage parseMessage(String message) throws OwsExceptionReport {
         try {
             String[] sensorData = new StrTokenizer(message, "|").getTokenArray();
             String[] observationData = new StrTokenizer(sensorData[2], " ").getTokenArray();
@@ -61,9 +63,8 @@ public class CtdDecoder extends AbstractMqttCsvDecoder {
                     .setConductivity(Double.parseDouble(observationData[2]))
                     .setSalinity(Double.parseDouble(observationData[3]))
                     .setSoundVelocity(Double.parseDouble(observationData[4]));
-        } catch (Exception ex) {
-            LOG.error("Error parsing MQTT message.", ex);
-            return null;
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException ex) {
+            throw new NoApplicableCodeException().causedBy(ex).withMessage("Error while parsing message with non expected content.", message);
         }
     }
 
