@@ -29,6 +29,7 @@
 package org.n52.sos.mqtt.decode;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import javax.inject.Inject;
 import org.n52.faroe.annotation.Configurable;
 import org.n52.faroe.annotation.Setting;
 import org.n52.sos.mqtt.MqttSettings;
@@ -49,6 +50,12 @@ public class OmDecoder extends AbstractMqttJsonDecoder {
     private String[] observableProperty;
     private String observationField;
 
+    @Inject
+    OmInsertSensorConverter insertSensorConverter;
+
+    @Inject
+    OmInsertObservationConverter insertObservationConverter;
+
     @Override
     protected MqttMessage parseMessage(JsonNode n) {
         JsonNode payload = n.findParent(observationField).get(observationField);
@@ -64,14 +71,13 @@ public class OmDecoder extends AbstractMqttJsonDecoder {
 
     @Override
     public MqttInsertSensorConverter getInsertSensorConverter() {
-        OmInsertSensorConverter converter = new OmInsertSensorConverter();
-        converter.setObservableProperties(observableProperty);
-        return converter;
+        insertSensorConverter.setObservableProperties(observableProperty);
+        return insertSensorConverter;
     }
 
     @Override
     public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return new OmInsertObservationConverter();
+        return insertObservationConverter;
     }
 
     public String[] getObservableProperty() {

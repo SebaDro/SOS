@@ -38,6 +38,6 @@ public interface MqttInsertSensorConverter<T> {
 
     InsertSensorRequest convert(T message) throws OwsExceptionReport;
 
-    public void setEncoderRepository(EncoderRepository encoderRepository);
+//    public void setEncoderRepository(EncoderRepository encoderRepository);
 
 }

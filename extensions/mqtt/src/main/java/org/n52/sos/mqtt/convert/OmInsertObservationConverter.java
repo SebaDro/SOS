@@ -29,6 +29,7 @@
 package org.n52.sos.mqtt.convert;
 
 import com.google.common.collect.Lists;
+import javax.inject.Inject;
 import org.n52.janmayen.net.IPAddress;
 import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
@@ -50,11 +51,12 @@ public class OmInsertObservationConverter implements MqttInsertObservationConver
 
     private static final Logger LOG = LoggerFactory.getLogger(OmInsertObservationConverter.class);
 
-    private InsertObservationRequestDecoder insertObservationDecoder;
+    @Inject
+    InsertObservationRequestDecoder insertObservationDecoder;
 
-    public OmInsertObservationConverter() {
-        insertObservationDecoder = new InsertObservationRequestDecoder();
-    }
+//    public OmInsertObservationConverter() {
+//        insertObservationDecoder = new InsertObservationRequestDecoder();
+//    }
 
     @Override
     public InsertObservationRequest convert(OmMessage message) throws OwsExceptionReport {
@@ -62,7 +64,7 @@ public class OmInsertObservationConverter implements MqttInsertObservationConver
 
         InsertObservationRequest request;
         try {
-            request = insertObservationDecoder.decode(message.getOmPayload());
+            request = insertObservationDecoder.decodeJSON(message.getOmPayload(), false);
             request.setService(SosConstants.SOS);
             request.setVersion(Sos2Constants.SERVICEVERSION);
             OwsServiceRequestContext requestContext = new OwsServiceRequestContext();

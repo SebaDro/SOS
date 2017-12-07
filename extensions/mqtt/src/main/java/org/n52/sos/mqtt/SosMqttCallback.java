@@ -66,10 +66,9 @@ public class SosMqttCallback implements MqttCallback {
     private MqttInsertSensorConverter insertSensorConverter;
     private MqttInsertObservationConverter insertObservationConverter;
 
-    public SosMqttCallback(MqttDecoder decoder, EncoderRepository encoderRepository) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public SosMqttCallback(MqttDecoder decoder) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         this.decoder = decoder;
         insertSensorConverter = decoder.getInsertSensorConverter();
-        insertSensorConverter.setEncoderRepository(encoderRepository);
         insertObservationConverter = decoder.getInsertOnbservationConverter();
     }
 

@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import javax.inject.Inject;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.janmayen.net.IPAddress;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
@@ -71,11 +72,12 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqttInsertSensorConverter.class);
 //    private static final EncoderRepository encoderRepository = new EncoderRepository();
 
-    private EncoderRepository encoderRepository;
+    @Inject
+    EncoderRepository encoderRepository;
 
-    public void setEncoderRepository(EncoderRepository encoderRepository) {
-        this.encoderRepository = encoderRepository;
-    }
+//    public void setEncoderRepository(EncoderRepository encoderRepository) {
+//        this.encoderRepository = encoderRepository;
+//    }
 
     @Override
     public InsertSensorRequest convert(T message) throws OwsExceptionReport {

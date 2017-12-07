@@ -28,6 +28,7 @@
  */
 package org.n52.sos.mqtt;
 
+import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
 
@@ -43,6 +44,7 @@ import org.n52.janmayen.Debouncer;
 import org.n52.janmayen.lifecycle.Constructable;
 import org.n52.janmayen.lifecycle.Destroyable;
 import org.n52.sos.mqtt.decode.MqttDecoder;
+import org.n52.sos.mqtt.decode.MqttDecoderRepository;
 import org.n52.svalbard.encode.EncoderRepository;
 
 import org.slf4j.Logger;
@@ -69,6 +71,9 @@ public class MqttConsumer implements Constructable, Destroyable {
     private boolean isActive;
 
     private Debouncer debouncer;
+
+    @Inject
+    MqttDecoderRepository mqttDecoderRepository;
 
     @Inject
     SettingsService settingsManager;
@@ -144,9 +149,13 @@ public class MqttConsumer implements Constructable, Destroyable {
                 client.connect(options);
                 LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
                 try {
-                    MqttDecoder decoder = (MqttDecoder) Class.forName(getDecoder()).newInstance();
-                    settingsManager.configure(decoder);
-                    client.setCallback(new SosMqttCallback(decoder, encoderRepository));
+//                    MqttDecoder decoder = (MqttDecoder) Class.forName(getDecoder()).newInstance();
+                    Optional<MqttDecoder> decoder = mqttDecoderRepository.getDecoder(getDecoder());
+                    if (!decoder.isPresent()) {
+                        throw new ClassNotFoundException("Decoder is not available");
+                    }
+                    settingsManager.configure(decoder.get());
+                    client.setCallback(new SosMqttCallback(decoder.get()));
                 } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                     throw new ConfigurationError("Error while starting MQTT consumer", e);
                 }

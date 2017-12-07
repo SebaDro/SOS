@@ -28,6 +28,7 @@
  */
 package org.n52.sos.mqtt.decode;
 
+import javax.inject.Inject;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.joda.time.format.ISODateTimeFormat;
 import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
@@ -48,6 +49,12 @@ import org.slf4j.LoggerFactory;
 public class CtdDecoder extends AbstractMqttCsvDecoder {
 
     private static final Logger LOG = LoggerFactory.getLogger(CtdDecoder.class);
+
+    @Inject
+    CtdInsertSensorConverter insertSensorConverter;
+
+    @Inject
+    CtdInsertObservationConverter insertObservationConverter;
 
     @Override
     protected MqttMessage parseMessage(String message) throws OwsExceptionReport {
@@ -70,12 +77,12 @@ public class CtdDecoder extends AbstractMqttCsvDecoder {
 
     @Override
     public MqttInsertSensorConverter getInsertSensorConverter() {
-        return new CtdInsertSensorConverter();
+        return insertSensorConverter;
     }
 
     @Override
     public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return new CtdInsertObservationConverter();
+        return insertObservationConverter;
     }
 
 }

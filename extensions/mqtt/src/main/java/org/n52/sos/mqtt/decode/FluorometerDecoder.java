@@ -28,6 +28,7 @@
  */
 package org.n52.sos.mqtt.decode;
 
+import javax.inject.Inject;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.joda.time.format.ISODateTimeFormat;
 import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
@@ -48,6 +49,12 @@ import org.slf4j.LoggerFactory;
 public class FluorometerDecoder extends AbstractMqttCsvDecoder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FluorometerDecoder.class);
+
+    @Inject
+    FluorometerInsertObservationConverter insertObservationConverter;
+
+    @Inject
+    FluorometerInsertSensorConverter insertSensorConverter;
 
     @Override
     protected MqttMessage parseMessage(String message) throws OwsExceptionReport {
@@ -70,12 +77,12 @@ public class FluorometerDecoder extends AbstractMqttCsvDecoder {
 
     @Override
     public MqttInsertSensorConverter getInsertSensorConverter() {
-        return new FluorometerInsertSensorConverter();
+        return insertSensorConverter;
     }
 
     @Override
     public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return new FluorometerInsertObservationConverter();
+        return insertObservationConverter;
     }
 
 }
