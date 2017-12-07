@@ -149,7 +149,6 @@ public class MqttConsumer implements Constructable, Destroyable {
                 client.connect(options);
                 LOG.debug("Connected to: {}", String.format("tcp://%s:%s", getHost(), getPort()));
                 try {
-//                    MqttDecoder decoder = (MqttDecoder) Class.forName(getDecoder()).newInstance();
                     Optional<MqttDecoder> decoder = mqttDecoderRepository.getDecoder(getDecoder());
                     if (!decoder.isPresent()) {
                         throw new ClassNotFoundException("Decoder is not available");
@@ -186,7 +185,7 @@ public class MqttConsumer implements Constructable, Destroyable {
 
     private void cleanup() {
         try {
-            if (client != null && getTopic() != null) {
+            if (client != null && client.isConnected() && getTopic() != null) {
                 client.unsubscribe(getTopic());
                 client.disconnect();
             }
