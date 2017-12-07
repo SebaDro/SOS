@@ -5,4 +5,17 @@
 
     <bean class="org.n52.sos.mqtt.MqttConsumer"/>
 
+    <bean class="org.n52.sos.mqtt.decode.MqttDecoderRepository"/>
+    <bean class="org.n52.sos.mqtt.decode.OmDecoder"/>
+    <bean class="org.n52.sos.mqtt.decode.CtdDecoder"/>
+    <bean class="org.n52.sos.mqtt.decode.FluorometerDecoder"/>
+
+
+    <bean class="org.n52.sos.mqtt.convert.OmInsertObservationConverter"/>
+    <bean class="org.n52.sos.mqtt.convert.OmInsertSensorConverter"/>
+
+    <bean class="org.n52.sos.mqtt.convert.marine.CtdInsertObservationConverter"/>
+    <bean class="org.n52.sos.mqtt.convert.marine.CtdInsertSensorConverter"/>
+    <bean class="org.n52.sos.mqtt.convert.marine.FluorometerInsertObservationConverter"/>
+    <bean class="org.n52.sos.mqtt.convert.marine.FluorometerInsertSensorConverter"/>
 </beans>
