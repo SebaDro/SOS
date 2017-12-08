@@ -86,7 +86,9 @@ public class OmDecoder extends AbstractMqttJsonDecoder {
 
     @Setting(MqttSettings.MQTT_OM_OBSERVABLE_PROPERTY)
     public void setObservableProperty(String observableProperty) {
-        this.observableProperty = observableProperty.split(";");
+        if(observableProperty != null){
+            this.observableProperty = observableProperty.split(";");
+        }
     }
 
     public String getObservationField() {
