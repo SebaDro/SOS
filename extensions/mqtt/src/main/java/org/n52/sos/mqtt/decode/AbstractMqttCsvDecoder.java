@@ -37,6 +37,7 @@ import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 
 import org.n52.sos.mqtt.MqttSettings;
 import org.n52.sos.mqtt.api.MqttMessage;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -47,7 +48,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public abstract class AbstractMqttCsvDecoder implements MqttDecoder {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AbstractMqttCsvDecoder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractMqttCsvDecoder.class);
 
     private String lineSeperator;
     private String fieldSeperator;

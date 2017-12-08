@@ -53,8 +53,6 @@ import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
 import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 import org.n52.sos.mqtt.decode.MqttDecoder;
 import org.n52.sos.service.Configurator;
-import org.n52.svalbard.encode.Encoder;
-import org.n52.svalbard.encode.EncoderRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

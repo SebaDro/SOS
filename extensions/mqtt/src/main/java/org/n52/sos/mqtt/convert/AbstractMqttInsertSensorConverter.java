@@ -46,7 +46,6 @@ import org.n52.janmayen.net.IPAddress;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.ows.service.OwsServiceRequestContext;
 import org.n52.shetland.ogc.sensorML.SensorML20Constants;
-import org.n52.shetland.ogc.sensorML.SensorMLConstants;
 import org.n52.shetland.ogc.sensorML.elements.SmlCapabilities;
 import org.n52.shetland.ogc.sensorML.elements.SmlCapability;
 import org.n52.shetland.ogc.sensorML.elements.SmlClassifier;
@@ -54,7 +53,6 @@ import org.n52.shetland.ogc.sensorML.elements.SmlIdentifier;
 import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sensorML.v20.PhysicalSystem;
 import org.n52.shetland.ogc.sos.SosProcedureDescription;
-import org.n52.shetland.ogc.swe.SweConstants;
 
 import org.n52.shetland.ogc.swe.SweField;
 import org.n52.shetland.ogc.swe.simpleType.SweBoolean;
@@ -70,14 +68,9 @@ import org.n52.svalbard.util.CodingHelper;
 public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsertSensorConverter<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqttInsertSensorConverter.class);
-//    private static final EncoderRepository encoderRepository = new EncoderRepository();
 
     @Inject
     EncoderRepository encoderRepository;
-
-//    public void setEncoderRepository(EncoderRepository encoderRepository) {
-//        this.encoderRepository = encoderRepository;
-//    }
 
     @Override
     public InsertSensorRequest convert(T message) throws OwsExceptionReport {
