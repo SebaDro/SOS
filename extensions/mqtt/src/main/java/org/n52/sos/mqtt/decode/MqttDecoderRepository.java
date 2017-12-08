@@ -33,8 +33,8 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 /**
- *
- * @author Sebastian
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class MqttDecoderRepository {
 

@@ -43,9 +43,10 @@ import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.mqtt.api.FluorometerMessage;
 import org.n52.sos.mqtt.convert.AbstractMqttInsertSensorConverter;
+
 /**
  *
- * @author Sebastian
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class FluorometerInsertSensorConverter extends AbstractMqttInsertSensorConverter<FluorometerMessage> {
 

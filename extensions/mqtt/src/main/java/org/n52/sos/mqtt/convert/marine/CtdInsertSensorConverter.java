@@ -46,8 +46,8 @@ import org.n52.sos.mqtt.convert.AbstractMqttInsertSensorConverter;
 
 
 /**
- *
- * @author Sebastian Drost
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<CtdMessage> {
 

@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- *
- * @author Sebastian Drost
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 @Configurable
 public abstract class AbstractMqttCsvDecoder implements MqttDecoder {

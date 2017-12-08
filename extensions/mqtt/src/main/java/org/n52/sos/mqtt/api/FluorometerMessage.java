@@ -31,8 +31,8 @@ package org.n52.sos.mqtt.api;
 import org.joda.time.DateTime;
 
 /**
- *
- * @author Sebastian
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class FluorometerMessage implements MqttMessage {
 

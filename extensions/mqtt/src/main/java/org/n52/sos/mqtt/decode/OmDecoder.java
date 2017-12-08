@@ -41,8 +41,8 @@ import org.n52.sos.mqtt.convert.OmInsertObservationConverter;
 import org.n52.sos.mqtt.convert.OmInsertSensorConverter;
 
 /**
- *
- * @author Sebastian Drost
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 @Configurable
 public class OmDecoder extends AbstractMqttJsonDecoder {

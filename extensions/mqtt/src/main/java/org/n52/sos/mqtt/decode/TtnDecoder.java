@@ -40,8 +40,8 @@ import org.n52.sos.mqtt.convert.TtnInsertObservationConverter;
 import org.n52.sos.mqtt.convert.TtnInsertSensorConverter;
 
 /**
- *
- * @author Sebastian Drost
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class TtnDecoder extends AbstractMqttJsonDecoder {
 

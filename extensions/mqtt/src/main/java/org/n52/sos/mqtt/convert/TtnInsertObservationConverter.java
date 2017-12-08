@@ -41,8 +41,8 @@ import org.n52.svalbard.decode.exception.DecodingException;
 import org.n52.svalbard.decode.json.InsertObservationRequestDecoder;
 
 /**
- *
- * @author Sebastian Drost
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class TtnInsertObservationConverter implements MqttInsertObservationConverter<TtnMessage> {
 

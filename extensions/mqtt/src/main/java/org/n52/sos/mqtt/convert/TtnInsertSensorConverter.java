@@ -43,10 +43,9 @@ import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.mqtt.api.TtnMessage;
 
-
 /**
  *
- * @author Sebastian Drost
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class TtnInsertSensorConverter extends AbstractMqttInsertSensorConverter<TtnMessage> {
 

@@ -31,8 +31,8 @@ package org.n52.sos.mqtt.api;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- *
- * @author Sebastian Drost
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class OmMessage implements MqttMessage {
 

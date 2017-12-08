@@ -44,8 +44,8 @@ import org.n52.sos.mqtt.api.OmMessage;
 
 
 /**
- *
- * @author Sebastian Drost
+ * 
+ * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<OmMessage> {
 
