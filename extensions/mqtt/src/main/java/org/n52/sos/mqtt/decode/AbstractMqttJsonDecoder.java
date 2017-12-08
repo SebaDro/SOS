@@ -39,17 +39,26 @@ import org.n52.sos.mqtt.api.MqttMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Sets;
 import org.n52.janmayen.Json;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
-
 
 @Configurable
 public abstract class AbstractMqttJsonDecoder implements MqttDecoder {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractMqttCsvDecoder.class);
+
     protected abstract MqttMessage parseMessage(JsonNode n);
 
     @Override
-    public Set<MqttMessage> decode(String payload){
-        return decodeJson(Json.loadString(payload));
+    public Set<MqttMessage> decode(String payload) {
+        Set<MqttMessage> messages = Sets.newHashSet();
+        try {
+            messages.addAll(decodeJson(Json.loadString(payload)));
+        } catch (Throwable cause) {
+            LOG.error("Error while parsing message.", cause);
+        }
+        return messages;
     }
 
     protected Set<MqttMessage> decodeJson(JsonNode json) {
