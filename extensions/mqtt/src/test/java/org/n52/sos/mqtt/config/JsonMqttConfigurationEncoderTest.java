@@ -17,6 +17,8 @@
  */
 package org.n52.sos.mqtt.config;
 
+import org.n52.sos.mqtt.config.json.JsonMqttConfiguration;
+import org.n52.sos.mqtt.config.json.JsonMqttConfigurationEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.Sets;
@@ -34,7 +36,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
-public class JsonMqttConfigEncoderTest {
+public class JsonMqttConfigurationEncoderTest {
 
     private static final String KEY = UUID.randomUUID().toString();
     private static final boolean IS_ACTIVE = true;
@@ -51,16 +53,16 @@ public class JsonMqttConfigEncoderTest {
     private static final String BIRD_COUNT_PROPERTY = "bird count";
     private static final String TEMPERATURE_PROPERTY = "temperature";
 
-    private static JsonMqttConfigEncoder encoder;
-    private static MqttConfiguration configuration;
-    private static MqttConfiguration configurationWithNullValues;
+    private static JsonMqttConfigurationEncoder encoder;
+    private static JsonMqttConfiguration configuration;
+    private static JsonMqttConfiguration configurationWithNullValues;
     private static Set<String> observableProperties;
 
     @BeforeClass
     public static void init() {
-        encoder = new JsonMqttConfigEncoder();
+        encoder = new JsonMqttConfigurationEncoder();
 
-        configuration = new MqttConfiguration();
+        configuration = new JsonMqttConfiguration();
         configuration.setKey(KEY);
         configuration.setIsActive(IS_ACTIVE);
         configuration.setHost(HOST);
@@ -79,7 +81,7 @@ public class JsonMqttConfigEncoderTest {
         observableProperties.add(TEMPERATURE_PROPERTY);
         configuration.setObservableProperties(observableProperties);
 
-        configurationWithNullValues = new MqttConfiguration();
+        configurationWithNullValues = new JsonMqttConfiguration();
         configurationWithNullValues.setKey(UUID.randomUUID().toString());
         configurationWithNullValues.setIsActive(IS_ACTIVE);
         configurationWithNullValues.setHost(HOST);

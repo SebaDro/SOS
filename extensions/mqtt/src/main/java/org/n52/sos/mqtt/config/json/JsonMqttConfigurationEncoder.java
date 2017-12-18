@@ -26,7 +26,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
  */
-package org.n52.sos.mqtt.config;
+package org.n52.sos.mqtt.config.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,14 +34,15 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.n52.janmayen.Json;
+import org.n52.sos.mqtt.config.MqttConstants;
 
 /**
  *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
-public class JsonMqttConfigEncoder {
+public class JsonMqttConfigurationEncoder {
 
-    public JsonNode encode(MqttConfiguration config) {
+    public JsonNode encode(JsonMqttConfiguration config) {
         ObjectNode configNode = Json.nodeFactory().objectNode();
         configNode.set(MqttConstants.MQTT_Key, createTextNode(config.getKey()));
         configNode.set(MqttConstants.MQTT_ACTIVE, createBooleanNode(config.isActive()));

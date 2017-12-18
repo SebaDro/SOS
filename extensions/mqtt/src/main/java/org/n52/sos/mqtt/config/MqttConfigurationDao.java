@@ -28,6 +28,7 @@
  */
 package org.n52.sos.mqtt.config;
 
+import org.n52.sos.mqtt.config.json.JsonMqttConfiguration;
 import java.util.Set;
 
 /**
@@ -36,15 +37,15 @@ import java.util.Set;
  */
 public interface MqttConfigurationDao {
     
-    MqttConfiguration createMqttConfiguration();
+    JsonMqttConfiguration createMqttConfiguration();
 
-    void saveMqttConfiguration(MqttConfiguration config);
+    void saveMqttConfiguration(JsonMqttConfiguration config);
 
-    void deleteMqttConfiguration(MqttConfiguration config);
+    void deleteMqttConfiguration(JsonMqttConfiguration config);
 
-    MqttConfiguration getMqttConfiguration(String id);
+    JsonMqttConfiguration getMqttConfiguration(String id);
 
-    Set<MqttConfiguration> getAllMqttConfigurations();
+    Set<JsonMqttConfiguration> getAllMqttConfigurations();
 
     void deleteAll();
 

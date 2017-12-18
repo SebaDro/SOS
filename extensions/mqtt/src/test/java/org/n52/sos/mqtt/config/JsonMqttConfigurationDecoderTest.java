@@ -17,6 +17,8 @@
  */
 package org.n52.sos.mqtt.config;
 
+import org.n52.sos.mqtt.config.json.JsonMqttConfiguration;
+import org.n52.sos.mqtt.config.json.JsonMqttConfigurationDecoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -37,7 +39,7 @@ import org.n52.janmayen.Json;
  *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
-public class JsonMqttConfigDecoderTest {
+public class JsonMqttConfigurationDecoderTest {
 
     private static final String KEY = UUID.randomUUID().toString();
     private static final boolean IS_ACTIVE = true;
@@ -54,13 +56,13 @@ public class JsonMqttConfigDecoderTest {
     private static final String BIRD_COUNT_PROPERTY = "bird count";
     private static final String TEMPERATURE_PROPERTY = "temperature";
 
-    private static JsonMqttConfigDecoder decoder;
+    private static JsonMqttConfigurationDecoder decoder;
     private static Set<String> observableProperties;
     private static ObjectNode configNode;
 
     @BeforeClass
     public static void init() {
-        decoder = new JsonMqttConfigDecoder();
+        decoder = new JsonMqttConfigurationDecoder();
 
         configNode = Json.nodeFactory().objectNode()
                 .put(MqttConstants.MQTT_Key, KEY)
@@ -84,7 +86,7 @@ public class JsonMqttConfigDecoderTest {
 
     @Test
     public void basic() {
-        MqttConfiguration decodedConfig = decoder.decode((JsonNode) configNode);
+        JsonMqttConfiguration decodedConfig = decoder.decode((JsonNode) configNode);
 
         Assert.assertThat(decodedConfig.getKey(), CoreMatchers.is(equalTo(KEY)));
         Assert.assertThat(decodedConfig.isActive(), CoreMatchers.is(equalTo(IS_ACTIVE)));
