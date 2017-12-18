@@ -4,6 +4,10 @@
                            http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 
     <bean class="org.n52.sos.mqtt.MqttConsumer"/>
+    
+    <bean id="jsonConfigDecoder" class="org.n52.sos.mqtt.config.json.JsonMqttConfigurationDecoder"/>
+    <bean id="jsonConfigEncoder" class="org.n52.sos.mqtt.config.json.JsonMqttConfigurationEncoder"/>
+    <bean id="jsonConfigDao" class="org.n52.sos.mqtt.config.json.JsonMqttConfigurationDao"/>
 
     <bean class="org.n52.sos.mqtt.decode.MqttDecoderRepository"/>
     <bean class="org.n52.sos.mqtt.decode.OmDecoder"/>
