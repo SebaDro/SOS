@@ -36,8 +36,8 @@ import java.util.Set;
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public interface MqttConfigurationDao {
-    
-    JsonMqttConfiguration createMqttConfiguration();
+
+    MqttConfiguration createMqttConfiguration();
 
     void saveMqttConfiguration(JsonMqttConfiguration config);
 
