@@ -34,6 +34,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.n52.janmayen.Json;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.n52.sos.mqtt.config.MqttConstants;
 
 /**
@@ -42,9 +43,10 @@ import org.n52.sos.mqtt.config.MqttConstants;
  */
 public class JsonMqttConfigurationEncoder {
 
-    public JsonNode encode(JsonMqttConfiguration config) {
+    public JsonNode encode(MqttConfiguration config) {
         ObjectNode configNode = Json.nodeFactory().objectNode();
-        configNode.set(MqttConstants.MQTT_Key, createTextNode(config.getKey()));
+        configNode.set(MqttConstants.MQTT_KEY, createTextNode(config.getKey()));
+        configNode.set(MqttConstants.MQTT_NAME, createTextNode(config.getName()));
         configNode.set(MqttConstants.MQTT_ACTIVE, createBooleanNode(config.isActive()));
         configNode.set(MqttConstants.MQTT_HOST, createTextNode(config.getHost()));
         configNode.set(MqttConstants.MQTT_PORT, createTextNode(config.getPort()));

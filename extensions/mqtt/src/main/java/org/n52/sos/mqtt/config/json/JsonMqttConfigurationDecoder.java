@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.Sets;
 import java.util.Set;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.n52.sos.mqtt.config.MqttConstants;
 
 /**
@@ -40,9 +41,10 @@ import org.n52.sos.mqtt.config.MqttConstants;
  */
 public class JsonMqttConfigurationDecoder {
 
-    public JsonMqttConfiguration decode(JsonNode json) {
-        JsonMqttConfiguration config = new JsonMqttConfiguration();
-        config.setKey(getString(json, MqttConstants.MQTT_Key));
+    public MqttConfiguration decode(JsonNode json) {
+        MqttConfiguration config = new JsonMqttConfiguration();
+        config.setKey(getString(json, MqttConstants.MQTT_KEY));
+        config.setName(getString(json, MqttConstants.MQTT_NAME));
         config.setIsActive(getBoolean(json, MqttConstants.MQTT_ACTIVE));
         config.setHost(getString(json, MqttConstants.MQTT_HOST));
         config.setPort(getString(json, MqttConstants.MQTT_PORT));
