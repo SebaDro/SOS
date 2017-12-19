@@ -92,6 +92,8 @@ public interface ControllerConstants {
 
         String ADMIN_I18N_SETTINGS = ADMIN_I18N + "/settings";
 
+        String ADMIN_MQTT = "admin/mqtt";
+
         String ADMIN_RENAME_OBSERVABLE_PROPERTIES = "admin/observableProperties";
 
         String ADMIN_EXTENSIONS = "/admin/extensions";
@@ -185,6 +187,8 @@ public interface ControllerConstants {
         String ADMIN_CAPABILITIES_SETTINGS = "/admin/capabilities";
 
         String ADMIN_I18N = "/admin/i18n";
+
+        String ADMIN_MQTT = "/admin/mqtt";
 
         String ADMIN_I18N_SETTINGS = ADMIN_I18N + "/settings";
 
