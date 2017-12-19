@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import org.n52.faroe.json.AbstractJsonDao;
+import org.n52.janmayen.lifecycle.Constructable;
 import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.n52.sos.mqtt.config.MqttConfigurationDao;
 import org.n52.sos.mqtt.config.MqttConstants;
@@ -43,13 +44,28 @@ import org.n52.sos.mqtt.config.MqttConstants;
  *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
-public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttConfigurationDao {
+public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttConfigurationDao, Constructable {
 
     @Inject
     JsonMqttConfigurationDecoder jsonConfigDecoder;
 
     @Inject
     JsonMqttConfigurationEncoder jsonConfigEncoder;
+
+    @Override
+    public void init() {
+        if (getConfiguration().path(MqttConstants.MQTT_CONFIG) == null);
+        {
+            configuration().writeLock().lock();
+            try {
+                getConfiguration().putArray(MqttConstants.MQTT_CONFIG);
+                configuration().writeNow();
+            } finally {
+                configuration().writeLock().unlock();
+            }
+        }
+
+    }
 
     @Override
     public MqttConfiguration createMqttConfiguration() {
@@ -66,10 +82,10 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     }
 
     @Override
-    public void saveMqttConfiguration(JsonMqttConfiguration config) {
+    public void saveMqttConfiguration(MqttConfiguration config) {
         configuration().writeLock().lock();
         try {
-            getConfiguration().with(MqttConstants.MQTT_CONFIG).putPOJO(config.getKey(), config);
+            getConfiguration().with(MqttConstants.MQTT_CONFIG).set(config.getKey(), jsonConfigEncoder.encode(config));
             configuration().writeNow();
         } finally {
             configuration().writeLock().unlock();
@@ -77,7 +93,7 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     }
 
     @Override
-    public void deleteMqttConfiguration(JsonMqttConfiguration config) {
+    public void deleteMqttConfiguration(MqttConfiguration config) {
         configuration().writeLock().lock();
         try {
             getConfiguration().with(MqttConstants.MQTT_CONFIG).remove(config.getKey());
@@ -88,7 +104,7 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     }
 
     @Override
-    public JsonMqttConfiguration getMqttConfiguration(String id) {
+    public MqttConfiguration getMqttConfiguration(String id) {
         configuration().readLock().lock();
         try {
             return jsonConfigDecoder.decode(getConfiguration().path(MqttConstants.MQTT_CONFIG).path(id));
@@ -98,7 +114,7 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     }
 
     @Override
-    public Set<JsonMqttConfiguration> getAllMqttConfigurations() {
+    public Set<MqttConfiguration> getAllMqttConfigurations() {
         configuration().readLock().lock();
         try {
             return StreamSupport.stream(((ArrayNode) getConfiguration().path(MqttConstants.MQTT_CONFIG)).spliterator(), false)
