@@ -38,6 +38,7 @@ import org.n52.sos.mqtt.config.MqttConfiguration;
 public class JsonMqttConfiguration implements MqttConfiguration {
 
     private String key;
+    private String name;
     private boolean isActive;
     private String host;
     private String port;
@@ -59,6 +60,14 @@ public class JsonMqttConfiguration implements MqttConfiguration {
     @Override
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
