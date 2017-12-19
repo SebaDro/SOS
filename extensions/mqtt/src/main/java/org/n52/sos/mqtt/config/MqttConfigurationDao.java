@@ -39,13 +39,13 @@ public interface MqttConfigurationDao {
 
     MqttConfiguration createMqttConfiguration();
 
-    void saveMqttConfiguration(JsonMqttConfiguration config);
+    void saveMqttConfiguration(MqttConfiguration config);
 
-    void deleteMqttConfiguration(JsonMqttConfiguration config);
+    void deleteMqttConfiguration(MqttConfiguration config);
 
-    JsonMqttConfiguration getMqttConfiguration(String id);
+    MqttConfiguration getMqttConfiguration(String id);
 
-    Set<JsonMqttConfiguration> getAllMqttConfigurations();
+    Set<MqttConfiguration> getAllMqttConfigurations();
 
     void deleteAll();
 
