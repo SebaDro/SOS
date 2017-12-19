@@ -36,7 +36,9 @@ public interface MqttConstants {
 
     String MQTT_CONFIG = "mqtt.config";
 
-    String MQTT_Key = "mqtt.key";
+    String MQTT_KEY = "mqtt.key";
+    
+    String MQTT_NAME= "mqtt.name";
 
     String MQTT_ACTIVE = "mqtt.active";
 
