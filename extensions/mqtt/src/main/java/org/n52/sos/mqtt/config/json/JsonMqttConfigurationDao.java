@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,7 +28,9 @@
  */
 package org.n52.sos.mqtt.config.json;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Sets;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,6 +48,8 @@ import org.n52.sos.mqtt.config.MqttConstants;
  */
 public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttConfigurationDao, Constructable {
 
+    private Set<MqttConfiguration> configurations;
+
     @Inject
     JsonMqttConfigurationDecoder jsonConfigDecoder;
 
@@ -54,25 +58,26 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
 
     @Override
     public void init() {
-        if (getConfiguration().path(MqttConstants.MQTT_CONFIG) == null);
-        {
+        if (getConfiguration().get(MqttConstants.MQTT_CONFIG) == null) {
             configuration().writeLock().lock();
             try {
-                getConfiguration().putArray(MqttConstants.MQTT_CONFIG);
+//                getConfiguration().putArray(MqttConstants.MQTT_CONFIG);
+                getConfiguration().putObject(MqttConstants.MQTT_CONFIG);
                 configuration().writeNow();
             } finally {
                 configuration().writeLock().unlock();
             }
         }
-
+        createTestConfigs();
     }
 
     @Override
-    public MqttConfiguration createMqttConfiguration() {
+    public MqttConfiguration createMqttConfiguration(String name) {
         JsonMqttConfiguration config = new JsonMqttConfiguration();
         configuration().writeLock().lock();
         try {
             config.setKey(UUID.randomUUID().toString());
+            config.setName(name);
             saveMqttConfiguration(config);
         } finally {
             configuration().writeLock().unlock();
@@ -85,7 +90,22 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     public void saveMqttConfiguration(MqttConfiguration config) {
         configuration().writeLock().lock();
         try {
-            getConfiguration().with(MqttConstants.MQTT_CONFIG).set(config.getKey(), jsonConfigEncoder.encode(config));
+            ObjectNode jsonConfig = getConfiguration();
+            ObjectNode jsonMqttConfig = jsonConfig.with(MqttConstants.MQTT_CONFIG);
+            jsonMqttConfig.set(config.getKey(), jsonConfigEncoder.encode(config));
+            configuration().writeNow();
+        } finally {
+            configuration().writeLock().unlock();
+        }
+    }
+
+    @Override
+    public void updateMqttConfiguration(MqttConfiguration config) {
+        configuration().writeLock().lock();
+        try {
+            ObjectNode jsonConfig = getConfiguration();
+            ObjectNode jsonMqttConfig = jsonConfig.with(MqttConstants.MQTT_CONFIG);
+            jsonMqttConfig.putObject(config.getKey()).setAll((ObjectNode) jsonConfigEncoder.encode(config));
             configuration().writeNow();
         } finally {
             configuration().writeLock().unlock();
@@ -104,10 +124,24 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     }
 
     @Override
-    public MqttConfiguration getMqttConfiguration(String id) {
+    public Optional<MqttConfiguration> getMqttConfigurationById(String id) {
         configuration().readLock().lock();
         try {
-            return jsonConfigDecoder.decode(getConfiguration().path(MqttConstants.MQTT_CONFIG).path(id));
+            return Optional.of(getConfiguration().path(MqttConstants.MQTT_CONFIG).path(id))
+                    .map(n -> jsonConfigDecoder.decode(n));
+        } finally {
+            configuration().readLock().unlock();
+        }
+    }
+
+    @Override
+    public Optional<MqttConfiguration> getMqttConfigurationByName(String name) {
+        configuration().readLock().lock();
+        try {
+            return StreamSupport.stream(getConfiguration().with(MqttConstants.MQTT_CONFIG).spliterator(), true)
+                    .filter(n -> n.get(MqttConstants.MQTT_NAME).asText().equals(name))
+                    .findFirst()
+                    .map(n -> jsonConfigDecoder.decode(n));
         } finally {
             configuration().readLock().unlock();
         }
@@ -117,7 +151,7 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     public Set<MqttConfiguration> getAllMqttConfigurations() {
         configuration().readLock().lock();
         try {
-            return StreamSupport.stream(((ArrayNode) getConfiguration().path(MqttConstants.MQTT_CONFIG)).spliterator(), false)
+            return StreamSupport.stream(getConfiguration().with(MqttConstants.MQTT_CONFIG).spliterator(), false)
                     .map(n -> jsonConfigDecoder.decode(n))
                     .collect(Collectors.toSet());
         } finally {
@@ -128,6 +162,24 @@ public class JsonMqttConfigurationDao extends AbstractJsonDao implements MqttCon
     @Override
     public void deleteAll() {
         this.configuration().delete();
+    }
+
+    @Override
+    public boolean hasMqttConfigurationForName(String name) {
+        return StreamSupport.stream(getConfiguration().path(MqttConstants.MQTT_CONFIG).spliterator(), false)
+                .anyMatch(n -> n.get(MqttConstants.MQTT_NAME).asText().equals(name));
+    }
+
+    private void createTestConfigs() {
+        MqttConfiguration config1 = new JsonMqttConfiguration();
+        config1.setKey("test1");
+        config1.setName("config1");
+        MqttConfiguration config2 = new JsonMqttConfiguration();
+        config2.setKey("test2");
+        config2.setName("config2");
+        configurations = Sets.newHashSet();
+        configurations.add(config1);
+        configurations.add(config2);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@ public class JsonMqttConfiguration implements MqttConfiguration {
 
     private String key;
     private String name;
-    private boolean isActive;
+    private boolean active;
     private String host;
     private String port;
     private String topic;
@@ -62,22 +62,24 @@ public class JsonMqttConfiguration implements MqttConfiguration {
         this.key = key;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
     @Override
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     @Override
     public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+        this.active = isActive;
     }
 
     @Override

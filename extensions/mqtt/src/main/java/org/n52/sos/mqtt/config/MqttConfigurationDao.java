@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
  */
 package org.n52.sos.mqtt.config;
 
-import org.n52.sos.mqtt.config.json.JsonMqttConfiguration;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -37,15 +37,21 @@ import java.util.Set;
  */
 public interface MqttConfigurationDao {
 
-    MqttConfiguration createMqttConfiguration();
+    MqttConfiguration createMqttConfiguration(String name);
 
     void saveMqttConfiguration(MqttConfiguration config);
 
+    void updateMqttConfiguration(MqttConfiguration config);
+
     void deleteMqttConfiguration(MqttConfiguration config);
 
-    MqttConfiguration getMqttConfiguration(String id);
+    Optional<MqttConfiguration> getMqttConfigurationById(String id);
+
+    Optional<MqttConfiguration> getMqttConfigurationByName(String name);
 
     Set<MqttConfiguration> getAllMqttConfigurations();
+
+    boolean hasMqttConfigurationForName(String name);
 
     void deleteAll();
 
