@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ import org.junit.Test;
 public class JsonMqttConfigurationEncoderTest {
 
     private static final String KEY = UUID.randomUUID().toString();
-    private static final boolean IS_ACTIVE = true;
+//    private static final boolean IS_ACTIVE = true;
     private static final String HOST = "ows.dev.52north.org";
     private static final String PORT = "1883";
     private static final String PROTOCOL = "tcp";
@@ -75,7 +75,7 @@ public class JsonMqttConfigurationEncoderTest {
 
         configuration = new JsonMqttConfiguration();
         configuration.setKey(KEY);
-        configuration.setIsActive(IS_ACTIVE);
+//        configuration.setIsActive(IS_ACTIVE);
         configuration.setHost(HOST);
         configuration.setPort(PORT);
         configuration.setProtocol(PROTOCOL);
@@ -94,7 +94,7 @@ public class JsonMqttConfigurationEncoderTest {
 
         configurationWithNullValues = new JsonMqttConfiguration();
         configurationWithNullValues.setKey(UUID.randomUUID().toString());
-        configurationWithNullValues.setIsActive(IS_ACTIVE);
+//        configurationWithNullValues.setIsActive(IS_ACTIVE);
         configurationWithNullValues.setHost(HOST);
         configurationWithNullValues.setPort(PORT);
         configurationWithNullValues.setProtocol(PROTOCOL);
@@ -107,8 +107,8 @@ public class JsonMqttConfigurationEncoderTest {
 
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_KEY).asText(),
                 CoreMatchers.equalTo(configuration.getKey()));
-        Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_ACTIVE).asBoolean(),
-                CoreMatchers.equalTo(configuration.isActive()));
+//        Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_ACTIVE).asBoolean(),
+//                CoreMatchers.equalTo(configuration.isActive()));
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_HOST).asText(),
                 CoreMatchers.equalTo(configuration.getHost()));
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_PORT).asText(),

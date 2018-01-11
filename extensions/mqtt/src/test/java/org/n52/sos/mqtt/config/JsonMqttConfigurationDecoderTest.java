@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,22 +28,18 @@
  */
 package org.n52.sos.mqtt.config;
 
-import org.n52.sos.mqtt.config.json.JsonMqttConfiguration;
 import org.n52.sos.mqtt.config.json.JsonMqttConfigurationDecoder;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.UUID;
 import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import org.hamcrest.Matchers;
-import org.hamcrest.text.IsEmptyString;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.n52.janmayen.Json;
 
 /**
@@ -53,6 +49,7 @@ import org.n52.janmayen.Json;
 public class JsonMqttConfigurationDecoderTest {
 
     private static final String KEY = UUID.randomUUID().toString();
+     private static final String NAME = "ows";
     private static final boolean IS_ACTIVE = true;
     private static final String HOST = "ows.dev.52north.org";
     private static final String PORT = "1883";
@@ -77,6 +74,7 @@ public class JsonMqttConfigurationDecoderTest {
 
         configNode = Json.nodeFactory().objectNode()
                 .put(MqttConstants.MQTT_KEY, KEY)
+                .put(MqttConstants.MQTT_NAME, NAME)
                 .put(MqttConstants.MQTT_ACTIVE, IS_ACTIVE)
                 .put(MqttConstants.MQTT_HOST, HOST)
                 .put(MqttConstants.MQTT_PORT, PORT)
@@ -100,7 +98,8 @@ public class JsonMqttConfigurationDecoderTest {
         MqttConfiguration decodedConfig = decoder.decode((JsonNode) configNode);
 
         Assert.assertThat(decodedConfig.getKey(), CoreMatchers.is(equalTo(KEY)));
-        Assert.assertThat(decodedConfig.isActive(), CoreMatchers.is(equalTo(IS_ACTIVE)));
+        Assert.assertThat(decodedConfig.getName(), CoreMatchers.is(equalTo(NAME)));
+//        Assert.assertThat(decodedConfig.isActive(), CoreMatchers.is(equalTo(IS_ACTIVE)));
         Assert.assertThat(decodedConfig.getHost(), CoreMatchers.is(equalTo(HOST)));
         Assert.assertThat(decodedConfig.getPort(), CoreMatchers.is(equalTo(PORT)));
         Assert.assertThat(decodedConfig.getTopic(), CoreMatchers.is(equalTo(TOPIC)));
