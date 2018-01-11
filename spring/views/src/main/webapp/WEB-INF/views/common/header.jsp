@@ -176,6 +176,11 @@
                                                                     </a>
                                                                 </li>
                                                             </c:if>
+                                                            <li>
+                                                                <a href="<c:url value="/admin/mqtt" />">
+                                                                    <span class="menu-title">MQTT Settings</span>
+                                                                </a>
+                                                            </li>
                                                         </ul>
                                                     </li>
                                                     <li>
