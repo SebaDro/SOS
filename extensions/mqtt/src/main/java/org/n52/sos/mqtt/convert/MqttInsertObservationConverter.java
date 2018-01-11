@@ -28,7 +28,7 @@
  */
 package org.n52.sos.mqtt.convert;
 
-import com.vividsolutions.jts.io.ParseException;
+import org.locationtech.jts.io.ParseException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
 
