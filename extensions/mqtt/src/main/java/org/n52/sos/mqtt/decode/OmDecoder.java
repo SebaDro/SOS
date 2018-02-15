@@ -29,16 +29,11 @@
 package org.n52.sos.mqtt.decode;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import javax.inject.Inject;
+import java.util.Set;
 import org.n52.faroe.annotation.Configurable;
-import org.n52.faroe.annotation.Setting;
-import org.n52.sos.mqtt.MqttSettings;
 import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.api.OmMessage;
-import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
-import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
-import org.n52.sos.mqtt.convert.OmInsertObservationConverter;
-import org.n52.sos.mqtt.convert.OmInsertSensorConverter;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 
 /**
  *
@@ -47,14 +42,8 @@ import org.n52.sos.mqtt.convert.OmInsertSensorConverter;
 @Configurable
 public class OmDecoder extends AbstractMqttJsonDecoder {
 
-    private String[] observableProperty;
+    private Set<String> observableProperties;
     private String observationField;
-
-    @Inject
-    OmInsertSensorConverter insertSensorConverter;
-
-    @Inject
-    OmInsertObservationConverter insertObservationConverter;
 
     @Override
     protected MqttMessage parseMessage(JsonNode n) {
@@ -69,35 +58,26 @@ public class OmDecoder extends AbstractMqttJsonDecoder {
         return message;
     }
 
-    @Override
-    public MqttInsertSensorConverter getInsertSensorConverter() {
-        insertSensorConverter.setObservableProperties(observableProperty);
-        return insertSensorConverter;
+    public Set<String> getObservableProperty() {
+        return observableProperties;
     }
 
-    @Override
-    public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return insertObservationConverter;
-    }
-
-    public String[] getObservableProperty() {
-        return observableProperty;
-    }
-
-    @Setting(MqttSettings.MQTT_OM_OBSERVABLE_PROPERTY)
-    public void setObservableProperty(String observableProperty) {
-        if(observableProperty != null){
-            this.observableProperty = observableProperty.split(";");
-        }
+    public void setObservableProperty(Set<String> observableProperties) {
+        this.observableProperties = observableProperties;
     }
 
     public String getObservationField() {
         return observationField;
     }
 
-    @Setting(MqttSettings.MQTT_OM_OBSERVATION_FIELD)
     public void setObservationField(String observationField) {
         this.observationField = observationField;
+    }
+
+    @Override
+    public void configure(MqttConfiguration config) {
+        setObservableProperty(config.getObservableProperties());
+        setObservationField(config.getObservationField());
     }
 
 }

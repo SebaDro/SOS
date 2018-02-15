@@ -28,33 +28,22 @@
  */
 package org.n52.sos.mqtt.decode;
 
-import javax.inject.Inject;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.joda.time.format.ISODateTimeFormat;
 import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.sos.mqtt.api.CtdMessage;
 import org.n52.sos.mqtt.api.MqttMessage;
-import org.n52.sos.mqtt.convert.marine.CtdInsertObservationConverter;
-import org.n52.sos.mqtt.convert.marine.CtdInsertSensorConverter;
-import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
-import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class CtdDecoder extends AbstractMqttCsvDecoder {
 
     private static final Logger LOG = LoggerFactory.getLogger(CtdDecoder.class);
-
-    @Inject
-    CtdInsertSensorConverter insertSensorConverter;
-
-    @Inject
-    CtdInsertObservationConverter insertObservationConverter;
 
     @Override
     protected MqttMessage parseMessage(String message) throws OwsExceptionReport {
@@ -73,16 +62,6 @@ public class CtdDecoder extends AbstractMqttCsvDecoder {
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException ex) {
             throw new NoApplicableCodeException().causedBy(ex).withMessage("Error while parsing message with non expected content.", message);
         }
-    }
-
-    @Override
-    public MqttInsertSensorConverter getInsertSensorConverter() {
-        return insertSensorConverter;
-    }
-
-    @Override
-    public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return insertObservationConverter;
     }
 
 }

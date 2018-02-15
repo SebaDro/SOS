@@ -30,14 +30,12 @@ package org.n52.sos.mqtt.decode;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.Set;
 import org.n52.faroe.annotation.Setting;
 import org.n52.sos.mqtt.MqttSettings;
 import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.api.TtnMessage;
-import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
-import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
-import org.n52.sos.mqtt.convert.TtnInsertObservationConverter;
-import org.n52.sos.mqtt.convert.TtnInsertSensorConverter;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 
 /**
  *
@@ -45,8 +43,7 @@ import org.n52.sos.mqtt.convert.TtnInsertSensorConverter;
  */
 public class TtnDecoder extends AbstractMqttJsonDecoder {
 
-    private String[] observableProperty;
-
+    private Set<String> observableProperties;
 
     @Override
     protected MqttMessage parseMessage(JsonNode n) {
@@ -63,23 +60,18 @@ public class TtnDecoder extends AbstractMqttJsonDecoder {
                 .setOmPayload(node);
     }
 
-    @Override
-    public MqttInsertSensorConverter getInsertSensorConverter() {
-        return new TtnInsertSensorConverter().setObservableProperty(observableProperty);
-    }
-
-    @Override
-    public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return new TtnInsertObservationConverter();
-    }
-
     @Setting(MqttSettings.MQTT_OM_OBSERVABLE_PROPERTY)
-    public void setObservableProperty(String property) {
-        this.observableProperty = property.split(";");
+    public void setObservableProperty(Set<String> properties) {
+        this.observableProperties = properties;
     }
 
-    public String[] getObservableProperty() {
-        return observableProperty;
+    public Set<String> getObservableProperty() {
+        return observableProperties;
+    }
+
+    @Override
+    public void configure(MqttConfiguration config) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

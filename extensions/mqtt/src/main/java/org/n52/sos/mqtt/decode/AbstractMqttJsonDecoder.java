@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public abstract class AbstractMqttJsonDecoder implements MqttDecoder {
+public abstract class AbstractMqttJsonDecoder extends MqttDecoder {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMqttCsvDecoder.class);
 

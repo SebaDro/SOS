@@ -28,17 +28,14 @@
  */
 package org.n52.sos.mqtt.decode;
 
-
 import org.n52.sos.mqtt.api.AdsbMessage;
 import org.n52.sos.mqtt.api.MqttMessage;
-import org.n52.sos.mqtt.convert.AdsbToInsertObservation;
-import org.n52.sos.mqtt.convert.AdsbToInsertSensor;
-import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
-import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 
 public class AdsbDecoder extends AbstractMqttJsonDecoder {
+
 
     protected MqttMessage parseMessage(JsonNode json) {
         return new AdsbMessage()
@@ -53,15 +50,9 @@ public class AdsbDecoder extends AbstractMqttJsonDecoder {
                 .setSquawk(getString(json, AdsbMessage.SQUAWK));
     }
 
-
     @Override
-    public MqttInsertSensorConverter getInsertSensorConverter() {
-        return new AdsbToInsertSensor();
-    }
-
-    @Override
-    public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return new AdsbToInsertObservation();
+    public void configure(MqttConfiguration configuration) {
+        //Nothing to configure here.
     }
 
 }

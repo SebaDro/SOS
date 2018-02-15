@@ -30,14 +30,12 @@ package org.n52.sos.mqtt.decode;
 
 import org.n52.sos.mqtt.api.FifaMessage;
 import org.n52.sos.mqtt.api.MqttMessage;
-import org.n52.sos.mqtt.convert.FifaInsertObservationConverter;
-import org.n52.sos.mqtt.convert.FifaInsertSensorConverter;
-import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
-import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 
 public class FifaDecoder extends AbstractMqttJsonDecoder {
+
 
     @Override
     protected MqttMessage parseMessage(JsonNode json) {
@@ -52,13 +50,8 @@ public class FifaDecoder extends AbstractMqttJsonDecoder {
     }
 
     @Override
-    public MqttInsertSensorConverter getInsertSensorConverter() {
-        return new FifaInsertSensorConverter();
-    }
-
-    @Override
-    public MqttInsertObservationConverter getInsertOnbservationConverter() {
-        return new FifaInsertObservationConverter();
+    public void configure(MqttConfiguration config) {
+        // Nothing to configure here.
     }
 
 }

@@ -31,16 +31,35 @@ package org.n52.sos.mqtt.decode;
 import java.util.Set;
 
 import org.n52.sos.mqtt.api.MqttMessage;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
 import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 
+public abstract class MqttDecoder {
 
-public interface MqttDecoder {
+    MqttInsertSensorConverter insertSensorConverter;
+    MqttInsertObservationConverter insertObservationConverter;
 
-    Set<MqttMessage> decode(String payload);
+    public MqttInsertObservationConverter getInsertObservationConverter() {
+        return insertObservationConverter;
+    }
 
-    MqttInsertSensorConverter getInsertSensorConverter();
+    public MqttDecoder setInsertObservationConverter(MqttInsertObservationConverter insertObservationConverter) {
+        this.insertObservationConverter = insertObservationConverter;
+        return this;
+    }
 
-    MqttInsertObservationConverter getInsertOnbservationConverter();
+    public MqttInsertSensorConverter getInsertSensorConverter() {
+        return insertSensorConverter;
+    }
+
+    public MqttDecoder setInsertSensorConverter(MqttInsertSensorConverter insertSensorConverter) {
+        this.insertSensorConverter = insertSensorConverter;
+        return this;
+    }
+
+    public abstract Set<MqttMessage> decode(String payload);
+
+    abstract void configure(MqttConfiguration config);
 
 }

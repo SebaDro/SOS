@@ -32,21 +32,20 @@ import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.n52.faroe.annotation.Setting;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 
-import org.n52.sos.mqtt.MqttSettings;
 import org.n52.sos.mqtt.api.MqttMessage;
+import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 @Configurable
-public abstract class AbstractMqttCsvDecoder implements MqttDecoder {
+public abstract class AbstractMqttCsvDecoder extends MqttDecoder {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMqttCsvDecoder.class);
 
@@ -75,11 +74,16 @@ public abstract class AbstractMqttCsvDecoder implements MqttDecoder {
         return messages;
     }
 
+    @Override
+    public void configure(MqttConfiguration config) {
+        setLineSeperator(config.getCsvLineSeperator());
+        setFieldSeperator(config.getCsvFieldSeperator());
+    }
+
     public String getLineSeperator() {
         return lineSeperator;
     }
 
-    @Setting(MqttSettings.MQTT_CSV_LINE_SEPERATOR)
     public void setLineSeperator(String lineSeperator) {
         this.lineSeperator = lineSeperator;
     }
@@ -88,7 +92,6 @@ public abstract class AbstractMqttCsvDecoder implements MqttDecoder {
         return fieldSeperator;
     }
 
-    @Setting(MqttSettings.MQTT_CSV_FIELD_SEPERATOR)
     public void setFieldSeperator(String fieldSeperator) {
         this.fieldSeperator = fieldSeperator;
     }
