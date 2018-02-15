@@ -71,7 +71,7 @@ public class TtnDecoder extends AbstractMqttJsonDecoder {
 
     @Override
     public void configure(MqttConfiguration config) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Nothing to configure here.
     }
 
 }
