@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import org.n52.shetland.ogc.OGCConstants;
 import org.n52.shetland.ogc.om.OmConstants;
 import org.n52.shetland.ogc.om.features.SfConstants;
@@ -41,17 +42,21 @@ import org.n52.shetland.ogc.sensorML.elements.SmlIdentifier;
 import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.mqtt.api.OmMessage;
-
+import org.n52.svalbard.encode.EncoderRepository;
 
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<OmMessage> {
 
-    private String[] observableProperties;
+    private Set<String> observableProperties;
 
-    public OmInsertSensorConverter setObservableProperties(String[] observableProperties) {
+    public OmInsertSensorConverter(EncoderRepository encoderRepository) {
+        super(encoderRepository);
+    }
+
+    public OmInsertSensorConverter setObservableProperties(Set<String> observableProperties) {
         this.observableProperties = observableProperties;
         return this;
     }
@@ -87,9 +92,7 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
     @Override
     protected List<SmlClassifier> createClassificationList() {
         List<SmlClassifier> classifier = Lists.newArrayList();
-        for (int i = 0; i < observableProperties.length; i++) {
-            classifier.add(createClassification(observableProperties[i]));
-        }
+        observableProperties.forEach(oP -> classifier.add(createClassification(oP)));
         return classifier;
     }
 
@@ -111,18 +114,20 @@ public class OmInsertSensorConverter extends AbstractMqttInsertSensorConverter<O
     @Override
     protected List<SmlIo> createOutputs() {
         List<SmlIo> outputs = Lists.newArrayList();
-        for (int i = 0; i < observableProperties.length; i++) {
-            outputs.add(createQuantityOutput(observableProperties[i], ""));
-        }
+        observableProperties.forEach(oP -> outputs.add(createQuantityOutput(oP, "")));
+//        for (int i = 0; i < observableProperties.length; i++) {
+//            outputs.add(createQuantityOutput(observableProperties[i], ""));
+//        }
         return outputs;
     }
 
     @Override
     protected List<SmlIo> createInputs() {
         List<SmlIo> inputs = Lists.newArrayList();
-        for (int i = 0; i < observableProperties.length; i++) {
-            inputs.add(createInput(observableProperties[i]));
-        }
+        observableProperties.forEach(oP -> inputs.add(createInput(oP)));
+//        for (int i = 0; i < observableProperties.length; i++) {
+//            inputs.add(createInput(observableProperties[i]));
+//        }
         return inputs;
     }
 

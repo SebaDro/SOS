@@ -69,8 +69,11 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqttInsertSensorConverter.class);
 
-    @Inject
-    EncoderRepository encoderRepository;
+    private EncoderRepository encoderRepository;
+
+    public AbstractMqttInsertSensorConverter(EncoderRepository encoderRepository) {
+        this.encoderRepository = encoderRepository;
+    }
 
     @Override
     public InsertSensorRequest convert(T message) throws OwsExceptionReport {
@@ -181,6 +184,14 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
         List<SmlCapabilities> capabilities = new ArrayList<>();
         capabilities.add(createOfferingCapabilities(offering));
         return capabilities;
+    }
+
+    public EncoderRepository getEncoderRepository() {
+        return encoderRepository;
+    }
+
+    public void setEncoderRepository(EncoderRepository encoderRepository) {
+        this.encoderRepository = encoderRepository;
     }
 
     protected abstract String getProcedure(T message);

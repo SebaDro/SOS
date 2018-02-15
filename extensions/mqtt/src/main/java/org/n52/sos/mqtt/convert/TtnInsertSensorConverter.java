@@ -33,6 +33,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import org.n52.shetland.ogc.OGCConstants;
 import org.n52.shetland.ogc.om.OmConstants;
 import org.n52.shetland.ogc.om.features.SfConstants;
@@ -42,6 +43,7 @@ import org.n52.shetland.ogc.sensorML.elements.SmlIdentifier;
 import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.mqtt.api.TtnMessage;
+import org.n52.svalbard.encode.EncoderRepository;
 
 /**
  *
@@ -49,10 +51,14 @@ import org.n52.sos.mqtt.api.TtnMessage;
  */
 public class TtnInsertSensorConverter extends AbstractMqttInsertSensorConverter<TtnMessage> {
 
-    private String[] observableProperty;
+    private Set<String> observableProperties;
 
-    public TtnInsertSensorConverter setObservableProperty(String[] observableProperty) {
-        this.observableProperty = observableProperty;
+    public TtnInsertSensorConverter(EncoderRepository encoderRepository) {
+        super(encoderRepository);
+    }
+
+    public TtnInsertSensorConverter setObservableProperties(Set<String> observableProperties) {
+        this.observableProperties = observableProperties;
         return this;
     }
 
@@ -76,7 +82,7 @@ public class TtnInsertSensorConverter extends AbstractMqttInsertSensorConverter<
 
     @Override
     protected List<String> createObservableProperties() {
-        return Lists.newArrayList(observableProperty);
+        return Lists.newArrayList(observableProperties);
     }
 
     @Override
@@ -87,9 +93,10 @@ public class TtnInsertSensorConverter extends AbstractMqttInsertSensorConverter<
     @Override
     protected List<SmlClassifier> createClassificationList() {
         List<SmlClassifier> classifier = Lists.newArrayList();
-        for (int i = 0; i < observableProperty.length; i++) {
-            classifier.add(createClassification(observableProperty[i]));
-        }
+        observableProperties.forEach(oP -> classifier.add(createClassification(oP)));
+//        for (int i = 0; i < observableProperty.length; i++) {
+//            classifier.add(createClassification(observableProperty[i]));
+//        }
         return classifier;
     }
 
@@ -117,18 +124,20 @@ public class TtnInsertSensorConverter extends AbstractMqttInsertSensorConverter<
     @Override
     protected List<SmlIo> createOutputs() {
         List<SmlIo> outputs = Lists.newArrayList();
-        for (int i = 0; i < observableProperty.length; i++) {
-            outputs.add(createQuantityOutput(observableProperty[i], ""));
-        }
+        observableProperties.forEach(oP -> outputs.add(createQuantityOutput(oP, "")));
+//        for (int i = 0; i < observableProperty.length; i++) {
+//            outputs.add(createQuantityOutput(observableProperty[i], ""));
+//        }
         return outputs;
     }
 
     @Override
     protected List<SmlIo> createInputs() {
         List<SmlIo> inputs = Lists.newArrayList();
-        for (int i = 0; i < observableProperty.length; i++) {
-            inputs.add(createInput(observableProperty[i]));
-        }
+        observableProperties.forEach(oP -> inputs.add(createInput(oP)));
+//        for (int i = 0; i < observableProperty.length; i++) {
+//            inputs.add(createInput(observableProperty[i]));
+//        }
         return inputs;
     }
 

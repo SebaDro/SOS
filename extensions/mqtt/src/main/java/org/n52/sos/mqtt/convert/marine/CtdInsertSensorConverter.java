@@ -43,13 +43,18 @@ import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.mqtt.api.CtdMessage;
 import org.n52.sos.mqtt.convert.AbstractMqttInsertSensorConverter;
+import org.n52.svalbard.encode.EncoderRepository;
 
 
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<CtdMessage> {
+
+    public CtdInsertSensorConverter(EncoderRepository encoderRepository) {
+        super(encoderRepository);
+    }
 
     @Override
     protected String getProcedure(CtdMessage message) {
@@ -60,12 +65,6 @@ public class CtdInsertSensorConverter extends AbstractMqttInsertSensorConverter<
     protected SosInsertionMetadata createInsertSensorMetadata() {
         SosInsertionMetadata metadata = new SosInsertionMetadata();
         metadata.setFeatureOfInterestTypes(Collections.singleton(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_POINT));
-//        metadata.setObservationTypes(Lists.newArrayList(OmConstants.OBS_TYPE_MEASUREMENT,
-//                OmConstants.OBS_TYPE_CATEGORY_OBSERVATION,
-//                OmConstants.OBS_TYPE_COUNT_OBSERVATION,
-//                OmConstants.OBS_TYPE_TEXT_OBSERVATION,
-//                OmConstants.OBS_TYPE_TRUTH_OBSERVATION,
-//                OmConstants.OBS_TYPE_GEOMETRY_OBSERVATION));
         metadata.setObservationTypes(Collections.singleton(OmConstants.OBS_TYPE_MEASUREMENT));
         return metadata;
     }

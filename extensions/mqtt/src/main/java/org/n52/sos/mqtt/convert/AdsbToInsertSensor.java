@@ -46,10 +46,15 @@ import org.n52.shetland.ogc.sensorML.elements.SmlClassifier;
 import org.n52.shetland.ogc.sensorML.elements.SmlIdentifier;
 import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sos.SosInsertionMetadata;
+import org.n52.svalbard.encode.EncoderRepository;
 
 public class AdsbToInsertSensor extends AbstractMqttInsertSensorConverter<AdsbMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsbToInsertSensor.class);
+
+    public AdsbToInsertSensor(EncoderRepository encoderRepository) {
+        super(encoderRepository);
+    }
 
     @Override
     protected String getProcedure(AdsbMessage message) {

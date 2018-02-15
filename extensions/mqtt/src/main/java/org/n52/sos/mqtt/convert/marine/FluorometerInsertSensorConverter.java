@@ -43,12 +43,17 @@ import org.n52.shetland.ogc.sensorML.elements.SmlIo;
 import org.n52.shetland.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.mqtt.api.FluorometerMessage;
 import org.n52.sos.mqtt.convert.AbstractMqttInsertSensorConverter;
+import org.n52.svalbard.encode.EncoderRepository;
 
 /**
  *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class FluorometerInsertSensorConverter extends AbstractMqttInsertSensorConverter<FluorometerMessage> {
+
+    public FluorometerInsertSensorConverter(EncoderRepository encoderRepository) {
+        super(encoderRepository);
+    }
 
     @Override
     protected String getProcedure(FluorometerMessage message) {

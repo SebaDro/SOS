@@ -40,8 +40,13 @@ import org.n52.shetland.ogc.sos.SosInsertionMetadata;
 import org.n52.shetland.ogc.sos.SosOffering;
 
 import org.n52.sos.mqtt.api.FifaMessage;
+import org.n52.svalbard.encode.EncoderRepository;
 
 public class FifaInsertSensorConverter extends AbstractMqttInsertSensorConverter<FifaMessage> {
+
+    public FifaInsertSensorConverter(EncoderRepository encoderRepository) {
+        super(encoderRepository);
+    }
 
     @Override
     protected String getProcedure(FifaMessage message) {
