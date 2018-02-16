@@ -82,6 +82,7 @@
             } else {
                 self.requestConfig(selectedConfig);
             }
+            self.requestDecoders();
 
             this.$addNewButton.on("click", function () {
                 self.$addNewButton.slideLeft(100, function () {
@@ -195,7 +196,7 @@
 //                }));
 
             }).fail(function () {
-                showError("MQTT client could not be " + (this.selectedConfig.active ? "activated" : "deactivated"));
+                showError("MQTT client could not be " + (payload.mqttConfigurationActivation ? "activated" : "deactivated"));
                 self.$mqttActivate.prop("disabled", false);
             });
         },
@@ -209,6 +210,22 @@
                         self.updateProperties(data);
                     }).fail(function () {
                 showError("Data could not be loaded: ");
+            });
+        },
+
+        requestDecoders: function () {
+            var self = this;
+            $.get(self.baseUrl + "admin/mqtt/decoders")
+                    .done(function (data) {
+                        console.log("Decoders loaded: " + data);
+                        $.each(data, function (key, value) {
+                            self.$mqttDecoder.append($('<option>', {
+                                value: key,
+                                text: value
+                            }));
+                        });
+                    }).fail(function () {
+                showError("Could not load available decoders.");
             });
         },
 

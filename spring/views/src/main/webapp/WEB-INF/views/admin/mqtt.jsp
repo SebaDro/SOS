@@ -121,7 +121,6 @@
         <legend >
             <div class="row">
                 <div>Configuration for MQTT client </div>
-                <div>Test</div>
             </div>
         </legend>
         <div class="control-group">
@@ -161,13 +160,7 @@
         <div class="control-group">
             <label class="control-label" for="mqttconf-decoder-select">MQTT decoder</label>
             <div class="controls">
-                <select id="mqttconf-decoder-select" class="input-xlarge">
-                    <option value="org.n52.sos.decode.AdsbDecoder" selected>AdsbDecoder</option>
-                    <option value="org.n52.sos.decode.CtdDecoder" >CtdDecoder</option>
-                    <option value="org.n52.sos.decode.FluorometerDecoder" >FluorometerDecoder</option>
-                    <option value="org.n52.sos.decode.OmDecoder" >OmDecoder</option>
-                    <option value="org.n52.sos.decode.TtnDecoder" >TtnDecoder</option>
-                </select>
+                <select id="mqttconf-decoder-select" class="input-xlarge"></select>
                 <span class="help-block">Select the decoder</span>
             </div>
         </div>
