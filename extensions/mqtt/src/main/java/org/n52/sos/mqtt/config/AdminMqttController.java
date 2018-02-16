@@ -28,17 +28,21 @@
  */
 package org.n52.sos.mqtt.config;
 
+import com.google.common.collect.Lists;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
-import org.n52.faroe.SettingsService;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.sos.exception.NoSuchIdentifierException;
 import org.n52.sos.exception.ows.concrete.DuplicateIdentifierException;
+import org.n52.sos.mqtt.MqttConsumer;
+import org.n52.sos.mqtt.MqttConsumerRepository;
 import org.n52.sos.mqtt.config.json.JsonMqttConfiguration;
+import org.n52.sos.mqtt.decode.MqttDecoderFactory;
 import org.n52.sos.web.common.AbstractController;
 import org.n52.sos.web.common.ControllerConstants;
 
@@ -78,7 +82,10 @@ public class AdminMqttController extends AbstractController {
     private MqttConfigurationDao mqttConfigDao;
 
     @Inject
-    private SettingsService settingsManager;
+    private MqttConsumerRepository mqttRepository;
+
+    @Inject
+    MqttDecoderFactory decoderFactory;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView view() {
@@ -103,6 +110,15 @@ public class AdminMqttController extends AbstractController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/decoders", method = RequestMethod.GET)
+    public Map<String, String> decoderValues() throws NoSuchIdentifierException {
+        Map<String, String> decoders = new HashMap();
+        Lists.newArrayList(MqttDecoderFactory.Decoder.values())
+                .forEach(d -> decoders.put(d.qualifiedName(), d.getName()));
+        return decoders;
+    }
+
+    @ResponseBody
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public MqttConfiguration create(@RequestBody JsonMqttConfiguration config) throws DuplicateIdentifierException {
@@ -112,6 +128,10 @@ public class AdminMqttController extends AbstractController {
         }
         config.setKey(UUID.randomUUID().toString());
         mqttConfigDao.saveMqttConfiguration(config);
+        MqttConsumer consumer = new MqttConsumer(config);
+        consumer.setDecoder(decoderFactory.createMqttDecoder(config));
+        mqttRepository.add(new MqttConsumer(config));
+
         return config;
     }
 
@@ -119,7 +139,7 @@ public class AdminMqttController extends AbstractController {
     @RequestMapping(value = "/operations",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void operation(@RequestBody Map<String, Object> request) throws NoSuchIdentifierException {
+    public void operation(@RequestBody Map<String, Object> request) throws NoSuchIdentifierException, MqttException {
 
         String configurationId = (String) request.get(MQTT_CONFIGURATION_KEY);
         boolean activation = (boolean) request.get(MQTT_CONFIGURATION_ACTIVATION);
@@ -127,10 +147,16 @@ public class AdminMqttController extends AbstractController {
         if (!config.isPresent()) {
             throw new NoSuchIdentifierException(configurationId);
         }
+
+        if (activation) {
+            mqttRepository.get(configurationId).connect();
+        } else {
+            mqttRepository.get(configurationId).cleanup();
+        }
+
         MqttConfiguration configuration = config.get();
         configuration.setIsActive(activation);
         mqttConfigDao.updateMqttConfiguration(configuration);
-
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -151,5 +177,12 @@ public class AdminMqttController extends AbstractController {
     @ExceptionHandler(DuplicateIdentifierException.class)
     public String onError(OwsExceptionReport e) {
         return "There is already a configuration registered with the given name. " + e.getMessage();
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(MqttException.class)
+    public String onError(MqttException e) {
+        return "MQTT consumer could not be connected/closed" + e.getMessage();
     }
 }
