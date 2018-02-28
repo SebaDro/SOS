@@ -26,41 +26,36 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
  */
-package org.n52.sos.ds.hibernate.dao.observation.series;
+package org.n52.sos.ds.hibernate.util;
 
-import org.hibernate.Criteria;
-import org.n52.series.db.beans.DataEntity;
-import org.n52.shetland.ogc.ows.exception.CodedException;
-import org.n52.shetland.ogc.sos.request.GetObservationRequest;
-import org.n52.sos.ds.hibernate.dao.observation.AbstractValueDAO;
-import org.n52.sos.ds.hibernate.dao.observation.ValuedObservationFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Locale;
+import java.util.Set;
 
-/**
- * Implementation of {@link AbstractValueDAO} for series concept
- *
- * @author Carsten Hollmann <c.hollmann@52north.org>
- * @since 4.1.0
- *
- */
-public class SeriesValueDAO extends AbstractSeriesValueDAO {
+import org.n52.iceland.ogc.ows.OwsServiceMetadataRepository;
+import org.n52.iceland.util.LocalizedProducer;
+import org.n52.shetland.ogc.ows.OwsServiceIdentification;
+import org.n52.shetland.ogc.ows.OwsServiceProvider;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SeriesValueDAO.class);
+public class OwsServiceMetadataRepositoryMock
+        implements
+        OwsServiceMetadataRepository {
 
     @Override
-    protected void addSpecificRestrictions(Criteria c, GetObservationRequest request, StringBuilder logArgs) throws CodedException {
-        // nothing  to add
-}
-
-    @Override
-    protected Class<?> getSeriesValueClass() {
-        return DataEntity.class;
+    public LocalizedProducer<OwsServiceIdentification> getServiceIdentificationFactory(String service) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
-    protected ValuedObservationFactory getValuedObservationFactory() {
-        return SeriesValuedObervationFactory.getInstance();
+    public LocalizedProducer<OwsServiceProvider> getServiceProviderFactory(String service) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<Locale> getAvailableLocales() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

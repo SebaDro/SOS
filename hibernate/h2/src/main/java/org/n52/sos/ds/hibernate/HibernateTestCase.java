@@ -33,13 +33,15 @@ import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.n52.iceland.ds.ConnectionProvider;
+import org.n52.iceland.ds.ConnectionProviderException;
 
 /**
  * @author <a href="mailto:c.autermann@52north.org">Christian Autermann</a>
  *
  * @since 4.0.0
  */
-public class HibernateTestCase extends Matchers {
+public class HibernateTestCase extends Matchers implements ConnectionProvider {
     @BeforeClass
     public static void init() {
         H2Configuration.assertInitialized();
@@ -59,5 +61,21 @@ public class HibernateTestCase extends Matchers {
 
     public static <T> void assertThat(String reason, T actual, Matcher<? super T> matcher) {
         Assert.assertThat(reason, actual, matcher);
+    }
+
+    @Override
+    public Object getConnection()
+            throws ConnectionProviderException {
+       return getSession();
+    }
+
+    @Override
+    public void returnConnection(Object connection) {
+        returnSession((Session) connection);
+    }
+
+    @Override
+    public int getMaxConnections() {
+        return 0;
     }
 }

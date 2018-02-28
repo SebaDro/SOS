@@ -376,7 +376,7 @@ public abstract class AbstractSosKvpDecoder<R extends OwsServiceRequest> extends
         return new SpatialFilter(SpatialOperator.BBOX, geometry, valueReference);
     }
 
-    protected boolean parseODataFes(OwsServiceRequest request, String parameterValues, String parameterName) throws DecodingException {
+    protected boolean parseODataFes(OwsServiceRequest request, String parameterName, String parameterValues) throws DecodingException {
         try {
             List<Filter<?>> filters = convertFilter(odataFesParser.decode(checkValues(parameterValues)));
             for (Filter<?> f : filters) {

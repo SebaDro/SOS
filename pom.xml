@@ -97,8 +97,8 @@
         <sqljdbc.version>6.2.1.jre8</sqljdbc.version>
 
         <!-- 52N dependency versions -->
-        <n52.common.xml.version>2.5.0-SNAPSHOT</n52.common.xml.version>
-        <arctic-sea.version>3.2.0-SNAPSHOT</arctic-sea.version>
+        <n52.common.xml.version>2.4.0</n52.common.xml.version>
+        <arctic-sea.version>4.1.0-SNAPSHOT</arctic-sea.version>
         
         <dataset.api.version>2.0.0-SNAPSHOT</dataset.api.version>
         <dataset.dao.version>3.0.0-SNAPSHOT</dataset.dao.version>
@@ -1262,6 +1262,18 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${org.springframework.version}</version>
+                <scope>runtime</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjtools</artifactId>
                 <version>${aspectj.version}</version>
@@ -1903,10 +1915,10 @@
                          <failOnViolation>false</failOnViolation>
                     </configuration>
                  </plugin>
-                 <!-- FIXME remove this once all problems are resolved -->
-                 <plugin>
+                 <!-- FIXME remove this once all problems are resolved --><plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.20</version>
                     <configuration>
                         <testFailureIgnore>true</testFailureIgnore>
                     </configuration>
@@ -1959,11 +1971,7 @@
                     <artifactId>cargo-maven2-plugin</artifactId>
                     <version>1.6.5</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.20</version>
-                </plugin>
+                
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -1986,35 +1994,21 @@
     </build>
     
     <repositories>
+        
         <repository>
             <id>n52-releases</id>
             <name>52n Releases</name>
             <url>http://52north.org/maven/repo/releases</url>
         </repository>
-        <repository>
-            <id>n52-snapshots</id>
-            <name>52n Snapshots</name>
-            <url>http://52north.org/maven/repo/snapshots</url>
+         <repository>
+            <id>maven-snapshots</id>
+            <name>Maven Central Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>refractions</id>
-            <name>Refractions repository</name>
-            <url>http://lists.refractions.net/m2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>hibernate-spatial</id>
-            <url>http://www.hibernatespatial.org/repository</url>
-            <snapshots>
-                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
@@ -2026,24 +2020,10 @@
             </snapshots>
         </repository>
         <repository>
-            <id>boundlessgeo</id>
-            <name>Boundless Cloud Repository</name>
-            <url>https://boundless.artifactoryonline.com/boundless/main</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>unidata-releases</id>
-            <url>https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>boundlessgeo-releases</id>
             <url>https://repo.boundlessgeo.com/main</url>
         </repository>
+         
     </repositories>
     <profiles>
         <profile>

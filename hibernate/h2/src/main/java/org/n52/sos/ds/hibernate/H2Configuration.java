@@ -48,6 +48,7 @@ import org.apache.commons.io.FileUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -59,6 +60,7 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaExport.Action;
 import org.hibernate.tool.schema.TargetType;
 import org.n52.faroe.ConfigurationError;
+import org.n52.iceland.ds.ConnectionProvider;
 import org.n52.iceland.ds.ConnectionProviderException;
 import org.n52.iceland.ds.Datasource;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
@@ -77,7 +79,7 @@ import geodb.GeoDB;
  * @since 4.0.0
  *
  */
-public class H2Configuration {
+public class H2Configuration implements ConnectionProvider {
     private static final Logger LOG = LoggerFactory.getLogger(H2Configuration.class);
 
     private static final String HIBERNATE_CONNECTION_URL = HibernateConstants.CONNECTION_URL;
@@ -186,9 +188,15 @@ public class H2Configuration {
 
     private Configuration configuration;
 
-    private List<String> createScript;
+//    private List<String> createScript;
+//
+//    private List<String> dropScript;
 
-    private List<String> dropScript;
+    private static SchemaExport schemaExport;
+
+    private static Metadata metadata;
+
+    private static SessionFactory sessionFactory;
 
     public static void assertInitialized() {
         synchronized (LOCK) {
@@ -206,15 +214,25 @@ public class H2Configuration {
     public static Session getSession() {
         H2Configuration.assertInitialized();
         try {
-            return (Session) Configurator.getInstance().getDataConnectionProvider().getConnection();
-        } catch (final ConnectionProviderException ex) {
+            if (sessionFactory == null) {
+                return null;
+            }
+            return sessionFactory.openSession();
+        } catch (final HibernateException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     public static void returnSession(final Session session) {
-        if (session != null) {
-            Configurator.getInstance().getDataConnectionProvider().returnConnection(session);
+        try {
+            if (session != null) {
+                if (session.isOpen()) {
+                    session.clear();
+                    session.close();
+                }
+            }
+        } catch (final HibernateException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -228,17 +246,19 @@ public class H2Configuration {
             try {
                 session = getSession();
                 transaction = session.beginTransaction();
-                session.doWork(connection -> {
-                    try (Statement stmt = connection.createStatement()) {
-                        for (String cmd : instance.getDropScript()) {
-                            stmt.addBatch(cmd);
-                        }
-                        for (String cmd : instance.getCreateScript()) {
-                            stmt.addBatch(cmd);
-                        }
-                        stmt.executeBatch();
-                    }
-                });
+//                session.doWork(connection -> {
+//                    try (Statement stmt = connection.createStatement()) {
+//                        for (String cmd : instance.getDropScript()) {
+//                            stmt.addBatch(cmd);
+//                        }
+//                        for (String cmd : instance.getCreateScript()) {
+//                            stmt.addBatch(cmd);
+//                        }
+//                        stmt.executeBatch();
+//                    }
+//                });
+                schemaExport.execute(EnumSet.of(TargetType.DATABASE), Action.DROP, metadata);
+                schemaExport.execute(EnumSet.of(TargetType.DATABASE), Action.CREATE, metadata);
                 transaction.commit();
             } catch (final HibernateException e) {
                 if (transaction != null) {
@@ -334,11 +354,12 @@ public class H2Configuration {
             Class.forName(H2_DRIVER);
             try (Connection conn = DriverManager.getConnection(H2_CONNECTION_URL)) {
                 GeoDB.InitGeoDB(conn);
-                Path createTempFile = null;
-                Path dropTempFile = null;
+//                Path createTempFile = null;
+//                Path dropTempFile = null;
                 try (Statement stmt = conn.createStatement()) {
                     configuration = new Configuration().configure("/hibernate.cfg.xml");
                     configuration.setProperty(HibernateConstants.CONNECTION_URL, H2_CONNECTION_URL);
+                    configuration.setProperty(HibernateConstants.DIALECT, GeoDBDialect.class.getName());
                     configuration.addProperties(properties);
                     @SuppressWarnings("unchecked")
                     List<String> resources = (List<String>) properties
@@ -347,45 +368,50 @@ public class H2Configuration {
                         configuration.addInputStream(getClass().getResourceAsStream(resource));
                     }
 //                    final GeoDBDialect dialect = new GeoDBDialect();
-                    createTempFile = Files.createTempFile("create", "tmp");
-                    dropTempFile = Files.createTempFile("drop", "tmp");
-                    SchemaExport schemaExport = new SchemaExport();
-                    schemaExport.setDelimiter(";").setFormat(true).setHaltOnError(true).setOutputFile(createTempFile.toString());
+//                    createTempFile = Files.createTempFile("create", ".tmp");
+//                    dropTempFile = Files.createTempFile("drop", ".tmp");
+                    schemaExport = new SchemaExport();
+                    schemaExport.setDelimiter(";").setFormat(false).setHaltOnError(true);
 
-                    configuration.buildSessionFactory();
-                    StandardServiceRegistry serviceRegistry = configuration.getStandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+                    sessionFactory = configuration.buildSessionFactory();
+
+                    StandardServiceRegistry serviceRegistry = configuration.getStandardServiceRegistryBuilder()
+                            .applySettings(configuration.getProperties()).build();
                     MetadataSources metadataSources = new MetadataSources(serviceRegistry);
-                    Metadata metadata = metadataSources.buildMetadata();
+                    for (String resource : resources) {
+                        metadataSources.addInputStream(getClass().getResourceAsStream(resource));
+                    }
+                    Metadata metadata = metadataSources.getMetadataBuilder().build();
 
 //                    Metadata metadata = new MetadataSources(configuration.getStandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build()).buildMetadata();
-                    schemaExport.execute(EnumSet.of(TargetType.SCRIPT), Action.CREATE, metadata);
-                    createScript = Files.readAllLines(createTempFile);
-                    schemaExport.setOutputFile(dropTempFile.toString());
-                    schemaExport.execute(EnumSet.of(TargetType.SCRIPT), Action.DROP, metadata);
-                    dropScript = Files.readAllLines(dropTempFile);
-                    for (final String s : createScript) {
-                        LOG.debug("Executing {}", s);
-                        stmt.execute(s);
-                    }
+                    schemaExport.execute(EnumSet.of(TargetType.DATABASE), Action.CREATE, metadata);
+//                    createScript = Files.readAllLines(createTempFile);
+//                    schemaExport.setOutputFile(dropTempFile.toString());
+//                    schemaExport.execute(EnumSet.of(TargetType.DATABASE), Action.DROP, metadata);
+//                    dropScript = Files.readAllLines(dropTempFile);
+//                    for (final String s : createScript) {
+//                        LOG.debug("Executing {}", s);
+//                        stmt.execute(s);
+//                    }
                 } catch (Exception e) {
                     new RuntimeException(e);
                 } finally {
-                    try {
-                        if (createTempFile != null) {
-                            Files.deleteIfExists(createTempFile);
-                        }
-
-                    } catch (IOException e) {
-                        LOG.info("Unable to delete temp file {}", createTempFile.toString());
-                    }
-                    try {
-                        if (dropTempFile != null) {
-                            Files.deleteIfExists(dropTempFile);
-                        }
-
-                    } catch (IOException e) {
-                        LOG.info("Unable to delete temp file {}", dropTempFile.toString());
-                    }
+//                    try {
+//                        if (createTempFile != null) {
+//                            Files.deleteIfExists(createTempFile);
+//                        }
+//
+//                    } catch (IOException e) {
+//                        LOG.info("Unable to delete temp file {}", createTempFile.toString());
+//                    }
+//                    try {
+//                        if (dropTempFile != null) {
+//                            Files.deleteIfExists(dropTempFile);
+//                        }
+//
+//                    } catch (IOException e) {
+//                        LOG.info("Unable to delete temp file {}", dropTempFile.toString());
+//                    }
                 }
             }
         } catch (ClassNotFoundException | SQLException | MappingException ex) {
@@ -438,11 +464,27 @@ public class H2Configuration {
         return configuration;
     }
 
-    public List<String> getCreateScript() {
-        return createScript;
+    @Override
+    public Object getConnection()
+            throws ConnectionProviderException {
+        return getSession();
     }
 
-    public List<String> getDropScript() {
-        return dropScript;
+    @Override
+    public void returnConnection(Object connection) {
+        returnSession((Session) connection);
     }
+
+    @Override
+    public int getMaxConnections() {
+        return 0;
+    }
+
+//    public List<String> getCreateScript() {
+//        return createScript;
+//    }
+//
+//    public List<String> getDropScript() {
+//        return dropScript;
+//    }
 }
