@@ -39,6 +39,7 @@ import org.n52.shetland.ogc.gml.CodeWithAuthority;
 import org.n52.shetland.ogc.gml.ReferenceType;
 import org.n52.shetland.ogc.om.NamedValue;
 import org.n52.shetland.ogc.om.OmObservation;
+import org.n52.shetland.ogc.om.features.SfConstants;
 import org.n52.shetland.ogc.om.features.samplingFeatures.InvalidSridException;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.shetland.ogc.om.values.GeometryValue;
@@ -92,6 +93,7 @@ public class CtdInsertObservationConverter extends AbstractMarineInsertObservati
     protected AbstractFeature createFeatureOfInterest(CtdMessage message) {
         SamplingFeature samplingFeature = new SamplingFeature(new CodeWithAuthority(message.getSensorId()));
         samplingFeature.addName(message.getSensorId());
+        samplingFeature.setFeatureType(SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_POINT);
         try {
             samplingFeature.setGeometry(createGeometry());
         } catch (InvalidSridException ex) {

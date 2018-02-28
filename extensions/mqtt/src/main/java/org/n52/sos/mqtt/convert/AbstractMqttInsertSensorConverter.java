@@ -40,9 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.janmayen.net.IPAddress;
+import org.n52.shetland.ogc.gml.AbstractFeature;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.ows.service.OwsServiceRequestContext;
 import org.n52.shetland.ogc.sensorML.SensorML20Constants;
@@ -83,6 +83,7 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
         OwsServiceRequestContext requestContext = new OwsServiceRequestContext();
         requestContext.setIPAddress(new IPAddress("127.0.0.1"));
         insertSensorRequest.setRequestContext(requestContext);
+
         insertSensorRequest.setProcedureDescriptionFormat(SensorML20Constants.NS_SML_20);
         final PhysicalSystem system = new PhysicalSystem();
 
@@ -98,9 +99,10 @@ public abstract class AbstractMqttInsertSensorConverter<T> implements MqttInsert
                 .addCapabilities(createMobileInsitu())
                 //                .addContact(createContact(schemaDescription.getDataset())) // TODO
                 // ... // TODO
-                .setIdentifier(procedureId);
+                .setIdentifier(procedureId)
+                .setXml(encodeToXml(system));
 
-        SosProcedureDescription description = new SosProcedureDescription(system);
+        SosProcedureDescription<?> description = new SosProcedureDescription<AbstractFeature>(system);
         description.addOffering(sosOffering);
         description.setXml(encodeToXml(system));
 

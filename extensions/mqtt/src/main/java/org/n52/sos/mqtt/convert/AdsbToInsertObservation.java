@@ -155,7 +155,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
     }
 
     protected SingleObservationValue<Double> createQuantityObservationValue(DateTime time, int value, String unit) {
-        SingleObservationValue<Double> obsValue = new SingleObservationValue<>();
+        SingleObservationValue obsValue = new SingleObservationValue<>();
         QuantityValue quantityValue = new QuantityValue(Double.parseDouble(Integer.toString(value)));
         quantityValue.setUnit(unit);
         obsValue.setValue(quantityValue);

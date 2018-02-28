@@ -1702,6 +1702,17 @@
                 <artifactId>jna</artifactId>
                 <version>4.2.2</version>
             </dependency>
+            <!-- MQTT -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mqtt-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>1.2.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
    

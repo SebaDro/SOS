@@ -115,7 +115,7 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
     }
 
     protected ObservationValue<?> createQuantityObservationValue(DateTime time, double value, String unit) {
-        SingleObservationValue<Double> obsValue = new SingleObservationValue<>();
+        SingleObservationValue obsValue = new SingleObservationValue<>();
         QuantityValue quantityValue = new QuantityValue(value);
         quantityValue.setUnit(unit);
         obsValue.setValue(quantityValue);

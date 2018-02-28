@@ -28,23 +28,15 @@
  */
 package org.n52.sos.mqtt.decode;
 
-import java.util.Collection;
-import java.util.Optional;
-import javax.inject.Inject;
-
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class MqttDecoderRepository {
 
-    @Inject
-    Collection<MqttDecoder> mqttDecoder;
-
-    public Optional<MqttDecoder> getDecoder(String className) {
-        return mqttDecoder.stream()
-                .filter(d -> d.getClass().getName().equals(className))
-                .findFirst();
+    public MqttDecoder getDecoder(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        MqttDecoder decoder = (MqttDecoder) Class.forName(className).newInstance();
+        return decoder;
     }
 
 }

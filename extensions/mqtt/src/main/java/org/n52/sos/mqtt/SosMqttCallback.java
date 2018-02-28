@@ -28,6 +28,9 @@
  */
 package org.n52.sos.mqtt;
 
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.locationtech.jts.io.ParseException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -63,35 +66,44 @@ public class SosMqttCallback implements MqttCallback {
     private MqttDecoder decoder;
     private MqttInsertSensorConverter insertSensorConverter;
     private MqttInsertObservationConverter insertObservationConverter;
+    private ExecutorService execService;
 
     public SosMqttCallback(MqttDecoder decoder) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         this.decoder = decoder;
         insertSensorConverter = decoder.getInsertSensorConverter();
-        insertObservationConverter = decoder.getInsertOnbservationConverter();
+        insertObservationConverter = decoder.getInsertObservationConverter();
+        execService = Executors.newSingleThreadExecutor();
     }
 
     @Override
     public void connectionLost(Throwable cause) {
-        LOG.warn("Connection lost", cause);
+        LOG.warn("Connection lost", cause.fillInStackTrace());
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage message) {
-        try {
-            for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : decoder.decode(new String(message.getPayload()))) {
-                if (!isProcedureRegistered(mqttMessage.getProcedure())) {
-                    InsertSensorRequest request;
+    Set<org.n52.sos.mqtt.api.MqttMessage> messages = decoder.decode(new String(message.getPayload()));
+        execService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : messages) {
+                        if (!isProcedureRegistered(mqttMessage.getProcedure())) {
+                            InsertSensorRequest request;
 
-                    request = insertSensorConverter.convert(mqttMessage);
+                            request = insertSensorConverter.convert(mqttMessage);
 
-                    getServiceOperator(request).receiveRequest(request);
+                            getServiceOperator(request).receiveRequest(request);
+                        }
+                        InsertObservationRequest request = insertObservationConverter.convert(mqttMessage);
+                        getServiceOperator(request).receiveRequest(request);
+                    }
+                } catch (OwsExceptionReport | ParseException ex) {
+                    LOG.error("Error while processing messages!", ex);
                 }
-                InsertObservationRequest request = insertObservationConverter.convert(mqttMessage);
-                getServiceOperator(request).receiveRequest(request);
             }
-        } catch (OwsExceptionReport | ParseException ex) {
-            LOG.error("Error while processing messages!", ex);
-        }
+        });
+
     }
 
     @Override

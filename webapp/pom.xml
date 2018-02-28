@@ -758,6 +758,13 @@
             <scope>runtime</scope>
         </dependency>
         
+        <!-- MQTT -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mqtt-client</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
         <!-- REST API Dependencies -->
         <dependency>
           <groupId>org.n52.series-api</groupId>
