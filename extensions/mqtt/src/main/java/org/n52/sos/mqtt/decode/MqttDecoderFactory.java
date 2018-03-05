@@ -20,13 +20,6 @@ package org.n52.sos.mqtt.decode;
 import javax.inject.Inject;
 import org.n52.faroe.ConfigurationError;
 import org.n52.sos.mqtt.config.MqttConfiguration;
-import org.n52.sos.mqtt.convert.AdsbToInsertObservation;
-import org.n52.sos.mqtt.convert.FifaInsertObservationConverter;
-import org.n52.sos.mqtt.convert.FifaInsertSensorConverter;
-import org.n52.sos.mqtt.convert.OmInsertObservationConverter;
-import org.n52.sos.mqtt.convert.OmInsertSensorConverter;
-import org.n52.sos.mqtt.convert.TtnInsertObservationConverter;
-import org.n52.sos.mqtt.convert.TtnInsertSensorConverter;
 import org.n52.sos.mqtt.convert.marine.CtdInsertObservationConverter;
 import org.n52.sos.mqtt.convert.marine.CtdInsertSensorConverter;
 import org.n52.sos.mqtt.convert.marine.FluorometerInsertObservationConverter;
@@ -63,47 +56,6 @@ public class MqttDecoderFactory {
                 String qualifiedName = String.join("", "org.n52.sos.mqtt.decode.", getName());
                 return qualifiedName;
             }
-        },
-        ADSB {
-            public String getName() {
-                return "AdsbDecoder";
-            }
-
-            public String qualifiedName() {
-                String qualifiedName = String.join("", "org.n52.sos.mqtt.decode.", getName());
-                return qualifiedName;
-            }
-        },
-        FIFA {
-            public String getName() {
-                return "FifaDecoder";
-            }
-
-            public String qualifiedName() {
-                String qualifiedName = String.join("", "org.n52.sos.mqtt.decode.", getName());
-                return qualifiedName;
-            }
-        },
-        OM {
-            public String getName() {
-                return "OmDecoder";
-            }
-
-            public String qualifiedName() {
-                String qualifiedName = String.join("", "org.n52.sos.mqtt.decode.", getName());
-                return qualifiedName;
-            }
-        },
-        TTN {
-            public String getName() {
-                return "TtnDecoder";
-            }
-
-            public String qualifiedName() {
-                String qualifiedName = String.join("", "org.n52.sos.mqtt.decode.", getName());
-                return qualifiedName;
-            }
-
         };
 
         public abstract String getName();
@@ -113,18 +65,10 @@ public class MqttDecoderFactory {
 
     public MqttDecoder createMqttDecoder(MqttConfiguration config) {
         MqttDecoder mqttDecoder = null;
-        if (config.getDecoder().equals(Decoder.ADSB.qualifiedName())) {
-            mqttDecoder = createAdsbDecoder();
-        } else if (config.getDecoder().equals(Decoder.CTD.qualifiedName())) {
+        if (config.getDecoder().equals(Decoder.CTD.qualifiedName())) {
             mqttDecoder = createCtdDecoder();
-        } else if (config.getDecoder().equals(Decoder.FIFA.qualifiedName())) {
-            mqttDecoder = createFifaDecoder();
         } else if (config.getDecoder().equals(Decoder.FLUOROMETER.qualifiedName())) {
             mqttDecoder = createFluorometerDecoder();
-        } else if (config.getDecoder().equals(Decoder.OM.qualifiedName())) {
-            mqttDecoder = createOmDecoder();
-        } else if (config.getDecoder().equals(Decoder.TTN.qualifiedName())) {
-            mqttDecoder = createTtnDecoder();
         } else {
             throw new ConfigurationError("Could not create MQTT decoder: " + config.getName());
         }
@@ -139,33 +83,9 @@ public class MqttDecoderFactory {
                 .setInsertObservationConverter(new CtdInsertObservationConverter());
     }
 
-    private MqttDecoder createAdsbDecoder() {
-        return new AdsbDecoder()
-                .setInsertSensorConverter(new CtdInsertSensorConverter(encoderRepository))
-                .setInsertObservationConverter(new AdsbToInsertObservation());
-    }
-
-    private MqttDecoder createFifaDecoder() {
-        return new FifaDecoder()
-                .setInsertSensorConverter(new FifaInsertSensorConverter(encoderRepository))
-                .setInsertObservationConverter(new FifaInsertObservationConverter());
-    }
-
     private MqttDecoder createFluorometerDecoder() {
         return new FluorometerDecoder()
                 .setInsertSensorConverter(new FluorometerInsertSensorConverter(encoderRepository))
                 .setInsertObservationConverter(new FluorometerInsertObservationConverter());
-    }
-
-    private MqttDecoder createOmDecoder() {
-        return new OmDecoder()
-                .setInsertSensorConverter(new OmInsertSensorConverter(encoderRepository))
-                .setInsertObservationConverter(new OmInsertObservationConverter());
-    }
-
-    private MqttDecoder createTtnDecoder() {
-        return new TtnDecoder()
-                .setInsertSensorConverter(new TtnInsertSensorConverter(encoderRepository))
-                .setInsertObservationConverter(new TtnInsertObservationConverter());
     }
 }
