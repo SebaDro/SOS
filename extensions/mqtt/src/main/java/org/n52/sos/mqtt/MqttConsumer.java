@@ -53,7 +53,6 @@ public class MqttConsumer {
     private MqttClient client;
     private MqttConfiguration config;
     private MqttDecoder decoder;
-    private Debouncer debouncer;
 
     public MqttConsumer(MqttConfiguration config) {
         this.config = config;
@@ -73,7 +72,8 @@ public class MqttConsumer {
      */
     public void connect() throws MqttException {
         if (client == null) {
-            this.client = new MqttClient(String.format("tcp://%s:%s", config.getHost(), config.getPort()), getId(), new MemoryPersistence());
+            this.client = new MqttClient(String.format("%s://%s:%s", config.getProtocol(), config.getHost(), config.getPort()), getId(), new MemoryPersistence());
+
             LOG.debug("MQTT client created!");
         }
         if (!client.isConnected()) {
@@ -86,7 +86,7 @@ public class MqttConsumer {
                 options.setPassword(config.getPassword().toCharArray());
             }
             client.connect(options);
-            LOG.debug("Connected to: {}", String.format("tcp://%s:%s", config.getHost(), config.getPort()));
+            LOG.debug("Connected to: {}", String.format("%s://%s:%s", config.getProtocol(), config.getHost(), config.getPort()));
             try {
                 client.setCallback(new SosMqttCallback(decoder));
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -123,10 +123,17 @@ public class MqttConsumer {
         }
     }
 
-    private void requestConnecting() {
-        if (debouncer != null) {
-            debouncer.call();
+    void updateConfiguration(MqttConfiguration config) {
+        if (this.config.getProtocol().equals(config.getProtocol())
+                || this.config.getHost().equals(config.getHost())
+                || this.config.getPort().equals(config.getPort())) {
+            this.client = null;
         }
+        setConfig(config);
+    }
+
+    public void setConfig(MqttConfiguration config) {
+        this.config = config;
     }
 
     public MqttConfiguration getConfig() {
