@@ -86,8 +86,16 @@ public class MqttConsumerRepository implements Constructable, Destroyable {
         return mqttConsumers.get(key);
     }
 
-    public void add(MqttConsumer consumer) {
+    public void create(MqttConfiguration config) {
+        MqttConsumer consumer = new MqttConsumer(config);
+        consumer.setDecoder(decoderFactory.createMqttDecoder(config));
         mqttConsumers.put(consumer.getConfig().getKey(), consumer);
+    }
+
+    public void update(MqttConfiguration config) {
+        MqttConsumer consumer = mqttConsumers.get(config.getKey());
+        consumer.updateConfiguration(config);
+        consumer.setDecoder(decoderFactory.createMqttDecoder(config));
     }
 
     public void deleteAll() {
