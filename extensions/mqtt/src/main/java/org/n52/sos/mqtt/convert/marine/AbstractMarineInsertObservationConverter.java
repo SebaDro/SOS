@@ -56,9 +56,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
- * @param <T> 
+ * @param <T>
  */
 public abstract class AbstractMarineInsertObservationConverter<T> implements MqttInsertObservationConverter<T> {
 
@@ -119,6 +119,7 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
         QuantityValue quantityValue = new QuantityValue(value);
         quantityValue.setUnit(unit);
         obsValue.setValue(quantityValue);
+        obsValue.setUnit(unit);
         obsValue.setPhenomenonTime(new TimeInstant(time));
         return obsValue;
     }
@@ -128,6 +129,7 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
         CountValue countValue = new CountValue(value);
         countValue.setUnit(unit);
         obsValue.setValue(countValue);
+        obsValue.setUnit(unit);
         obsValue.setPhenomenonTime(new TimeInstant(time));
         return obsValue;
     }
