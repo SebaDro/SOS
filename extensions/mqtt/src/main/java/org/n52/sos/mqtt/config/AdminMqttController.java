@@ -29,11 +29,15 @@
 package org.n52.sos.mqtt.config;
 
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
@@ -90,7 +94,14 @@ public class AdminMqttController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView view() {
         Map<String, Object> model = new HashMap<>(1);
-        Set<MqttConfiguration> configurations = mqttConfigDao.getAllMqttConfigurations();
+        List<MqttConfiguration> configurations = mqttConfigDao.getAllMqttConfigurations().stream()
+                .sorted(new Comparator<MqttConfiguration>() {
+                    @Override
+                    public int compare(MqttConfiguration o1, MqttConfiguration o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                })
+                .collect(Collectors.toList());;
 
         model.put(MQTT_CONFIGURATIONS, configurations);
 
@@ -112,9 +123,9 @@ public class AdminMqttController extends AbstractController {
     @ResponseBody
     @RequestMapping(value = "/decoders", method = RequestMethod.GET)
     public Map<String, String> decoderValues() throws NoSuchIdentifierException {
-        Map<String, String> decoders = new HashMap();
-        Lists.newArrayList(MqttDecoderFactory.Decoder.values())
-                .forEach(d -> decoders.put(d.qualifiedName(), d.getName()));
+        Map<String, String> decoders = Lists.newArrayList(MqttDecoderFactory.Decoder.values()).stream()
+                .sorted()
+                .collect(Collectors.toMap(MqttDecoderFactory.Decoder::qualifiedName, MqttDecoderFactory.Decoder::getName));
         return decoders;
     }
 
@@ -128,9 +139,7 @@ public class AdminMqttController extends AbstractController {
         }
         config.setKey(UUID.randomUUID().toString());
         mqttConfigDao.saveMqttConfiguration(config);
-        MqttConsumer consumer = new MqttConsumer(config);
-        consumer.setDecoder(decoderFactory.createMqttDecoder(config));
-        mqttRepository.add(new MqttConsumer(config));
+        mqttRepository.create(config);
 
         return config;
     }
@@ -162,7 +171,22 @@ public class AdminMqttController extends AbstractController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@RequestBody JsonMqttConfiguration config) {
-        mqttConfigDao.updateMqttConfiguration(config);
+        MqttConsumer mqttClient = mqttRepository.get(config.getKey());
+        if (mqttClient.isConnected()) {
+            try {
+                mqttClient.cleanup();
+                mqttRepository.update(config);
+                mqttClient.connect();
+            } catch (MqttException ex) {
+                LOG.error("Error while opening or closing MQTT connection for configuration" + config.getKey(), ex);
+            } finally {
+                config.setIsActive(mqttClient.isConnected());
+                mqttConfigDao.updateMqttConfiguration(config);
+            }
+        } else {
+            mqttRepository.update(config);
+            mqttConfigDao.updateMqttConfiguration(config);
+        }
     }
 
     @ResponseBody
