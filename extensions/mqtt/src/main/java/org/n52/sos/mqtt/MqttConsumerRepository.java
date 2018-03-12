@@ -36,6 +36,7 @@ import org.n52.janmayen.lifecycle.Constructable;
 import org.n52.janmayen.lifecycle.Destroyable;
 import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.n52.sos.mqtt.config.MqttConfigurationDao;
+import org.n52.sos.mqtt.decode.MqttDecoder;
 import org.n52.sos.mqtt.decode.MqttDecoderFactory;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,9 @@ public class MqttConsumerRepository implements Constructable, Destroyable {
                 .forEach(c -> {
                     if (!mqttConsumers.containsKey(c.getKey())) {
                         MqttConsumer consumer = createMqttConsumer(c);
-                        consumer.setDecoder(decoderFactory.createMqttDecoder(c));
+                        MqttDecoder decoder = decoderFactory.createMqttDecoder(c);
+                        consumer.setDecoder(decoder);
+                        consumer.setCollector(new MqttMessageCollector(decoder.getInsertObservationConverter().getMessageLimit()));
                         mqttConsumers.put(c.getKey(), consumer);
                         if (c.isActive()) {
                             try {
