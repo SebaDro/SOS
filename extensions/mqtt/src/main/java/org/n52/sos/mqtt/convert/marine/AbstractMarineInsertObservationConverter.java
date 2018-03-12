@@ -28,6 +28,7 @@
  */
 package org.n52.sos.mqtt.convert.marine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -66,6 +67,27 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
 
     @Override
     public InsertObservationRequest convert(T message) throws OwsExceptionReport {
+        InsertObservationRequest request = createBaseInsertObservationRequest(message);
+        request.setObservation(createObservations(message));
+        return request;
+    }
+
+    @Override
+    public InsertObservationRequest convert(List<T> messages) {
+        List<OmObservation> observations = new ArrayList();
+        InsertObservationRequest request = createBaseInsertObservationRequest(messages.get(0));
+        messages.forEach(m -> {
+            try {
+                observations.addAll(createObservations(m));
+            } catch (OwsExceptionReport ex) {
+                LOG.error("Error while decoding message", ex);
+            }
+        });
+        request.setObservation(observations);
+        return request;
+    }
+
+    private InsertObservationRequest createBaseInsertObservationRequest(T message) {
         InsertObservationRequest request = new InsertObservationRequest();
         request.setService(SosConstants.SOS);
         request.setVersion(Sos2Constants.SERVICEVERSION);
@@ -73,13 +95,12 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
         requestContext.setIPAddress(new IPAddress("127.0.0.1"));
         request.setRequestContext(requestContext);
         request.setOfferings(createOfferings(message));
-        request.setObservation(createObservations(message));
         return request;
     }
 
     protected OmObservation createQuantityObservation(T message, String procedure, String phenomenon, double value, String unit, DateTime phenomenonTime, DateTime resultTime) throws OwsExceptionReport {
         OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, procedure, phenomenon, OmConstants.OBS_TYPE_MEASUREMENT));
+        observation.setObservationConstellation(createObservationConstellation(message, procedure, phenomenon, OmConstants.OBS_TYPE_MEASUREMENT, unit));
         observation.addParameter(createSpatialFilteringProfileParameter(message));
         observation.setValue(createQuantityObservationValue(phenomenonTime, value, unit));
         observation.setResultTime(new TimeInstant(resultTime));
@@ -88,7 +109,7 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
 
     protected OmObservation createCountObservation(T message, String procedure, String phenomenon, int value, String unit, DateTime phenomenonTime, DateTime resultTime) throws OwsExceptionReport {
         OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, procedure, phenomenon, OmConstants.OBS_TYPE_COUNT_OBSERVATION));
+        observation.setObservationConstellation(createObservationConstellation(message, procedure, phenomenon, OmConstants.OBS_TYPE_COUNT_OBSERVATION, unit));
         observation.addParameter(createSpatialFilteringProfileParameter(message));
         observation.setValue(createCountObservationValue(phenomenonTime, value, unit));
         observation.setResultTime(new TimeInstant(resultTime));
@@ -97,16 +118,16 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
 
     protected OmObservation createCountObservation(T message, String procedure, String phenomenon, int value, DateTime phenomenonTime, DateTime resultTime) throws OwsExceptionReport {
         OmObservation observation = new OmObservation();
-        observation.setObservationConstellation(createObservationConstellation(message, procedure, phenomenon, OmConstants.OBS_TYPE_COUNT_OBSERVATION));
+        observation.setObservationConstellation(createObservationConstellation(message, procedure, phenomenon, OmConstants.OBS_TYPE_COUNT_OBSERVATION, null));
         observation.addParameter(createSpatialFilteringProfileParameter(message));
         observation.setValue(createCountObservationValue(phenomenonTime, value));
         observation.setResultTime(new TimeInstant(resultTime));
         return observation;
     }
 
-    protected OmObservationConstellation createObservationConstellation(T message, String procedure, String phenomenon, String observationType) throws OwsExceptionReport {
+    protected OmObservationConstellation createObservationConstellation(T message, String procedure, String phenomenon, String observationType, String unit) throws OwsExceptionReport {
         OmObservationConstellation constellation = new OmObservationConstellation();
-        constellation.setObservableProperty(createPhenomenon(phenomenon));
+        constellation.setObservableProperty(createPhenomenon(phenomenon, unit));
         constellation.setFeatureOfInterest(createFeatureOfInterest(message));
         constellation.setOfferings(createOfferings(message));
         constellation.setObservationType(observationType);
@@ -146,8 +167,10 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
         return new SosProcedureDescription(new PhysicalSystem().setIdentifier(procedure));
     }
 
-    protected AbstractPhenomenon createPhenomenon(String identifier) {
-        return new OmObservableProperty(identifier);
+    protected AbstractPhenomenon createPhenomenon(String identifier, String unit) {
+        OmObservableProperty property = new OmObservableProperty(identifier);
+        property.setUnit(unit);
+        return property;
     }
 
     protected abstract List<OmObservation> createObservations(T message) throws OwsExceptionReport;

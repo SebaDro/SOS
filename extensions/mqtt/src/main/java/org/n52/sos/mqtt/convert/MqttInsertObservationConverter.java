@@ -28,12 +28,16 @@
  */
 package org.n52.sos.mqtt.convert;
 
+import java.util.List;
 import org.locationtech.jts.io.ParseException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
 
-
 public interface MqttInsertObservationConverter<T> {
 
     InsertObservationRequest convert(T message) throws OwsExceptionReport, ParseException;
+
+    InsertObservationRequest convert(List<T> messages) throws OwsExceptionReport, ParseException;
+
+    int getMessageLimit();
 }

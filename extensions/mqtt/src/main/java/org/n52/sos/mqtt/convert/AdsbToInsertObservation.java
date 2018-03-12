@@ -43,6 +43,7 @@ import org.n52.sos.util.GeometryHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
@@ -68,12 +69,33 @@ import org.n52.shetland.util.JTSHelper;
 
 public class AdsbToInsertObservation implements MqttInsertObservationConverter<AdsbMessage> {
 
-    public InsertObservationRequest convert(AdsbMessage message) throws OwsExceptionReport, ParseException {
-        List<OmObservation> observations = Lists.newArrayList();
-        observations.add(createTrackObservation(message));
-        observations.add(createSpeedObservation(message));
-        observations.add(createAltitudeObservation(message));
+    private static final int MESSAGE_LIMIT = 1;
 
+    @Override
+    public InsertObservationRequest convert(AdsbMessage message) throws OwsExceptionReport, ParseException {
+        List<OmObservation> observations = createObservations(message);
+        InsertObservationRequest request = createBaseInsterObservationRequest(message);
+        request.setObservation(observations);
+        return request;
+    }
+
+    @Override
+    public InsertObservationRequest convert(List<AdsbMessage> messages) throws OwsExceptionReport, ParseException {
+        List<OmObservation> observations = new ArrayList<OmObservation>();
+        InsertObservationRequest request = createBaseInsterObservationRequest(messages.get(0));
+        for (AdsbMessage message : messages) {
+            observations.addAll(createObservations(message));
+        }
+        request.setObservation(observations);
+        return request;
+    }
+
+    @Override
+    public int getMessageLimit() {
+        return MESSAGE_LIMIT;
+    }
+
+    private InsertObservationRequest createBaseInsterObservationRequest(AdsbMessage message) {
         InsertObservationRequest request = new InsertObservationRequest();
         request.setService(SosConstants.SOS);
         request.setVersion(Sos2Constants.SERVICEVERSION);
@@ -81,8 +103,15 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         requestContext.setIPAddress(new IPAddress("127.0.0.1"));
         request.setRequestContext(requestContext);
         request.setOfferings(Lists.newArrayList(message.getHex()));
-        request.setObservation(observations);
         return request;
+    }
+
+    private List<OmObservation> createObservations(AdsbMessage message) throws OwsExceptionReport, ParseException {
+        List<OmObservation> observations = Lists.newArrayList();
+        observations.add(createTrackObservation(message));
+        observations.add(createSpeedObservation(message));
+        observations.add(createAltitudeObservation(message));
+        return observations;
     }
 
     private OmObservationConstellation createObservationConstellation(AdsbMessage message, String phenomenon) {
@@ -143,7 +172,7 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         return samplingFeature;
     }
 
-    private NamedValue<?> createSpatialFilteringProfileParameter(AdsbMessage message) throws OwsExceptionReport, ParseException{
+    private NamedValue<?> createSpatialFilteringProfileParameter(AdsbMessage message) throws OwsExceptionReport, ParseException {
         final NamedValue<Geometry> namedValue = new NamedValue<Geometry>();
         namedValue.setName(new ReferenceType(Sos2Constants.HREF_PARAMETER_SPATIAL_FILTERING_PROFILE));
         int epsg = 4326;

@@ -50,12 +50,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class FluorometerInsertObservationConverter extends AbstractMarineInsertObservationConverter<FluorometerMessage> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FluorometerInsertObservationConverter.class);
+
+    private static final int MESSAGE_LIMIT = 50;
 
     @Override
     protected List<String> createOfferings(FluorometerMessage message) {
@@ -117,6 +119,11 @@ public class FluorometerInsertObservationConverter extends AbstractMarineInsertO
         Geometry geometry = createGeometry();
         namedValue.setValue(new GeometryValue(geometry));
         return namedValue;
+    }
+
+    @Override
+    public int getMessageLimit() {
+        return MESSAGE_LIMIT;
     }
 
 }

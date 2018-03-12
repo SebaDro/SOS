@@ -31,6 +31,7 @@ package org.n52.sos.mqtt.convert;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.List;
 import org.n52.janmayen.net.IPAddress;
 import org.n52.shetland.ogc.om.OmObservation;
@@ -47,12 +48,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author <a href="mailto:s.drost@52north.org">Sebastian Drost</a>
  */
 public class OmInsertObservationConverter implements MqttInsertObservationConverter<OmMessage> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OmInsertObservationConverter.class);
+
+    private static final int MESSAGE_LIMIT = 1;
 
     private ObservationDecoder observationDecoder;
 
@@ -61,24 +64,41 @@ public class OmInsertObservationConverter implements MqttInsertObservationConver
     }
 
     @Override
+    public InsertObservationRequest convert(List<OmMessage> messages) {
+        List<OmObservation> observations = new ArrayList();
+        InsertObservationRequest request = createBaseInsertObservationRequest(messages.get(0));
+        messages.forEach(m -> {
+            try {
+                observations.addAll(createObservations(m.getOmPayload()));
+            } catch (DecodingException ex) {
+                LOG.error("Error while decoding message payload", ex);
+            }
+        });
+        request.setObservation(observations);
+        return request;
+    }
+
+    @Override
     public InsertObservationRequest convert(OmMessage message) throws OwsExceptionReport {
         try {
-            InsertObservationRequest request = new InsertObservationRequest();
-            request.setService(SosConstants.SOS);
-            request.setVersion(Sos2Constants.SERVICEVERSION);
-
-            OwsServiceRequestContext requestContext = new OwsServiceRequestContext();
-            requestContext.setIPAddress(new IPAddress("127.0.0.1"));
-            request.setRequestContext(requestContext);
-
-            List<OmObservation> observations = createObservations(message.getOmPayload());
-            request.setOfferings(Lists.newArrayList(message.getProcedure()));
-            request.setObservation(observations);
-
+            InsertObservationRequest request = createBaseInsertObservationRequest(message);
+            request.setObservation(createObservations(message.getOmPayload()));
             return request;
         } catch (DecodingException ex) {
             throw new NoApplicableCodeException().causedBy(ex);
         }
+    }
+
+    private InsertObservationRequest createBaseInsertObservationRequest(OmMessage message) {
+        InsertObservationRequest request = new InsertObservationRequest();
+        request.setService(SosConstants.SOS);
+        request.setVersion(Sos2Constants.SERVICEVERSION);
+
+        OwsServiceRequestContext requestContext = new OwsServiceRequestContext();
+        requestContext.setIPAddress(new IPAddress("127.0.0.1"));
+        request.setRequestContext(requestContext);
+        request.setOfferings(Lists.newArrayList(message.getProcedure()));
+        return request;
     }
 
     private List<OmObservation> createObservations(JsonNode observationNode) throws DecodingException {
@@ -95,6 +115,11 @@ public class OmInsertObservationConverter implements MqttInsertObservationConver
             observations.add(observationDecoder.decode(observationNode));
         }
         return observations;
+    }
+
+    @Override
+    public int getMessageLimit() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
