@@ -57,7 +57,7 @@ public class FluorometerInsertObservationConverter extends AbstractMarineInsertO
 
     private static final Logger LOG = LoggerFactory.getLogger(FluorometerInsertObservationConverter.class);
 
-    private static final int MESSAGE_LIMIT = 50;
+    private static final int MESSAGE_LIMIT = 10;
 
     @Override
     protected List<String> createOfferings(FluorometerMessage message) {
