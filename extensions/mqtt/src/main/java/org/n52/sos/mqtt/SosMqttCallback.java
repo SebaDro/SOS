@@ -35,27 +35,13 @@ import org.locationtech.jts.io.ParseException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.n52.iceland.exception.ows.concrete.InvalidAcceptVersionsParameterException;
-import org.n52.iceland.exception.ows.concrete.InvalidServiceOrVersionException;
-import org.n52.iceland.exception.ows.concrete.InvalidServiceParameterException;
-import org.n52.iceland.exception.ows.concrete.VersionNotSupportedException;
-import org.n52.iceland.service.operator.ServiceOperator;
-import org.n52.iceland.service.operator.ServiceOperatorRepository;
-import org.n52.shetland.ogc.ows.exception.CompositeOwsException;
-import org.n52.shetland.ogc.ows.exception.MissingServiceParameterException;
-import org.n52.shetland.ogc.ows.exception.MissingVersionParameterException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
-import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
-import org.n52.shetland.ogc.ows.service.OwsServiceKey;
-import org.n52.shetland.ogc.ows.service.OwsServiceRequest;
 import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
 import org.n52.shetland.ogc.sos.request.InsertSensorRequest;
-import org.n52.sos.cache.SosContentCache;
 
 import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
 import org.n52.sos.mqtt.convert.MqttInsertSensorConverter;
 import org.n52.sos.mqtt.decode.MqttDecoder;
-import org.n52.sos.service.Configurator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,16 +49,21 @@ import org.slf4j.LoggerFactory;
 public class SosMqttCallback implements MqttCallback {
 
     private static final Logger LOG = LoggerFactory.getLogger(SosMqttCallback.class);
+
     private MqttDecoder decoder;
     private MqttInsertSensorConverter insertSensorConverter;
     private MqttInsertObservationConverter insertObservationConverter;
-    private ExecutorService execService;
+    private ExecutorService executorService;
+    private MqttMessageCollector messageCollector;
+    private MqttInsertObservationRequestHandler requestHandler;
 
-    public SosMqttCallback(MqttDecoder decoder) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public SosMqttCallback(MqttDecoder decoder, MqttMessageCollector collector, MqttInsertObservationRequestHandler requestHandler) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         this.decoder = decoder;
+        this.messageCollector = collector;
         insertSensorConverter = decoder.getInsertSensorConverter();
         insertObservationConverter = decoder.getInsertObservationConverter();
-        execService = Executors.newSingleThreadExecutor();
+        executorService = Executors.newSingleThreadExecutor();
+        requestHandler = requestHandler;
     }
 
     @Override
@@ -82,21 +73,40 @@ public class SosMqttCallback implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) {
-    Set<org.n52.sos.mqtt.api.MqttMessage> messages = decoder.decode(new String(message.getPayload()));
-        execService.execute(new Runnable() {
+        Set<org.n52.sos.mqtt.api.MqttMessage> messages = decoder.decode(new String(message.getPayload()));
+        executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : messages) {
-                        if (!isProcedureRegistered(mqttMessage.getProcedure())) {
+                        Long start = System.currentTimeMillis();
+                        if (!requestHandler.isProcedureRegistered(mqttMessage.getProcedure())) {
                             InsertSensorRequest request;
 
                             request = insertSensorConverter.convert(mqttMessage);
 
-                            getServiceOperator(request).receiveRequest(request);
+                            requestHandler.getServiceOperator(request).receiveRequest(request);
+
                         }
-                        InsertObservationRequest request = insertObservationConverter.convert(mqttMessage);
-                        getServiceOperator(request).receiveRequest(request);
+                        Long end = System.currentTimeMillis();
+                        LOG.debug("Duration isProcedureRegistered '{}'", (end - start));
+
+                        messageCollector.addMessage(mqttMessage);
+                        if (messageCollector.reachedLimit()) {
+
+                            start = System.currentTimeMillis();
+                            InsertObservationRequest request = insertObservationConverter.convert(mqttMessage);
+                            end = System.currentTimeMillis();
+                            LOG.debug("Duration insertObservation conversion '{}'", (end - start));
+
+                            start = System.currentTimeMillis();
+                            requestHandler.getServiceOperator(request).receiveRequest(request);
+                            end = System.currentTimeMillis();
+                            LOG.debug("Duration insertObservation request '{}'", (end - start));
+                            messageCollector.clearMessages();
+
+                        }
+
                     }
                 } catch (OwsExceptionReport | ParseException ex) {
                     LOG.error("Error while processing messages!", ex);
@@ -106,77 +116,13 @@ public class SosMqttCallback implements MqttCallback {
 
     }
 
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         LOG.info("Delivery completed for message id '{}'", token.getMessageId());
     }
 
-    private SosContentCache getCache() {
-        return Configurator.getInstance().getCache();
-    }
-
-    private boolean isProcedureRegistered(String procedure) {
-        return getCache().getProcedures().contains(procedure);
-    }
-
-    protected ServiceOperator getServiceOperator(OwsServiceKey sokt) throws OwsExceptionReport {
-        return getServiceOperatorRepository().getServiceOperator(sokt);
-    }
-
-    protected ServiceOperator getServiceOperator(OwsServiceRequest request) throws OwsExceptionReport {
-        checkServiceOperatorKeyTypes(request);
-        for (OwsServiceKey sokt : request.getServiceOperatorKeys()) {
-            ServiceOperator so = getServiceOperator(sokt);
-            if (so != null) {
-                return so;
-            }
-        }
-        throw new InvalidServiceOrVersionException(request.getService(), request.getVersion());
-    }
-
-    protected void checkServiceOperatorKeyTypes(OwsServiceRequest request) throws OwsExceptionReport {
-        CompositeOwsException exceptions = new CompositeOwsException();
-        for (OwsServiceKey sokt : request.getServiceOperatorKeys()) {
-            if (sokt.hasService()) {
-                if (sokt.getService().isEmpty()) {
-                    exceptions.add(new MissingServiceParameterException());
-                } else if (!getServiceOperatorRepository().isServiceSupported(sokt.getService())) {
-                    exceptions.add(new InvalidServiceParameterException(sokt.getService()));
-                }
-            }
-            if (request instanceof GetCapabilitiesRequest) {
-                GetCapabilitiesRequest gcr = (GetCapabilitiesRequest) request;
-                if (gcr.isSetAcceptVersions()) {
-                    boolean hasSupportedVersion = false;
-                    for (String acceptVersion : gcr.getAcceptVersions()) {
-                        if (isVersionSupported(request.getService(), acceptVersion)) {
-                            hasSupportedVersion = true;
-                        }
-                    }
-                    if (!hasSupportedVersion) {
-                        exceptions.add(new InvalidAcceptVersionsParameterException(gcr.getAcceptVersions()));
-                    }
-                }
-            } else if (sokt.hasVersion()) {
-                if (sokt.getVersion().isEmpty()) {
-                    exceptions.add(new MissingVersionParameterException());
-                } else if (!isVersionSupported(sokt.getService(), sokt.getVersion())) {
-                    exceptions.add(new VersionNotSupportedException());
-                }
-            }
-        }
-        exceptions.throwIfNotEmpty();
-    }
-
-    protected boolean isVersionSupported(String service, String acceptVersion) {
-        return getServiceOperatorRepository().isVersionSupported(service, acceptVersion);
-    }
-
-    protected boolean isServiceSupported(String service) {
-        return getServiceOperatorRepository().isServiceSupported(service);
-    }
-
-    protected ServiceOperatorRepository getServiceOperatorRepository() {
-        return ServiceOperatorRepository.getInstance();
-    }
 }

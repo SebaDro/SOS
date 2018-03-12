@@ -28,19 +28,24 @@
  */
 package org.n52.sos.mqtt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.locationtech.jts.io.ParseException;
 import org.n52.faroe.ConfigurationError;
-import org.n52.faroe.annotation.Configurable;
-import org.n52.janmayen.Debouncer;
+import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
+import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
+import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.n52.sos.mqtt.decode.MqttDecoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -50,9 +55,13 @@ public class MqttConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(MqttConsumer.class);
 
+    @Autowired
+    private MqttInsertObservationRequestHandler requestHandler;
+
     private MqttClient client;
     private MqttConfiguration config;
     private MqttDecoder decoder;
+    private MqttMessageCollector collector;
 
     public MqttConsumer(MqttConfiguration config) {
         this.config = config;
@@ -88,7 +97,7 @@ public class MqttConsumer {
             client.connect(options);
             LOG.debug("Connected to: {}", String.format("%s://%s:%s", config.getProtocol(), config.getHost(), config.getPort()));
             try {
-                client.setCallback(new SosMqttCallback(decoder));
+                client.setCallback(new SosMqttCallback(decoder, collector, requestHandler));
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 throw new ConfigurationError("Error while starting MQTT consumer", e);
             }
@@ -120,6 +129,17 @@ public class MqttConsumer {
         if (client != null && client.isConnected() && config.getTopic() != null) {
             client.unsubscribe(config.getTopic());
             client.disconnect();
+            processRemainingObservations();
+        }
+    }
+
+    private void processRemainingObservations() {
+        try {
+            InsertObservationRequest request = decoder.getInsertObservationConverter().convert(collector.getMessages());
+            requestHandler.getServiceOperator(request).receiveRequest(request);
+            collector.clearMessages();
+        } catch (OwsExceptionReport | ParseException ex) {
+            LOG.error("Error while processing messages!", ex);
         }
     }
 
@@ -151,4 +171,13 @@ public class MqttConsumer {
     public void setDecoder(MqttDecoder decoder) {
         this.decoder = decoder;
     }
+
+    public MqttMessageCollector getCollector() {
+        return collector;
+    }
+
+    public void setCollector(MqttMessageCollector collector) {
+        this.collector = collector;
+    }
+
 }
