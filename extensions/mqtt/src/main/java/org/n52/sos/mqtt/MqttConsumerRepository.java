@@ -54,6 +54,9 @@ public class MqttConsumerRepository implements Constructable, Destroyable {
     @Inject
     private MqttDecoderFactory decoderFactory;
 
+    @Inject
+    private MqttInsertObservationRequestHandler requestHandler;
+
     private Map<String, MqttConsumer> mqttConsumers;
 
     @Override
@@ -62,11 +65,7 @@ public class MqttConsumerRepository implements Constructable, Destroyable {
         mqttConfigurationDao.getAllMqttConfigurations()
                 .forEach(c -> {
                     if (!mqttConsumers.containsKey(c.getKey())) {
-                        MqttConsumer consumer = createMqttConsumer(c);
-                        MqttDecoder decoder = decoderFactory.createMqttDecoder(c);
-                        consumer.setDecoder(decoder);
-                        consumer.setCollector(new MqttMessageCollector(decoder.getInsertObservationConverter().getMessageLimit()));
-                        mqttConsumers.put(c.getKey(), consumer);
+                        MqttConsumer consumer = create(c);
                         if (c.isActive()) {
                             try {
                                 consumer.connect();
@@ -89,10 +88,14 @@ public class MqttConsumerRepository implements Constructable, Destroyable {
         return mqttConsumers.get(key);
     }
 
-    public void create(MqttConfiguration config) {
+    public MqttConsumer create(MqttConfiguration config) {
         MqttConsumer consumer = new MqttConsumer(config);
-        consumer.setDecoder(decoderFactory.createMqttDecoder(config));
+        MqttDecoder decoder = decoderFactory.createMqttDecoder(config);
+        consumer.setDecoder(decoder);
+        consumer.setCollector(new MqttMessageCollector(decoder.getInsertObservationConverter().getMessageLimit()));
+        consumer.setRequestHandler(requestHandler);
         mqttConsumers.put(consumer.getConfig().getKey(), consumer);
+        return consumer;
     }
 
     public void update(MqttConfiguration config) {

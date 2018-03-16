@@ -31,6 +31,7 @@ package org.n52.sos.mqtt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.inject.Inject;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -55,13 +56,11 @@ public class MqttConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(MqttConsumer.class);
 
-    @Autowired
-    private MqttInsertObservationRequestHandler requestHandler;
-
     private MqttClient client;
     private MqttConfiguration config;
     private MqttDecoder decoder;
     private MqttMessageCollector collector;
+    private MqttInsertObservationRequestHandler requestHandler;
 
     public MqttConsumer(MqttConfiguration config) {
         this.config = config;
@@ -134,13 +133,20 @@ public class MqttConsumer {
     }
 
     private void processRemainingObservations() {
-        try {
-            InsertObservationRequest request = decoder.getInsertObservationConverter().convert(collector.getMessages());
-            requestHandler.getServiceOperator(request).receiveRequest(request);
-            collector.clearMessages();
-        } catch (OwsExceptionReport | ParseException ex) {
-            LOG.error("Error while processing messages!", ex);
-        }
+        collector.getMessages().forEach((k, v) -> {
+            try {
+                InsertObservationRequest request = decoder.getInsertObservationConverter().convert(v);
+
+                Long start = System.currentTimeMillis();
+                requestHandler.getServiceOperator(request).receiveRequest(request);
+                Long end = System.currentTimeMillis();
+                LOG.debug("InsertObservation request duration: {} ms", (end - start));
+            } catch (OwsExceptionReport ex) {
+                LOG.error("Error while receiving InsertObservationRequest.", ex);
+            } catch (ParseException ex) {
+                LOG.error("Error while creating InsertObservationRequest.", ex);
+            }
+        });
     }
 
     void updateConfiguration(MqttConfiguration config) {
@@ -178,6 +184,14 @@ public class MqttConsumer {
 
     public void setCollector(MqttMessageCollector collector) {
         this.collector = collector;
+    }
+
+    public MqttInsertObservationRequestHandler getRequestHandler() {
+        return requestHandler;
+    }
+
+    public void setRequestHandler(MqttInsertObservationRequestHandler requestHandler) {
+        this.requestHandler = requestHandler;
     }
 
 }

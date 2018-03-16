@@ -17,7 +17,10 @@
  */
 package org.n52.sos.mqtt;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.n52.sos.mqtt.api.MqttMessage;
 
 /**
@@ -27,22 +30,31 @@ import org.n52.sos.mqtt.api.MqttMessage;
 public class MqttMessageCollector {
 
     private int limit;
-    private ArrayList<MqttMessage> messages;
+    private int actualSize;
+    private Map<String, List<MqttMessage>> messages;
 
     public MqttMessageCollector(int limit) {
         this.limit = limit;
+        this.messages = new HashMap();
+        this.actualSize = 0;
     }
 
     public void addMessage(MqttMessage message) {
-        messages.add(message);
+        if (!messages.containsKey(message.getProcedure())) {
+            messages.put(message.getProcedure(), Lists.newArrayList(message));
+        } else {
+            messages.get(message.getProcedure()).add(message);
+        }
+        actualSize++;
     }
 
     public void clearMessages() {
         messages.clear();
+        actualSize = 0;
     }
 
     public boolean reachedLimit() {
-        return messages.size() >= limit;
+        return actualSize >= limit;
     }
 
     public int getLimit() {
@@ -53,12 +65,16 @@ public class MqttMessageCollector {
         this.limit = limit;
     }
 
-    public ArrayList<MqttMessage> getMessages() {
+    public int getActualSize() {
+        return actualSize;
+    }
+
+    public Map<String, List<MqttMessage>> getMessages() {
         return messages;
     }
 
-    public void setMessages(ArrayList<MqttMessage> messages) {
-        this.messages = messages;
+    public List<MqttMessage> getMessagesForKey(String key) {
+        return messages.get(key);
     }
 
 }

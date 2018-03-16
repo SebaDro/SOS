@@ -31,6 +31,7 @@ package org.n52.sos.mqtt;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import org.locationtech.jts.io.ParseException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -60,10 +61,10 @@ public class SosMqttCallback implements MqttCallback {
     public SosMqttCallback(MqttDecoder decoder, MqttMessageCollector collector, MqttInsertObservationRequestHandler requestHandler) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         this.decoder = decoder;
         this.messageCollector = collector;
-        insertSensorConverter = decoder.getInsertSensorConverter();
-        insertObservationConverter = decoder.getInsertObservationConverter();
-        executorService = Executors.newSingleThreadExecutor();
-        requestHandler = requestHandler;
+        this.insertSensorConverter = decoder.getInsertSensorConverter();
+        this.insertObservationConverter = decoder.getInsertObservationConverter();
+        this.executorService = Executors.newSingleThreadExecutor();
+        this.requestHandler = requestHandler;
     }
 
     @Override
@@ -79,7 +80,6 @@ public class SosMqttCallback implements MqttCallback {
             public void run() {
                 try {
                     for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : messages) {
-                        Long start = System.currentTimeMillis();
                         if (!requestHandler.isProcedureRegistered(mqttMessage.getProcedure())) {
                             InsertSensorRequest request;
 
@@ -88,27 +88,31 @@ public class SosMqttCallback implements MqttCallback {
                             requestHandler.getServiceOperator(request).receiveRequest(request);
 
                         }
-                        Long end = System.currentTimeMillis();
-                        LOG.debug("Duration isProcedureRegistered '{}'", (end - start));
 
                         messageCollector.addMessage(mqttMessage);
+                        LOG.info("Add message to '{}' collector. Current collection size: {}",
+                                message.getClass().getSimpleName(),
+                                messageCollector.getActualSize());
                         if (messageCollector.reachedLimit()) {
+                            messageCollector.getMessages().forEach((k, v) -> {
+                                try {
+                                    InsertObservationRequest request = insertObservationConverter.convert(v);
 
-                            start = System.currentTimeMillis();
-                            InsertObservationRequest request = insertObservationConverter.convert(mqttMessage);
-                            end = System.currentTimeMillis();
-                            LOG.debug("Duration insertObservation conversion '{}'", (end - start));
-
-                            start = System.currentTimeMillis();
-                            requestHandler.getServiceOperator(request).receiveRequest(request);
-                            end = System.currentTimeMillis();
-                            LOG.debug("Duration insertObservation request '{}'", (end - start));
+                                    Long start = System.currentTimeMillis();
+                                    requestHandler.getServiceOperator(request).receiveRequest(request);
+                                    Long end = System.currentTimeMillis();
+                                    LOG.info("InsertObservation request duration: {} ms", (end - start));
+                                } catch (OwsExceptionReport ex) {
+                                    LOG.error("Error while receiving InsertObservationRequest.", ex);
+                                } catch (ParseException ex) {
+                                    LOG.error("Error while creating InsertObservationRequest.", ex);
+                                }
+                            });
                             messageCollector.clearMessages();
-
                         }
 
                     }
-                } catch (OwsExceptionReport | ParseException ex) {
+                } catch (OwsExceptionReport ex) {
                     LOG.error("Error while processing messages!", ex);
                 }
             }
