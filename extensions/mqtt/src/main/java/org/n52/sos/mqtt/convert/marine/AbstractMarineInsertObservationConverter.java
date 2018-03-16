@@ -30,6 +30,8 @@ package org.n52.sos.mqtt.convert.marine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 import org.n52.janmayen.net.IPAddress;
@@ -52,6 +54,7 @@ import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosConstants;
 import org.n52.shetland.ogc.sos.SosProcedureDescription;
 import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
+import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +90,7 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
         return request;
     }
 
-    private InsertObservationRequest createBaseInsertObservationRequest(T message) {
+    protected InsertObservationRequest createBaseInsertObservationRequest(T message) {
         InsertObservationRequest request = new InsertObservationRequest();
         request.setService(SosConstants.SOS);
         request.setVersion(Sos2Constants.SERVICEVERSION);
@@ -145,7 +148,7 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
         return obsValue;
     }
 
-    private ObservationValue<?> createCountObservationValue(DateTime time, int value, String unit) {
+    protected ObservationValue<?> createCountObservationValue(DateTime time, int value, String unit) {
         SingleObservationValue<Integer> obsValue = new SingleObservationValue<>();
         CountValue countValue = new CountValue(value);
         countValue.setUnit(unit);
@@ -155,7 +158,7 @@ public abstract class AbstractMarineInsertObservationConverter<T> implements Mqt
         return obsValue;
     }
 
-    private ObservationValue<?> createCountObservationValue(DateTime time, int value) {
+    protected ObservationValue<?> createCountObservationValue(DateTime time, int value) {
         SingleObservationValue<Integer> obsValue = new SingleObservationValue<>();
         CountValue countValue = new CountValue(value);
         obsValue.setValue(countValue);
