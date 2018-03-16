@@ -30,8 +30,6 @@ package org.n52.sos.mqtt.convert.marine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 import org.n52.janmayen.net.IPAddress;
@@ -54,7 +52,6 @@ import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosConstants;
 import org.n52.shetland.ogc.sos.SosProcedureDescription;
 import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
-import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.convert.MqttInsertObservationConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

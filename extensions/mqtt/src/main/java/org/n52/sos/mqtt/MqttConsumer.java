@@ -28,10 +28,7 @@
  */
 package org.n52.sos.mqtt;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import javax.inject.Inject;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -40,13 +37,11 @@ import org.locationtech.jts.io.ParseException;
 import org.n52.faroe.ConfigurationError;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
-import org.n52.sos.mqtt.api.MqttMessage;
 import org.n52.sos.mqtt.config.MqttConfiguration;
 import org.n52.sos.mqtt.decode.MqttDecoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
