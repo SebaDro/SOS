@@ -15,19 +15,9 @@
     <bean id="jsonConfigDao" class="org.n52.sos.mqtt.config.json.JsonMqttConfigurationDao"/>
 
     <bean class="org.n52.sos.mqtt.MqttConsumerRepository"/>
+    <bean class="org.n52.sos.mqtt.MqttInsertObservationRequestHandler"/>
 
     <bean class="org.n52.sos.mqtt.decode.MqttDecoderRepository"/>
-    <bean class="org.n52.sos.mqtt.decode.OmDecoder"/>
-    <bean class="org.n52.sos.mqtt.decode.CtdDecoder"/>
-    <bean class="org.n52.sos.mqtt.decode.FluorometerDecoder"/>
     <bean class="org.n52.sos.mqtt.decode.MqttDecoderFactory"/>
 
-<!--
-    <bean class="org.n52.sos.mqtt.convert.OmInsertObservationConverter"/>
-    <bean class="org.n52.sos.mqtt.convert.OmInsertSensorConverter"/>
-
-    <bean class="org.n52.sos.mqtt.convert.marine.CtdInsertObservationConverter"/>
-    <bean class="org.n52.sos.mqtt.convert.marine.CtdInsertSensorConverter"/>
-    <bean class="org.n52.sos.mqtt.convert.marine.FluorometerInsertObservationConverter"/>
-    <bean class="org.n52.sos.mqtt.convert.marine.FluorometerInsertSensorConverter"/>-->
 </beans>
