@@ -45,7 +45,9 @@
             observableProperties: new Array(),
             observationField: "",
             csvLineSeperator: "",
-            csvFieldSeperator: ""
+            csvFieldSeperator: "",
+            useBatchRequest: false,
+            batchLimit: ""
         };
 
         this.baseUrl = baseUrl;
@@ -57,6 +59,7 @@
         this.$addNewForm = $("#mqttconf-add-new-form");
         this.$saveButton = $("#mqttconf-save-button");
         this.$mqttConfPropsContainer = $("#mqtt-configuration-properties-container");
+        this.$mqttConfLoader = $("#mqttconf-loader");
 
         this.$mqttNewName = $("#mqttconf-new-name-input");
 
@@ -67,6 +70,9 @@
         this.$mqttTopic = $("#mqttconf-topic-input");
         this.$mqttProtocol = $("#mqttconf-protocol-select");
         this.$mqttDecoder = $("#mqttconf-decoder-select");
+        this.$mqttBatchRequest = $("#mqttconf-batch-request-checkbox");
+        this.$mqttBatchLimitContainer = $("#mqttconf-batch-limit");
+        this.$mqttBatchLimit = $("#mqttconf-batch-limit-input");
 
         this.bind();
 
@@ -133,6 +139,11 @@
                 self.activateConfig(payload);
             });
 
+            this.$mqttBatchRequest.change(function(){
+              var display = this.checked ? 'block' : 'none';
+              self.$mqttBatchLimitContainer.css('display', display);
+            });
+
         },
         create: function (payload) {
             var self = this;
@@ -165,7 +176,7 @@
                 data: JSON.stringify(payload),
                 context: this
             }).done(function (data) {
-                showSuccess("MQTT configuration for " + data.name + " updated.");
+                showSuccess("MQTT configuration for " + payload.name + " updated.");
                 self.$configList.find("option:selected").text(self.selectedConfig.name);
 
             }).fail(function () {
@@ -174,6 +185,7 @@
         },
 
         activateConfig: function (payload) {
+            this.$mqttConfLoader.show();
             var self = this;
             self.$mqttActivate.prop("disabled", true);
             $.ajax({
@@ -183,19 +195,14 @@
                 data: JSON.stringify(payload),
                 context: this
             }).done(function () {
-                showSuccess("MQTT client " + (this.selectedConfig.active ? "activated" : "deactivated"));
+                this.$mqttConfLoader.hide();
+                showSuccess("MQTT client " + (this.selectedConfig.active ? "deactivated" : "activated"));
                 self.selectedConfig.active = !self.selectedConfig.active;
                 self.$mqttActivate.toggleClass("btn-danger btn-success")
                         .text(self.selectedConfig.active ? "active" : "inactive")
                         .prop("disabled", false);
-//                self.selectedConfig = data;
-//                self.$configList.append($('<option>', {
-//                    value: data.key,
-//                    text: data.name,
-//                    selected: true
-//                }));
-
             }).fail(function () {
+                this.$mqttConfLoader.hide();
                 showError("MQTT client could not be " + (payload.mqttConfigurationActivation ? "activated" : "deactivated"));
                 self.$mqttActivate.prop("disabled", false);
             });
@@ -209,7 +216,7 @@
                         self.selectedConfig = data;
                         self.updateProperties(data);
                     }).fail(function () {
-                showError("Data could not be loaded: ");
+                showError("Could not load requested configuration.");
             });
         },
 
@@ -236,6 +243,8 @@
             this.selectedConfig.topic = this.$mqttTopic.val();
             this.selectedConfig.protocol = this.$mqttProtocol.val();
             this.selectedConfig.decoder = this.$mqttDecoder.val();
+            this.selectedConfig.useBatchRequest = this.$mqttBatchRequest.is(":checked");
+            this.selectedConfig.batchLimit = this.$mqttBatchLimit.val();
         },
 
         updateProperties: function (data) {
@@ -248,6 +257,9 @@
             this.$mqttTopic.val(data.topic);
             this.$mqttProtocol.val(data.protocol);
             this.$mqttDecoder.val(data.decoder);
+            this.$mqttBatchRequest.prop('checked', data.useBatchRequest);
+            data.useBatchRequest ? this.$mqttBatchLimitContainer.show() : this.$mqttBatchLimitContainer.hide();
+            this.$mqttBatchLimit.val(data.batchLimit);
         },
 
         cleanProperties: function () {
@@ -263,6 +275,11 @@
             this.$mqttProtocol.val("");
             this.selectedConfig.decoder = "org.n52.sos.mqtt.decode.AdsbDecoder";
             this.$mqttDecoder.val("");
+            this.$mqttBatchRequest.prop('checked', false);
+            this.selectedConfig.useBatchRequest = false;
+            this.$mqttBatchLimit.val(0);
+            this.selectedConfig.batchLimit = 0;
+            this.$mqttBatchLimitContainer.hide();
         }
 
     });

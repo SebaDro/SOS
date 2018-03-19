@@ -90,6 +90,11 @@
         -moz-transition: 1s;
         transition: 1s;
     }
+    #mqttconf-loader {
+      display: none;
+      width: 30px;
+      height: 30px;
+    }
 </style>
 
 <div id="mqtt-configuration-container" class="column">
@@ -98,13 +103,14 @@
             <select id="mqttconf-list" class="span6">
                 <c:forEach var="config" items="${mqttConfigurations}">
                     <option value="${config.key}">${config.name}</option>
-                </c:forEach> 
+                </c:forEach>
             </select>
             <div class="btn-group">
                 <button id="mqttconf-addnew-button" title="Add new MQTT configuration" type="button" class="btn btn-icon mqttconf-edit-button"><i class="icon-plus"></i></button>
             </div>
-            <div class="btn-group pull-right">
-                <button id="mqttconf-activate-button" title="Activate" type="button" class="btn btn-danger">Active</button>
+            <div class="pull-right">
+              <img id="mqttconf-loader" src="/static/images/loader.gif">
+              <button id="mqttconf-activate-button" title="Activate" type="button" class="btn btn-success pull-right" style="margin-left: 10px">active</button>
             </div>
             <div id="mqttconf-add-new-form" class="input-append input-prepend control-group" style="display: none;">
                 <input class="input-xlarge" id="mqttconf-new-name-input" type="text" placeholder="Identifier"/>
@@ -114,7 +120,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <div id="mqtt-configuration-properties-container" class="column">
@@ -162,16 +167,29 @@
             <div class="controls">
                 <select id="mqttconf-decoder-select" class="input-xlarge"></select>
                 <span class="help-block">Select the decoder</span>
-            </div>
+              </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="mqttconf-batch-request-checkbox">
+              <input id="mqttconf-batch-request-checkbox" type="checkbox"/>
+              Use batch request
+            </label>
+            <span class="help-block">Choose whether multiple MQTT messages should be inserted by one InsertObservation batch request or not</span>
+        </div>
+        <div id="mqttconf-batch-limit" class="control-group">
+              <label class="control-label" for="mqttconf-batch-limit-input">Number of messages for batch request</label>
+              <div class="controls">
+                <input type="text" class="input-xlarge" id="mqttconf-batch-limit-input" value="${batchLimit}"/>
+              </div>
+        </div>
         </div>
         <div class="form-actions">
             <button id="mqttconf-save-button" class="btn btn-info">Save</button>
         </div>
     </div>
-</div>
 <script type="text/javascript">
-    var baseUrl = "<c:url value="/"/>";
+    var baseUrl = "<c:url value='/'/>";
     new MqttConfigurationController(baseUrl);
 </script>
 
-<jsp:include page="../common/footer.jsp" />
+        <jsp:include page="../common/footer.jsp"/>
