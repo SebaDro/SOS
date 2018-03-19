@@ -32,6 +32,7 @@ import org.n52.sos.mqtt.config.json.JsonMqttConfigurationDecoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Sets;
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
 import org.hamcrest.CoreMatchers;
@@ -58,6 +59,8 @@ public class JsonMqttConfigurationDecoderTest {
     private static final String USERNAME = "test";
     private static final String PASSWORD = "test";
     private static final String DECODER = "org.n52.sos.mqtt.decode.AdsbDecoder";
+    private static final boolean USE_BATCH_REQUEST = true;
+    private static final int BATCH_LIMIT = 10;
     private static final String OBSERVATION_FIELD = "bird count";
     private static final String CSV_LINE_SEPERATOR = "\\n";
     private static final String CSV_FIELD_SEPERATOR = ";";
@@ -81,6 +84,8 @@ public class JsonMqttConfigurationDecoderTest {
                 .put(MqttConstants.MQTT_TOPIC, TOPIC)
                 .put(MqttConstants.MQTT_PROTOCOL, PROTOCOL)
                 .put(MqttConstants.MQTT_DECODER, DECODER)
+                .put(MqttConstants.MQTT_BATCH_REQUEST, USE_BATCH_REQUEST)
+                .put(MqttConstants.MQTT_BATCH_LIMIT, BATCH_LIMIT)
                 .put(MqttConstants.MQTT_USERNAME, USERNAME)
                 .put(MqttConstants.MQTT_PASSWORD, PASSWORD)
                 .put(MqttConstants.MQTT_OM_OBSERVATION_FIELD, OBSERVATION_FIELD)
@@ -99,12 +104,14 @@ public class JsonMqttConfigurationDecoderTest {
 
         Assert.assertThat(decodedConfig.getKey(), CoreMatchers.is(equalTo(KEY)));
         Assert.assertThat(decodedConfig.getName(), CoreMatchers.is(equalTo(NAME)));
-//        Assert.assertThat(decodedConfig.isActive(), CoreMatchers.is(equalTo(IS_ACTIVE)));
+        Assert.assertThat(decodedConfig.isActive(), CoreMatchers.is(equalTo(IS_ACTIVE)));
         Assert.assertThat(decodedConfig.getHost(), CoreMatchers.is(equalTo(HOST)));
         Assert.assertThat(decodedConfig.getPort(), CoreMatchers.is(equalTo(PORT)));
         Assert.assertThat(decodedConfig.getTopic(), CoreMatchers.is(equalTo(TOPIC)));
         Assert.assertThat(decodedConfig.getProtocol(), CoreMatchers.is(equalTo(PROTOCOL)));
         Assert.assertThat(decodedConfig.getDecoder(), CoreMatchers.is(equalTo(DECODER)));
+        Assert.assertThat(decodedConfig.getUseBatchRequest(), CoreMatchers.is(equalTo(USE_BATCH_REQUEST)));
+        Assert.assertThat(decodedConfig.getBatchLimit(), CoreMatchers.is(equalTo(BATCH_LIMIT)));
         Assert.assertThat(decodedConfig.getUsername(), CoreMatchers.is(equalTo(USERNAME)));
         Assert.assertThat(decodedConfig.getPassword(), CoreMatchers.is(equalTo(PASSWORD)));
         Assert.assertThat(decodedConfig.getObservationField(), CoreMatchers.is(equalTo(OBSERVATION_FIELD)));

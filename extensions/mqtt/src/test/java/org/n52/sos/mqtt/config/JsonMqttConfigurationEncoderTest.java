@@ -50,7 +50,7 @@ import org.junit.Test;
 public class JsonMqttConfigurationEncoderTest {
 
     private static final String KEY = UUID.randomUUID().toString();
-//    private static final boolean IS_ACTIVE = true;
+    private static final boolean IS_ACTIVE = true;
     private static final String HOST = "ows.dev.52north.org";
     private static final String PORT = "1883";
     private static final String PROTOCOL = "tcp";
@@ -58,6 +58,8 @@ public class JsonMqttConfigurationEncoderTest {
     private static final String USERNAME = "test";
     private static final String PASSWORD = "test";
     private static final String DECODER = "org.n52.sos.mqtt.decode.AdsbDecoder";
+    private static final boolean USE_BATCH_REQUEST = true;
+    private static final int BATCH_LIMIT = 10;
     private static final String OBSERVATION_FIELD = "bird count";
     private static final String CSV_LINE_SEPERATOR = "\\n";
     private static final String CSV_FIELD_SEPERATOR = ";";
@@ -75,7 +77,7 @@ public class JsonMqttConfigurationEncoderTest {
 
         configuration = new JsonMqttConfiguration();
         configuration.setKey(KEY);
-//        configuration.setIsActive(IS_ACTIVE);
+        configuration.setIsActive(IS_ACTIVE);
         configuration.setHost(HOST);
         configuration.setPort(PORT);
         configuration.setProtocol(PROTOCOL);
@@ -83,6 +85,8 @@ public class JsonMqttConfigurationEncoderTest {
         configuration.setUsername(USERNAME);
         configuration.setPassword(PASSWORD);
         configuration.setDecoder(DECODER);
+        configuration.setUseBatchRequest(USE_BATCH_REQUEST);
+        configuration.setBatchLimit(BATCH_LIMIT);
         configuration.setObservationField(OBSERVATION_FIELD);
         configuration.setCsvLineSeperator(CSV_LINE_SEPERATOR);
         configuration.setCsvFieldSeperator(CSV_FIELD_SEPERATOR);
@@ -94,7 +98,7 @@ public class JsonMqttConfigurationEncoderTest {
 
         configurationWithNullValues = new JsonMqttConfiguration();
         configurationWithNullValues.setKey(UUID.randomUUID().toString());
-//        configurationWithNullValues.setIsActive(IS_ACTIVE);
+        configurationWithNullValues.setIsActive(IS_ACTIVE);
         configurationWithNullValues.setHost(HOST);
         configurationWithNullValues.setPort(PORT);
         configurationWithNullValues.setProtocol(PROTOCOL);
@@ -107,8 +111,8 @@ public class JsonMqttConfigurationEncoderTest {
 
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_KEY).asText(),
                 CoreMatchers.equalTo(configuration.getKey()));
-//        Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_ACTIVE).asBoolean(),
-//                CoreMatchers.equalTo(configuration.isActive()));
+        Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_ACTIVE).asBoolean(),
+                CoreMatchers.equalTo(configuration.isActive()));
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_HOST).asText(),
                 CoreMatchers.equalTo(configuration.getHost()));
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_PORT).asText(),
@@ -119,6 +123,10 @@ public class JsonMqttConfigurationEncoderTest {
                 CoreMatchers.equalTo(configuration.getTopic()));
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_DECODER).asText(),
                 CoreMatchers.equalTo(configuration.getDecoder()));
+        Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_BATCH_REQUEST).asBoolean(),
+                CoreMatchers.equalTo(configuration.getUseBatchRequest()));
+        Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_BATCH_LIMIT).asInt(),
+                CoreMatchers.equalTo(configuration.getBatchLimit()));
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_USERNAME).asText(),
                 CoreMatchers.equalTo(configuration.getUsername()));
         Assert.assertThat(jsonConfig.get(MqttConstants.MQTT_PASSWORD).asText(),
