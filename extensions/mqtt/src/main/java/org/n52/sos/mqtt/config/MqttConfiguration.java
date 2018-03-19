@@ -92,4 +92,12 @@ public interface MqttConfiguration {
 
     public void setCsvFieldSeperator(String csvFieldSeperator);
 
+    public void setUseBatchRequest(boolean useBatchRequest);
+
+    public boolean getUseBatchRequest();
+
+    public void setBatchLimit(int limit);
+
+    public int getBatchLimit();
+
 }

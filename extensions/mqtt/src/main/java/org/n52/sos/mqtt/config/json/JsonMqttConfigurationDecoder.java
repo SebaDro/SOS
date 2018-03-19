@@ -51,6 +51,8 @@ public class JsonMqttConfigurationDecoder {
         config.setTopic(getString(json, MqttConstants.MQTT_TOPIC));
         config.setProtocol(getString(json, MqttConstants.MQTT_PROTOCOL));
         config.setDecoder(getString(json, MqttConstants.MQTT_DECODER));
+        config.setUseBatchRequest(getBoolean(json, MqttConstants.MQTT_BATCH_REQUEST));
+        config.setBatchLimit(getInteger(json, MqttConstants.MQTT_BATCH_LIMIT));
 
         config.setUsername(getString(json, MqttConstants.MQTT_USERNAME));
         config.setPassword(getString(json, MqttConstants.MQTT_PASSWORD));
@@ -69,6 +71,14 @@ public class JsonMqttConfigurationDecoder {
             return "";
         }
         return jsonNode.asText();
+    }
+
+    private int getInteger(JsonNode json, String name) {
+        JsonNode jsonNode = json.get(name);
+        if (jsonNode.isNull() || !jsonNode.isInt()) {
+            return 0;
+        }
+        return jsonNode.asInt();
     }
 
     private boolean getBoolean(JsonNode json, String name) {

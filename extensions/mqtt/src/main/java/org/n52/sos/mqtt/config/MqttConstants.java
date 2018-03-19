@@ -56,6 +56,10 @@ public interface MqttConstants {
 
     String MQTT_PROTOCOL = "mqtt.protocol";
 
+    String MQTT_BATCH_REQUEST = "mqtt.useBatchRequest";
+
+    String MQTT_BATCH_LIMIT = "mqtt.batchLimit";
+
     String MQTT_OM_OBSERVABLE_PROPERTIES = "mqtt.om.observableProperties";
 
     String MQTT_OM_OBSERVATION_FIELD = "mqtt.om.observationField";

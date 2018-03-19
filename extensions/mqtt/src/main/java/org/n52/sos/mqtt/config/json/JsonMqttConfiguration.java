@@ -51,6 +51,8 @@ public class JsonMqttConfiguration implements MqttConfiguration {
     private String observationField;
     private String csvLineSeperator;
     private String csvFieldSeperator;
+    private boolean useBatchRequest;
+    private int batchLimit;
 
     @Override
     public String getKey() {
@@ -190,6 +192,26 @@ public class JsonMqttConfiguration implements MqttConfiguration {
     @Override
     public void setCsvFieldSeperator(String csvFieldSeperator) {
         this.csvFieldSeperator = csvFieldSeperator;
+    }
+
+    @Override
+    public void setUseBatchRequest(boolean useBatchRequest) {
+        this.useBatchRequest = useBatchRequest;
+    }
+
+    @Override
+    public boolean getUseBatchRequest() {
+        return this.useBatchRequest;
+    }
+
+    @Override
+    public void setBatchLimit(int limit) {
+        this.batchLimit = limit;
+    }
+
+    @Override
+    public int getBatchLimit() {
+        return this.batchLimit;
     }
 
 }

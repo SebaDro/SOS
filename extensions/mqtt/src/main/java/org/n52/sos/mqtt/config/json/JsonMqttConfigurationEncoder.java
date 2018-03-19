@@ -53,6 +53,8 @@ public class JsonMqttConfigurationEncoder {
         configNode.set(MqttConstants.MQTT_TOPIC, createTextNode(config.getTopic()));
         configNode.set(MqttConstants.MQTT_PROTOCOL, createTextNode(config.getProtocol()));
         configNode.set(MqttConstants.MQTT_DECODER, createTextNode(config.getDecoder()));
+        configNode.set(MqttConstants.MQTT_BATCH_REQUEST, createBooleanNode(config.getUseBatchRequest()));
+        configNode.set(MqttConstants.MQTT_BATCH_LIMIT, createNumberNode(config.getBatchLimit()));
 
         configNode.set(MqttConstants.MQTT_USERNAME, createTextNode(config.getUsername()));
         configNode.set(MqttConstants.MQTT_PASSWORD, createTextNode(config.getPassword()));
@@ -69,6 +71,14 @@ public class JsonMqttConfigurationEncoder {
             return Json.nodeFactory().textNode("");
         } else {
             return Json.nodeFactory().textNode(value);
+        }
+    }
+
+    private JsonNode createNumberNode(Integer value) {
+        if (value == null) {
+            return Json.nodeFactory().numberNode(0);
+        } else {
+            return Json.nodeFactory().numberNode(value);
         }
     }
 
