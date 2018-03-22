@@ -172,7 +172,7 @@ public class AdminMqttController extends AbstractController {
         MqttConsumer mqttClient = mqttRepository.get(config.getKey());
         if (mqttClient.isConnected()) {
             try {
-                mqttClient.cleanup();
+                mqttClient.cleanupMqttConnection();
                 mqttRepository.update(config);
                 mqttClient.connect();
             } catch (MqttException ex) {

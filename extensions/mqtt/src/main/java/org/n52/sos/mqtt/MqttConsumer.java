@@ -124,28 +124,16 @@ public class MqttConsumer {
     }
 
     public void cleanup() throws MqttException {
+        cleanupMqttConnection();
+        executorService.shutdown();
+    }
+
+    public void cleanupMqttConnection() throws MqttException {
         if (client != null && client.isConnected() && config.getTopic() != null) {
             client.unsubscribe(config.getTopic());
             client.disconnect();
-            processRemainingObservations();
+            executorService.execute(new CleanupMessageHandler());
         }
-    }
-
-    private void processRemainingObservations() {
-        collector.getMessages().forEach((k, v) -> {
-            try {
-                InsertObservationRequest request = decoder.getInsertObservationConverter().convert(v);
-
-                Long start = System.currentTimeMillis();
-                requestHandler.getServiceOperator(request).receiveRequest(request);
-                Long end = System.currentTimeMillis();
-                LOG.debug("InsertObservation request duration: {} ms", (end - start));
-            } catch (OwsExceptionReport ex) {
-                LOG.error("Error while receiving InsertObservationRequest.", ex);
-            } catch (ParseException ex) {
-                LOG.error("Error while creating InsertObservationRequest.", ex);
-            }
-        });
     }
 
     void updateConfiguration(MqttConfiguration config) {
@@ -191,6 +179,25 @@ public class MqttConsumer {
 
     public void setRequestHandler(MqttInsertObservationRequestHandler requestHandler) {
         this.requestHandler = requestHandler;
+    }
+
+    private class CleanupMessageHandler implements Runnable {
+
+        @Override
+        public void run() {
+            collector.getMessages().forEach((k, v) -> {
+                try {
+                    InsertObservationRequest request = decoder.getInsertObservationConverter().convert(v);
+                    requestHandler.getServiceOperator(request).receiveRequest(request);
+                } catch (OwsExceptionReport ex) {
+                    LOG.error("Error while receiving InsertObservationRequest.", ex);
+                } catch (ParseException ex) {
+                    LOG.error("Error while creating InsertObservationRequest.", ex);
+                }
+            });
+            collector.clearMessages();;
+        }
+
     }
 
 }
