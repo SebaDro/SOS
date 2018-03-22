@@ -29,6 +29,8 @@
 package org.n52.sos.mqtt;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -56,9 +58,11 @@ public class MqttConsumer {
     private MqttDecoder decoder;
     private MqttMessageCollector collector;
     private MqttInsertObservationRequestHandler requestHandler;
+    private ExecutorService executorService;
 
     public MqttConsumer(MqttConfiguration config) {
         this.config = config;
+        this.executorService = Executors.newSingleThreadExecutor();
     }
 
     /**
@@ -91,7 +95,7 @@ public class MqttConsumer {
             client.connect(options);
             LOG.debug("Connected to: {}", String.format("%s://%s:%s", config.getProtocol(), config.getHost(), config.getPort()));
             try {
-                client.setCallback(new SosMqttCallback(decoder, collector, requestHandler));
+                client.setCallback(new SosMqttCallback(decoder, collector, requestHandler, executorService));
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 throw new ConfigurationError("Error while starting MQTT consumer", e);
             }

@@ -30,7 +30,6 @@ package org.n52.sos.mqtt;
 
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.locationtech.jts.io.ParseException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -57,12 +56,12 @@ public class SosMqttCallback implements MqttCallback {
     private MqttMessageCollector messageCollector;
     private MqttInsertObservationRequestHandler requestHandler;
 
-    public SosMqttCallback(MqttDecoder decoder, MqttMessageCollector collector, MqttInsertObservationRequestHandler requestHandler) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public SosMqttCallback(MqttDecoder decoder, MqttMessageCollector collector, MqttInsertObservationRequestHandler requestHandler, ExecutorService executorService) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         this.decoder = decoder;
         this.messageCollector = collector;
         this.insertSensorConverter = decoder.getInsertSensorConverter();
         this.insertObservationConverter = decoder.getInsertObservationConverter();
-        this.executorService = Executors.newSingleThreadExecutor();
+        this.executorService = executorService;
         this.requestHandler = requestHandler;
     }
 
@@ -74,8 +73,29 @@ public class SosMqttCallback implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         Set<org.n52.sos.mqtt.api.MqttMessage> messages = decoder.decode(new String(message.getPayload()));
-        executorService.execute(new Runnable() {
-            @Override
+        executorService.execute(new MessageHandler(messages));
+
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+        LOG.info("Delivery completed for message id '{}'", token.getMessageId());
+    }
+
+    private class MessageHandler implements Runnable {
+
+        private Set<org.n52.sos.mqtt.api.MqttMessage> messages;
+
+        public MessageHandler (Set<org.n52.sos.mqtt.api.MqttMessage> messages){
+            this.messages = messages;
+        }
+
+
+               @Override
             public void run() {
                 try {
                     for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : messages) {
@@ -90,7 +110,7 @@ public class SosMqttCallback implements MqttCallback {
 
                         messageCollector.addMessage(mqttMessage);
                         LOG.info("Add message to '{}' collector. Current collection size: {}",
-                                message.getClass().getSimpleName(),
+                                mqttMessage.getClass().getSimpleName(),
                                 messageCollector.getActualSize());
                         if (messageCollector.reachedLimit()) {
                             messageCollector.getMessages().forEach((k, v) -> {
@@ -115,17 +135,6 @@ public class SosMqttCallback implements MqttCallback {
                     LOG.error("Error while processing messages!", ex);
                 }
             }
-        });
-
-    }
-
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
-
-    @Override
-    public void deliveryComplete(IMqttDeliveryToken token) {
-        LOG.info("Delivery completed for message id '{}'", token.getMessageId());
     }
 
 }
