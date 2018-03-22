@@ -90,51 +90,44 @@ public class SosMqttCallback implements MqttCallback {
 
         private Set<org.n52.sos.mqtt.api.MqttMessage> messages;
 
-        public MessageHandler (Set<org.n52.sos.mqtt.api.MqttMessage> messages){
+        public MessageHandler(Set<org.n52.sos.mqtt.api.MqttMessage> messages) {
             this.messages = messages;
         }
 
-
-               @Override
-            public void run() {
-                try {
-                    for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : messages) {
-                        if (!requestHandler.isProcedureRegistered(mqttMessage.getProcedure())) {
-                            InsertSensorRequest request;
-
-                            request = insertSensorConverter.convert(mqttMessage);
-
-                            requestHandler.getServiceOperator(request).receiveRequest(request);
-
-                        }
-
-                        messageCollector.addMessage(mqttMessage);
-                        LOG.info("Add message to '{}' collector. Current collection size: {}",
-                                mqttMessage.getClass().getSimpleName(),
-                                messageCollector.getActualSize());
-                        if (messageCollector.reachedLimit()) {
-                            messageCollector.getMessages().forEach((k, v) -> {
-                                try {
-                                    InsertObservationRequest request = insertObservationConverter.convert(v);
-
-                                    Long start = System.currentTimeMillis();
-                                    requestHandler.getServiceOperator(request).receiveRequest(request);
-                                    Long end = System.currentTimeMillis();
-                                    LOG.info("InsertObservation request duration: {} ms", (end - start));
-                                } catch (OwsExceptionReport ex) {
-                                    LOG.error("Error while receiving InsertObservationRequest.", ex);
-                                } catch (ParseException ex) {
-                                    LOG.error("Error while creating InsertObservationRequest.", ex);
-                                }
-                            });
-                            messageCollector.clearMessages();
-                        }
-
+        @Override
+        public void run() {
+            try {
+                for (org.n52.sos.mqtt.api.MqttMessage mqttMessage : messages) {
+                    if (!requestHandler.isProcedureRegistered(mqttMessage.getProcedure())) {
+                        InsertSensorRequest request = insertSensorConverter.convert(mqttMessage);
+                        requestHandler.getServiceOperator(request).receiveRequest(request);
                     }
-                } catch (OwsExceptionReport ex) {
-                    LOG.error("Error while processing messages!", ex);
-                }
-            }
-    }
 
+                    messageCollector.addMessage(mqttMessage);
+                    LOG.info("Add message to '{}' collector. Current collection size: {}",
+                            mqttMessage.getClass().getSimpleName(),
+                            messageCollector.getActualSize());
+                    if (messageCollector.reachedLimit()) {
+                        messageCollector.getMessages().forEach((k, v) -> {
+                            try {
+                                InsertObservationRequest request = insertObservationConverter.convert(v);
+
+                                Long start = System.currentTimeMillis();
+                                requestHandler.getServiceOperator(request).receiveRequest(request);
+                                Long end = System.currentTimeMillis();
+                                LOG.info("InsertObservation request duration: {} ms", (end - start));
+                            } catch (OwsExceptionReport ex) {
+                                LOG.error("Error while receiving InsertObservationRequest.", ex);
+                            } catch (ParseException ex) {
+                                LOG.error("Error while creating InsertObservationRequest.", ex);
+                            }
+                        });
+                        messageCollector.clearMessages();
+                    }
+                }
+            } catch (OwsExceptionReport ex) {
+                LOG.error("Error while processing messages!", ex);
+            }
+        }
+    }
 }
