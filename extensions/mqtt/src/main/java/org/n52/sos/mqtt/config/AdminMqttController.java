@@ -142,7 +142,7 @@ public class AdminMqttController extends AbstractController {
         return config;
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/operations",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -158,7 +158,7 @@ public class AdminMqttController extends AbstractController {
         if (activation) {
             mqttRepository.get(configurationId).connect();
         } else {
-            mqttRepository.get(configurationId).cleanup();
+            mqttRepository.get(configurationId).cleanupMqttConnection();
         }
 
         MqttConfiguration configuration = config.get();
@@ -166,7 +166,7 @@ public class AdminMqttController extends AbstractController {
         mqttConfigDao.updateMqttConfiguration(configuration);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@RequestBody JsonMqttConfiguration config) {
         MqttConsumer mqttClient = mqttRepository.get(config.getKey());
