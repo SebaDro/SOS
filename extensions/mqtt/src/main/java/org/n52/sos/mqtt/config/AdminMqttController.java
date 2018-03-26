@@ -168,7 +168,7 @@ public class AdminMqttController extends AbstractController {
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@RequestBody JsonMqttConfiguration config) {
+    public void update(@RequestBody JsonMqttConfiguration config) throws MqttException {
         MqttConsumer mqttClient = mqttRepository.get(config.getKey());
         if (mqttClient.isConnected()) {
             try {
@@ -176,7 +176,7 @@ public class AdminMqttController extends AbstractController {
                 mqttRepository.update(config);
                 mqttClient.connect();
             } catch (MqttException ex) {
-                LOG.error("Error while opening or closing MQTT connection for configuration" + config.getKey(), ex);
+                throw ex;
             } finally {
                 config.setIsActive(mqttClient.isConnected());
                 mqttConfigDao.updateMqttConfiguration(config);
@@ -205,6 +205,7 @@ public class AdminMqttController extends AbstractController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(MqttException.class)
     public String onError(MqttException e) {
+        LOG.error("Error while opening or closing MQTT connection for configuration.", e);
         return "MQTT consumer could not be connected/closed" + e.getMessage();
     }
 }

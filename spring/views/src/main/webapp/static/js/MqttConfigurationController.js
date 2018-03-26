@@ -169,18 +169,25 @@
 
         update: function (payload) {
             var self = this;
+            self.$saveButton.prop("disabled", true);
             $.ajax({
                 type: "PUT",
                 url: self.baseUrl + "admin/mqtt",
                 contentType: "application/json",
                 data: JSON.stringify(payload),
                 context: this
-            }).done(function (data) {
+            }).done(function () {
+                self.$saveButton.prop("disabled", false);
                 showSuccess("MQTT configuration for " + payload.name + " updated.");
                 self.$configList.find("option:selected").text(self.selectedConfig.name);
 
             }).fail(function () {
-                showError("MQTT configuration for " + payload.name + " could not be updated.");
+                showError("MQTT client could not be restarted.");
+                self.selectedConfig.active = false;
+                self.$saveButton.prop("disabled", false);
+                self.$mqttActivate.toggleClass("btn-danger btn-success")
+                        .text("inactive")
+                        .prop("disabled", false);
             });
         },
 
