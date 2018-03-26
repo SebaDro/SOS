@@ -69,7 +69,6 @@ import org.n52.shetland.util.JTSHelper;
 
 public class AdsbToInsertObservation implements MqttInsertObservationConverter<AdsbMessage> {
 
-    private static final int MESSAGE_LIMIT = 1;
 
     @Override
     public InsertObservationRequest convert(AdsbMessage message) throws OwsExceptionReport, ParseException {
@@ -88,11 +87,6 @@ public class AdsbToInsertObservation implements MqttInsertObservationConverter<A
         }
         request.setObservation(observations);
         return request;
-    }
-
-    @Override
-    public int getMessageLimit() {
-        return MESSAGE_LIMIT;
     }
 
     private InsertObservationRequest createBaseInsterObservationRequest(AdsbMessage message) {

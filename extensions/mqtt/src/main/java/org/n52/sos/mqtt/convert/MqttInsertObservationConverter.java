@@ -38,6 +38,4 @@ public interface MqttInsertObservationConverter<T> {
     InsertObservationRequest convert(T message) throws OwsExceptionReport, ParseException;
 
     InsertObservationRequest convert(List<T> messages) throws OwsExceptionReport, ParseException;
-
-    int getMessageLimit();
 }

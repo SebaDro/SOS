@@ -137,12 +137,13 @@ public class MqttConsumer {
     }
 
     void updateConfiguration(MqttConfiguration config) {
-        if (this.config.getProtocol().equals(config.getProtocol())
-                || this.config.getHost().equals(config.getHost())
-                || this.config.getPort().equals(config.getPort())) {
+        if (!this.config.getProtocol().equals(config.getProtocol())
+                || !this.config.getHost().equals(config.getHost())
+                || !this.config.getPort().equals(config.getPort())) {
             this.client = null;
         }
         setConfig(config);
+        collector.setLimit(config.getBatchLimit());
     }
 
     public void setConfig(MqttConfiguration config) {

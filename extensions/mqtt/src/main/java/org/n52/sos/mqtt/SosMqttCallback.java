@@ -107,7 +107,7 @@ public class SosMqttCallback implements MqttCallback {
                     LOG.info("Add message to '{}' collector. Current collection size: {}",
                             mqttMessage.getClass().getSimpleName(),
                             messageCollector.getActualSize());
-                    if (messageCollector.reachedLimit()) {
+                    if (!messageCollector.isBatchActivated() || messageCollector.reachedLimit()) {
                         messageCollector.getMessages().forEach((k, v) -> {
                             try {
                                 InsertObservationRequest request = insertObservationConverter.convert(v);

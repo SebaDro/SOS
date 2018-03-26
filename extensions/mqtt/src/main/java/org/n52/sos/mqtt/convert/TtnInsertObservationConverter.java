@@ -53,8 +53,6 @@ public class TtnInsertObservationConverter implements MqttInsertObservationConve
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(TtnInsertObservationConverter.class);
     private InsertObservationRequestDecoder insertObservationDecoder;
     
-    private static final int MESSAGE_LIMIT = 1;
-    
     public TtnInsertObservationConverter() {
         insertObservationDecoder = new InsertObservationRequestDecoder();
     }
@@ -100,10 +98,4 @@ public class TtnInsertObservationConverter implements MqttInsertObservationConve
         request.setOfferings(Lists.newArrayList(message.getProcedure()));
         return request;
     }
-    
-    @Override
-    public int getMessageLimit() {
-        return MESSAGE_LIMIT;
-    }
-    
 }

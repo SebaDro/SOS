@@ -58,8 +58,6 @@ public class CtdInsertObservationConverter extends AbstractMarineInsertObservati
 
     private static final Logger LOG = LoggerFactory.getLogger(CtdInsertObservationConverter.class);
 
-    private static final int MESSAGE_LIMIT = 50;
-
     @Override
     protected List<OmObservation> createObservations(CtdMessage message) throws OwsExceptionReport {
         String procedure = message.getProcedure();
@@ -121,11 +119,6 @@ public class CtdInsertObservationConverter extends AbstractMarineInsertObservati
         Geometry geometry = createGeometry();
         namedValue.setValue(new GeometryValue(geometry));
         return namedValue;
-    }
-
-    @Override
-    public int getMessageLimit() {
-        return MESSAGE_LIMIT;
     }
 
 }

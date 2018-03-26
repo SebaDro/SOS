@@ -92,7 +92,7 @@ public class MqttConsumerRepository implements Constructable, Destroyable {
         MqttConsumer consumer = new MqttConsumer(config);
         MqttDecoder decoder = decoderFactory.createMqttDecoder(config);
         consumer.setDecoder(decoder);
-        consumer.setCollector(new MqttMessageCollector(decoder.getInsertObservationConverter().getMessageLimit()));
+        consumer.setCollector(new MqttMessageCollector(config.getBatchLimit(), config.getUseBatchRequest()));
         consumer.setRequestHandler(requestHandler);
         mqttConsumers.put(consumer.getConfig().getKey(), consumer);
         return consumer;
@@ -100,8 +100,12 @@ public class MqttConsumerRepository implements Constructable, Destroyable {
 
     public void update(MqttConfiguration config) {
         MqttConsumer consumer = mqttConsumers.get(config.getKey());
+        if (!consumer.getConfig().getDecoder().equals(config.getDecoder())) {
+            consumer.setDecoder(decoderFactory.createMqttDecoder(config));
+        }
         consumer.updateConfiguration(config);
-        consumer.setDecoder(decoderFactory.createMqttDecoder(config));
+        consumer.getCollector().setLimit(config.getBatchLimit());
+        consumer.getCollector().setBatchActivated(config.getUseBatchRequest());
     }
 
     public void deleteAll() {

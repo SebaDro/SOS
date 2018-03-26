@@ -55,8 +55,6 @@ public class OmInsertObservationConverter implements MqttInsertObservationConver
 
     private static final Logger LOG = LoggerFactory.getLogger(OmInsertObservationConverter.class);
 
-    private static final int MESSAGE_LIMIT = 1;
-
     private ObservationDecoder observationDecoder;
 
     public OmInsertObservationConverter() {
@@ -115,11 +113,6 @@ public class OmInsertObservationConverter implements MqttInsertObservationConver
             observations.add(observationDecoder.decode(observationNode));
         }
         return observations;
-    }
-
-    @Override
-    public int getMessageLimit() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

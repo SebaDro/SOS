@@ -30,11 +30,13 @@ import org.n52.sos.mqtt.api.MqttMessage;
 public class MqttMessageCollector {
 
     private int limit;
+    private boolean batchActivated;
     private int actualSize;
     private Map<String, List<MqttMessage>> messages;
 
-    public MqttMessageCollector(int limit) {
+    public MqttMessageCollector(int limit, boolean isBatchActivated) {
         this.limit = limit;
+        this.batchActivated = isBatchActivated;
         this.messages = new HashMap();
         this.actualSize = 0;
     }
@@ -63,6 +65,14 @@ public class MqttMessageCollector {
 
     public void setLimit(int limit) {
         this.limit = limit;
+    }
+
+    public boolean isBatchActivated() {
+        return batchActivated;
+    }
+
+    public void setBatchActivated(boolean batchActivated) {
+        this.batchActivated = batchActivated;
     }
 
     public int getActualSize() {
