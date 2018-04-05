@@ -70,7 +70,7 @@ public class MqttDecoderFactory {
         } else if (config.getDecoder().equals(Decoder.FLUOROMETER.qualifiedName())) {
             mqttDecoder = createFluorometerDecoder();
         } else {
-            throw new ConfigurationError("Could not create MQTT decoder: " + config.getName());
+            throw new ConfigurationError("Could not create MQTT decoder: " + config.getDecoder());
         }
         mqttDecoder.configure(config);
         return mqttDecoder;
