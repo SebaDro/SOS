@@ -106,11 +106,13 @@
                 </c:forEach>
             </select>
             <div class="btn-group">
-                <button id="mqttconf-addnew-button" title="Add new MQTT configuration" type="button" class="btn btn-icon mqttconf-edit-button"><i class="icon-plus"></i></button>
+                <!--<button data-target="#confirmDialogClear" data-toggle="modal" title="Clear Datasource" class="btn btn-danger">Clear Datasource</button>-->
+                <button data-target="#addMqttConfigDialog" data-toggle="modal" id="mqttconf-addnew-button" title="Add new MQTT configuration" type="button" class="btn btn-icon mqttconf-edit-button"><i class="icon-plus"></i></button>
+                <!--<button id="mqttconf-addnew-button" title="Add new MQTT configuration" type="button" class="btn btn-icon mqttconf-edit-button"><i class="icon-plus"></i></button>-->
             </div>
             <div class="pull-right">
               <img id="mqttconf-loader" src="/static/images/loader.gif">
-              <button id="mqttconf-activate-button" title="Activate" type="button" class="btn btn-success pull-right" style="margin-left: 10px">active</button>
+              <button id="mqttconf-activate-button" title="Activate" type="button" class="btn btn-danger pull-right" style="margin-left: 10px">active</button>
             </div>
             <div id="mqttconf-add-new-form" class="input-append input-prepend control-group" style="display: none;">
                 <input class="input-xlarge" id="mqttconf-new-name-input" type="text" placeholder="Identifier"/>
@@ -128,10 +130,11 @@
                 <div>Configuration for MQTT client </div>
             </div>
         </legend>
-        <div class="control-group">
+        <div id="mqtt-configuration-controls" class="column">
+        <div id="mqttconf-name-input-control-group" class="control-group">
             <label class="control-label" for="mqttconf-name-input">MQTT configuration name</label>
             <div class="controls">
-                <input type="text" class="input-xlarge" id="mqttconf-name-input" value="${selectedMqttConfiguration.name}">
+                <input type="text" class="input-xlarge" id="mqttconf-name-input" value="${selectedMqttConfiguration.name}" required>
             </div>
         </div>
         <div class="control-group">
@@ -182,9 +185,23 @@
                 <input type="text" class="input-xlarge" id="mqttconf-batch-limit-input" value="${batchLimit}"/>
               </div>
         </div>
+      </div>
         </div>
         <div class="form-actions">
             <button id="mqttconf-save-button" class="btn btn-info">Save</button>
+        </div>
+    </div>
+    <div class="modal hide fade in" id="addMqttConfigDialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Configuration for a new MQTT client</h3>
+        </div>
+        <div id="addMqttConfigDialog-modal-body" class="modal-body">
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button type="button" id="mqttconf-createnew-button" class="btn btn-success">Create</button>
         </div>
     </div>
 <script type="text/javascript">

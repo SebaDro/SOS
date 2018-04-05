@@ -74,8 +74,14 @@
         this.$mqttBatchLimitContainer = $("#mqttconf-batch-limit");
         this.$mqttBatchLimit = $("#mqttconf-batch-limit-input");
 
-        this.bind();
+        this.$mqttConfigContainer = $("#mqtt-configuration-controls");
+        this.$mqttConfigModalBody = $("#addMqttConfigDialog-modal-body")
+        this.$mqttConfigModalBody.html(this.$mqttConfigContainer.html());
 
+        this.$mqttConfigModal = $("#addMqttConfigDialog");
+        this.$createNewButton = $("#mqttconf-createnew-button");
+
+        this.bind();
     }
     $.extend(MqttConfigurationController.prototype, EventMixin);
     $.extend(MqttConfigurationController.prototype, {
@@ -85,33 +91,29 @@
             var selectedConfig = self.$configList.find("option:selected").val();
             if (!self.$configList.val()) {
                 self.$mqttConfPropsContainer.hide();
+                self.$mqttActivate.hide();
             } else {
                 self.requestConfig(selectedConfig);
             }
             self.requestDecoders();
 
             this.$addNewButton.on("click", function () {
-                self.$addNewButton.slideLeft(100, function () {
-                    self.$addNewForm.slideRight();
-                });
+              self.cleanProperties();
             });
 
-            //show input for adding a new config
-            $(".mqttconf-add-new-form-button").on("click", function () {
-                self.$addNewForm.slideLeft(400, function () {
-                    self.$addNewButton.slideRight(100);
-                    self.$mqttNewName.val("").trigger("input");
-                });
-            });
-
-            //prepare form for editting properties for a new config
-            this.$addNewOk.on("click", function () {
-                self.$mqttName.val(self.$mqttNewName.val());
-                self.selectedConfig.name = self.$mqttNewName.val();
-                self.cleanProperties();
-                self.$mqttConfPropsContainer.slideDown("slow", function () {
-
-                });
+            this.$createNewButton.on("click", function () {
+              self.readInitialProperties();
+              if(self.selectedConfig.name === ""){
+                self.$mqttConfigModalBody.find("#mqttconf-name-input").focus();
+               //  self.$mqttConfigModalBody.animate({
+               //  scrollTop: self.$mqttConfigModalBody.find("#mqttconf-name-input").offset().top
+               // }, 500, function() {
+               //   self.$mqttConfigModalBody.find("#mqttconf-name-input").focus();
+               // });
+              }
+              else{
+                self.create(self.selectedConfig);
+              }
             });
 
             this.$configList.change(function () {
@@ -122,13 +124,7 @@
 
             this.$saveButton.on("click", function () {
                 self.readProperties();
-
-                if (self.selectedConfig.key) {
-                    self.update(self.selectedConfig);
-                } else {
-                    self.create(self.selectedConfig);
-                }
-
+                self.update(self.selectedConfig);
             });
 
             this.$mqttActivate.on("click", function () {
@@ -144,7 +140,16 @@
               self.$mqttBatchLimitContainer.css('display', display);
             });
 
+            this.$mqttConfigModalBody.find("#mqttconf-batch-request-checkbox").change(function(){
+              var display = this.checked ? 'block' : 'none';
+              self.$mqttConfigModalBody.find("#mqttconf-batch-limit").css('display', display);
+            });
+
+            this.$mqttConfigModal.on('shown', function () {
+              self.$mqttConfigModalBody.scrollTop(0);
+            });
         },
+
         create: function (payload) {
             var self = this;
             $.ajax({
@@ -161,7 +166,9 @@
                     text: data.name,
                     selected: true
                 }));
-
+                self.$mqttConfigModal.modal('hide');
+                self.$mqttConfPropsContainer.slideDown("slow");
+                self.updateProperties();
             }).fail(function () {
                 showError("MQTT configuration for " + payload.name + " could not be saved.");
             });
@@ -221,7 +228,7 @@
                     .done(function (data) {
                         console.log("Data loaded: " + data);
                         self.selectedConfig = data;
-                        self.updateProperties(data);
+                        self.updateProperties();
                     }).fail(function () {
                 showError("Could not load requested configuration.");
             });
@@ -234,6 +241,10 @@
                         console.log("Decoders loaded: " + data);
                         $.each(data, function (key, value) {
                             self.$mqttDecoder.append($('<option>', {
+                                value: key,
+                                text: value
+                            }));
+                            self.$mqttConfigModalBody.find("#mqttconf-decoder-select").append($('<option>', {
                                 value: key,
                                 text: value
                             }));
@@ -254,39 +265,43 @@
             this.selectedConfig.batchLimit = this.$mqttBatchLimit.val();
         },
 
-        updateProperties: function (data) {
-            this.$mqttName.val(data.name);
-            this.$mqttActivate.removeClass("btn-success btn-danger");
-            this.$mqttActivate.addClass(this.selectedConfig.active ? "btn-success" : "btn-danger");
-            this.$mqttActivate.text(this.selectedConfig.active ? "active" : "inactive");
-            this.$mqttHost.val(data.host);
-            this.$mqttPort.val(data.port);
-            this.$mqttTopic.val(data.topic);
-            this.$mqttProtocol.val(data.protocol);
-            this.$mqttDecoder.val(data.decoder);
-            this.$mqttBatchRequest.prop('checked', data.useBatchRequest);
-            data.useBatchRequest ? this.$mqttBatchLimitContainer.show() : this.$mqttBatchLimitContainer.hide();
-            this.$mqttBatchLimit.val(data.batchLimit);
+        readInitialProperties: function () {
+            this.selectedConfig.name = this.$mqttConfigModalBody.find("#mqttconf-name-input").val();
+            this.selectedConfig.active = false;
+            this.selectedConfig.host = this.$mqttConfigModalBody.find("#mqttconf-host-input").val();
+            this.selectedConfig.port = this.$mqttConfigModalBody.find("#mqttconf-port-input").val();
+            this.selectedConfig.topic = this.$mqttConfigModalBody.find("#mqttconf-topic-input").val();
+            this.selectedConfig.protocol = this.$mqttConfigModalBody.find("#mqttconf-protocol-select").val();
+            this.selectedConfig.decoder = this.$mqttConfigModalBody.find("#mqttconf-decoder-select").val();
+            this.selectedConfig.useBatchRequest = this.$mqttConfigModalBody.find("#mqttconf-batch-request-checkbox").is(":checked");
+            this.selectedConfig.batchLimit = this.$mqttConfigModalBody.find("#mqttconf-batch-limit-input").val();
+        },
+
+        updateProperties: function () {
+          this.$mqttName.val(this.selectedConfig.name);
+          this.$mqttActivate.removeClass("btn-success btn-danger");
+          this.$mqttActivate.addClass(this.selectedConfig.active ? "btn-success" : "btn-danger");
+          this.$mqttActivate.text(this.selectedConfig.active ? "active" : "inactive");
+          this.$mqttActivate.show();
+          this.$mqttHost.val(this.selectedConfig.host);
+          this.$mqttPort.val(this.selectedConfig.port);
+          this.$mqttTopic.val(this.selectedConfig.topic);
+          this.$mqttProtocol.val(this.selectedConfig.protocol);
+          this.$mqttDecoder.val(this.selectedConfig.decoder);
+          this.$mqttBatchRequest.prop('checked', this.selectedConfig.useBatchRequest);
+          this.selectedConfig.useBatchRequest ? this.$mqttBatchLimitContainer.show() : this.$mqttBatchLimitContainer.hide();
+          this.$mqttBatchLimit.val(this.selectedConfig.batchLimit);
         },
 
         cleanProperties: function () {
-            this.selectedConfig.key = null;
-            this.selectedConfig.active = false;
-            this.selectedConfig.host = "";
-            this.$mqttHost.val("");
-            this.selectedConfig.port = "";
-            this.$mqttPort.val("");
-            this.selectedConfig.topic = "";
-            this.$mqttTopic.val("");
-            this.selectedConfig.protocol = "tcp";
-            this.$mqttProtocol.val("");
-            this.selectedConfig.decoder = "org.n52.sos.mqtt.decode.AdsbDecoder";
-            this.$mqttDecoder.val("");
-            this.$mqttBatchRequest.prop('checked', false);
-            this.selectedConfig.useBatchRequest = false;
-            this.$mqttBatchLimit.val(0);
-            this.selectedConfig.batchLimit = 0;
-            this.$mqttBatchLimitContainer.hide();
+            this.$mqttConfigModalBody.find("#mqttconf-name-input").val("");
+            this.$mqttConfigModalBody.find("#mqttconf-host-input").val("");
+            this.$mqttConfigModalBody.find("#mqttconf-port-input").val("");
+            this.$mqttConfigModalBody.find("#mqttconf-topic-input").val("");
+            this.$mqttConfigModalBody.find("#mqttconf-protocol-select").val("");
+            this.$mqttConfigModalBody.find("#mqttconf-decoder-select").val("");
+            this.$mqttConfigModalBody.find("#mqttconf-batch-request-checkbox").prop('checked', false);
+            this.$mqttConfigModalBody.find("#mqttconf-batch-limit-input").val(0);
         }
 
     });
