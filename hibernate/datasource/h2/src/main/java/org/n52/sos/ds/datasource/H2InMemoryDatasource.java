@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -63,8 +63,8 @@ public class H2InMemoryDatasource extends AbstractH2Datasource {
 
     @Override
     public Set<SettingDefinition<?, ?>> getSettingDefinitions() {
-        return ImmutableSet.<SettingDefinition<?, ?>> of(getDatabaseConceptDefinition(), getTransactionalDefiniton(),
-                getMulitLanguageDefiniton());
+        return ImmutableSet.<SettingDefinition<?, ?>> of(getDatabaseConceptDefinition(), getFeatureConceptDefinition(), getTransactionalDefiniton(),
+                getMulitLanguageDefiniton(), getSeriesMetadataDefiniton());
     }
 
     @Override
@@ -91,7 +91,7 @@ public class H2InMemoryDatasource extends AbstractH2Datasource {
     }
 
     @Override
-    protected Map<String, Object> parseDatasourceProperties(Properties current) {
+    public Map<String, Object> parseDatasourceProperties(Properties current) {
         Map<String, Object> settings = new HashMap<>(2);
         settings.put(getTransactionalDefiniton().getKey(), isTransactional(current));
         return settings;

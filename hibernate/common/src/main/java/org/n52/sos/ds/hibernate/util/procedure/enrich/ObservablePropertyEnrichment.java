@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -29,13 +29,14 @@
 package org.n52.sos.ds.hibernate.util.procedure.enrich;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.sos.ds.I18NDAO;
 import org.n52.sos.i18n.I18NDAORepository;
 import org.n52.sos.i18n.LocalizedString;
 import org.n52.sos.i18n.metadata.I18NObservablePropertyMetadata;
-import org.n52.sos.ogc.om.AbstractPhenomenon;
+import org.n52.sos.ogc.om.OmObservableProperty;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 
 import com.google.common.base.Optional;
@@ -50,16 +51,26 @@ public class ObservablePropertyEnrichment extends ProcedureDescriptionEnrichment
                     getInstance().getDAO(I18NObservablePropertyMetadata.class);
             if (dao != null) {
                 Set<String> ids = getCache().getObservablePropertiesForProcedure(getIdentifier());
-                Collection<I18NObservablePropertyMetadata> metadata = dao.getMetadata(ids);
+                Collection<I18NObservablePropertyMetadata> metadata = dao.getMetadata(checkForPublished(ids));
                 for (I18NObservablePropertyMetadata i18n : metadata) {
-                    AbstractPhenomenon abstractPhenomenon = new AbstractPhenomenon(i18n.getIdentifier());
+                    OmObservableProperty observableProperty = new OmObservableProperty(i18n.getIdentifier());
                     Optional<LocalizedString> name = i18n.getName().getLocalizationOrDefault(getLocale());
                     if (name.isPresent()) {
-                        abstractPhenomenon.addName(name.get().asCodeType());
+                        observableProperty.addName(name.get().asCodeType());
                     }
-                    getDescription().addPhenomenon(abstractPhenomenon);
+                    getDescription().addPhenomenon(observableProperty);
                 }
             }
         }
+    }
+
+    private Set<String> checkForPublished(Set<String> ids) {
+        Set<String> obsProps = new HashSet<>();
+        for (String id : ids) {
+            if (getCache().getPublishedObservableProperties().contains(id)) {
+                obsProps.add(id);
+            }
+        }
+        return obsProps;
     }
 }

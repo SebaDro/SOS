@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -436,7 +436,7 @@ public class SensorMLDecoderV101Test extends AbstractBeforeAfterClassSettingsMan
         dataArray.addNewElementCount().addNewCount().setValue(new BigInteger("1"));
         DataComponentPropertyType addNewElementType = dataArray.addNewElementType();
         addNewElementType.setName("elementType");
-        addNewElementType.addNewAbstractDataRecord();
+        addNewElementType.addNewAbstractDataRecord().substitute(SweConstants.QN_DATA_RECORD_SWE_101, DataRecordType.type);
         return dataArray;
     }
 

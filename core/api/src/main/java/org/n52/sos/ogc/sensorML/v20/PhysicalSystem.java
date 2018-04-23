@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -85,6 +85,11 @@ public class PhysicalSystem extends AbstractPhysicalProcess implements HasCompon
     @Override
     public boolean isSetComponents() {
         return components != null && !components.isEmpty();
+    }
+    
+    @Override
+    public boolean isAggragation() {
+        return true;
     }
 
     public SmlConnection getConnections() {

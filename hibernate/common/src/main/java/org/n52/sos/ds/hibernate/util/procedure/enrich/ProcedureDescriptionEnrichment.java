@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.Locale;
 
 import org.hibernate.Session;
-
 import org.n52.sos.cache.ContentCache;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sos.SosOffering;
@@ -74,13 +73,15 @@ public abstract class ProcedureDescriptionEnrichment {
         Collection<SosOffering> offerings = Lists
                 .newArrayListWithCapacity(identifiers.size());
         for (String offering : identifiers) {
-            SosOffering sosOffering = new SosOffering(offering, false);
-            // add offering name
-            I18NHelper.addOfferingNames(sosOffering, getLocale());
-            // add offering description
-            I18NHelper.addOfferingDescription(sosOffering, getLocale());
-            // add to list
-            offerings.add(sosOffering);
+            if (getCache().getPublishedOfferings().contains(offering)) {
+                SosOffering sosOffering = new SosOffering(offering, false);
+                // add offering name
+                I18NHelper.addOfferingNames(sosOffering, getLocale());
+                // add offering description
+                I18NHelper.addOfferingDescription(sosOffering, getLocale());
+                // add to list
+                offerings.add(sosOffering);
+            }
         }
         return offerings;
     }

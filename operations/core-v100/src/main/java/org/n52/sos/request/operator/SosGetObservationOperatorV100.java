@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -63,6 +63,7 @@ import org.n52.sos.service.Configurator;
 import org.n52.sos.util.CollectionHelper;
 import org.n52.sos.util.OMHelper;
 import org.n52.sos.util.SosHelper;
+import org.opengis.parameter.InvalidParameterCardinalityException;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -137,7 +138,7 @@ public class SosGetObservationOperatorV100 extends
             exceptions.add(owse);
         }
         try {
-            checkProcedureIDs(sosRequest.getProcedures(), SosConstants.GetObservationParams.procedure.name());
+            checkProcedures(sosRequest.getProcedures(), SosConstants.GetObservationParams.procedure.name());
             // add child procedures to request
             if (sosRequest.isSetProcedure()) {
                 sosRequest.setProcedures(addChildProcedures(sosRequest.getProcedures()));
@@ -240,8 +241,13 @@ public class SosGetObservationOperatorV100 extends
             Map<String, String> ncOfferings = SosHelper.getNcNameResolvedOfferings(offerings);
             CompositeOwsException exceptions = new CompositeOwsException();
 
-            if (offeringIds.size() != 1) {
+            //SOS 1.0 GetObservation requires exactly one offering
+            if (offeringIds.isEmpty()) {
                 throw new MissingOfferingParameterException();
+            } else if (offeringIds.size() > 1) {
+                throw new InvalidParameterCardinalityException(
+                        "Exactly one offering is required",
+                        SosConstants.GetObservationParams.offering.name());
             }
 
             for (String offeringId : offeringIds) {

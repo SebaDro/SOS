@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@ import org.n52.sos.ogc.gml.time.TimeInstant;
 import org.n52.sos.ogc.gml.time.TimePeriod;
 import org.n52.sos.ogc.om.OmObservation;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.n52.sos.ogc.sos.Sos2Constants;
 import org.n52.sos.ogc.sos.SosConstants;
 import org.n52.sos.response.InsertObservationResponse;
 import org.n52.sos.util.CollectionHelper;
@@ -119,8 +120,9 @@ public class InsertObservationRequest extends AbstractServiceRequest<InsertObser
      *            observations to insert
      * @throws OwsExceptionReport
      */
-    public void setObservation(List<OmObservation> observation) throws OwsExceptionReport {
-        this.observations = referenceChecker.checkObservationsForReferences(observation);
+    public InsertObservationRequest setObservation(List<OmObservation> observation) throws OwsExceptionReport {
+        observations = referenceChecker.checkObservationsForReferences(observation);
+        return this;
     }
 
     /**
@@ -143,8 +145,9 @@ public class InsertObservationRequest extends AbstractServiceRequest<InsertObser
         return CollectionHelper.isNotEmpty(getObservations());
     }
 
-    public void setOfferings(List<String> offerings) {
+    public InsertObservationRequest setOfferings(List<String> offerings) {
         this.offerings = offerings;
+        return this;
     }
 
     public List<String> getOfferings() {
@@ -158,6 +161,11 @@ public class InsertObservationRequest extends AbstractServiceRequest<InsertObser
     @Override
     public InsertObservationResponse getResponse() throws OwsExceptionReport {
         return (InsertObservationResponse) new InsertObservationResponse().set(this);
+    }
+
+    public boolean isSetExtensionSplitDataArrayIntoObservations() {
+        return isSetExtensions() && getExtensions()
+                .isBooleanExtensionSet(Sos2Constants.Extensions.SplitDataArrayIntoObservations.name());
     }
 
     /**

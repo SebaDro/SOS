@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,10 @@ package org.n52.sos.request;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Test;
+import org.n52.sos.util.http.MediaType;
 import org.n52.sos.util.net.IPAddress;
 
 /**
@@ -69,6 +72,23 @@ public class RequestContextTest {
         rc.setToken("asfsf");
         assertThat(rc.getIPAddress().isPresent(), is(true));
         assertThat(rc.getToken().isPresent(), is(true));
+    }
+
+    @Test
+    public void shouldNotEmptyAcceptType() {
+        RequestContext rc = new RequestContext();
+        MediaType xml = new MediaType("application", "xml");
+        MediaType json = new MediaType("text", "plain");
+        rc.setAcceptType(Arrays.asList(xml, json));
+        assertThat(rc.getAcceptType().isPresent(), is(true));
+        assertThat(rc.getAcceptType().get().size(), is(2));
+    }
+
+    @Test
+    public void shouldNotEmptyContentType() {
+        RequestContext rc = new RequestContext();
+        rc.setContentType("application/xml");
+        assertThat(rc.getContentType().isPresent(), is(true));
     }
 
 }

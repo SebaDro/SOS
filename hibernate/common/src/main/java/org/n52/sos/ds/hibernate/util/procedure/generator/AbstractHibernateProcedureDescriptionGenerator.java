@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -31,16 +31,18 @@ package org.n52.sos.ds.hibernate.util.procedure.generator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.n52.sos.cache.ContentCache;
 import org.n52.sos.ds.I18NDAO;
-import org.n52.sos.ds.hibernate.dao.AbstractObservationDAO;
 import org.n52.sos.ds.hibernate.dao.DaoFactory;
 import org.n52.sos.ds.hibernate.dao.ProcedureDAO;
-import org.n52.sos.ds.hibernate.entities.AbstractObservation;
+import org.n52.sos.ds.hibernate.dao.observation.AbstractObservationDAO;
 import org.n52.sos.ds.hibernate.entities.Procedure;
+import org.n52.sos.ds.hibernate.entities.observation.AbstractObservation;
 import org.n52.sos.ds.hibernate.util.HibernateHelper;
 import org.n52.sos.i18n.I18NDAORepository;
 import org.n52.sos.i18n.LocalizedString;
@@ -222,7 +224,13 @@ public abstract class AbstractHibernateProcedureDescriptionGenerator {
 
     @VisibleForTesting
     String[] getObservablePropertiesForProcedure(String identifier) {
-        Set<String> props = getCache().getObservablePropertiesForProcedure(identifier);
+        SortedSet<String> props = new TreeSet<>();
+        Set<String> obsProps = getCache().getObservablePropertiesForProcedure(identifier);
+        for (String obsProp : obsProps) {
+            if (getCache().getPublishedObservableProperties().contains(obsProp)) {
+                props.add(obsProp);
+            }
+        }
         return props.toArray(new String[props.size()]);
     }
 

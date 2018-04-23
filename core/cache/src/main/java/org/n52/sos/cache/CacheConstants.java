@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2012-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -49,7 +49,15 @@ public interface CacheConstants {
     String PUBLISHED_PROCEDURE = "published procedure";
     
     String PUBLISHED_PROCEDURES = "published procedures";
+    
+    String TYPE_PROCEDURE = "type " + PROCEDURE;
 
+    String AGGREGATED_PROCEDURE = "aggregated " + PROCEDURE;
+
+    String PROCEDURE_INSTANCE = PROCEDURE + " instance";
+
+    String PROCEDURE_INSTANCES = PROCEDURE + " instances";
+    
     String EPSG_CODE = "epsgCode";
 
     String EPSG_CODES = "epsgCodes";
@@ -113,6 +121,10 @@ public interface CacheConstants {
     String PARENT_PROCEDURE = "parentProcedure";
 
     String PARENT_PROCEDURES = "parentProcedures";
+    
+    String PARENT_OFFERING = "parentOffering";
+    
+    String PARENT_OFFERINGS = "parentOfferings";
 
     String ENVELOPE = "envelope";
 
