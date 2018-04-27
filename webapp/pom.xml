@@ -962,6 +962,73 @@
             </dependencies>
         </profile>
         <profile>
+            <id>jetty-run</id>
+            <activation>
+                <property>
+                    <name>jetty</name>
+                    <value>run</value>
+                </property>
+            </activation>
+            <properties>
+                <jetty.docroot>${project.build.directory}/jetty-docroot</jetty.docroot>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jetty-docroot</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${jetty.docroot}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/src/main/webapp</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <configuration>
+                            <stopKey>C</stopKey>
+                            <stopPort>34343</stopPort>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <contextPath>/</contextPath>
+                            <webXml>${jetty.docroot}/WEB-INF/web.xml</webXml>
+                            <webAppSourceDirectory>${jetty.docroot}</webAppSourceDirectory>
+                            <webAppConfig>
+                                <contextPath>/</contextPath>
+                                <extraClasspath>target/classes;</extraClasspath>
+                            </webAppConfig>
+                            <scanTargets>
+                                <scanTarget>target/classes</scanTarget>
+                            </scanTargets>
+                            <httpConnector>
+                                <port>8080</port>
+                            </httpConnector>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>jetty-run</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <!-- Profile for integration testing, run with: mvn -P itest clean install -->
